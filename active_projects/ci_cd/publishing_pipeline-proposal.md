@@ -1,73 +1,42 @@
 # Publishing Pipeline Proposal
-<!-- tags: status=proposal; topics=ci-cd,publishing,automation -->
+<!-- tags: status=proposal; topics=ci-cd,publishing,release-engineering -->
+> **Related documents:** [Plan](publishing_pipeline-plan.md) · [Reference](publishing_pipeline-reference.md) · [Project summary](summary.md)
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Project summary](summary.md)
+## 1. Context & Problem Statement
+- `vizij-web` publishes npm packages using Changesets, a local `scripts/release-tag.sh`, and tag-triggered workflows (see `../tag_trigger_publishing.md`). Ordering and `workspace:` leakage checks are manual, and provenance/trusted publishing is only partially configured.
+- `vizij-rs` provides `scripts/dry-run-release.sh` plus ad-hoc cargo commands. There is no automated dependency ordering or sequential publish with verification.
+- GitHub workflows in `workflows/` now define `_release-dry-run`, `_publish-npm`, `_publish-crates`, and `release`, but these require a clear reference doc plus a reliable CLI (`vizij release graph`, `vizij release validate-workspace-ranges`, `vizij release prepare`).
+- Tag protection, environment approvals, rollback procedures, and operator runbooks remain fragmented across docs.
 
-## Context & Current State
+## 2. Goals & Non-goals
+**Goals**
+1. Deliver a **repeatable release orchestration** triggered by `release/**` tags with human approval gates and provenance.
+2. Provide **preflight validation** (scratch versioning, workspace-range checks, `cargo publish --dry-run`) before any publish job runs.
+3. Generate **deterministic publish order** for npm packages and Rust crates using `vizij release graph` outputs consumed by workflows.
+4. Ensure **post-publish verification & reporting** (registry checks, release notes, artifact attestations).
+5. Document **rollback + hotfix paths** so operators can respond quickly to failed releases.
 
-### `vizij-web`
-- Uses Changesets with `pnpm changeset`, `version:packages`, and tag-triggered GitHub Action (`release-*`) to publish npm packages selectively.
-- Local helper `scripts/release-tag.sh` validates clean working tree, applies version bumps, commits, and pushes an annotated tag.
-- Workflow ensures only `@vizij/*` packages built via `build:packages` are published; CI verifies via `verify:packages`.
-- Packages depend on one another via `workspace:^` ranges. Changesets rewrites these during `changeset version`, but any missed rewrite leaves `workspace:` strings in published manifests and causes npm install failures. Publishing order (dependency before consumer) is enforced manually by the release sequence.
+**Non-goals**
+- Changing package managers/registries or semver policy; we integrate with npm + crates.io as-is.
+- Force-synchronizing `vizij-web` and `vizij-rs` releases; orchestration supports independent or coordinated tags.
 
-### `vizij-rs`
-- Provides `scripts/dry-run-release.sh` to build/test Rust workspace, run pnpm builds, and `npm pack --dry-run` for wasm/npm packages; parts of the script are commented out, indicating manual steps for cargo publishing.
-- Changesets is configured but release automation for crates/nodes is less codified compared to vizij-web.
-- Tag-triggered pipeline for npm packages is documented in `../tag_trigger_publishing.md`, but cross-repo coordination is not covered.
+## 3. Architectural Design
+- **Tag-triggered workflow (`workflows/release.yml`)** orchestrates preflight, npm publish, crates publish, and attestation jobs.
+- **Reusable components:** `_release-dry-run.yml`, `_publish-npm.yml`, `_publish-crates.yml` run via `workflow_call` so repos can import shared logic.
+- **CLI tooling:** `vizij release graph` (JSON), `vizij release validate-workspace-ranges`, and forthcoming `vizij release prepare` supply publish plans and guardrails.
+- **Environments & approvals:** `npm-publish` and `crates-publish` environments enforce reviewer approval before secrets/permissions are granted.
+- **Observability:** Each job emits grouped logs and summary artifacts (publish plan JSON, verification output) that attach to workflow runs.
 
-Gaps:
-- No unified release process that handles npm packages across repos plus crates.
-- Dry-run script lacks automation for cargo publishing order, version coordination, and verifying tags.
-- Release tagging conventions differ between repositories, making auditing harder.
-- Publishing order for interdependent npm packages (A→B) is fragile; if A is published before B is available on npm, installs fail. CI must coordinate workspace version rewrites, lockfile updates, and publish sequencing.
+## 4. Risks & Trade-offs
+- **Registry propagation delays:** sequential publishing slows throughput but avoids customers installing broken dependency chains.
+- **Secret management:** relying on OIDC/trusted publishing reduces token management overhead but requires additional setup; fallback tokens documented as contingency.
+- **Complexity:** multi-stage workflows increase cognitive load; mitigated by documentation and reuse across repos.
 
-## Goals
+## 5. Approval & Decision Log
+- 2025-11-07 – Proposal drafted; awaiting release manager approval to finalize workflow ownership and environment reviewers.
 
-1. **Cross-Repo Release Orchestration** – Standardise release tagging, dry-run validation, and publish commands for npm packages (vizij-web, vizij-rs) and Rust crates.
-2. **Automated Verification** – Ensure CI performs cargo publish dry-runs (or `cargo package`) and npm pack checks prior to tagging.
-3. **Metadata & Changelog Generation** – Consolidate release notes across repos, optionally bundling them into GitHub Releases.
-4. **Dependency Safety** – Guarantee `workspace:^` ranges are resolved to concrete semver versions before publish, and that dependent packages are bumped and released in the correct order.
-5. **Documentation & Rollback** – Define rollback procedures, release checklists, and troubleshooting guides.
-
-## Proposed Approach
-
-1. **Unified Release CLI**
-   - Extend the shared automation toolkit (see Automation Scripting pillar) with commands like `vizij release prepare`, `vizij release tag`, `vizij release publish`.
-   - Support subcommands for npm (`changeset publish`) and cargo (`cargo publish`).
-   - Include dependency graph inspection to compute publish order and detect unresolved workspace dependencies prior to tagging.
-
-2. **Dry-Run & Verification Enhancements**
-   - Update `dry-run-release.sh` to:
-     - Run `cargo package` for each crate in dependency order.
-     - Use pnpm filters to build/test wasm/npm packages.
-     - Validate pose rig graph exports via new CLI.
-   - Add CI job that runs dry-run on pull requests touching release scripts.
-
-3. **Dependency Graph & Workspace Resolution**
-   - Build tooling (`vizij release graph`) that reads workspace manifests and Changesets state to produce a topologically sorted publish plan (dependencies -> consumers).
-   - Before publishing, run a validation step that executes `pnpm changeset version` in a scratch workspace, checks for `workspace:` strings in publishable package `package.json` files, and fails if any remain.
-   - Update CI to publish packages in dependency order: publish B, wait for success, then publish A. Consider staging tags or sequential workflows to avoid timing issues.
-   - Update release scripts to regenerate lockfiles after versioning and before publishing to ensure consumers pick up new ranges.
-
-4. **Tagging & Releases**
-   - Adopt consistent tag format (e.g., `release/<repo>/<YYYYMMDDHHMM>`).
-   - Automatically create GitHub Releases with aggregated changelog from Changesets + manual entries.
-
-5. **Documentation**
-   - Update `tag_trigger_publishing.md` or split into reference doc covering multi-repo releases.
-   - Provide step-by-step checklist for maintainers (pre-flight, tag, monitor, rollback).
-
-## Risks & Mitigations
-
-- **Complexity** – Combining npm/cargo/pose rig workflows can be complex; keep CLI modular and support per-repo execution.
-- **Credential Management** – Publishing requires npm and crates.io tokens; ensure GitHub Actions secrets are scoped appropriately.
-- **Dependency Ordering Failures** – Publishing consumer packages before dependencies land can break downstream installs. Mitigation: enforce dependency-aware publish order, add verification after each publish, and implement retry/rollback strategies if publish fails mid-chain.
-- **Workspace Range Leakage** – If `workspace:^` remains in manifests, npm publish fails. Mitigation: add CI checks that run versioning in a clean workspace and block tag creation when ranges persist.
-
-## Next Steps
-
-1. Audit current release pipelines (GitHub Actions, scripts) in both repos.
-2. Document npm dependency graphs for publishable packages, noting required publish order.
-3. Define target tag naming and GitHub Release structure.
-4. Prototype unified release CLI with dry-run support, including dependency sorting and workspace validation.
+## 6. High-level Execution Plan
+1. **Stage 1:** Harden `_release-dry-run.yml` (CLI integration, workspace-range check, cargo dry-run) and finalize CLI support.
+2. **Stage 2:** Finish `_publish-npm.yml` (trusted publishing, provenance) and `_publish-crates.yml` (sequenced publish + verification) wiring.
+3. **Stage 3:** Complete `release.yml` orchestration, tag protections, release notes integration, and documentation updates.
+4. **Stage 4:** Test rollback drills, publish runbook, and enable environment enforcement.

@@ -1,0 +1,13 @@
+name: code-scanning
+on:
+  push: { branches: [main] }
+  pull_request:
+  schedule: [{ cron: '0 6 * * 1' }]
+permissions:
+  security-events: write
+  contents: read
+jobs:
+  codeql:
+    uses: github/codeql-action/.github/workflows/codeql.yml@v3
+    with:
+      languages: 'javascript-typescript, rust'

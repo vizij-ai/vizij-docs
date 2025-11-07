@@ -1,0 +1,25 @@
+name: publish-npm
+on:
+  workflow_call:
+    inputs:
+      tag: { required: true, type: string }
+permissions:
+  contents: read
+  id-token: write
+env:
+  NODE_OPTIONS: --max-old-space-size=4096
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22.x' }
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - run: pnpm install --frozen-lockfile
+      - name: Version from tag & build
+        run: pnpm exec vizij release prepare --tag "${{ inputs.tag }}"
+      - name: Publish with trusted publishing (provenance)
+        run: pnpm changeset publish

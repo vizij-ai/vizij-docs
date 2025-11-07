@@ -1,0 +1,30 @@
+name: ci-rs
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  rust:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo & target
+        uses: Swatinem/rust-cache@v2
+      - name: Format & Clippy
+        run: |
+          rustup component add rustfmt clippy
+          cargo fmt --all -- --check
+          cargo clippy --all-targets --all-features -- -D warnings
+      - name: Nextest
+        uses: taiki-e/install-action@v2
+        with: { tool: nextest }
+      - run: cargo nextest run --all
+      - name: License & advisories (cargo-deny)
+        uses: EmbarkStudios/cargo-deny-action@v2

@@ -1,0 +1,32 @@
+name: release-dry-run
+on:
+  workflow_call:
+    inputs:
+      repo_kind: { required: true, type: string } # 'web' | 'rs'
+permissions:
+  contents: read
+jobs:
+  plan:
+    runs-on: ubuntu-22.04
+    outputs:
+      publish_plan: ${{ steps.plan.outputs.json }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup node+pnpm (if web)
+        if: ${{ inputs.repo_kind == 'web' }}
+        uses: actions/setup-node@v4
+        with: { node-version: '22.x', cache: 'pnpm' }
+      - uses: pnpm/action-setup@v4
+        if: ${{ inputs.repo_kind == 'web' }}
+        with: { version: 9 }
+      - name: Compute publish plan
+        id: plan
+        run: |
+          pnpm exec vizij release graph --format json > plan.json || true
+          echo "json=$(cat plan.json | jq -c)" >> $GITHUB_OUTPUT
+      - name: Validate workspace ranges resolved (web)
+        if: ${{ inputs.repo_kind == 'web' }}
+        run: pnpm exec vizij release validate-workspace-ranges
+      - name: Cargo package dry-run (rs)
+        if: ${{ inputs.repo_kind == 'rs' }}
+        run: cargo publish --dry-run

@@ -23,6 +23,7 @@ For each architecture element (e.g., Authoring Control Stack, Derived Input Hier
   ```markdown
   <!-- tags: status=proposal; topics=graph-ir,architecture,workflow -->
   ```
+- **Cross-links:** immediately after the tag header, add a blockquote that links to the sibling documents and project summary, e.g. `> **Related documents:** [Plan](pillar-plan.md) · [Reference](pillar-reference.md) · [Project summary](summary.md)`.
 - **Project summary maintenance:** update the single project `summary.md` whenever new pillar docs are created or statuses change. The summary should list each pillar and link to its proposal/plan/reference documents.
 
 ## 3. Proposal Template
