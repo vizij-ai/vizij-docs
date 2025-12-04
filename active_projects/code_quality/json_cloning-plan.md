@@ -9,23 +9,23 @@ Replace all instances of `JSON.parse(JSON.stringify(...))` with a robust `cloneD
 ## Workstreams / Deliverables
 
 ### 1. Core Implementation
-- [ ] Implement `cloneDeepSafe` in `@vizij/utils` (with `structuredClone` + fallback)
-- [ ] Add unit tests (Maps, Sets, TypedArrays, Circular refs)
-- [ ] Implement specialized helpers (`cloneGraphSpec`, `cloneVizijBundle`)
+- [x] Implement `cloneDeepSafe` in `@vizij/utils` (with `structuredClone` + fallback)
+- [x] Add unit tests (Maps, Sets, TypedArrays, Circular refs)
+- [x] Implement specialized helpers (`cloneGraphSpec`, `cloneVizijBundle`)
 
 ### 2. Migration Phase 1: Libraries
-- [ ] Migrate `@vizij/node-graph-authoring`
-- [ ] Migrate `@vizij/utils` and `@vizij/render`
-- [ ] Verify no regressions in library tests
+- [x] Migrate `@vizij/node-graph-authoring`
+- [x] Migrate `@vizij/utils` and `@vizij/render`
+- [x] Verify no regressions in library tests
 
 ### 3. Migration Phase 2: Applications
-- [ ] Replace `cloneSerializable` in `vizij-authoring`
-- [ ] Migrate `graphImport.ts` and `useVizijExport.ts`
-- [ ] Migrate `graphRuntime.ts`
-- [ ] Migrate Demo Apps
+- [x] Replace `cloneSerializable` in `vizij-authoring`
+- [x] Migrate `graphImport.ts` and `useVizijExport.ts`
+- [x] Migrate `graphRuntime.ts`
+- [x] Migrate Demo Apps
 
 ### 4. Guardrails
-- [ ] Add ESLint rule to forbid `JSON.parse(JSON.stringify(...))`
+- [x] Add ESLint rule to forbid `JSON.parse(JSON.stringify(...))`
 
 ## Timeline / Stages
 - **Stage 1: Core**: Implement utility and tests. (Target: Immediate)
@@ -33,7 +33,7 @@ Replace all instances of `JSON.parse(JSON.stringify(...))` with a robust `cloneD
 - **Stage 3: Apps**: Update authoring and demos.
 
 ## Immediate Next Steps
-1. Create the `cloneDeepSafe` utility in `@vizij/utils`.
+1. Close this project.
 
 ## Risks & Mitigations
 - **Behavior Change**: `structuredClone` might behave differently than JSON for edge cases (e.g. `undefined`). **Mitigation**: Comprehensive test suite comparing behaviors.

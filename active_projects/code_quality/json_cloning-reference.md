@@ -35,3 +35,15 @@ const copy = cloneDeepSafe(original);
 - **Primary Strategy**: `structuredClone` (native).
 - **Fallback Strategy**: Recursive traversal with type-specific cloning logic.
 - **Limitations**: Does not clone functions or DOM nodes (throws error).
+
+## Guardrails
+An ESLint rule `no-restricted-syntax` is configured to forbid `JSON.parse(JSON.stringify(...))` patterns.
+```json
+"no-restricted-syntax": [
+  "error",
+  {
+    "selector": "CallExpression[callee.object.name='JSON'][callee.property.name='parse'] > CallExpression[callee.object.name='JSON'][callee.property.name='stringify']",
+    "message": "Do not use JSON.parse(JSON.stringify(...)) for deep cloning. Use cloneDeepSafe from @vizij/utils instead."
+  }
+]
+```
