@@ -24,26 +24,36 @@ npm/@vizij/*-wasm ──> vizij-web React providers ──> renderer / demos / t
 - **Node Graph Stack**
   - `vizij-graph-core`: selector-aware evaluation, typed input staging, shape-enforced outputs, optional URDF features.
   - `vizij-graph-wasm`: normalization for GraphSpec + JSON bridging, returns WriteBatches with typed paths.
+  - `vizij-graph-registry-export`: helper crate to export registry data.
+  - `@vizij/node-graph-wasm`: ESM loader and helpers.
 - **Orchestrator Stack**
   - `vizij-orchestrator-core`: Blackboard + deterministic schedulers (`SinglePass`, `TwoPass`), controllers for graphs/animations, conflict logging.
   - `vizij-orchestrator-wasm`: wasm API that mirrors controller registration and `step` semantics for TypeScript.
+  - `@vizij/orchestrator-wasm`: ESM loader.
 - **Shared Tooling**
   - `@vizij/wasm-loader` centralizes wasm module initialization (browser + Node) and ABI checks.
   - `@vizij/value-json` exports the canonical Value union, helpers (`toValueJSON`, `valueAs*`), and typings for downstream packages.
   - `scripts/dry-run-release.sh` builds every crate/package to validate releases prior to publish.
 
 ## Web Workspace Highlights (`vizij-web`)
-- **React Providers**
+- **React Providers & Runtime**
   - `@vizij/animation-react`: wraps the animation engine, manages RAF/interval loops, caches latest values/derivatives, exposes selector hooks (`useAnimTarget`, `useAnimDerivative`).
   - `@vizij/node-graph-react`: async graph runtime loader with `useGraphOutputs`, `useGraphInput`, spec normalization via wasm helper.
   - `@vizij/orchestrator-react`: orchestrator context that caches merged writes per TypedPath, exposes frame/body hooks, and surfaces conflicts/events.
+  - `@vizij/runtime-react`: bridges renderer assets with orchestrator controllers, providing a unified runtime environment.
+- **Authoring & Tooling**
+  - `@vizij/node-graph-authoring`: utilities for building and inspecting node graphs at authoring time, including IR reporting.
+  - `@vizij/minimal-demo-ui`: shared UI components for minimal demos.
 - **Renderer & Rig**
-  - `packages/render`: Three.js renderer, Vizij store, `setValue` API for direct animatable control.
-  - `@vizij/rig`: utilities for rigged GLTF assets, namespace-scoped loader hooks, low-rig abstractions.
+  - `@vizij/render`: Three.js renderer, Vizij store, `setValue` API for direct animatable control.
+  - `@vizij/utils`: shared math/value utilities, rig helpers, and common types.
 - **Apps & Demos**
+  - `vizij-authoring`: main authoring application for creating and editing Vizij assets.
   - `demo-animation-studio`: inspect/load stored animations, visualize outputs, exercise prebind tooling.
-  - `demo-node-graph-editor`: schema-driven graph editor linked to wasm runtime.
-  - `demo-orchestrator`, `demo-render-no-rig`, marketing `website`: end-to-end examples for orchestrating rigs and authoring blends.
+  - `demo-graph-studio`: schema-driven graph editor linked to wasm runtime.
+  - `demo-vizij-player`: authoring surface for facial rigs and orchestrator-driven playback.
+  - `vizij-showcase`: showcase application.
+  - Minimal demos (`minimal-demo-*`): lightweight examples for specific stacks (animation, graph, orchestrator).
 
 ## Build & Release Flow
 1. **Rust** – `cargo fmt`, `cargo clippy`, `cargo test`, optional wasm target builds (`cargo build --target wasm32-unknown-unknown`).

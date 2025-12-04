@@ -1,43 +1,69 @@
-# Vizij Roadmap (Active Items)
+# Vizij Roadmap & Active Projects
+<!-- tags: status=living; topics=roadmap,strategy,planning -->
 
-## Near-Term (next release cycle)
-- **Animation Stack**
-  - Optionally normalize stored animations through the wasm helper before loading to flag stale shorthands.
-  - Add zero-allocation assertions/bench harnesses in hot paths to catch regressions early.
-- **Authoring Drivers**
-  - Auto-generated standard inputs now ship with enable/disable toggles, hierarchical labels, and metadata-backed exports; expand automated coverage (unit + UI) for the new workflow and wire it into the pre-ship QA checklist.
-- **Node Graph**
-  - Pre-compute handles for variadic outputs (e.g., `split`) using registry metadata so UI wiring works before first evaluation.
-  - Add compile-time selector validation/preparation to fail fast and generate projection metadata.
-  - Document/automate graph spec migrations for existing users (export helper + CLI or script guidance).
-- **Orchestrator**
-  - Expose rate-decoupled scheduling options once timing semantics are documented.
-- **Web Workspace**
-  - Create smoke tests around orchestrator React hooks to guard Value/Shape regressions.
+## Strategic Pillars
 
-## Medium-Term
-- **Website Node-Graph Migration**
-  - Integrate `@vizij/node-graph-react` into the marketing site, load expression/viseme specs from `apps/website/src/nodegraphs/`, and feed outputs into `VizijLowRig`.
-  - Share pose/rig config modules between website and vizij-site, removing duplicated scalar blending logic.
-  - Encode viseme overlay and spring filtering stages inside the graph to eliminate React-only smoothing.
-- **Animation Enhancements**
-  - Provide JS-facing stored animation validator (wrapping Rust parser) for upload tooling.
-- **Graph Runtime**
-  - Introduce graph-level migration helpers (CLI or wasm helper) to retrofit selectors/typed paths into older specs.
-  - Improve error messaging when staged inputs are missing but declared shapes expect data (link to docs/best practices).
-- **Authoring Drivers**
-  - Extend end-to-end documentation (README, release notes) covering driver toggles, metadata export, and import behaviour; add curated screen captures once QA sign-off lands.
-- **Orchestrator**
-  - Expand schedule options (RateDecoupled) with per-controller tick rates and associated integration tests.
-  - Capture telemetry hooks or instrumentation for downstream analytic use.
+We organize our work into four key strategic pillars. Each pillar has its own detailed tracking document in `vizij_docs/active_projects/`.
 
-## Longer-Term
-- **Rig/Renderer**
-  - Package no-rig face inspector as distributable tooling to help third parties introspect animatables.
-  - Explore worker/off-main-thread orchestration once performance budgets demand it (depends on rate-decoupled scheduler support).
-- **Tooling & Release**
-  - Automate release notes via Changesets or similar for npm packages to improve traceability.
-  - Evaluate shared CI workflows (reusable GitHub actions) to keep Rust/web pipelines aligned.
-- **Ecosystem**
-  - Investigate Bevy-native orchestrator integration once typed path/write batch APIs stabilise across crates.
-  - Define telemetry/metrics story (frame timings, conflict counts) for production deployments.
+### 1. [Website & Ecosystem](../active_projects/website/summary.md)
+**Goal**: Build a comprehensive, high-quality web presence (Home, Learn, Docs, Showcase) hosted in a separate repository with CMS-driven content and automated documentation syncing.
+- **Key Projects**: Separate Repo & CMS, Automated Docs, Full Site Architecture.
+- **Immediate Focus**: Landing page "wow" factor, structured tutorials.
+
+### 2. [Code Quality & Performance](../active_projects/code_quality/summary.md)
+**Goal**: Ensure robustness, performance, and maintainability through rigorous testing and optimization.
+- **Key Projects**: JSON Cloning Replacement, Node Graph Speed, Expanded Testing, WASM Hardening.
+- **Immediate Focus**: Replacing `JSON.parse(JSON.stringify)` with safe deep cloning.
+
+### 3. [Runtime](../active_projects/runtime/summary.md)
+**Goal**: Advance core capabilities for rich interactive experiences (Audio/Video, Multi-actor).
+- **Key Projects**: Rust Audio/Video, Namespacing, Multi-screen support.
+- **Immediate Focus**: Audio/Video processing hooks, Namespacing architecture.
+
+### 4. [Authoring](../active_projects/authoring/summary.md)
+**Goal**: Deliver dense, maintainable authoring surfaces and advanced creative tools.
+- **Key Projects**: UI/UX Polish (Doug's feedback), Modular Pose Rig, Graph Authoring IR.
+- **Immediate Focus**: Function Editor improvements, Scene Visual enhancements, Modularizing Pose Rig state.
+
+---
+
+## High-Level Roadmap
+
+### Near-Term (Next Release Cycle)
+- **Website**: Launch updated Home and Learn sections.
+- **Runtime**: Ship basic audio/video processing hooks and namespacing design.
+- **Authoring**:
+  - Implement "Doug's Feedback" (Undo/Redo, Number controls, Show/Hide).
+  - Execute [Modular Pose Rig Plan](../active_projects/authoring/modular_pose_rig-plan.md).
+- **Code Quality**:
+  - Complete [JSON Cloning Replacement](../active_projects/code_quality/json_cloning-plan.md).
+  - Ship WASM hardening (tests/ABI checks).
+
+### Medium-Term
+- **Website**: Node-Graph Migration (integrate `@vizij/node-graph-react` into marketing site).
+- **Runtime**: Multi-face namespacing and multi-screen puppeteering support.
+- **Authoring**:
+  - Advanced Animation Authoring tools.
+  - Behavior Tree design and implementation.
+- **Code Quality**: Establish automated performance benchmarks for graphs and rendering.
+
+### Long-Term
+- **Ecosystem**: Full integration with new Animation Editor.
+- **Runtime**: Worker-based off-main-thread orchestration.
+- **Authoring**: Rigging tools further up the chain.
+
+### Backlog & Ideas
+- **CI/CD Config Schema**: Implement `ci.config.json` support for shell scripts to allow declarative configuration of skip/extra flags.
+
+---
+
+## Active Projects Directory
+
+- **[Website Summary](../active_projects/website/summary.md)**
+- **[Code Quality Summary](../active_projects/code_quality/summary.md)**
+- **[Runtime Summary](../active_projects/runtime/summary.md)**
+- **[Authoring Summary](../active_projects/authoring/summary.md)**
+
+## Archived Projects
+
+- **[CI/CD Summary](../archive/ci_cd/summary.md)** (Completed/Stabilized)

@@ -14,7 +14,7 @@ Track delivery of derived standard input capabilities, including parent bindings
 - ✅ `StandardRigInput` extended with `parentBinding` and `derivedChildren`.
 - ✅ Controller (`useRigController`) manages parent binding CRUD, dependency graph, and pruning when inputs disappear.
 - ✅ Persistence stores `inputBindingDefinitions` with legacy mirrors; migrations transparent.
-- ⚠️ Need additional regression tests for nested parent chains and migration edge cases.
+- ✅ Regression tests cover nested parent chains, derived remaps, and migration edge cases (`vizij-web/apps/vizij-authoring/src/rig/graphBuilder.test.ts:672-793`, `rig/legacyMigration.test.ts`).
 
 ### 2. Graph Builder & Validation
 
@@ -26,18 +26,18 @@ Track delivery of derived standard input capabilities, including parent bindings
 
 - ✅ `BindingEditor` reused for parent bindings (inline editors, slot management).
 - ✅ Standard Inputs panel surfaces lineage, usage chips, and child creation workflow.
-- 🚧 UI polish (badges, tooltips, layout refinements) tracked with design.
+- ✅ UI polish (badges, lineage chips, inline editors) landed in `StandardInputsSection.tsx:1364-1504`; remaining tweaks roll into the doc refresh.
 - ⏳ Accessibility review outstanding.
 
 ### 4. Documentation & Enablement
 
-- ⚠️ Need narrative docs + screenshots for derived control workflows.
+- 🚧 Narrative docs live in `derived_input_hierarchy-reference.md`, but screenshot packs / workflow walkthroughs are still pending.
 - ☐ Update internal wiki and AGENTS with troubleshooting tips (cycles, missing parents).
 - ☐ Produce quickstart video or animated walkthrough (optional stretch).
 
 ### 5. Automation & QA
 
-- 🚧 Expand Vitest coverage for cycle detection, dependency pruning, and migration scenarios.
+- ✅ Vitest coverage now exercises cycle detection, dependency pruning, and migration paths (`vizij-web/apps/vizij-authoring/src/rig/graphBuilder.test.ts:672-793`).
 - ⏳ Add RTL smoke test covering create → edit → delete for parent bindings.
 - ☐ Integrate plan into CI dashboards (tracking pipeline).
 
@@ -50,8 +50,8 @@ Track delivery of derived standard input capabilities, including parent bindings
 
 ## Immediate Next Steps
 
-1. 🚧 Finalise UI polish tasks with design sign-off.
-2. ⚠️ Draft derived input documentation (owner: Tech Writing).
+1. 🚧 Capture derived-input screenshots / walkthrough snippets to accompany the reference doc update (owner: Design + Docs).
+2. ⚠️ Publish the derived-input troubleshooting guide (cycles, missing parents) and propagate to AGENTS/wiki.
 3. ⏳ Implement RTL smoke tests once UI stabilises.
 
 ## Risks & Mitigations

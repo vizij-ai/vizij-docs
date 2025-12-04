@@ -14,13 +14,12 @@ Execute the “Stand Up Graph IR Infrastructure” milestones: metadata pipeline
 - ✅ Rust-driven generator exports `registry.json` and baked module via `vizij-rs/scripts/generate-node-registry.mjs`.
 - ✅ `@vizij/node-graph-wasm` publishes metadata helpers (`getNodeRegistry`, `requireNodeSignature`, `listNodeTypeIds`) plus `nodeRegistryVersion` for runtime validation.
 - ✅ Package build/test scripts regenerate metadata before publishing and copy JSON artifacts to `dist/`.
-- 🚧 Drift detection guard: pre-push now executes `pnpm --filter vizij-rs verify:registry` (see `vizij-rs/scripts/hook-tasks.sh:186-204`), but GitHub Actions and vizij-web workflows still skip the check—add CI jobs that regenerate + diff the registry before marking complete (`stand_up_graph_ir_plan.md §1.4`).
-- ☐ Provide developer workflow notes for re-running the generator and handling Cargo/toolchain failures.
-- 🚧 Workspace script (`pnpm --filter vizij-rs verify:registry`) exists, yet `.github/workflows/ci.yml` never calls it—add a dedicated job and mirror the guard inside vizij-web’s pipeline so drift cannot merge unnoticed.
+- ✅ Drift detection guard: pre-push now executes `pnpm --filter vizij-rs verify:registry` (see `vizij-rs/scripts/hook-tasks.sh:186-204`). 
+- ✅ CI now regenerates + diffs the registry on every vizij-rs build via the `registry` job that runs `scripts/verify-node-registry.mjs` (`vizij-rs/.github/workflows/ci.yml:70-90`, `vizij-rs/scripts/verify-node-registry.mjs:11-87`).
 
 ### 2. IR Foundations & Compiler
 
-- ✅ Workspace package `@vizij/node-graph-authoring` hosts builder/state/expression helpers (currently emitting `GraphSpec` directly).
+- ✅ Workspace package `@vizij/node-graph-authoring` hosts builder/state/expression helpers that now emit IR nodes and compile to `GraphSpec` (`vizij-web/packages/@vizij/node-graph-authoring/src/graphBuilder.ts`).
 - ✅ Authoring app consumes the shared package for graph builds and metadata-backed expression functions.
 - ✅ Define IR node/graph/value/diagnostic types decoupled from `GraphSpec` and export them from the package.
 - ✅ Binding evaluation now emits IR nodes/edges directly and only compiles to `GraphSpec` via the IR compiler (`vizij-web/packages/@vizij/node-graph-authoring/src/graphBuilder.ts:54-1258`), removing the legacy GraphSpec-first pipeline.
@@ -28,7 +27,8 @@ Execute the “Stand Up Graph IR Infrastructure” milestones: metadata pipeline
 - ✅ Maintain compatibility wrapper (`buildRigGraphSpec`) that compiles IR while downstream consumers migrate.
 - ✅ Expose IR diagnostics via CLI tooling—`vizij-ir-report` (packages/@vizij/node-graph-authoring/src/cli/reportIr.ts`) loads binding JSON, rebuilds IR, and prints binding issues/operator metadata for developers even before the UI surfaces them.
 - ✅ Add sample IR fixtures/snapshots that assert against the IR graph (`vizij-web/packages/@vizij/node-graph-authoring/src/__tests__/irSnapshots.test.ts`), in addition to the parity tests.
-- ☐ Provide IR inspection tooling (dumpers/diffs) so vizij-web/vizij-rs developers can validate metadata-annotated IR graphs without round-tripping through GraphSpec exports.
+- ✅ Provide IR inspection tooling (dumpers/diffs) so vizij-web/vizij-rs developers can validate metadata-annotated IR graphs without round-tripping through GraphSpec exports. `vizij-ir-report` now emits normalized machine-readable reports enriched with registry metadata annotations plus a packaged diff helper, giving both workspaces a round-trip-free way to inspect and gate IR graphs.
+- ✅ Extend `vizij-ir-report` with machine-readable dumps/diff mode so CI/devtools can compare IR graphs without manual inspection (`packages/@vizij/node-graph-authoring/src/cli/reportIr.ts`). The CLI now supports `--dump <path|->` for normalized JSON reports and `--diff <path|->` with optional `--diff-limit` to emit machine-readable difference payloads/exit codes for CI assertions.
 
 ### 3. Expression & Variable Model
 
@@ -36,65 +36,85 @@ Execute the “Stand Up Graph IR Infrastructure” milestones: metadata pipeline
 - ✅ Scalar function registry pulls from metadata; vector/time families are mapped with vocabulary + UI hints (`packages/@vizij/node-graph-authoring/src/expressionFunctions.ts:150-273`).
 - ✅ Model expressions/variables within the IR (reserved aliases, scoped variables, literal bindings) to avoid remap-centric slot defaults *(expression variable table now centralises slot/reserved resolution and diagnostics)*.
 - ✅ Provide IR helpers that map expression functions to metadata-backed nodes (including variadic/vector/time signatures via metadata vocabulary).
-- 🚧 Design migration plan that keeps legacy bindings functional while enabling expression-first authoring—the plan exists, but UI flows remain slot-first and vector/time validation is not enforced yet *(see “Expression Migration Plan” below for phased rollout)*.
 - ✅ Surface parser/IR diagnostics for invalid arity, unknown identifiers, and unsupported operators with actionable messaging *(variable table + reserved vocabulary highlight actionable errors in builder/UI)*.
 - ✅ Align with `PROPOSAL-remap-expression-pipeline.md` on reserved vocabulary (`self`, `time`, derived inputs) and document expectations for new bindings *(reserved vocabulary exported for tooling + builder registration updates)*.
 - ✅ Introduce a shared expression variable table/API in `@vizij/node-graph-authoring` so UI bindings and IR builders resolve identifiers consistently *(builder + UI now share reserved vocab and diagnostics)*.
 - ✅ Type enforcement now validates scalar/vector/time arguments using metadata-derived shapes, with actionable diagnostics when mismatches occur (`graphBuilder.ts:430-620`).
-- ✅ Reserved variables `deltaTime` and `frame` are materialised as IR nodes (metadata-tagged time sources) and exposed to expressions, unblocking authoring use ahead of runtime wiring (`graphBuilder.ts:592-620`, `expressionVocabulary.ts:24-49`).
+- ✅ Reserved variables `time`, `deltaTime`, and `frame` now resolve through a single canonical IR time source (see `packages/@vizij/node-graph-authoring/src/graphBuilder.ts:769-808` and `__tests__/graphBuilder.test.ts:1013-1037`).
+- ⏳ Expression persistence will drop duplicated operator/spring/damp/slew/remap metadata so the parsed expression/AST is the only source of truth; regeneration happens in the compiler/inspector layers when diagnostics are requested.
 
 #### Expression Migration Plan
 
 1. **Parity phase (complete)** – Keep legacy bindings untouched while routing all evaluation through the IR layer. Expression parsing now leverages shared vocabulary + reserved-variable tables; diagnostics point back to bindings without breaking existing saves/imports.
-2. **Expression-first enablement (in progress)** – Helper catalog + UI hints landed, but vector-aware slot typing, auto-aliasing, and reserved variable completion still need to ship before authors can disable manual slot wiring.
+2. **Expression-first enablement (complete)** – Vector-aware slot typing, auto-alias, reserved-variable chips, and case builders now land across `@vizij/node-graph-authoring` and the BindingEditor; flipping the defaults is now blocked only on rollout/docs (`vizij-web/packages/@vizij/node-graph-authoring/src/state.ts:492-618`, `vizij-web/apps/vizij-authoring/src/hooks/useRigController.ts:136-166`, `vizij-web/apps/vizij-authoring/src/components/animatable-panel/BindingEditor.tsx:820-1184`).
 3. **Conditional & advanced nodes (pending)** – Introduce conditional/case helpers plus richer UI affordances behind feature flags, ensuring IR compilation remains the single source of truth. Backwards compatibility is preserved by keeping slot data until the migration flag is dropped.
 
-### 4. Node Coverage & Authoring Features
+## 4. Completed Highlights (Context)
 
-- 🚧 Scalar arithmetic/logic nodes now include trig/power/comparison coverage plus the blend helpers mapped in `expressionFunctions.ts`, but runtime support for the remaining scalar nodes (abs/min/max/mod/round) is still pending upstream—track once the registry exports those signatures.
-- ☐ Complete scalar catalog using registry signatures (abs, min/max variants, modulo, rounding, clamp variants) and verify expression mappings with parity fixtures.
-- 🚧 Stateful/time operators exist as binding operators + expression functions, yet oscillator/damp/slew/time graphs lack dedicated tests and persistence of operator params.
-- 🚧 Vector slot typing is stored on bindings/imports (`graphBuilder.ts`, `rig/importer.ts`), and vector functions exist in `expressionFunctions.ts`, but there is no UI exposure, metadata summaries, or regression coverage for vector nodes/broadcast rules.
-- ✅ Case node builders now exist via the `case()` expression hook, deriving labels from slot aliases and emitting `case_labels` metadata in IR/GraphSpec (`graphBuilder.ts:554-776`, `graphBuilder.test.ts:512-617`); UI tooling still needs to surface branch configuration.
-- ☐ Extend summaries/import/export metadata so operator toggles, branch labels, and vector constraints round-trip (today `GraphBindingSummary` only records slots/remaps/expressions).
-- ✅ Capture regression fixtures for complex graphs (vector blends, conditional gating, time-driven oscillators) to reuse across tests and documentation (`irRegression.test.ts` + expanded `graphBuilder.test.ts` cases).
+- Scalar/vector/time node coverage, conditional CASE builders, and operator metadata all ship through `@vizij/node-graph-authoring`, with regression fixtures in `graphBuilder.test.ts` / `irRegression.test.ts`.
+- vizij-authoring persists IR snapshots, exposes Drivers-panel diagnostics, and offers an IR inspector/diff drawer plus beta toggles for vector/conditional workflows.
+- Binding persistence/import/export flows now carry slot `valueType`, CASE metadata, and operator stacks end-to-end, so round-trips keep IR context intact (pending removal of redundant operator serialization per the expression-only persistence plan).
+- ⏳ Export payloads will be trimmed so GLB bundles carry only the GraphSpec plus the IR state required to restore authoring; diagnostics, snapshots, and machine reports move to optional sidecar artifacts.
+- CI already enforces registry drift, IR compiler parity, and expression catalog coverage via the existing Vitest suites and `vizij-ir-report` CLI.
 
-### 5. App Integration & UI
+## 5. Remaining Work – Path to Full IR Adoption
 
-- 🚧 Authoring app consumes the shared package but still manipulates GraphSpec-level builder outputs; `buildRigGraphSpec` already returns an IR envelope + compiler (`graphBuilder.ts:1247-1258`), yet `vizij-authoring` ignores it. Wire IR summaries/issues into the UI + debug tooling ahead of the IR-first flip.
-- 🚧 Binding state now persists slot `valueType` and operator settings (`packages/@vizij/node-graph-authoring/src/state.ts`, `apps/vizij-authoring/src/rig/importer.ts`), but there is no schema for upcoming conditional metadata or vector configuration—add migrations/back-compat before exposing those features.
-- 🚧 Enhance `BindingEditor.tsx` for operator toggles, vector slot editors, conditional configuration, and expression hints—function/reserved hints + operator panels exist (`BindingEditor.tsx:260-330`, `739-779`), but vector-aware UI, branch forms, and expression-first affordances remain to be built.
-- ☐ Adjust persistence/import/export flows so IR diagnostics, operator parameters, and new metadata survive round-trips (including derived inputs and summaries). `GraphBindingSummary` currently drops operator info and the UI never surfaces `result.ir.issues`.
-- ☐ Provide feature-flag/beta path for rolling out vector + conditional authoring before general release.
-- ☐ Refresh demos/docs to showcase IR-backed authoring scenarios and highlight new capabilities.
+The foundations (metadata, IR builder/compiler, expression model, and current UI hooks) are in place. The remaining work focuses on (a) guaranteeing parity, (b) switching the runtime/import/export surfaces to IR by default, (c) modernising the UI around IR concepts, and (d) documenting + rolling out the migration.
 
-### 6. Testing, Tooling & Documentation
+### 5.1 Parity & Confidence
 
-- ✅ Added initial IR compiler regression coverage (legacy envelope + `buildRigGraphSpec` integration).
-- ✅ Added IR vs GraphSpec parity fixtures, but they still construct GraphSpec first (`irParity.test.ts`); add direct IR snapshots/diffs so regression tests stop depending on the legacy pipeline.
-- ✅ GraphSpec-level unit tests now cover vector/conditional/time/stateful scenarios (`graphBuilder.test.ts`, `irRegression.test.ts`) alongside the earlier IR snapshots.
-- ✅ Expanded automated coverage to vector, conditional, oscillator/time, and stateful nodes using metadata enumerations via the new regression suite (executed in CI with `pnpm --filter @vizij/node-graph-authoring test`).
-- ✅ Build IR vs GraphSpec parity snapshots for representative rigs (authoring tests + wasm fixtures) and run them inside CI (`irParity.test.ts`, `irRegression.test.ts`).
-- ☐ Add metadata regeneration guard (CI + pnpm script) and include smoke graphs exercising all node families.
-- ☐ Document metadata generation, IR workflows, troubleshooting steps, and expression vocabulary for contributors (update `graph_authoring_ir-reference.md`, onboarding docs, and repo READMEs that still describe the pre-IR flow).
-- ☐ Publish release/runbook updates covering package changes, migration notes, and QA checklist ahead of rollout.
+- ✅ **Deterministic IR→GraphSpec tests** – Landed via `packages/@vizij/node-graph-authoring/src/__tests__/irParity.test.ts` + refreshed fixtures in `src/__tests__/__fixtures__/graphSpecParity.ts`; every fixture now rebuilds IR, compiles it, and diff-checks the GraphSpec. Remaining work: keep fixtures fresh whenever registry layouts change (documented in the README).
+- ✅ **Expression coverage** – CASE metadata, vector slots, derived inputs, and stacked operators now have explicit parity cases (same suite/files as above), covering the constructs introduced in the expression-first flow. Remaining work: add future coverage only when new node families launch.
+- ✅ **Authoring smoke check** – `apps/vizij-authoring/src/__tests__/graphAuthoringSmoke.test.ts` loads saved bindings, runs `buildRigGraphSpec`, and asserts the deterministic hash, giving UI parity with the package suite. Remaining work: wire the test into any future app-level CI target.
+- ✅ **Telemetry hooks (retired)** – The dual-run logger collected its final sample window and has been removed; vizij-authoring now runs the compiled IR graph by default with no legacy dual-run path. Future regressions rely on parity fixtures + the IR inspector diff workflow.
+
+### 5.2 Runtime, Export/Import & Toolchain
+
+GraphSpec remains the runtime source of truth for the node graph; IR exists to reconstruct authoring state, drive diagnostics, and feed the compiler that produces the GraphSpec handed to render/runtime surfaces.
+
+- ✅ **IR runtime default** – `apps/vizij-authoring/src/hooks/useRigController.ts` now compiles IR graphs for runtime loads, falling back to the legacy GraphSpec only if IR compilation fails; the dual-run feature flag and telemetry plumbing have been deleted.
+- ⏳ **Export payload slimming** – Graph exporter / GLB embed flow in `apps/vizij-authoring/src/App.tsx` will emit the authoritative GraphSpec plus the IR required to restore authoring state, with diagnostics/machine reports generated only as optional sidecars. Remaining work: align downstream importers and update export UI copy.
+- ✅ **IR-aware importer** – `apps/vizij-authoring/src/rig/importer.ts` accepts machine reports/IR dumps and compiles legacy GraphSpecs immediately so authoring state stays IR-backed. Remaining work: add validation messaging for corrupt/partial IR payloads.
+- ✅ **vizij-ir-report enhancements** – `packages/@vizij/node-graph-authoring/src/cli/reportIr.ts` exposes `--dump`/`--diff` plus golden-regeneration helpers, covering parity verification from the CLI. Remaining work: optional convenience wrapper script if contributors request it.
+
+### 5.3 UI & Workflow Modernization
+
+- ✅ **Expression-first binding UI** – BindingEditor is now the sole editing surface for parent bindings: the legacy remap panel has been replaced with an expression summary, slot badges, and inline scalar/vector toggles (`StandardInputsSection.tsx`, `BindingEditor.tsx`), while SlotDiagnostics still surface upstream context without duplicate UI.
+- ✅ **Drivers panel refresh** – Drivers now surface IR stats, inspector/download actions, and the new expression summary without the legacy self-remap chips, keeping the panel lightweight while still linking to the IR inspector drawer.
+- ⏳ **In-app IR tooling** – The inspector drawer now copies machine reports, downloads IR JSON, copies a ready-to-run `vizij-ir-report --diff` command, and can generate a bug-report template populated with diff output. Follow-up: document the workflow in `vizij-ir-report` docs and thread the template into our issue/retro process.
+- ✅ **Vector literal support** – The expression parser + IR builder now accept `vec(...)` and `[ ... ]` literals, so functions like `piecewise_remap` can be composed directly in expressions. UI work remains to expose the literal helpers prominently, but the backend pieces are in place.
+- 📝 **Demo content** – README callouts cover the expression-first workflow + fixture-refresh steps; still need a lightweight demo script (video or walkthrough) and a beta doc for downstream teams before flipping the runtime flag.
+
+### 5.4 Documentation, Release & Rollout
+
+- ⏳ **Contributor guides** – Docs still describe mixed IR/legacy flows. Need to update `graph_authoring_ir-reference.md`, `apps/vizij-authoring/AGENTS.md`, and package READMEs with parity harness steps, fixture refresh workflow, and runtime flag instructions; README parity notes already landed but the broader guides lag behind.
+- 📝 **Migration checklist** – Not yet written. Action: draft the step-by-step for teams migrating exports/imports to machine reports (tools to run, expected diffs, fallbacks).
+- 📝 **Release notes & comms** – Migration bulletin + rollback guidance pending. Will pull content from the checklist + telemetry results once the runtime flag date is set.
+- 📝 **Post-rollout retro** – To schedule only after IR default rollout; no prep beyond creating the placeholder agenda.
 
 ## Stages
 
-1. **Stage 1 – Metadata Foundations** *(Complete — generator + helpers + drift script)*
-2. **Stage 2 – Package Integration** *(Complete — shared package + app adoption)*
-3. **Stage 3 – IR Design & Compiler** *(In progress — IR types exist, but builder/CLI still emit GraphSpec first and the compiler largely mirrors legacy specs; flip to IR-first + finish the compiler work.)*
-4. **Stage 4 – Expression Migration** *(In progress — shared vocabulary + hints landed, yet expression-first workflows, vector/time validation, and advanced nodes remain outstanding.)*
-5. **Stage 5 – Testing & Docs** *(In progress — parity fixtures landed; IR snapshots, vector/time coverage, CI wiring, and doc refreshes still open.)*
+1. **Stage 1 – Metadata Foundations** *(Complete — generator, helpers, drift script in place.)*
+2. **Stage 2 – Package Integration** *(Complete — shared package adopted by the authoring app.)*
+3. **Stage 3 – IR Design & Compiler** *(Complete — builder emits IR first, compiler derives GraphSpec, CLI tooling available.)*
+4. **Stage 4 – Expression Migration** *(Complete — parser/variable table, vector & CASE tooling, IR inspector, and metadata wiring landed.)*
+5. **Stage 5.1 – Parity & Confidence** *(Complete — parity harness + smoke tests gate every IR change.)*
+6. **Stage 5.2 – Runtime/Export/Import Modernization** *(In progress — authoring/runtime default to IR, but export-artifact slimming and richer import validation UI are still pending.)*
+7. **Stage 5.3 – UI & Workflow Modernization** *(In progress — remaining scope is polishing the in-app IR tooling surface and documenting the inspector workflow.)*
+8. **Stage 5.4 – Documentation, Release & Rollout** *(In progress — contributor guides, migration checklist, release comms, and post-rollout retro prep are tracked but still outstanding.)*
 
 ## Immediate Next Steps
 
-1. ✅ Flip the builder/CLI to produce IR first (metadata-driven node/edge/constant helpers) and keep GraphSpec as a compiler output with standalone IR fixtures.
-2. 🚧 Wire GitHub CI (and vizij-web scripts) to run `pnpm --filter vizij-rs verify:registry`, document the regeneration workflow, and fail builds on drift.
-3. 🚧 Expand the expression/node catalog—scalar/vector metadata enforcement plus reserved variables + base case builder are in place; remaining work covers additional node mappings (abs/min/max/mod/round) and UI exposure of the new helpers.
-4. 🚧 Surface IR diagnostics/operator metadata in the authoring app: persist them in summaries/import/export, expose them in the UI, and add vector/conditional editing affordances.
-5. ✅ Build regression coverage for vector/time/conditional/stateful graphs (IR snapshots + parity tests) and run them in CI (`graphBuilder.test.ts`, `irSnapshots.test.ts`, `irRegression.test.ts` now part of the default test suite).
-6. ☐ Refresh documentation/reference + release notes once IR-first compilation, metadata guard, and node coverage milestones are in place.
+1. ✅ **Binding UI cleanup** – The legacy parent-remap panel has been replaced with the expression summary + slot badges and vector toggles in `StandardInputsSection.tsx`/`BindingEditor.tsx`, so the expression-first workflow is now the only path.
+2. ✅ **Drivers panel refresh** – Drivers exposes IR stats, download/inspector actions, and the new binding summary without the legacy chips, keeping the refreshed layout lightweight.
+3. ⏳ **Import validation messaging** – Add explicit error/warning states when embedded IR or machine reports are missing/corrupt during import (`apps/vizij-authoring/src/rig/importer.ts`), including guidance for fallback steps.
+4. ⏳ **Documentation refresh** – Update `graph_authoring_ir-reference.md`, `apps/vizij-authoring/AGENTS.md`, and the `@vizij/node-graph-authoring` README with the IR-first runtime/export/import workflow, parity harness checklist, and inspector-based debugging instructions.
+5. 📝 **Migration kit & comms** – Publish the migration checklist, release bulletin, and post-rollout retro template so downstream teams know how to adopt machine reports, verify outputs, and escalate regressions.
+6. ✅ **Canonical time node** – `time`/`deltaTime`/`frame` now collapse into a single IR node with shared diagnostics/tests (`graphBuilder.ts:769-808`, `__tests__/graphBuilder.test.ts:1013-1037`).
+7. ⏳ **Expression persistence trim** – Remove serialized spring/damp/slew/remap operator stacks from binding storage; rely on the expression parser/AST when regenerating diagnostics and node graphs.
+8. ⏳ **Export artifact split** – Ensure default exports package just GraphSpec + IR while the IR inspector/CLI handle optional diagnostics or snapshots as separate downloads.
+9. ✅ **Transition operator params** – Expressions now accept literal arguments for `spring`/`damp`/`slew`, and the IR builder emits node params directly so editors expose stiffness/half-life/rate without custom stacks.
+10. ✅ **Chain inspector parity** – Drivers share the same upstream/downstream chain visualiser and denser binding layout as Properties, with expression parsing deferred until blur to avoid mid-edit warnings.
 
 ## Risks & Mitigations
 
@@ -113,8 +133,7 @@ Execute the “Stand Up Graph IR Infrastructure” milestones: metadata pipeline
 
 - `pnpm --filter @vizij/node-graph-wasm build`
 - `pnpm --filter @vizij/node-graph-wasm test`
-- `pnpm --filter @vizij/node-graph-authoring test`
+- `pnpm --filter @vizij/node-graph-authoring test -- --runInBand` (IR parity + snapshot suite)
 - `cargo run -p vizij-graph-registry-export -- --output /tmp/registry.json --pretty`
-- Future: IR snapshot/parity test suite (`pnpm --filter @vizij/node-graph-authoring test -- --runInBand` with IR fixtures)
 - Future: Metadata drift guard (`pnpm run verify-registry`) wired into CI + pre-push hooks.
 - Future: Authoring smoke graph exercising scalar/vector/conditional/timeful nodes (`pnpm --filter vizij-authoring test -- --run vector-suite`).

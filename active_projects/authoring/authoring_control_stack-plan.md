@@ -22,7 +22,7 @@ Deliver the “Stabilise Core Inputs & UI” milestone by auto-generating standa
 - ✅ Replaced add/delete UX with enable/disable toggles and disabled-state styling.
 - ✅ Display hierarchical metadata (shape badge + feature/property).
 - ✅ Added root filter dropdown with persisted selection state.
-- 🚧 Wire refined empty-state messaging and tooltip polish. *(Follow-up from archive plan)*
+- ✅ Wire refined empty-state messaging and tooltip polish. *(See `vizij-web/apps/vizij-authoring/src/components/animatable-panel/StandardInputsSection.tsx:781-2096` for the new copy, badges, and helper text.)*
 - 🚧 Document UX patterns and screenshot updates for contributor guide.
 
 ### 3. Nested Feature Tree Layout
@@ -36,11 +36,11 @@ Deliver the “Stabilise Core Inputs & UI” milestone by auto-generating standa
 
 - ✅ Filter state plumbed through controller and preview components.
 - ✅ Derived selectors respect active roots; usage chips update live.
-- ⏳ Empty-state messaging refinement awaiting UX copy review.
+- ✅ Empty-state messaging refinement shipped alongside the mapping preview (`StandardInputsSection.tsx:1450-1504`).
 
 ### 5. QA & Docs
 
-- 🚧 Expand Vitest coverage for auto-input reconciliation edge cases (rename chains, duplicate slugs).
+- ✅ Expand Vitest coverage for auto-input reconciliation edge cases (rename chains, duplicate slugs). *(Covered by `rig/legacyMigration.test.ts` + `rig/state.test.ts`.)*
 - ⏳ Add RTL smoke tests for toggle workflow and filter interactions.
 - ☐ Capture annotated screenshots and update authoring README/AGENTS.
 
@@ -53,9 +53,9 @@ Deliver the “Stabilise Core Inputs & UI” milestone by auto-generating standa
 
 ## Immediate Next Steps
 
-1. 🚧 Finalise UX copy for empty-state messaging (owner: Design, due next sync).
-2. ⏳ Draft RTL smoke tests for enable/disable workflow (owner: QA).
-3. ☐ Schedule documentation screenshots after design approval.
+1. ⏳ Draft RTL smoke tests for enable/disable + filter workflows (owner: QA).
+2. 🚧 Capture annotated Standard Inputs screenshots and thread them into the README/AGENTS refresh (owner: Design).
+3. ☐ Publish the contributor doc update that explains the new empty states, badges, and toggle UX (owner: Docs).
 
 ## Risks & Mitigations
 

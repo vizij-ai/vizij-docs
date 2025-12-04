@@ -24,3 +24,8 @@
 - **Decision**: Publish wasm artefacts as scoped npm packages using a shared loader (`@vizij/wasm-loader`) with ABI guards rather than embedding wasm blobs in React packages.
 - **Rationale**: Keeps wasm updates independent of React releases, supports both Node and browser consumers, and standardises initialization.
 - **Trade-offs**: Developers must rebuild/link local wasm packages during cross-repo work; bundlers must honour wasm loader constraints (`preserveSymlinks`, COOP/COEP when needed).
+
+## CI/CD: Shell Scripts vs. TypeScript CLI
+- **Decision**: Stick with lightweight shell scripts (`scripts/*.sh`) for automation and commit hooks; cancel the proposed `@vizij/dev-tools` TypeScript CLI.
+- **Rationale**: Simplicity, zero build overhead, and effective use of existing `pnpm` tooling. Windows support is not a current priority.
+- **Trade-offs**: Less robust error handling, harder to unit test, and requires WSL for Windows contributors.
