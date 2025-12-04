@@ -24,6 +24,53 @@
      - `poseSnapshotService.ts`: capture + normalize from `@vizij/render` input values.
    - These services accept plain data + callbacks, returning pure results so store actions stay lean.
 
+### 2.1 Detailed Interface Specifications
+
+**Store State (`PoseRigState`)**
+```typescript
+interface PoseRigState {
+  // Core Data
+  rigName: string;
+  neutralInputs: Record<string, number>; // Baseline values
+  currentValues: Record<string, number>; // Live values from rig
+  poses: Record<string, PoseDefinition>; // The authored poses
+  
+  // UI State
+  selectedPoseId: string | null;
+  activePoseId: string | null; // For "preview" mode
+  
+  // Graph/Config State
+  poseGraphSpec: GraphSpec | null;
+  poseGraphSummary: GraphSummary | null;
+  poseConfigDraft: PoseConfig | null; // The config being edited
+  lastImportedConfig: PoseConfig | null; // For diffing/dirty checks
+  
+  // Metadata
+  filenames: {
+    config: string;
+    graph: string;
+  };
+  warnings: string[];
+  isReady: boolean;
+}
+```
+
+**Service Interfaces**
+
+*   **`PoseConfigService`**
+    *   `normalize(config: unknown): PoseConfig`
+    *   `serialize(config: PoseConfig): string`
+    *   `diff(a: PoseConfig, b: PoseConfig): boolean`
+
+*   **`PoseGraphService`**
+    *   `buildSpec(config: PoseConfig): GraphSpec`
+    *   `generateSummary(spec: GraphSpec): GraphSummary`
+    *   `validate(spec: GraphSpec): string[]` (returns warnings)
+
+*   **`PoseSnapshotService`**
+    *   `capture(inputs: Record<string, number>, neutral: Record<string, number>): PoseDefinition`
+    *   `apply(pose: PoseDefinition, current: Record<string, number>): Record<string, number>`
+
 3. **Hook Rewrite**
    - Replace `usePoseRigAuthoring` with `usePoseRigStore` + convenience selectors (e.g., `usePoseRigState(selector)`), backed by the new store.
    - `PoseRigProvider` becomes a simple store provider (similar to existing graph/binding stores).

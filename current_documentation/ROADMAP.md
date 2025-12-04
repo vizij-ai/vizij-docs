@@ -36,7 +36,7 @@ We organize our work into four key strategic pillars. Each pillar has its own de
   - Implement "Doug's Feedback" (Undo/Redo, Number controls, Show/Hide).
   - Execute [Modular Pose Rig Plan](../active_projects/authoring/modular_pose_rig-plan.md).
 - **Code Quality**:
-  - Complete [JSON Cloning Replacement](../active_projects/code_quality/json_cloning-plan.md).
+  - [x] Complete [JSON Cloning Replacement](../active_projects/code_quality/json_cloning-plan.md).
   - Ship WASM hardening (tests/ABI checks).
 
 ### Medium-Term

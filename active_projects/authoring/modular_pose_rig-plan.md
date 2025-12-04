@@ -9,15 +9,21 @@ Refactor the monolithic `usePoseRigAuthoring` hook into a testable, Zustand-base
 ## Workstreams / Deliverables
 
 ### 1. Foundation (Store & Services)
-- [ ] Create `poseRig/services/poseConfigService.ts` (IO/Normalization)
-- [ ] Create `poseRig/services/poseGraphService.ts` (Graph building)
-- [ ] Create `poseRig/services/poseSnapshotService.ts` (Capture logic)
-- [ ] Implement `poseRig/store.ts` (Zustand store with actions)
+- [ ] Create `poseRig/services/poseConfigService.ts` (Implement `normalize`, `serialize`, `diff`)
+- [ ] Create `poseRig/services/poseGraphService.ts` (Implement `buildSpec`, `generateSummary`, `validate`)
+- [ ] Create `poseRig/services/poseSnapshotService.ts` (Implement `capture`, `apply`)
+- [ ] Implement `poseRig/store.ts`
+    - [ ] Define `PoseRigState` interface
+    - [ ] Implement `createPoseRigStore` with initial state
+    - [ ] Implement actions: `setNeutral`, `updateValues`, `createPose`, `deletePose`
+    - [ ] Implement actions: `importConfig`, `importGraph`, `reset`
 - [ ] Add unit tests for Store and Services
 
 ### 2. Hook Rewrite & Migration
 - [ ] Create `usePoseRigStore` hooks/selectors
 - [ ] Refactor `usePoseRigAuthoring` to wrap the new store (Bridge phase)
+    - [ ] Map store state to hook return values
+    - [ ] Map store actions to hook functions
 - [ ] Migrate `PoseRigWorkbench` to use selectors
 - [ ] Migrate `ImportExportWorkbench` to use selectors
 - [ ] Migrate `useVizijExport` to use selectors
@@ -38,3 +44,12 @@ Refactor the monolithic `usePoseRigAuthoring` hook into a testable, Zustand-base
 
 ## Risks & Mitigations
 - **Regression Risk**: Pose rig is complex. **Mitigation**: Keep the old hook as a wrapper initially to ensure existing consumers work without changes.
+
+## Validation / QA Checklist
+- [ ] **Unit Tests**: Store actions (CRUD) pass.
+- [ ] **Unit Tests**: Service normalization and serialization pass.
+- [ ] **Integration**: `PoseRigWorkbench` loads and displays poses correctly.
+- [ ] **Integration**: "Capture Pose" updates the store and UI.
+- [ ] **Integration**: "Apply Pose" updates the rig values.
+- [ ] **Integration**: Import/Export works with existing JSON files.
+
