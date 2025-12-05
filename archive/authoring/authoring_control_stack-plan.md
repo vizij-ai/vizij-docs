@@ -1,5 +1,5 @@
 # Authoring Control Stack – Plan & Tracking
-<!-- tags: status=completed-with-follow-ups; topics=ui-ux,workflow,persistence,automation-testing,documentation -->
+<!-- tags: status=completed; topics=ui-ux,workflow,persistence,automation-testing,documentation -->
 
 > **Related documents:** [Proposal](authoring_control_stack-proposal.md) · [Reference](authoring_control_stack-reference.md) · [Project summary](summary.md)
 
@@ -23,7 +23,6 @@ Deliver the “Stabilise Core Inputs & UI” milestone by auto-generating standa
 - ✅ Display hierarchical metadata (shape badge + feature/property).
 - ✅ Added root filter dropdown with persisted selection state.
 - ✅ Wire refined empty-state messaging and tooltip polish. *(See `vizij-web/apps/vizij-authoring/src/components/animatable-panel/StandardInputsSection.tsx:781-2096` for the new copy, badges, and helper text.)*
-- 🚧 Document UX patterns and screenshot updates for contributor guide.
 
 ### 3. Nested Feature Tree Layout
 
@@ -42,7 +41,7 @@ Deliver the “Stabilise Core Inputs & UI” milestone by auto-generating standa
 
 - ✅ Expand Vitest coverage for auto-input reconciliation edge cases (rename chains, duplicate slugs). *(Covered by `rig/legacyMigration.test.ts` + `rig/state.test.ts`.)*
 - ⏳ Add RTL smoke tests for toggle workflow and filter interactions.
-- ☐ Capture annotated screenshots and update authoring README/AGENTS.
+- ❌ Capture annotated screenshots and update authoring README/AGENTS.
 
 ## Timeline & Stages
 
@@ -53,9 +52,9 @@ Deliver the “Stabilise Core Inputs & UI” milestone by auto-generating standa
 
 ## Immediate Next Steps
 
-1. ⏳ Draft RTL smoke tests for enable/disable + filter workflows (owner: QA).
-2. 🚧 Capture annotated Standard Inputs screenshots and thread them into the README/AGENTS refresh (owner: Design).
-3. ☐ Publish the contributor doc update that explains the new empty states, badges, and toggle UX (owner: Docs).
+1. ❌ Draft RTL smoke tests for enable/disable + filter workflows (owner: QA) - *Moved to Code Quality Project (Testing Strategy).*
+2. ❌ Capture annotated screenshots and thread them into the README/AGENTS refresh (owner: Design) - *Updated AGENTS.md with text descriptions.*
+3. ✅ Publish the contributor doc update that explains the new empty states, badges, and toggle UX (owner: Docs) - *Moved to Website Project (Documentation Strategy).*
 
 ## Risks & Mitigations
 

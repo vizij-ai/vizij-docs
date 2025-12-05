@@ -13,7 +13,7 @@ Reconstruct authoring state solely from GLB + rig graph files, removing dependen
 
 - ✅ Audit existing sanitisation pipeline to ensure IDs normalise at creation time. *(Handled by `vizij-web/apps/vizij-authoring/src/rig/legacyMigration.ts` + associated tests.)*
 - 🚧 Legacy audit step now surfaces identifier mismatches via `useRigController` alerts (`hooks/useRigController.ts:3803-3943`), but the accept/decline workflow + persisted decisions are still missing.
-- ☐ Update documentation to describe ID acceptance process.
+- ✅ Update documentation to describe ID acceptance process.
 
 ### 2. Graph Parsing & Reconstruction
 
@@ -38,8 +38,8 @@ Reconstruct authoring state solely from GLB + rig graph files, removing dependen
 
 ### 6. Automation & Documentation
 
-- ⚠️ Add regression tests covering round-trip scenarios (simple, derived inputs, complex expressions).
-- ☐ Document import-only workflow, troubleshooting steps, and expected log messages.
+- ⚠️ Add regression tests covering round-trip scenarios (simple, derived inputs, complex expressions). - *Moved to Code Quality Project (Testing Strategy).*
+- ✅ Document import-only workflow, troubleshooting steps, and expected log messages.
 
 ### 7. Discrepancy Resolution Workflow
 
@@ -68,7 +68,7 @@ Reconstruct authoring state solely from GLB + rig graph files, removing dependen
 2. ⏳ Build canonical expression reconstruction + slot alias cleanup for reconstructed graphs.
 3. ⏳ Re-run catalogue/auto-input builders after hydration so derived metadata stays aligned without manual refreshes.
 4. ⚠️ Split export artifacts (GraphSpec + IR + optional diagnostics) and add schema-version tracking to the metadata container.
-5. 📝 Document the discrepancy wizard + pose remap workflows (README/AGENTS) and script a regression harness for round-trip tests.
+5. 📝 Document the discrepancy wizard + pose remap workflows (README/AGENTS) and script a regression harness for round-trip tests. - *Documentation moved to Website Project (Documentation Strategy).*
 
 ## Risks & Mitigations
 

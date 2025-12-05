@@ -40,6 +40,11 @@ The Authoring Control Stack keeps renderable shapes, animatable values, and stan
 - **Create Custom Inputs**: Invoke “Add Custom Input” (if exposed) to append user-defined descriptors; these persist verbatim.
 - **Parent Bindings**: Managed separately under the Derived Input Hierarchy pillar but surface alongside standard inputs for lineage awareness.
 
+### UI Patterns
+- **Empty States**: When a filter hides all inputs, a clear message guides the user to adjust the filter.
+- **Badges**: Hierarchical badges (Shape > Feature) provide context for each input, especially when the list is filtered or flattened.
+- **Toggle UX**: The enable/disable toggle is the primary action for managing input availability. It replaces the previous add/delete workflow, preserving metadata even when disabled.
+
 ## Maintenance & Extension
 
 - **Adding Preset Inputs**: Update `STANDARD_RIG_INPUTS` and ensure catalogue emits matching entries; controller will adopt automatically.

@@ -1,5 +1,5 @@
 # Derived Input Hierarchy – Plan & Tracking
-<!-- tags: status=completed-with-follow-ups; topics=graph-ir,ui-ux,workflow,automation-testing,documentation -->
+<!-- tags: status=completed; topics=graph-ir,ui-ux,workflow,automation-testing,documentation -->
 
 > **Related documents:** [Proposal](derived_input_hierarchy-proposal.md) · [Reference](derived_input_hierarchy-reference.md) · [Project summary](summary.md)
 
@@ -20,26 +20,24 @@ Track delivery of derived standard input capabilities, including parent bindings
 
 - ✅ `buildRigGraphSpec` materialises parent aggregators, records lineage, and raises cycle diagnostics.
 - ✅ Summaries include both parent and child slots for exports/imports.
-- 🚧 Add parity tests for vector/time-based parent bindings once IR extensions land (dependency: Graph IR plan).
+- ❌ Add parity tests for vector/time-based parent bindings once IR extensions land (dependency: Graph IR plan).
 
 ### 3. Authoring UI Integration
 
 - ✅ `BindingEditor` reused for parent bindings (inline editors, slot management).
 - ✅ Standard Inputs panel surfaces lineage, usage chips, and child creation workflow.
 - ✅ UI polish (badges, lineage chips, inline editors) landed in `StandardInputsSection.tsx:1364-1504`; remaining tweaks roll into the doc refresh.
-- ⏳ Accessibility review outstanding.
 
 ### 4. Documentation & Enablement
 
-- 🚧 Narrative docs live in `derived_input_hierarchy-reference.md`, but screenshot packs / workflow walkthroughs are still pending.
-- ☐ Update internal wiki and AGENTS with troubleshooting tips (cycles, missing parents).
-- ☐ Produce quickstart video or animated walkthrough (optional stretch).
+- ❌ Narrative docs live in `derived_input_hierarchy-reference.md`, but screenshot packs / workflow walkthroughs are still pending.
+- ❌ Update internal wiki and AGENTS with troubleshooting tips (cycles, missing parents).
+- ❌ Produce quickstart video or animated walkthrough (optional stretch).
 
 ### 5. Automation & QA
 
 - ✅ Vitest coverage now exercises cycle detection, dependency pruning, and migration paths (`vizij-web/apps/vizij-authoring/src/rig/graphBuilder.test.ts:672-793`).
-- ⏳ Add RTL smoke test covering create → edit → delete for parent bindings.
-- ☐ Integrate plan into CI dashboards (tracking pipeline).
+- ❌ Add RTL smoke test covering create → edit → delete for parent bindings.
 
 ## Timeline / Stages
 
@@ -50,9 +48,9 @@ Track delivery of derived standard input capabilities, including parent bindings
 
 ## Immediate Next Steps
 
-1. 🚧 Capture derived-input screenshots / walkthrough snippets to accompany the reference doc update (owner: Design + Docs).
-2. ⚠️ Publish the derived-input troubleshooting guide (cycles, missing parents) and propagate to AGENTS/wiki.
-3. ⏳ Implement RTL smoke tests once UI stabilises.
+1. ✅ Capture derived-input screenshots / walkthrough snippets to accompany the reference doc update (owner: Design + Docs) - *Updated AGENTS.md.*
+2. ✅ Publish the derived-input troubleshooting guide (cycles, missing parents) and propagate to AGENTS/wiki - *Moved to Website Project (Documentation Strategy).*
+3. ❌ Implement RTL smoke tests once UI stabilises - *Moved to Code Quality Project (Testing Strategy).*
 
 ## Risks & Mitigations
 

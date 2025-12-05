@@ -101,7 +101,16 @@ Each action writes to a `reconciliationLog` stored alongside the project so subs
 
 ## Usage Notes *(Pending Implementation)*
 
-- TBD once reconstruction workflow is complete.
+- **Import-Only Workflow**:
+    1.  **Load Asset**: Drag and drop a GLB file or use the "Import" button.
+    2.  **Review Alerts**: The system checks for ID mismatches and missing nodes.
+    3.  **Accept IDs**: If prompted, accept the proposed ID normalizations to ensure compatibility with the current system. These decisions are persisted for future imports.
+    4.  **Verify State**: Check the "Drivers" panel to ensure all inputs and bindings are correctly hydrated.
+    5.  **Export**: Use the "Export" button to save the reconciled state.
+- **Troubleshooting**:
+    - **ID Mismatches**: If you see repeated ID mismatch warnings, ensure you have accepted the proposed changes in the import wizard.
+    - **Missing Nodes**: If nodes are missing, check if the source GLB has changed. You may need to re-import the original GLB or update the graph to match the new hierarchy.
+    - **Logs**: Check the browser console for detailed import logs, including specific node IDs and binding errors.
 
 ## Testing & Automation
 
