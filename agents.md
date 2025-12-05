@@ -3,6 +3,13 @@
 Short note giving coding agents the essentials for `vizij_docs`. Keep using `project_documenting_guide.md`, subfolder READMEs, and project-specific docs as the deeper source of truth; this file only orients you quickly.
 
 ## Quick-Start Checklist
+- **Context First**: Before starting any task, read:
+    - `vizij_docs/project_documenting_guide.md` (Structure & Standards)
+    - `vizij_docs/current_documentation/ARCHITECTURE.md` (System Context)
+    - `vizij_docs/current_documentation/ROADMAP.md` (Strategic Alignment)
+- **Real-Time Updates**:
+    - **During Work**: Mark tasks as completed in the project's `*-plan.md` *as you finish them*.
+    - **End of Work**: Update the plan with the correct next steps and update the pillar's `summary.md` with the new status.
 - Re-read `project_documenting_guide.md` each rotation to stay aligned with the proposal/plan/reference contract.
 - When editing or adding docs, mirror the status-tag + related-docs header pattern from a nearby file.
 - Keep every project `summary.md` synchronized with its proposal/plan/reference set before closing a task.
@@ -12,7 +19,7 @@ Short note giving coding agents the essentials for `vizij_docs`. Keep using `pro
 ## Directory Map
 - `current_documentation/` – Canonical cross-team references (`ARCHITECTURE.md`, `DECISIONS.md`, `ROADMAP.md`, `KNOWN_ISSUES.md`). Changes here often need a Slack announcement.
 - `current_documentation/release_notes/` – One Markdown file per tagged release. Append; never rewrite history.
-- `active_projects/` – Houses each pillar’s `summary.md` plus proposal/plan/reference triplets. Mirror the structure in folders like `authoring/` or `ci_cd/`.
+- `active_projects/` – Houses pillar folders (e.g., `authoring/`), each containing a `summary.md` and project subfolders (e.g., `authoring/modular_pose_rig/`). Each project subfolder contains the proposal/plan/reference triplet.
 - `archive/` – Frozen history. Note where any borrowed text now lives.
 - `project_documenting_guide.md` – Playbook for naming, tags, and maintenance. Link it whenever you teach others to contribute.
 
@@ -36,8 +43,8 @@ Implementation notes:
 5. **Archive responsibly** – After a project ships, copy durable knowledge into the reference doc, flip the plan’s status tag, and move stale planning files into `archive/`.
 
 ## Common Contribution Types
-- **New pillar** – Create `<pillar>-(proposal|plan|reference).md`, seed the summary entry, and drop TODO placeholders for future updates.
-- **Status refresh** – Update progress tables, badges, and risks inside plan docs; reflect the same status in `summary.md`.
+- **New Project** – Create a new folder `active_projects/<pillar>/<project>/`, add `<project>-(proposal|plan|reference).md`, seed the pillar's `summary.md` entry, and drop TODO placeholders.
+- **Status refresh** – Update progress tables, badges, and risks inside plan docs; reflect the same status in the pillar's `summary.md`.
 - **Reference drift fix** – When implementation changes land in `vizij-rs` or `vizij-web`, mirror the API/ABI updates here (architecture doc + relevant references).
 - **Release prep** – Append the latest shipped items to `current_documentation/release_notes/<version>.md` and link the related proposal/plan.
 - **Backfilling history** – When migrating notes from `archive/`, keep the provenance (e.g., `> Moved from archive/FRAMEWORK.md on 2025-05-12`) for audits.

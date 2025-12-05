@@ -5,16 +5,22 @@
 
 | Pillar | Status | Proposal | Plan & Tracking | Reference |
 | --- | --- | --- | --- | --- |
-| **Audio & Video Processing** | 📝 Proposal | [`audio_video-proposal.md`](audio_video-proposal.md) | — | — |
-| **Namespacing & Multi-Face** | 📝 Proposal | [`namespacing-proposal.md`](namespacing-proposal.md) | — | — |
-| **Multi-Screen Support** | 📝 Proposal | [`multi_screen-proposal.md`](multi_screen-proposal.md) | — | — |
-
+| **Audio & Video Processing** | 📝 Proposal | [`audio_video-proposal.md`](audio_video/audio_video-proposal.md) | — | — |
+| **Namespacing & Multi-Face** | 📝 Proposal | [`namespacing-proposal.md`](namespacing/namespacing-proposal.md) | — | — |
+| **Multi-Screen Support** | 📝 Proposal | [`multi_screen-proposal.md`](multi_screen/multi_screen-proposal.md) | — | — |
+| **Behavior Tree** | 📝 Proposal | [`behavior_tree-proposal.md`](../../backlog_proposals/behavior_tree-proposal.md) | — | — |
 ## Active Projects
 
 ### Core Features
-- **Audio & Video Processing**: Implement Rust-based processing for interaction and improved lip sync.
 - **Namespacing**: Support multi-face/multi-actor control via robust namespacing.
-- **Multi-Screen Support**: Enable multi-screen setups for puppeteering and complex displays.
+- **Graph Nodes**: Implement **Expression Node** and **Compound Nodes** to simplify graph authoring.
+- **Multi-Screen Puppeteering**: Enable multi-screen setups for puppeteering and complex displays.
+- **Behavior Tree Proposal**: Draft the initial design for BT integration.
+
+### Planned Initiatives (Medium-Term)
+- **Audio & Video Processing**: Implement Rust-based processing hooks, audio worklets, and video threads.
+- **Bevy Integration**: Implement native Bevy modules.
+- **Worker-Based Orchestration**: Offload orchestrator to a Web Worker.
 
 ## Stack-Specific Roadmaps
 
@@ -22,14 +28,13 @@
 - **Bevy Integration**: Ship example app demonstrating animation playback.
 
 ### Node Graph Stack
-- **Diagnostics**: Add tracing/diagnostic events for Bevy consumers.
-- **Streaming**: Prototype incremental/streaming evaluation APIs.
+- **Expression Node**: Parser and evaluator for math expressions.
+- **Compound Nodes**: High-level nodes for common workflows.
 
 ### Orchestrator Stack
-- **Observability**: Add tracing/metrics hooks around passes.
-- **Configurability**: Explore configurable animation path parsing.
+- **Namespacing**: Finalize `TypedPath` design for multi-actor support.
 
 ## Upcoming Milestones
-1. **Audio/Video**: Prototype basic audio processing hook in Rust.
-2. **Namespacing**: Finalize `TypedPath` design for multi-actor support.
-3. **Bevy Example**: Release minimal Bevy animation example.
+1. **Namespacing**: Finalize design and implementation.
+2. **Expression Node**: Prototype and implementation.
+3. **Behavior Tree**: Initial proposal draft.

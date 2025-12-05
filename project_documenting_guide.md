@@ -11,20 +11,23 @@ For each architecture element (e.g., Authoring Control Stack, Derived Input Hier
 | **Proposal** | Capture the problem, goals, high-level architecture, and rough execution plan before work starts. | `status=proposal` | During discovery/alignment. Update until the plan is accepted, then freeze (mark approvals/decision dates). |
 | **Plan & Tracking** | Provide the detailed work breakdown, ownership, sequencing, status, and immediate next steps while the effort is active. | `status=tracking` while in flight, `status=completed-with-follow-ups` or `status=reference` after closure | At kickoff (seed from approved proposal). Keep current during execution. Archive once the work becomes routine. |
 | **Reference** | Describe the delivered solution for future readers: goals, design, trade-offs, usage instructions, and maintenance notes. | `status=reference` (or `status=completed-archival` when superseded) | As work ships. Start with a skeleton so contributors can add notes during implementation. |
-- **Project summary:** maintain one project-wide index (e.g., `summary.md`) that links to every pillar’s proposal/plan/reference, highlights current status, and notes recent updates/risks.
+| **Pillar Summary** | Maintain one index per pillar (e.g., `active_projects/authoring/summary.md`) that links to every project’s proposal/plan/reference, highlights current status, and notes recent updates/risks. | — | As projects are added or statuses change. |
+- **Pillar summary:** maintain one index per pillar that links to every project’s proposal/plan/reference.
 
-## 2. Naming & Metadata
+## 2. Directory Structure & Naming
 
-- **File naming:** `<pillar>-(proposal|plan|reference).md`. Examples:
-  - `graph_authoring_ir-proposal.md`
-  - `graph_authoring_ir-plan.md`
-  - `graph_authoring_ir-reference.md`
+- **Hierarchy:** `active_projects/<pillar>/<project>/`
+  - Example: `active_projects/authoring/modular_pose_rig/`
+- **File naming:** `<project>-(proposal|plan|reference).md`.
+  - `modular_pose_rig-proposal.md`
+  - `modular_pose_rig-plan.md`
+  - `modular_pose_rig-reference.md`
 - **Tag header:** the first non-blank line after the `# Title` must include a comment with status/topic tags, e.g.
   ```markdown
   <!-- tags: status=proposal; topics=graph-ir,architecture,workflow -->
   ```
-- **Cross-links:** immediately after the tag header, add a blockquote that links to the sibling documents and project summary, e.g. `> **Related documents:** [Plan](pillar-plan.md) · [Reference](pillar-reference.md) · [Project summary](summary.md)`.
-- **Project summary maintenance:** update the single project `summary.md` whenever new pillar docs are created or statuses change. The summary should list each pillar and link to its proposal/plan/reference documents.
+- **Cross-links:** immediately after the tag header, add a blockquote that links to the sibling documents and project summary, e.g. `> **Related documents:** [Plan](project-plan.md) · [Reference](project-reference.md) · [Pillar Summary](../../summary.md)`.
+- **Pillar Summary maintenance:** update the pillar's `summary.md` (e.g. `active_projects/authoring/summary.md`) whenever new project docs are created or statuses change. The summary should list each project and link to its proposal/plan/reference documents.
 
 ## 3. Proposal Template
 
@@ -128,5 +131,16 @@ As we migrate to this structure:
 4. As work concludes, draft the reference doc.
 5. Update tags and `summary.md` entries to match the new state.
 6. Retire or simplify older docs to avoid divergence.
+
+## 8. Archiving Projects
+
+When a project is fully completed and stabilized:
+
+1.  **Move the Folder**: Move the entire project folder from `active_projects/<pillar>/<project>/` to `archive/<pillar>/<project>/`.
+2.  **Update Status**: Change the status tag in the plan to `status=completed-archival`.
+3.  **Update Summaries**:
+    -   Remove the project from the Pillar Summary (`active_projects/<pillar>/summary.md`).
+    -   Add a link to the archived project in the "Archived Projects" section of the Pillar Summary (create this section if it doesn't exist).
+    -   Update `ROADMAP.md` to reflect the completion (e.g., move to an "Archived/Completed" list or check it off).
 
 Following this pattern keeps the Authoring project documentation coherent, makes it obvious where to look for strategy vs. execution vs. reference, and helps new contributors ramp quickly.
