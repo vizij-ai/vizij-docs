@@ -8,7 +8,7 @@ Refine and polish the Vizij Authoring experience to be a world-class, productivi
 
 | Pillar | Status | Proposal | Plan & Tracking | Reference |
 | --- | --- | --- | --- | --- |
-| **Doug's Feedback (UX Polish)** | 📝 Planned | — | [`dougs_feedback-plan.md`](dougs_feedback/dougs_feedback-plan.md) | — |
+| **Animator Feedback (UX Polish)** | 📝 Planned | — | [`animator_feedback-plan.md`](animator_feedback/animator_feedback-plan.md) | — |
 | **Function Editor** | 📝 Planned | *TBD* | *TBD* | *TBD* |
 | **Scene Visuals** | 📝 Planned | *TBD* | *TBD* | *TBD* |
 | **Theme & Aesthetics** | 📝 Planned | *TBD* | *TBD* | *TBD* |
@@ -20,7 +20,7 @@ Refine and polish the Vizij Authoring experience to be a world-class, productivi
 ## Active Projects
 
 ### UI Improvements
-- **"Doug's Feedback"**: Implement UI polish, number controls, and context menus.
+- **Animator Feedback**: Implement UI polish, number controls, and context menus.
 - **Function Editor**: Implement autocomplete (VSCode-like) and dedicated remap settings.
 - **Theme**: Update look/feel to Vizij branding (dense, power-user aesthetic).
 - **Undo/Redo Support**: Implement robust undo/redo for rig and binding state.
@@ -36,5 +36,5 @@ Refine and polish the Vizij Authoring experience to be a world-class, productivi
 - **Interaction Authoring**: Visual behavior tree editor.
 
 ## Upcoming Milestones
-1. **Doug's Feedback**: Execute the plan for Undo/Redo, Number Controls, and basic visual polish.
+1. **Animator Feedback**: Execute the plan for Undo/Redo, Number Controls, and basic visual polish.
 2. **Rigging & Posing**: Finish navigation between Rigging ↔ Posing, add pose-surface quick toggles, and backfill tests.

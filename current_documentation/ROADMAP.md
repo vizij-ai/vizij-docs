@@ -50,7 +50,7 @@ This document outlines the strategic direction for Vizij. It is organized by our
 **Goal**: Deliver dense, maintainable authoring surfaces and advanced creative tools.
 
 ### Near-Term (Workflow Focus)
--   **"Doug's Feedback"**: Implement UI polish, number controls, and context menus for day-to-day authoring. See [Doug's Feedback Plan](../active_projects/authoring/dougs_feedback/dougs_feedback-plan.md).
+-   **Animator Feedback**: Implement UI polish, number controls, and context menus for day-to-day authoring. See [Animator Feedback Plan](../active_projects/authoring/animator_feedback/animator_feedback-plan.md).
 -   **Organize Rigging & Posing**: Rigging sidebar now has Rigging/Face tabs and a standard-input coverage panel; pose rigs carry `rigKind` + schema metadata and reuse rigging visibility. Next steps: add Rigging↔Posing navigation and pose-surface quick toggles. See [Organize Rigging & Posing Plan](../active_projects/authoring/organize_rigging_posing/organize_rigging_posing-plan.md).
 
 ### Medium-Term (Advanced Workflows)

@@ -1,11 +1,11 @@
-# Doug's Feedback Implementation Plan
+# Animator Feedback Implementation Plan
 <!-- tags: status=tracking; topics=authoring,ux,workflow -->
 
-> **Related documents:** [Proposal](dougs_feedback-proposal.md) · [Reference](dougs_feedback-reference.md) · [Pillar summary](../summary.md)
+> **Related documents:** [Proposal](animator_feedback-proposal.md) · [Reference](animator_feedback-reference.md) · [Pillar summary](../summary.md)
 
 ## Objective
 
-Address specific feedback from animators (Doug) to improve the efficiency and usability of the authoring tools. Key areas include undo/redo support, enhanced number controls, and visual improvements in the `vizij-authoring` app.
+Address specific feedback from the animator to improve the efficiency and usability of the authoring tools. Key areas include undo/redo support, enhanced number controls, and visual improvements in the `vizij-authoring` app.
 
 ## Plan
 

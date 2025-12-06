@@ -26,7 +26,7 @@
 
 ### UI Improvements
 - **Function Editor**: Autocomplete (VSCode-like), dedicated remap setting.
-- **Animator Feedback (Doug)**:
+- **Animator Feedback**:
   - Undo/redo support.
   - Number controls: radians->degrees, slider in number, "return unselected" behavior.
   - Improve show/hide of controls.
@@ -48,5 +48,5 @@
 
 ## Active Focus Areas
 
-- **UI & UX Polish**: Implement Doug's feedback and Function Editor improvements.
+- **UI & UX Polish**: Implement animator feedback and Function Editor improvements.
 - **Import/Export Pipeline**: Complete the round-trip reconstruction and diffing.
