@@ -8,7 +8,7 @@
 | **JSON Cloning Replacement** | ✅ Complete | [`json_cloning-proposal.md`](json_cloning/json_cloning-proposal.md) | [`json_cloning-plan.md`](json_cloning/json_cloning-plan.md) | [`json_cloning-reference.md`](json_cloning/json_cloning-reference.md) |
 | **Testing Strategy** | 📝 Planned | — | [`testing_strategy-plan.md`](testing_strategy/testing_strategy-plan.md) | — |
 | **WASM Hardening** | 📝 Planned | [`wasm_hardening-proposal.md`](../../backlog_proposals/wasm_hardening-proposal.md) | *TBD* | *TBD* |
-| **Performance Baselines** | 📝 Planned | [`performance_baselines-proposal.md`](../../backlog_proposals/performance_baselines-proposal.md) | *TBD* | *TBD* |
+| **Performance Baselines** | 🚧 In Progress | [`performance_baselines-proposal.md`](performance_baselines/performance_baselines-proposal.md) | [`performance_baselines-plan.md`](performance_baselines/performance_baselines-plan.md) | *TBD* |
 
 ## Active Projects
 
@@ -19,12 +19,13 @@
 ### Optimization & Refactoring
 - **WASM Boundary Optimization**: Minimize JS/WASM boundary crossings (serialization overhead).
 - **Refactoring**: Simplify, modularize, and DRY out code across Rust and Web.
+- **Performance Baselines**: Stage-native → Node/WASM → browser harnesses with shared fixtures; publish initial baseline table and report-only CI runs.
 
 ## Planned Initiatives
 - **WASM Hardening**: Ensure ABI compatibility and stability (Medium-Term).
 - **Automated Performance Regression Testing**: CI pipelines that block on performance regressions (Long-Term).
 
 ## Upcoming Milestones
-1. **JSON Cloning**: Complete implementation of `cloneDeepSafe` and migrate call sites.
-2. **Benchmarks**: Initial set of performance benchmarks for node graph evaluation.
+1. **Performance Baselines**: Ship Stage 3 browser harness + publish cross-layer baseline table (native vs Node/WASM vs browser); decide artifact home in `vizij_docs`.
+2. **JSON Cloning**: Complete implementation of `cloneDeepSafe` and migrate call sites.
 3. **Refactoring**: Begin modularization of core components.

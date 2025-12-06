@@ -10,7 +10,7 @@ This document outlines the strategic direction for Vizij. It is organized by our
 
 ### Near-Term (Stabilization)
 -   **Testing Strategy & Infrastructure**: Stand up cross-stack testing (Rust, WASM, React) with React Testing Library in `vizij-web` and clear CI integration. See [Testing Strategy Plan](../active_projects/code_quality/testing_strategy/testing_strategy-plan.md).
--   **Performance Baselines**: Define key KPIs (graph evaluation, render loop, memory) and implement initial benchmarks in Rust and the web stack. See [Performance Baselines Proposal](../backlog_proposals/performance_baselines-proposal.md).
+-   **Performance Baselines**: Stage 1 native benches + Stage 2 Node/WASM harness landed; next add the Stage 3 browser harness and publish the cross-layer baseline table. See [Performance Baselines Plan](../active_projects/code_quality/performance_baselines/performance_baselines-plan.md).
 -   **WASM Boundary Optimization**: Minimize JS/WASM boundary crossings (serialization overhead) by moving more logic into Rust and reusing shared loader utilities.
 -   **Refactoring**: Simplify, modularize, and DRY out code across Rust and web packages, keeping fixtures and APIs coherent.
 
@@ -51,7 +51,7 @@ This document outlines the strategic direction for Vizij. It is organized by our
 
 ### Near-Term (Workflow Focus)
 -   **"Doug's Feedback"**: Implement UI polish, number controls, and context menus for day-to-day authoring. See [Doug's Feedback Plan](../active_projects/authoring/dougs_feedback/dougs_feedback-plan.md).
--   **Organize Rigging & Posing**: Clarify and separate the Rigging (setup) and Posing (usage) workflows while keeping them tightly linked in the authoring UI. See [Organize Rigging & Posing Proposal](../active_projects/authoring/organize_rigging_posing/organize_rigging_posing-proposal.md).
+-   **Organize Rigging & Posing**: Rigging sidebar now has Rigging/Face tabs and a standard-input coverage panel; pose rigs carry `rigKind` + schema metadata and reuse rigging visibility. Next steps: add Rigging↔Posing navigation and pose-surface quick toggles. See [Organize Rigging & Posing Plan](../active_projects/authoring/organize_rigging_posing/organize_rigging_posing-plan.md).
 
 ### Medium-Term (Advanced Workflows)
 -   **Visual Handles for Scene Posing**: On-screen 3D manipulators to pose characters and adjust scene objects directly in the viewport. See [Visual Handles Proposal](../backlog_proposals/visual_handles-proposal.md).

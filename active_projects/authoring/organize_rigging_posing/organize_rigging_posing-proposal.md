@@ -43,6 +43,15 @@ This leads to confusion and inefficiency, especially for users trying to perform
 
 ## 4. Workflow & UX Design (Strawman)
 
+### Pre-work decisions (resolved)
+
+- **Pose rig kind flag**: Add `rigKind: "generic" | "face-specific"` to authoring state and `PoseRigConfigFile`.  
+  - *generic*: standard-input-only; paths omit face-id (`rig/poses/...`), intended for cross-face reuse/library export.  
+  - *face-specific*: current behavior; paths are face-scoped (`rig/<faceId>/...`), keeps local controls.
+- **Standard-input schema/version**: Store `standardInputSchema` (e.g., `{ id: "vizij-standard-face", version: "v1" }`) alongside binding metadata and `PoseRigConfigFile`. Coverage/warnings must reference this version; legacy bundles default to the current inferred schema until resaved.
+- **Rigging visibility/grouping persistence**: Persist `hiddenDriverIds`, feature groups, and label overrides in the binding authoring persistence payload **and in saved files**; expose them through `PoseRigProvider` so posing reuses the same curated control set after reload.
+- **Visibility behavior**: Rigging shows hidden groups/inputs greyed with a closed-eye icon (can be unhidden). Posing omits hidden groups/inputs entirely unless they are unhidden in Rigging.
+
 ### 4.1 Rigging & Face Editing Sidebar
 
 - **Location**: A persistent sidebar in `vizij-authoring` with tabs such as:
