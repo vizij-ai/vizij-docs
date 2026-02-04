@@ -9,10 +9,11 @@ Establish reliable, layered performance baselines for Vizij’s animation, node-
 ## Workstreams & Status
 - ✅ **Fixtures & Scenarios** – Tiny smoke + kitchen generators, mixed animation fixtures, and orchestrator blend/merged presets shared across native + WASM harnesses.
 - ✅ **Stage 1: Native Rust Benchmarks** – Criterion scaffolds for graph/animation/orchestrator with configurable kitchen sizes; baseline logging script emits µs with fixed formatting.
-- ✅ **Stage 2: Node/WASM Harness** – `scripts/run_perf_baselines_wasm.mjs` mirrors Stage 1 scenarios (kitchen graphs, mixed animations, blend/merged orchestrator) and appends µs results to `perf_baselines.md`; dynamic imports fall back to local dist builds.
+- ✅ **Stage 2: Node/WASM Harness** – `scripts/run_perf_baselines_wasm.mjs` mirrors Stage 1 scenarios (kitchen graphs, mixed animations, blend/merged orchestrator) and now drives the graph slots+delta path and orchestrator `stepDelta` when available; dynamic imports fall back to local dist builds.
 - 📝 **Stage 3: Browser Harness** – Perf page/toggle in a demo that runs scripted workloads, records update/frame timings via `performance.mark`/`console.time`, and can emit profiles with wasm name sections.
 - 📝 **Baseline Publication** – Table comparing native vs Node/WASM vs browser timings for shared scenarios; attach representative flamegraphs/traces; stored under `vizij_docs/current_documentation` (exact path TBD).
 - 📝 **CI (Report-Only)** – Nightly/PR opt-in jobs run the harnesses; log metrics, warn on >X% drift from baselines (no gating yet); document policy.
+- 📝 **Stability & Verification** – Add golden output signatures (per-scenario SHA) and a verify-only mode that replays small cases and checks correctness without vizij-web.
 
 ## Timeline / Stages (high-level)
 1) Land Stage 1 (native) benchmarks + fixtures.
@@ -24,7 +25,8 @@ Establish reliable, layered performance baselines for Vizij’s animation, node-
 ## Immediate Next Steps (pre-profiling kickoff)
 1) Add browser harness (Stage 3): scripted page to run kitchen/mixed scenarios, record per-frame timings, and capture a profile with wasm name sections.
 2) Consider pprof/tracing hooks in native benches once variance is characterized.
-3) Keep `vizij_docs/current_documentation/perf_baselines.md` updated via native + wasm scripts; collect first browser numbers when harness lands.
+3) Keep `vizij_docs/current_documentation/perf_baselines.md` updated via native + wasm scripts; collect first browser numbers when harness lands. Re-run wasm baselines now that slots+delta (graph) and `stepDelta` (orchestrator) are available.
+4) Harden suites: standardize scenario set (smoke, mid kitchen, heavy kitchen, mixed animation, merged orchestrator), fix seeds/DT, record build info (ABI, release/debug, delta usage), and store per-scenario output hashes for regression detection.
 
 ## Risks & Mitigations
 - Variance/noise in CI hardware → use medians, repetition, and warn-only thresholds.

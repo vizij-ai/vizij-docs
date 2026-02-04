@@ -47,34 +47,37 @@ Acceptance criteria:
 ### 3. Design and implement small, targeted optimizations
 
 3.1 Reduce call frequency:
-- [ ] For each hotspot identified in step 1–2, propose a small change, such as:
-    - Replacing multiple property-level calls with a single batched call.
-    - Moving simple logic from JS into Rust so fewer calls are needed.
-- [ ] Implement one change at a time in:
-    - Rust crates (e.g., adding a new batched API in `vizij-graph-wasm`).
-    - JS/TS wrappers (e.g., `@vizij/node-graph-wasm`).
+- ✅ Graph: one-call slots+delta path (`eval_all_slots_delta`) in wasm; wrapper auto-uses it.
+- ✅ Orchestrator: delta step (`step_delta`) added; JS wrapper exposes `stepDelta` with version token.
+- [ ] Consider single-call orchestrator variant that inlines staging+step+delta if profiling shows benefit.
+- 🔍 **React consumption optimizations (planned):**
+  - Node graph React: register hot paths on load, batch host inputs via `setHotPaths` + `stageInputs`/`stageInputsBySlotDiff` instead of per-path `stageInput`; skip `evalAll` on frames with no staged changes or time advance.
+  - Orchestrator React: batch staged inputs via `setHotInputs` + `setInputsSmart`; use `stepDelta` when “changed writes only” is acceptable, otherwise keep `step` but still batch inputs.
+  - Runtime React: reuse orchestrator batching in `flushStagedInputs`; prefer `stepDelta` for rigs/face loops that only need changed writes.
 
 3.2 Reduce serialization overhead:
-- [ ] Where possible, adjust APIs to:
-    - Accept flat arrays or simple JSON structures instead of deeply nested objects.
-    - Avoid repeated JSON parsing/stringifying when an in-memory representation can be reused.
+- ✅ Graph: slots+delta path skips full JSON snapshots; wrapper still reconstructs full view for callers.
+- ✅ Orchestrator: delta returns writes/conflicts/timings with version token; unchanged writes elided.
+- [ ] Document guidance for consumers: use `stepDelta` when you only need changed writes; keep `step` for full per-frame logs.
 
 Acceptance criteria:
-- For at least one identified hotspot, the number of JS→WASM calls per frame is measurably reduced (e.g., by inspecting logging or profiling).
-- The changes are covered by existing tests or small new tests where necessary, ensuring no behavior regressions.
+- ✅ At least one hotspot’s boundary traffic reduced (graph eval path).
+- 📝 Orchestrator delta path documented and adopted by consumers that can tolerate “changed writes only.”
+- ⚪ Add/adjust tests to cover delta semantics and baseline reset guidance.
 
 ### 4. Re-run profiles and compare results
 
 4.1 Capture new performance profiles:
-- [ ] Repeat the profiling scenario from step 1 using the optimized build.
+- [ ] Repeat profiling with graph slots+delta + orchestrator `stepDelta` paths enabled.
 - [ ] Compare:
     - Total frame time.
     - Time spent in WASM shims/serialization.
-    - Number of calls at the previously identified hotspots.
+    - Number/size of boundary payloads for graph and orchestrator.
+    - Impact of React-layer batching (before/after adopting hot-path staging and `stepDelta`).
 
 Acceptance criteria:
-- At least one hotspot shows a measurable improvement (lower time spent or fewer calls).
-- No new unexpected hotspots have been introduced in obvious places.
+- [ ] At least one hotspot shows a measurable improvement (lower time or fewer bytes).
+- [ ] No regressions in consumers that rely on full-frame writes (confirm they stay on `step`).
 
 ### 5. Document optimization patterns and guardrails
 
@@ -92,7 +95,8 @@ Acceptance criteria:
 ## Acceptance Criteria (Overall)
 
 - Hot JS/WASM call sites have been identified and documented.
-- At least one meaningful optimization has been implemented and validated via profiling.
-- The optimization has not introduced regressions (existing tests pass).
-- There is documentation guiding future JS/WASM APIs and usage towards lower-overhead patterns.
-
+- Graph boundary path reduced to single-call slots+delta without breaking callers’ API expectations.
+- Orchestrator delta path available; documented semantics (“writes are omitted when unchanged; use `step` if you need every frame”).
+- Profiling shows improvement on at least one real workload (pending re-run).
+- The optimization has not introduced regressions (existing tests pass or updated).
+- Documentation guides future JS/WASM usage toward low-overhead patterns.
