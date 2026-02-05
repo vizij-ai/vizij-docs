@@ -29,3 +29,8 @@
 - **Decision**: Stick with lightweight shell scripts (`scripts/*.sh`) for automation and commit hooks; cancel the proposed `@vizij/dev-tools` TypeScript CLI.
 - **Rationale**: Simplicity, zero build overhead, and effective use of existing `pnpm` tooling. Windows support is not a current priority.
 - **Trade-offs**: Less robust error handling, harder to unit test, and requires WSL for Windows contributors.
+
+## 2026-02-04: HRI March Focus and Roadmap Re-prioritization
+- **Decision**: Shift near-term focus to HRI March deliverables: authoring tooling, multi-screen puppeteering, and audio processing for visemes.
+- **Rationale**: Concentrate effort on conference-driven outcomes and demos; defer other initiatives to medium-term or backlog to reduce context switching.
+- **Trade-offs**: Short-term delays for testing/perf automation and website work; backlog items will require reactivation and re-scoping after HRI.

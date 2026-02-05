@@ -1,7 +1,7 @@
 # Visual Handles Proposal
 <!-- tags: status=proposal; topics=authoring,ui,ux,3d,manipulators -->
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Authoring Summary](../active_projects/authoring/summary.md)
+> **Related documents:** Plan (pending) · Reference (pending) · [Authoring Summary](../backlog/active_projects/authoring/summary.md)
 
 ## 1. Summary
 

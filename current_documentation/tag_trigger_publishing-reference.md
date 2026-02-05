@@ -1,4 +1,7 @@
 # Tag-Based Trigger Publishing Guide for Monorepo Packages
+<!-- tags: status=reference; topics=publishing,automation,release,changesets -->
+
+> **Related documents:** [Project Documentation Guide](../project_documenting_guide.md) · [Code Quality Summary](../active_projects/code_quality/summary.md)
 
 ## Intention
 We maintain multiple publishable packages under the `@vizij/*` scope inside the `vizij-web` monorepo. This guide documents how to record changes with Changesets, cut a release tag, and let CI publish only the packages that changed.
@@ -11,6 +14,7 @@ We maintain multiple publishable packages under the `@vizij/*` scope inside the 
 5. npm receives new versions only for the packages that were bumped; internal dependency ranges stay in sync automatically.
 
 ## Setup
+
 ### 1) Standardise internal dependency declarations
 Use the workspace protocol across every internal dependency so pnpm and Changesets keep them aligned:
 
@@ -51,7 +55,7 @@ Add helper scripts that limit CI work to publishable packages:
 "scripts": {
   "changeset": "changeset",
   "version:packages": "changeset version",
-"verify:packages": "pnpm run build:packages && pnpm -r --filter \"@vizij/*\" run --if-present lint && pnpm -r --filter \"@vizij/*\" run --if-present test",
+  "verify:packages": "pnpm run build:packages && pnpm -r --filter \"@vizij/*\" run --if-present lint && pnpm -r --filter \"@vizij/*\" run --if-present test",
   "publish:packages": "pnpm exec changeset publish",
   "release:ci": "pnpm run verify:packages && pnpm run publish:packages"
 }

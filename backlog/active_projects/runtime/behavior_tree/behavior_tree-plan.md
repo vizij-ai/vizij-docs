@@ -1,7 +1,7 @@
 # Behavior Tree Integration (Discovery & Design) – Plan & Tracking
 <!-- tags: status=planning; topics=ai,behavior,logic,control,discovery -->
 
-> **Related documents:** [Proposal](../../../backlog_proposals/behavior_tree-proposal.md) · [Runtime Summary](../summary.md)
+> **Related documents:** [Proposal](../../../backlog/backlog_proposals/behavior_tree-proposal.md) · [Runtime Summary](../summary.md)
 
 ## Objective & Scope
 

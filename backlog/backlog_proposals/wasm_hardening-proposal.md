@@ -1,7 +1,7 @@
 # WASM Hardening Proposal
 <!-- tags: status=proposal; topics=wasm,security,stability,abi -->
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Code Quality Summary](../active_projects/code_quality/summary.md)
+> **Related documents:** Plan (pending) · Reference (pending) · [Code Quality Summary](../backlog/active_projects/code_quality/summary.md)
 
 ## 1. Summary
 

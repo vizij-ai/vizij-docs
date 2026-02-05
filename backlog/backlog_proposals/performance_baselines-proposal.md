@@ -1,7 +1,7 @@
 # Performance Baselines Proposal
 <!-- tags: status=proposal; topics=performance,benchmarking,testing,ci -->
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Code Quality Summary](../active_projects/code_quality/summary.md)
+> **Related documents:** Plan (pending) · Reference (pending) · [Code Quality Summary](../backlog/active_projects/code_quality/summary.md)
 
 ## 1. Summary
 

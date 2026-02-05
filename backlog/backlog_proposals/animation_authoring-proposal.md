@@ -1,7 +1,7 @@
 # Animation Authoring Proposal
 <!-- tags: status=proposal; topics=authoring,animation,timeline,curves -->
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Authoring Summary](../active_projects/authoring/summary.md)
+> **Related documents:** Plan (pending) · Reference (pending) · [Authoring Summary](../backlog/active_projects/authoring/summary.md)
 
 ## 1. Summary
 

@@ -1,7 +1,7 @@
 # Pose Rig Library Proposal
 <!-- tags: status=proposal; topics=workflow,import-export,tooling,graph-ir,standard-inputs -->
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Authoring Summary](../active_projects/authoring/summary.md)
+> **Related documents:** Plan (pending) · Reference (pending) · [Authoring Summary](../backlog/active_projects/authoring/summary.md)
 
 ## Context & Problem Statement
 

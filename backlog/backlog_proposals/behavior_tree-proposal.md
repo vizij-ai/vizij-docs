@@ -1,7 +1,7 @@
 # Behavior Tree Integration Proposal
 <!-- tags: status=proposal; topics=ai,behavior,logic,control,discovery -->
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Runtime Summary](../active_projects/runtime/summary.md)
+> **Related documents:** Plan (pending) · Reference (pending) · [Runtime Summary](../backlog/active_projects/runtime/summary.md)
 
 ## 1. Summary
 

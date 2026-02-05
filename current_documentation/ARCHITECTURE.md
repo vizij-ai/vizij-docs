@@ -1,166 +1,112 @@
-# Vizij Runtime Architecture (2025)
+# Vizij Architecture & Repo Guide
+<!-- tags: status=living; topics=architecture,repo-map,developer-guide -->
 
 > **Status**: Living Document
-> **Last Updated**: 2025-12-04
+> **Audience**: Developers and maintainers
+> **Last Updated**: 2026-02-04
 
-This document provides a comprehensive report on the architecture of the Vizij runtime. It covers the core Rust logic, the WebAssembly (WASM) bridge, and the React-based consumption layer.
+## 1. Purpose & Audience
 
-## Table of Contents
+This document is a developer‑first guide to Vizij’s architecture and repo boundaries. It’s written for new engineers, maintainers, and the core team so we can orient quickly when returning to a subsystem.
 
-1.  [High-Level Overview](#1-high-level-overview)
-2.  [System Architecture Diagram](#2-system-architecture-diagram)
-3.  [The Rust Core (`vizij-rs`)](#3-the-rust-core-vizij-rs)
-    *   [Animation Stack](#animation-stack)
-    *   [Node Graph Stack](#node-graph-stack)
-    *   [Orchestrator Stack](#orchestrator-stack)
-    *   [Shared Tooling & API](#shared-tooling--api)
-4.  [The Web Shell (`vizij-web`)](#4-the-web-shell-vizij-web)
-    *   [React Runtime](#react-runtime)
-    *   [Renderer & Visuals](#renderer--visuals)
-    *   [Authoring & Applications](#authoring--applications)
-5.  [Strategic Goals & Future Roadmap](#5-strategic-goals--future-roadmap)
-6.  [Data Flow & Contracts](#6-data-flow--contracts)
-7.  [Build & Release Lifecycle](#7-build--release-lifecycle)
-8.  [Runtime Observability](#8-runtime-observability)
+The intent is to capture **what exists and why it’s organized this way**. It complements the explainer material in `current_documentation/concepts/`, which focuses on conceptual mental models and user‑facing explanations. For step‑by‑step setup, build, and publishing instructions, defer to the README files in each repo—those are the authoritative “how‑to” sources.
 
----
+Think of this document as the map: it explains the major repos, how they relate, and the design choices that keep the system coherent. Keep it current as the roadmap evolves and as repo responsibilities shift.
 
-## 1. High-Level Overview
+## 2. Repo Map (At a Glance)
 
-Vizij is designed as a **"Rust Core, Web Shell"** system. This architecture prioritizes performance, determinism, and portability for the core logic, while leveraging the rich ecosystem of the web for UI and rendering.
+| Repo | Primary Purpose | Best Entry Points |
+| --- | --- | --- |
+| `vizij-rs` | Rust runtime cores, WASM bindings, and npm wrappers that define deterministic runtime behavior. | `vizij-rs/README.md`, `vizij-rs/crates/`, `vizij-rs/npm/@vizij/`, `vizij-rs/fixtures/` |
+| `vizij-web` | TypeScript/React packages and apps for tooling, authoring, demos, and integrations that consume the WASM artifacts. | `vizij-web/README.md`, `vizij-web/packages/@vizij/`, `vizij-web/apps/`, `vizij-web/apps/vizij-authoring/` |
+| `vizij-ai.github.io` | Public website (Astro) for community content; will become the home for docs/tutorials/cookbooks. | `vizij-ai.github.io/README.md`, `vizij-ai.github.io/src/content/`, `vizij-ai.github.io/src/pages/`, `vizij-ai.github.io/public/admin/` |
+| `vizij_docs` | Architecture, roadmap, decisions, and long-form documentation for the platform. | `vizij_docs/current_documentation/`, `vizij_docs/active_projects/`, `vizij_docs/backlog/`, `vizij_docs/archive/` |
 
-*   **Rust Core (`vizij-rs`)**: The "brain" of the system. It handles all math, graph evaluation, animation sampling, and state management. It is designed to be engine-agnostic (usable in Bevy, Godot, or server-side) and compiles to WebAssembly for the browser.
-*   **Web Shell (`vizij-web`)**: The "body" of the system. It consumes the WASM artifacts via standard NPM packages. It handles user input, 3D rendering (via Three.js), and application state (via React).
+## 3. System Overview
 
-**Key Benefit**: The web application *never* compiles Rust. It consumes pre-built WASM binaries as standard dependencies, decoupling the build pipelines and allowing web developers to work without a Rust toolchain.
+Vizij is organized as a core repo system with a clean separation of concerns:
 
----
+- **`vizij-rs` (Rust runtime core)** — The deterministic “engine” that defines runtime semantics (Value/Shape/TypedPath), evaluates graphs, samples animations, and coordinates controllers via the orchestrator. It ships both native crates and WASM bindings.
+- **`vizij-web` (TypeScript + React tooling and apps)** — The primary developer and authoring surface. It consumes the `@vizij/*-wasm` packages from `vizij-rs`, exposes reusable JS/TS and React packages, and hosts apps for authoring, demos, and tutorials.
+- **`vizij-ai.github.io` (public website)** — The outward‑facing site. It will evolve into the canonical home for docs, tutorials, walkthroughs, and cookbooks, alongside broader communication and community content.
 
-## 2. System Architecture Diagram
+The architectural split is intentional: the Rust core is the single source of truth for runtime behavior, while the web ecosystem focuses on tooling, authoring, and demos that exercise the engine. WASM packages are the bridge between these worlds, allowing web apps to consume the core without compiling Rust locally.
 
-```mermaid
-graph TD
-    subgraph "Rust Core (vizij-rs)"
-        Anim[Animation Engine] -->|Values| Orch[Orchestrator]
-        Graph[Node Graph] -->|WriteBatch| Orch
-        Orch -->|Merged State| WASM[WASM Bridge]
-        
-        %% Internal Rust Dependencies
-        API[vizij-api-core] -.-> Anim
-        API -.-> Graph
-        API -.-> Orch
-    end
+React is a delivery mechanism, not a requirement. The React packages are meant to be published and used by teams who want them, but they are not the only way to build Vizij integrations. The render stack (`@vizij/render`) and authoring utilities (`@vizij/node-graph-authoring`) are core utilities, and the rest of the packages are structured to be useful even if the consumer chooses a different framework.
 
-    subgraph "Web Shell (vizij-web)"
-        WASM -->|TypedPath Updates| React[React Context]
-        React -->|Hooks| UI[UI Components]
-        React -->|Scene Updates| Three[Three.js Renderer]
-        User[User Input] -->|Actions| React
-        React -->|Controller cmds| WASM
-    end
-```
+Not all apps are product surfaces. Many apps in `vizij-web` are demos or tutorials that act as proofs of concept; those may later migrate to the public website (direction still open). The **authoring app** and the **public website repo** are the exceptions: they are ongoing tools that the team relies on beyond demonstration value.
 
----
+Longer‑term, the Rust side is expected to deepen its native integration (including Bevy/ECS). For now, Bevy adapters exist largely as stubs while the core runtime remains engine‑agnostic. This keeps the system focused on deterministic runtime logic, with optional integrations layered on top.
 
-## 3. The Rust Core (`vizij-rs`)
+## 4. vizij-rs Architecture
 
-**Summary**: The `vizij-rs` workspace is the single source of truth for all runtime semantics. It owns the definition of "Values", "Shapes", and "TypedPaths". It is organized into three primary stacks, each with a `*-core` crate (logic) and a `*-wasm` crate (bridge).
+`vizij-rs` is the source of truth for Vizij’s runtime semantics. It houses the deterministic engines for animation, node graphs, and orchestration, and it produces the WASM bindings that the web stack consumes.
 
-### Animation Stack
-*   **`vizij-animation-core`**: A deterministic, engine-agnostic animation engine. It handles:
-    *   **Track Sampling**: Interpolating values over time.
-    *   **Accumulation**: Blending multiple animation layers.
-    *   **Binding Reports**: `prebind_with_report` analyzes animation clips against a target hierarchy to report missing or invalid bindings *before* playback starts.
-*   **`vizij-animation-wasm`**: Exposes the engine to JS, providing methods to `step` the time and retrieve `updateValuesAndDerivatives`.
+At a high level:
 
-### Node Graph Stack
-*   **`vizij-graph-core`**: A high-performance node evaluation engine.
-    *   **Typed Inputs/Outputs**: Enforces shape safety at runtime.
-    *   **URDF/IK Support**: Includes optional features (`urdf_ik`) for robotic inverse kinematics using the `k` and `urdf-rs` crates.
-*   **`vizij-graph-wasm`**: Handles the normalization of Graph Specs (JSON) into the internal binary representation and bridges the execution output (WriteBatches) to JS.
+- **Core runtime crates** live under `vizij-rs/crates/` and implement the real‑time engines.
+- **WASM bindings** expose those cores to JavaScript and are re‑packaged as npm modules under `vizij-rs/npm/@vizij/*-wasm`.
+- **Fixtures** under `vizij-rs/fixtures/` (and the `vizij-test-fixtures` crate) provide shared assets used by both Rust tests and web tooling to keep parity across stacks.
 
-### Orchestrator Stack
-*   **`vizij-orchestrator-core`**: The coordinator that ties everything together.
-    *   **Blackboard**: A shared state container (Map of TypedPaths to Values).
-    *   **Scheduling**: Manages execution passes (e.g., `Animation -> Graph -> Physics`).
-    *   **Conflict Resolution**: Detects when multiple controllers (graphs/animations) try to write to the same path and applies resolution logic (currently "last write wins" with logging).
-*   **`vizij-orchestrator-wasm`**: Mirrors the core API for the web, allowing JS to register controllers and step the simulation.
+The runtime is organized into domain stacks that mirror the conceptual layers described in the concepts docs:
 
-### Shared Tooling & API
-*   **`vizij-api-core`**: Defines the fundamental data types (`Value`, `Shape`, `TypedPath`) used across the entire system.
-*   **`vizij-test-fixtures`**: A shared library of test assets (graphs, animations) used by both Rust unit tests and Web integration tests to ensure parity.
+- **Animation stack** — deterministic sampling and blending of time‑based tracks.
+- **Node graph stack** — typed, deterministic data‑flow graphs for rig logic and control.
+- **Orchestrator stack** — the blackboard and scheduling layer that merges controller outputs into a single coherent frame.
 
----
+The web stack consumes these cores as pre‑built WASM packages: `vizij-web` treats the Rust output as a dependency, not as a build step. This keeps front‑end workflows fast and decoupled, while still grounding all runtime behavior in the Rust engine.
 
-## 4. The Web Shell (`vizij-web`)
+For domain‑specific details (crate layout, build workflows, and publish steps), start with `vizij-rs/README.md` and then drill into the crate‑level READMEs inside `vizij-rs/crates/`.
 
-**Summary**: The `vizij-web` monorepo is a standard TypeScript/React environment. Its primary function is to house the packages that support the runtime and tooling applications. It treats the Rust core as a "black box" dependency, interacting with it solely through the defined WASM APIs.
+## 5. vizij-web Architecture
 
-### React Runtime
-*   **`@vizij/runtime-react`**: The central integration point for the web application. It bridges the renderer assets with the orchestrator controllers, providing a unified runtime environment for React apps.
-*   **`@vizij/orchestrator-react`**: Provides the `<OrchestratorProvider>` which initializes the WASM module, runs the main loop, and distributes state updates.
-*   **`@vizij/animation-react`**: Manages the `requestAnimationFrame` loop and syncs the React clock with the Rust simulation time.
+`vizij-web` is the TypeScript/React monorepo that turns the Rust runtime into practical tools and experiences. It is split into **packages** (reusable libraries) and **apps** (authoring surfaces, demos, and tutorials).
 
-### Renderer & Visuals
-*   **`@vizij/render`**: A Three.js-based renderer optimized for Vizij. It maps Vizij `TypedPaths` directly to Three.js object properties (morph targets, bone rotations) for high performance without React re-renders.
+Key points:
 
-### Authoring & Tooling
-*   **`vizij-authoring`**: The flagship application for creating Vizij content. It is a Vite-based SPA that serves as the primary authoring tool.
-*   **`@vizij/node-graph-authoring`**: A library focused on the **Graph Intermediate Representation (IR)**. It provides utilities for building, inspecting, and reporting on node graphs at authoring time, independent of any specific UI.
+- **Packages** under `vizij-web/packages/@vizij/` wrap WASM runtimes and provide JS/TS utilities. The most foundational are **`@vizij/render`** (renderer + controllers) and **`@vizij/node-graph-authoring`** (graph IR tooling). These are core utilities, not just demo helpers.
+- **React packages** (`@vizij/*-react`) provide providers, hooks, and runtime bindings. They are intended for real usage but remain optional—teams can build integrations in other frameworks if desired.
+- **Apps** under `vizij-web/apps/` range from proof‑of‑concept demos to production‑quality tooling. The primary product‑like surface is **`vizij-authoring`**, which is used for rigging, binding, and export workflows. The rest of the apps are mostly demos/tutorials used for testing and showcasing capabilities, and may later migrate into the public website (direction still open).
 
----
+When working in this repo, the README is the canonical source for setup, build, validation, and local WASM linking workflows. Use it as the entry point, then dive into package‑level READMEs for deeper details.
 
-## 5. Strategic Goals & Future Roadmap
+## 6. Website (vizij-ai.github.io) Role
 
-The development of Vizij is guided by four primary goals:
+`vizij-ai.github.io` is the public‑facing Vizij website. It is intentionally decoupled from the runtime/tooling repos and focuses on communication, documentation, and learning content.
 
-1.  **Code Quality & Foundation**: Solidify the existing codebase on both Rust and Web sides.
-    *   **Refactoring**: Simplify, modularize, and DRY out code.
-    *   **Testing**: Improve coverage and benchmarking (speed, memory).
-    *   **Process**: Enhance CI/CD pipelines and AI agent workflows.
+Key points for developers:
 
-2.  **Runtime Capabilities**: Extend the core functionality to support richer experiences.
-    *   **Native Integration**: Implement Bevy modules.
-    *   **Media**: Add audio and video processing hooks.
-    *   **Logic**: Develop more graph nodes (Compound, Expression) and Behavior Trees.
-    *   **Control**: Improve namespacing and add puppeteering support.
+- It is built with Astro, MDX, and a CMS workflow geared toward content publishing.
+- This site will become the canonical home for Vizij docs, tutorials, walkthroughs, and cookbooks.
+- It has its own build/deploy pipeline and does not ship runtime code; it is a content surface, not a product runtime.
 
-3.  **Authoring UI**: Improve the creative workflow for power users.
-    *   **Dedicated Workflows**: Face editing, rigging, posing, animating, and interaction authoring.
-    *   **UI Polish**: Better number controls, context menus, and visual feedback.
+If you are working on product capabilities, you will likely be in `vizij-rs` or `vizij-web`. If you are documenting those capabilities for external readers, this repo is where that material will live.
 
-4.  **Website & Ecosystem**: Establish a central hub for learning and community.
-    *   **New Website**: A dedicated CMS-backed site for documentation and tutorials.
-    *   **Content**: "Zero to Hero" interactive tutorials, generated Rust/TS docs, and video guides.
-    *   **Migration**: Move existing minimal demos to the new site as learning examples.
-    *   **Standards**: Define easy-to-use standards for community content (e.g., standard faces).
+## 7. Cross-Repo Integration & Data Contracts
 
----
+Vizij’s cross‑repo integration is deliberately narrow and contract‑driven. The Rust core defines the canonical data model, and the web stack consumes it via published WASM packages and shared helpers.
 
-## 6. Data Flow & Contracts
+Key integration points:
 
-The boundary between Rust and Web is strictly defined to maintain performance and stability.
+- **Core contracts**: `Value`, `Shape`, and `TypedPath` are defined in Rust (`vizij-api-core`) and mirrored in TypeScript via `@vizij/value-json`. These contracts keep graphs, animations, and rendering interoperable across stacks.
+- **WASM boundary**: `vizij-rs` publishes `@vizij/*-wasm` npm packages. `vizij-web` consumes those packages as dependencies rather than compiling Rust locally.
+- **ABI safety**: WASM packages expose an `abi_version()` and the loaders verify compatibility at runtime to avoid silent mismatches.
+- **Shared fixtures**: `vizij-test-fixtures` provides a common set of JSON fixtures used by both Rust tests and web tooling to keep behavior aligned.
+- **Glue utilities**: `@vizij/wasm-loader` standardizes WASM initialization and caching across apps; `@vizij/value-json` keeps JSON coercion behavior consistent.
 
-1.  **TypedPaths**: The "Address". Both sides agree on a path string format (e.g., `anim/player/head/rotation`). This allows decoupled systems to talk to each other.
-2.  **WriteBatches**: The "Payload". To avoid the overhead of crossing the WASM boundary for every single value update, the core aggregates updates into `WriteBatch` objects. These are serialized once per frame and consumed by the JS runtime.
-3.  **ABI Versioning**: Each WASM crate exposes an `abi_version()`. The JS loaders check this against their expected version and throw a clear error if there is a mismatch (e.g., "WASM binary is v2 but JS expects v3"), preventing subtle runtime bugs.
+Local linking and watch workflows exist for deep integration work, but the default assumption is to consume published packages so the web stack stays decoupled from the Rust toolchain.
 
----
+## 8. How the Pieces Work Together (End-to-End Flow)
 
-## 7. Build & Release Lifecycle
+A typical Vizij workflow starts in the authoring stack: in `vizij-authoring`, a developer or animator builds a rig, defines pose behavior, and configures graph logic. The resulting bundle is exported as a **GLB with embedded Vizij metadata**, including rig graphs, pose graphs/config, and optional animations. At runtime, a web app loads that GLB, registers the embedded graphs and animations with the orchestrator via the WASM bindings, and begins the update loop. Live inputs are staged onto the blackboard, graphs and animations evaluate and emit `WriteBatch` updates, the orchestrator merges those updates deterministically, and the renderer applies the resulting values to animatables in the scene. This same flow is mirrored across stacks: the Rust engine remains the source of truth, and the web layer simply hosts the loop and applies outputs.
 
-1.  **Rust Compilation**: `cargo build --target wasm32-unknown-unknown` compiles the core logic.
-2.  **WASM Generation**: `wasm-bindgen` generates the JavaScript glue code and TypeScript definitions.
-3.  **NPM Packaging**: The artifacts are packaged into standard NPM modules (`@vizij/*-wasm`) and published.
-4.  **Web Consumption**: `vizij-web` installs these packages via `pnpm`. It treats them like any other library (e.g., `lodash` or `three`), completely abstracting the underlying Rust toolchain.
+## 9. Roadmap Alignment & Where to Look Next
 
----
+This document is the architectural map; the roadmap and supporting docs capture the shifting priorities and deeper rationale:
 
-## 8. Runtime Observability
+- **Roadmap**: `vizij_docs/current_documentation/ROADMAP.md` for current priorities and sequencing.
+- **Concepts explainer**: `vizij_docs/current_documentation/concepts/` for user‑facing mental models and terminology.
+- **Decisions**: `vizij_docs/current_documentation/DECISIONS.md` for architectural trade‑offs.
+- **Repo READMEs**: `vizij-rs/README.md`, `vizij-web/README.md`, and `vizij-ai.github.io/README.md` for setup/build/publish workflows.
 
-*   **Conflict Logging**: The Orchestrator actively monitors for "write conflicts". If a Graph and an Animation both try to drive `anim/head/rotation`, the Orchestrator logs a warning to the console, identifying the conflicting controllers.
-*   **Performance Metrics**: The runtime exposes hooks to measure:
-    *   **Frame Time**: Total time to step the simulation.
-    *   **Pass Time**: Time spent in each phase (Animation vs. Graph).
-    *   **Render Time**: Time spent updating the Three.js scene.
-
+When repo boundaries or responsibilities change, update this architecture guide alongside the roadmap so new engineers always land in the right place.

@@ -6,35 +6,29 @@
 | Pillar | Status | Proposal | Plan & Tracking | Reference |
 | --- | --- | --- | --- | --- |
 | **Audio & Video Processing** | 📝 Proposal | [`audio_video-proposal.md`](audio_video/audio_video-proposal.md) | — | — |
-| **Namespacing & Multi-Face** | 📝 Proposal | [`namespacing-proposal.md`](namespacing/namespacing-proposal.md) | — | — |
-| **Multi-Screen Support** | 📝 Proposal | [`multi_screen-proposal.md`](multi_screen/multi_screen-proposal.md) | — | — |
-| **Behavior Tree** | 📝 Proposal | [`behavior_tree-proposal.md`](../../backlog_proposals/behavior_tree-proposal.md) | — | — |
+| **Multi-Screen Support** | 📝 Proposal | [`multi_screen-proposal.md`](multi_screen/multi_screen-proposal.md) | [`multi_screen-plan.md`](multi_screen/multi_screen-plan.md) | — |
+
 ## Active Projects
 
 ### Core Features
-- **Namespacing**: Support multi-face/multi-actor control via robust namespacing.
-- **Graph Nodes**: Implement **Expression Node** and **Compound Nodes** to simplify graph authoring.
 - **Multi-Screen Puppeteering**: Enable multi-screen setups for puppeteering and complex displays.
-- **Behavior Tree Proposal**: Draft the initial design for BT integration.
+- **Audio Processing (Visemes)**: Add Rust-based audio processing hooks for viseme extraction, exposed through WASM.
 
-### Planned Initiatives (Medium-Term)
-- **Audio & Video Processing**: Implement Rust-based processing hooks, audio worklets, and video threads.
+## Planned Initiatives (Medium-Term)
 - **Bevy Integration**: Implement native Bevy modules.
 - **Worker-Based Orchestration**: Offload orchestrator to a Web Worker.
 
 ## Stack-Specific Roadmaps
 
-### Animation Stack
-- **Bevy Integration**: Ship example app demonstrating animation playback.
-
-### Node Graph Stack
-- **Expression Node**: Parser and evaluator for math expressions.
-- **Compound Nodes**: High-level nodes for common workflows.
-
 ### Orchestrator Stack
-- **Namespacing**: Finalize `TypedPath` design for multi-actor support.
+- **Multi-Screen Support**: Worker-hosted orchestration and multi-view messaging.
+
+### Audio/Video Stack
+- **Audio Processing**: Viseme extraction pipeline and bindings.
 
 ## Upcoming Milestones
-1. **Namespacing**: Finalize design and implementation.
-2. **Expression Node**: Prototype and implementation.
-3. **Behavior Tree**: Initial proposal draft.
+1. **Multi-Screen**: Prototype worker-hosted orchestration and multi-view messaging.
+2. **Audio Processing**: Draft plan for viseme extraction and integrate into runtime.
+
+## Archived Projects
+- Moved to `backlog/active_projects/runtime/` as of 2026-02-04 (priorities shifted to HRI March work).
