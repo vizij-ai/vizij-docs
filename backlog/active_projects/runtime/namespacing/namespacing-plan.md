@@ -101,9 +101,9 @@ Acceptance criteria:
 
 ### 6. Update documentation and summary
 
-6.1 Update `vizij_docs`:
-- [ ] Add a brief description of the namespacing API to the runtime documentation (either in this plan or a dedicated doc under `vizij_docs/current_documentation`).
-- [ ] Update `vizij_docs/active_projects/runtime/summary.md` to:
+6.1 Update `vizij-docs`:
+- [ ] Add a brief description of the namespacing API to the runtime documentation (either in this plan or a dedicated doc under `vizij-docs/current_documentation`).
+- [ ] Update `vizij-docs/active_projects/runtime/summary.md` to:
     - Mark the plan as in progress.
     - Ensure links to proposal and plan are correct.
 

@@ -20,7 +20,7 @@ Think of this document as the map: it explains the major repos, how they relate,
 | `vizij-rs` | Rust runtime cores, WASM bindings, and npm wrappers that define deterministic runtime behavior. | `vizij-rs/README.md`, `vizij-rs/crates/`, `vizij-rs/npm/@vizij/`, `vizij-rs/fixtures/` |
 | `vizij-web` | TypeScript/React packages and apps for tooling, authoring, demos, and integrations that consume the WASM artifacts. | `vizij-web/README.md`, `vizij-web/packages/@vizij/`, `vizij-web/apps/`, `vizij-web/apps/vizij-authoring/` |
 | `vizij-ai.github.io` | Public website (Astro) for community content; will become the home for docs/tutorials/cookbooks. | `vizij-ai.github.io/README.md`, `vizij-ai.github.io/src/content/`, `vizij-ai.github.io/src/pages/`, `vizij-ai.github.io/public/admin/` |
-| `vizij_docs` | Architecture, roadmap, decisions, and long-form documentation for the platform. | `vizij_docs/current_documentation/`, `vizij_docs/active_projects/`, `vizij_docs/backlog/`, `vizij_docs/archive/` |
+| `vizij-docs` | Architecture, roadmap, decisions, and long-form documentation for the platform. | `vizij-docs/current_documentation/`, `vizij-docs/active_projects/`, `vizij-docs/backlog/`, `vizij-docs/archive/` |
 
 ## 3. System Overview
 
@@ -104,9 +104,9 @@ A typical Vizij workflow starts in the authoring stack: in `vizij-authoring`, a 
 
 This document is the architectural map; the roadmap and supporting docs capture the shifting priorities and deeper rationale:
 
-- **Roadmap**: `vizij_docs/current_documentation/ROADMAP.md` for current priorities and sequencing.
-- **Concepts explainer**: `vizij_docs/current_documentation/concepts/` for user‑facing mental models and terminology.
-- **Decisions**: `vizij_docs/current_documentation/DECISIONS.md` for architectural trade‑offs.
+- **Roadmap**: `vizij-docs/current_documentation/ROADMAP.md` for current priorities and sequencing.
+- **Concepts explainer**: `vizij-docs/current_documentation/concepts/` for user‑facing mental models and terminology.
+- **Decisions**: `vizij-docs/current_documentation/DECISIONS.md` for architectural trade‑offs.
 - **Repo READMEs**: `vizij-rs/README.md`, `vizij-web/README.md`, and `vizij-ai.github.io/README.md` for setup/build/publish workflows.
 
 When repo boundaries or responsibilities change, update this architecture guide alongside the roadmap so new engineers always land in the right place.

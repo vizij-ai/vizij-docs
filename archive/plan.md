@@ -79,7 +79,7 @@ _Created: 2024-03-17 00:00 UTC — update timestamps inline as work progresses._
 | 5.2 Documentation pass | Update READMEs, inline docs, and demo guidance to reflect the new architecture and workflows. | 5.1 | _Completed_ |
 
 - [2024-03-17 21:55 UTC • Codex] Added unit and integration tests across the stack (core, wasm, React provider, demo) using "it should" naming to document behaviour; all suites run cleanly via the documented commands.
-- [2024-03-17 21:58 UTC • Codex] Authored comprehensive documentation (`vizij_docs/node-graph.md`, refreshed package/app READMEs) explaining the node graph pipeline, testing strategy, and developer workflows.
+- [2024-03-17 21:58 UTC • Codex] Authored comprehensive documentation (`vizij-docs/node-graph.md`, refreshed package/app READMEs) explaining the node graph pipeline, testing strategy, and developer workflows.
 
 ## Parking Lot / Future Considerations
 - Node clustering and reusable subgraphs: capture requirements and design before implementing (not in current scope).

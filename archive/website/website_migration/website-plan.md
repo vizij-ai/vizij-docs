@@ -18,7 +18,7 @@ Prepare for the separation of the website repository (`vizij_website` or externa
 
 1.2 Inventory documentation sources:
 - [ ] List key docs from:
-    - `vizij_docs` (architecture, roadmap, active_projects).
+    - `vizij-docs` (architecture, roadmap, active_projects).
     - `vizij-rs` and `vizij-web` READMEs and package-level docs.
 
 Acceptance criteria:
@@ -29,12 +29,12 @@ Acceptance criteria:
 2.1 Outline website IA (information architecture):
 - [ ] Draft a simple structure (e.g., Home, Learn, Docs, Showcase), mapping:
     - Which existing demos/docs should appear where.
-    - Which sections will be primarily maintained in `vizij_docs` vs in the website repo.
+    - Which sections will be primarily maintained in `vizij-docs` vs in the website repo.
 
 2.2 Clarify ownership boundaries:
 - [ ] For each section, note:
-    - What content is authored in `vizij_docs` vs the external website repo.
-    - How updates are expected to flow (e.g., docs exported from `vizij_docs`, links back to internal docs).
+    - What content is authored in `vizij-docs` vs the external website repo.
+    - How updates are expected to flow (e.g., docs exported from `vizij-docs`, links back to internal docs).
 
 Acceptance criteria:
 - A one-page outline of website sections and which content comes from where.
@@ -43,7 +43,7 @@ Acceptance criteria:
 
 3.1 Docs integration:
 - [ ] Define, at a high level:
-    - Which `vizij_docs` directories or files should be synchronized to the website (e.g., `current_documentation`, selected references).
+    - Which `vizij-docs` directories or files should be synchronized to the website (e.g., `current_documentation`, selected references).
     - How versioning should be represented (e.g., per-release snapshots or latest-only).
 
 3.2 Demo integration:

@@ -1,19 +1,19 @@
 # Vizij Docs Agent Guide
 
-Short note giving coding agents the essentials for `vizij_docs`. Keep using `project_documenting_guide.md`, subfolder READMEs, and project-specific docs as the deeper source of truth; this file only orients you quickly.
+Short note giving coding agents the essentials for `vizij-docs`. Keep using `project_documenting_guide.md`, subfolder READMEs, and project-specific docs as the deeper source of truth; this file only orients you quickly.
 
 ## Quick-Start Checklist
 - **Context First**: Before starting any task, read:
-    - `vizij_docs/project_documenting_guide.md` (Structure & Standards)
-    - `vizij_docs/current_documentation/ARCHITECTURE.md` (System Context)
-    - `vizij_docs/current_documentation/ROADMAP.md` (Strategic Alignment)
+    - `vizij-docs/project_documenting_guide.md` (Structure & Standards)
+    - `vizij-docs/current_documentation/ARCHITECTURE.md` (System Context)
+    - `vizij-docs/current_documentation/ROADMAP.md` (Strategic Alignment)
 - **Real-Time Updates**:
     - **During Work**: Mark tasks as completed in the project's `*-plan.md` *as you finish them*.
     - **End of Work**: Update the plan with the correct next steps and update the pillar's `summary.md` with the new status.
 - Re-read `project_documenting_guide.md` each rotation to stay aligned with the proposal/plan/reference contract.
 - When editing or adding docs, mirror the status-tag + related-docs header pattern from a nearby file.
 - Keep every project `summary.md` synchronized with its proposal/plan/reference set before closing a task.
-- Use `rg -n "<term>" vizij_docs` to find prior art instead of recreating sections.
+- Use `rg -n "<term>" vizij-docs` to find prior art instead of recreating sections.
 - If you skip validation (spell-check, link-check, preview), state that in your hand-off.
 
 ## Directory Map
@@ -56,4 +56,4 @@ Implementation notes:
 - Confirm cross-repo references (`vizij-rs/`, `vizij-web/`) so readers know what to inspect next.
 - PR descriptions should list which docs changed, why, and any follow-ups (summary edits, link-checks, screenshot refreshes).
 
-Keeping to this guide ensures `vizij_docs` stays trustworthy and other repositories can rely on it as the shared source of truth.
+Keeping to this guide ensures `vizij-docs` stays trustworthy and other repositories can rely on it as the shared source of truth.

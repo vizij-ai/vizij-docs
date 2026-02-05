@@ -128,4 +128,4 @@ inputs → poses → bundled graphs → runtime control.
 
 ## 6. Glossary
 
-See `vizij_docs/current_documentation/concepts/GLOSSARY.md`.
+See `vizij-docs/current_documentation/concepts/GLOSSARY.md`.

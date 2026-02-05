@@ -82,7 +82,7 @@ Acceptance criteria:
 ### 5. Document optimization patterns and guardrails
 
 5.1 Capture guidelines:
-- [ ] Add a brief section to `vizij_docs` (or update an existing doc) summarizing:
+- [ ] Add a brief section to `vizij-docs` (or update an existing doc) summarizing:
     - Recommended patterns for JS/WASM interactions (e.g., favor batches, avoid chatter).
     - Examples of newly optimized APIs and how to use them.
 

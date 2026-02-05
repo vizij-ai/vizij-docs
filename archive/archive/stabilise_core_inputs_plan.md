@@ -102,7 +102,7 @@ Deliverables / Acceptance:
 **Goal:** Equip stakeholders with clear instructions for the refreshed workflow and record behavioural changes.
 
 Tasks:
-1. Update `vizij_docs/current_documentation/ROADMAP.md` and relevant authoring docs with a summary of the new auto-input + UI behaviour. — *Status: ✅ Completed; ROADMAP and release notes now cover the driver refresh and metadata changes.*
+1. Update `vizij-docs/current_documentation/ROADMAP.md` and relevant authoring docs with a summary of the new auto-input + UI behaviour. — *Status: ✅ Completed; ROADMAP and release notes now cover the driver refresh and metadata changes.*
 2. Add contributor notes or README updates describing default paths, label derivation, toggle behaviour, and migration expectations. — *Status: ✅ Completed; README documents the driver workflow, with release notes detailing metadata/back-compat expectations.*
 3. Capture annotated screenshots or short clips illustrating the new feature tree, toggles, and filters for internal comms. — *Status: ⏳ Pending (awaiting design assets).*
 

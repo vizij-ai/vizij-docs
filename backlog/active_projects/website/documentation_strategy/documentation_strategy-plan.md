@@ -5,7 +5,7 @@
 
 ## Objective & Scope
 
-Establish a coherent documentation strategy for Vizij that bridges `vizij_docs`, `vizij-rs`, `vizij-web`, and the external website. This plan focuses on defining what documentation we need, where it lives, and how it will be surfaced to users, without committing to specific website implementation details.
+Establish a coherent documentation strategy for Vizij that bridges `vizij-docs`, `vizij-rs`, `vizij-web`, and the external website. This plan focuses on defining what documentation we need, where it lives, and how it will be surfaced to users, without committing to specific website implementation details.
 
 ## Plan
 
@@ -26,7 +26,7 @@ Establish a coherent documentation strategy for Vizij that bridges `vizij_docs`,
 ### 2. Inventory and classify existing docs
 
 2.1 Collect existing documentation:
-- [ ] From `vizij_docs`:
+- [ ] From `vizij-docs`:
     - `current_documentation` (ARCHITECTURE, ROADMAP, DECISIONS, etc.).
     - `active_projects` proposals/plans/references for key pillars.
 - [ ] From `vizij-rs` and `vizij-web`:
@@ -43,20 +43,20 @@ Establish a coherent documentation strategy for Vizij that bridges `vizij_docs`,
 
 3.1 Decide what flows to the website:
 - [ ] Identify which docs should be:
-    - Consumed directly from `vizij_docs` (e.g., high-level architecture).
+    - Consumed directly from `vizij-docs` (e.g., high-level architecture).
     - Generated from code (`cargo doc`, TypeDoc).
     - Authored primarily in the website repo (e.g., marketing/landing content).
 
 3.2 Sketch pipeline stages:
 - [ ] Describe, at a high level:
-    - How architectural docs from `vizij_docs` will be exported/linked.
+    - How architectural docs from `vizij-docs` will be exported/linked.
     - Where code-generated API docs will live.
     - How we might link back to internal references when needed.
 
 ### 4. Seed key guides for `vizij-web` and `vizij-rs`
 
 4.1 Authoring guides:
-- [ ] Create or refine guides in `vizij_docs` for:
+- [ ] Create or refine guides in `vizij-docs` for:
     - `vizij-web/apps/vizij-authoring` workflows (empty states, badges, derived inputs, import-only flows).
     - Basic troubleshooting topics outlined in `vizij-web/apps/vizij-authoring/AGENTS.md`.
 
@@ -73,7 +73,7 @@ Establish a coherent documentation strategy for Vizij that bridges `vizij_docs`,
     - Breaking changes and migration paths.
 
 5.2 Release notes:
-- [ ] Define the structure for release notes in `vizij_docs/current_documentation/release_notes` and how they should be summarized on the website.
+- [ ] Define the structure for release notes in `vizij-docs/current_documentation/release_notes` and how they should be summarized on the website.
 
 ## Acceptance Criteria (Overall)
 

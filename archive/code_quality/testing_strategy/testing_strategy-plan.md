@@ -104,7 +104,7 @@ Acceptance criteria:
 
 5.2 Confirm CI coverage:
 - [ ] Verify that the GitHub Actions workflow(s) for `vizij-web` execute the new tests on PRs.
-- [ ] Update documentation (e.g., `vizij-web/README.md` or a short note in `vizij_docs`) to mention the new tests and how to run them locally.
+- [ ] Update documentation (e.g., `vizij-web/README.md` or a short note in `vizij-docs`) to mention the new tests and how to run them locally.
 
 Acceptance criteria:
 - A PR that breaks one of the new tests is caught in CI without additional configuration.

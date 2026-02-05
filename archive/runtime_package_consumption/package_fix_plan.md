@@ -61,6 +61,6 @@ This document captures the upstream work we need to land across the Vizij packag
    - No more webpack warnings.
    - Works in Next.js (14+) without custom aliases.
    - Requirement for asset bundles with Vizij metadata.
-4. Notify internal integrators and update the integration guide in `vizij_docs`.
+4. Notify internal integrators and update the integration guide in `vizij-docs`.
 
 Once those releases are live, downstream apps can drop the temporary aliases/logging and simply install the new package versions.

@@ -71,7 +71,7 @@ This document outlines the strategic direction for Vizij. It is organized by our
 
 ### Near-Term (Foundation)
 -   **Repo Setup**: Initialize `vizij_website` (or equivalent) with CMS integration and CI/CD.
--   **Content Strategy & Docs Pipeline**: Define "Zero to Hero" tutorial structure and the pipeline for syncing docs from `vizij_docs`, `vizij-web`, and `vizij-rs`.
+-   **Content Strategy & Docs Pipeline**: Define "Zero to Hero" tutorial structure and the pipeline for syncing docs from `vizij-docs`, `vizij-web`, and `vizij-rs`.
 
 ### Medium-Term (Content & Launch)
 -   **Automated Docs**: Pipelines to generate Rust and TS docs for the site.
