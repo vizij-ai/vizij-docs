@@ -30,6 +30,7 @@ This document outlines the strategic direction for Vizij. It is organized by our
 ### Near-Term (HRI March Priorities)
 -   **Multi-Screen Puppeteering**: Enable multi-screen setups for puppeteering and complex displays, backed by a worker-hosted orchestrator and shared state. See [Multi-Screen Plan](../active_projects/runtime/multi_screen/multi_screen-plan.md).
 -   **Audio Processing (Visemes)**: Add Rust-based audio processing hooks for viseme extraction and lip-sync, exposed through WASM. See [Audio & Video Proposal](../active_projects/runtime/audio_video/audio_video-proposal.md).
+-   **Standalone WS App & Arora Protocol Extraction**: In the active `vizij-ws-app` worktree, reusable `arora-connection` and `arora-websocket` crates have been extracted, TS/Rust slot protocol contracts are aligned, and lifecycle/concurrency hardening fixes have landed. This is branch-complete work pending full `main` landing and cross-workspace validation. See [Standalone WS Plan](../active_projects/runtime/standalone_ws/standalone_ws-plan.md).
 
 ### Medium-Term (Expansion)
 -   **Namespacing & Multi-Face Control**: Support multiple independent rigs in a single runtime by prefixing graph inputs/outputs with an actor namespace and updating orchestrator registration accordingly. See [Namespacing Proposal](../backlog/active_projects/runtime/namespacing/namespacing-proposal.md).
@@ -49,7 +50,7 @@ This document outlines the strategic direction for Vizij. It is organized by our
 
 ### Near-Term (HRI March Priorities)
 -   **Animator Feedback**: Implement UI polish, number controls, and context menus for day-to-day authoring. See [Animator Feedback Plan](../active_projects/authoring/animator_feedback/animator_feedback-plan.md).
--   **Organize Rigging & Posing**: Rigging sidebar now has Rigging/Face tabs and a standard-input coverage panel; pose rigs carry `rigKind` + schema metadata and reuse rigging visibility. Next steps: add Rigging↔Posing navigation and pose-surface quick toggles. See [Organize Rigging & Posing Plan](../active_projects/authoring/organize_rigging_posing/organize_rigging_posing-plan.md).
+-   **Organize Rigging & Posing**: In `chris-work` / `vizij_workspace_as_authoring`, P1 chain-parity and pose-architecture tranches are functionally complete (first-class pose groups, two-layer blending, inspector-chain traversal, export/runtime guardrails). Reference-face reliability follow-on (`R6.1`-`R6.4`) is also complete (canonical staging, legacy pose-control bridge compatibility, export guardrails, reset normalization). Remaining queue is aggregate-source semantics, rig-boundary enforcement, diagnostics/import strategy expansion, and reference-face signoff item `R6.5` (perf thresholds + audit logging). This reflects branch state and remains subject to final `main` landing sequencing. See [Authoring Summary](../active_projects/authoring/summary.md) and [Organize Rigging & Posing Plan](../active_projects/authoring/organize_rigging_posing/organize_rigging_posing-plan.md).
 
 ### Medium-Term (Advanced Workflows)
 -   **Visual Handles for Scene Posing**: On-screen 3D manipulators to pose characters and adjust scene objects directly in the viewport. See [Visual Handles Proposal](../backlog/backlog_proposals/visual_handles-proposal.md).
@@ -75,6 +76,7 @@ This document outlines the strategic direction for Vizij. It is organized by our
 
 ### Medium-Term (Content & Launch)
 -   **Automated Docs**: Pipelines to generate Rust and TS docs for the site.
+-   **Docs Example Validation**: Add automated validation for published snippets so examples never drift from the code. For `vizij-rs`, run Rust doctests for public API examples and add a CI harness that typechecks, and where appropriate executes, extracted npm README/tutorial snippets before docs deploy.
 -   **Interactive Tutorials**: "Zero to Hero" series with embedded Vizij players.
 -   **Migration**: Move minimal demos and examples to the new site.
 -   **Community Standards**: Publish standard faces and assets.
