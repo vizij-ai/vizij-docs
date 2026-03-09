@@ -4,7 +4,7 @@ Last updated: 2026-03-09
 
 ## Status Snapshot
 
-Current phase: `core materials`
+Current phase: `validation and packaging`
 
 ## Completed
 
@@ -26,15 +26,17 @@ Current phase: `core materials`
    - troubleshooting and day-of checklists
    - breakout packet
    - slide-plan document
+6. Captured presenter-usable screenshots for the four primary live workshop apps.
+7. Built the workshop presentation deck as HTML + PDF with speaker notes.
+8. Built a printable participant workbook as HTML + PDF.
+9. Recorded validation evidence for the live-app and export pass.
 
 ## In Progress
 
-1. Building the presentation deck.
-2. Capturing current screenshots from the live apps.
-3. Reviewing the packet against actual app behavior.
+1. Final consistency pass across the workshop kit.
+2. Packaging the finished materials for handoff.
 
 ## Next
 
-1. Export the presentation deck.
-2. Add screenshots and visual references.
-3. Validate the apps and tighten workshop fallback paths.
+1. Commit the final workshop-kit assets and validation record.
+2. Summarize the package and the validation caveats in the handoff.

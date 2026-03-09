@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vizij Afternoon Workshop Workbook</title>
+    <style>
+      @page {
+        size: letter;
+        margin: 0.55in;
+      }
+
+      :root {
+        --ink: #13232b;
+        --muted: #4b5d65;
+        --line: #cdd7da;
+        --teal: #1e8f8b;
+        --sand: #f5efe4;
+        --accent: #f1a646;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        background: #ffffff;
+      }
+
+      main {
+        max-width: 8.5in;
+        margin: 0 auto;
+      }
+
+      section {
+        padding: 0 0 28px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 28px;
+      }
+
+      section:last-child {
+        border-bottom: 0;
+      }
+
+      .cover {
+        padding: 26px 0 34px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--teal);
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2.35rem;
+        line-height: 0.98;
+      }
+
+      h2 {
+        margin: 0 0 14px;
+        font-size: 1.36rem;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+        color: var(--teal);
+      }
+
+      p,
+      li {
+        line-height: 1.45;
+      }
+
+      p.lede {
+        margin-top: 16px;
+        color: var(--muted);
+        max-width: 60ch;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 0.92rem;
+        color: var(--muted);
+      }
+
+      .grid-2,
+      .grid-3 {
+        display: grid;
+        gap: 18px;
+      }
+
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px 18px;
+        background: #fffdfa;
+      }
+
+      .card.tinted {
+        background: var(--sand);
+      }
+
+      ul,
+      ol {
+        margin: 10px 0 0;
+        padding-left: 18px;
+      }
+
+      code {
+        font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+        font-size: 0.92em;
+      }
+
+      .checklist li {
+        margin-bottom: 8px;
+      }
+
+      .note-space {
+        margin-top: 14px;
+        border: 1px dashed var(--line);
+        border-radius: 14px;
+        min-height: 86px;
+        background:
+          linear-gradient(transparent 23px, rgba(19, 35, 43, 0.07) 24px);
+        background-size: 100% 24px;
+      }
+
+      .path-box {
+        border-left: 4px solid var(--accent);
+        padding: 14px 16px;
+        background: #fff9ef;
+        border-radius: 14px;
+      }
+
+      .footer {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin-top: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="cover">
+        <p class="eyebrow">Vizij Afternoon Workshop</p>
+        <h1>Participant Workbook</h1>
+        <p class="lede">
+          Use this workbook during the session to track the hands-on steps,
+          success checks, and breakout outputs. The goal is not to take perfect
+          notes. The goal is to stay oriented and leave with a concrete mental
+          model of the Vizij stack.
+        </p>
+        <div class="chips">
+          <span class="chip">2:30 pm to 6:00 pm</span>
+          <span class="chip">Hands-on first</span>
+          <span class="chip">Current Vizij apps</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Agenda and Outcomes</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Agenda</h3>
+            <ol>
+              <li>Introduction and teaser demo</li>
+              <li>Activity 1, face design and control</li>
+              <li>Support and exploration</li>
+              <li>Activity 2, animation, integration, deployment</li>
+              <li>Support and exploration</li>
+              <li>Coffee break</li>
+              <li>Roadmap, research, strategy breakouts</li>
+              <li>Close</li>
+            </ol>
+          </div>
+          <div class="card tinted">
+            <h3>Outcomes</h3>
+            <ul>
+              <li>Load and control a face</li>
+              <li>Read the path model</li>
+              <li>Understand authoring and rigging basics</li>
+              <li>Explain animation and live control</li>
+              <li>Describe the deployment story</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Quick Path Cheat Sheet</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Standard Input</h3>
+            <div class="path-box"><code>rig/{face}/standard/{channel}/{track}/{attribute}</code></div>
+          </div>
+          <div class="card">
+            <h3>Pose Weight</h3>
+            <div class="path-box"><code>rig/{face}/poses/{pose_name}.weight</code></div>
+          </div>
+          <div class="card">
+            <h3>Viseme Weight</h3>
+            <div class="path-box"><code>rig/{face}/visemes/{viseme_id}.weight</code></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Activity 1: Face Design and Control</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>What to Do</h3>
+            <ol class="checklist">
+              <li>Open <code>vizij-authoring</code>.</li>
+              <li>Load a sample GLB.</li>
+              <li>Find one eye control, one mouth control, and one pose control.</li>
+              <li>Open <code>tutorial-fullscreen-face</code>.</li>
+              <li>Move the mouse and press hotkeys to confirm live control.</li>
+            </ol>
+          </div>
+          <div class="card tinted">
+            <h3>Success Check</h3>
+            <ul class="checklist">
+              <li>I can describe one standard path pattern.</li>
+              <li>I can describe one pose-weight path pattern.</li>
+              <li>I can make a face move on purpose in the runtime.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note-space"></div>
+        <p class="footer">Notes: What feature path made the most sense to you? What still felt confusing?</p>
+      </section>
+
+      <section>
+        <h2>Activity 2: Animation, Integration, Deployment</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Animation</h3>
+            <ul>
+              <li>Use <code>demo-vizij-player</code></li>
+              <li>Identify rigs, clips, and diagnostics</li>
+              <li>Explain how authored clips and live inputs can coexist</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Integration</h3>
+            <ul>
+              <li>Observe <code>tutorial-agent-face</code></li>
+              <li>Compare baseline, synth, and align mouth modes</li>
+              <li>Notice status chips, expression controls, and lead tuning</li>
+            </ul>
+          </div>
+          <div class="card tinted">
+            <h3>Deployment</h3>
+            <ul>
+              <li>Use <code>vizij-standalone</code> as the deployment anchor</li>
+              <li>Understand the WebSocket control surface</li>
+              <li>Connect the same path model to a robot-facing runtime story</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note-space"></div>
+        <p class="footer">Notes: What changed when the system moved from authored clips to live control?</p>
+      </section>
+
+      <section>
+        <h2>Support and Exploration</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>If You Are Blocked</h3>
+            <ul>
+              <li>Ask for help with install, assets, paths, or runtime behavior.</li>
+              <li>Use the facilitator demo as the reference path.</li>
+              <li>Keep moving through the worksheet even if one live integration fails.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>If You Are Unblocked</h3>
+            <ul>
+              <li>Compare another sample GLB.</li>
+              <li>Inspect runtime hooks in the tutorial app.</li>
+              <li>Write one roadmap or product question for the breakout hour.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Breakout Worksheet</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Opportunity</h3>
+            <p>What feels most promising in Vizij after today’s workshop?</p>
+            <div class="note-space"></div>
+          </div>
+          <div class="card">
+            <h3>Blocker</h3>
+            <p>What most limits adoption, confidence, or deployment?</p>
+            <div class="note-space"></div>
+          </div>
+          <div class="card">
+            <h3>Next Experiment</h3>
+            <p>What should happen next to validate or unlock the opportunity?</p>
+            <div class="note-space"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

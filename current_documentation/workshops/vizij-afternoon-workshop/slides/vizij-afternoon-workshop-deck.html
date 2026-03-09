@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vizij Afternoon Workshop Deck</title>
+    <style>
+      :root {
+        --ink: #f4f2eb;
+        --muted: #b5bfd7;
+        --navy: #07142f;
+        --navy-2: #10254b;
+        --teal: #3dc0db;
+        --teal-deep: #1e728f;
+        --gold: #f0be52;
+        --rose: #ea7f85;
+        --panel: rgba(10, 24, 53, 0.8);
+        --panel-border: rgba(167, 191, 231, 0.18);
+        --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+        --slide-width: 1280px;
+        --slide-height: 720px;
+        --title-font: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+        --body-font: "Avenir Next", "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--body-font);
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(61, 192, 219, 0.2), transparent 28%),
+          radial-gradient(circle at top right, rgba(240, 190, 82, 0.12), transparent 24%),
+          linear-gradient(140deg, #07142f 0%, #0f2144 50%, #09152d 100%);
+      }
+
+      .deck {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        align-items: center;
+        padding: 2rem 0 6rem;
+      }
+
+      .slide {
+        width: min(var(--slide-width), calc(100vw - 2rem));
+        min-height: var(--slide-height);
+        padding: 48px 56px;
+        border-radius: 32px;
+        background:
+          linear-gradient(165deg, rgba(12, 27, 58, 0.94), rgba(7, 20, 47, 0.96)),
+          radial-gradient(circle at top right, rgba(61, 192, 219, 0.16), transparent 24%);
+        border: 1px solid var(--panel-border);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        page-break-after: always;
+      }
+
+      .slide::after {
+        content: "";
+        position: absolute;
+        inset: auto -80px -110px auto;
+        width: 360px;
+        height: 360px;
+        background: radial-gradient(circle, rgba(61, 192, 219, 0.18), transparent 66%);
+        filter: blur(10px);
+        pointer-events: none;
+      }
+
+      .eyebrow {
+        font-size: 0.92rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--teal);
+        margin: 0 0 0.75rem;
+      }
+
+      h1,
+      h2 {
+        font-family: var(--title-font);
+        margin: 0;
+        line-height: 0.98;
+      }
+
+      h1 {
+        font-size: 4rem;
+        max-width: 10ch;
+      }
+
+      h2 {
+        font-size: 2.6rem;
+        margin-bottom: 1rem;
+      }
+
+      p,
+      li {
+        font-size: 1.1rem;
+        line-height: 1.45;
+        color: var(--ink);
+      }
+
+      p.muted,
+      .muted {
+        color: var(--muted);
+      }
+
+      ul,
+      ol {
+        margin: 0;
+        padding-left: 1.25rem;
+      }
+
+      .slide-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .two-col {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+
+      .three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .card {
+        padding: 1.25rem 1.3rem;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 22px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 1.6rem;
+        height: 100%;
+        align-items: stretch;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .metric {
+        padding: 1rem 1.1rem;
+        background: rgba(61, 192, 219, 0.08);
+        border: 1px solid rgba(61, 192, 219, 0.2);
+        border-radius: 18px;
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 1.5rem;
+      }
+
+      .screenshot {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 26px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #050d1f;
+      }
+
+      .agenda-list li,
+      .checklist li {
+        margin-bottom: 0.7rem;
+      }
+
+      .accent-bar {
+        width: 120px;
+        height: 8px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--teal), var(--gold));
+        margin: 1.25rem 0 1rem;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+      }
+
+      .pill {
+        border-radius: 999px;
+        border: 1px solid rgba(244, 242, 235, 0.12);
+        padding: 0.52rem 0.92rem;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.04);
+        font-size: 0.95rem;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .timeline-row {
+        display: grid;
+        grid-template-columns: 132px 1fr;
+        gap: 1rem;
+        align-items: start;
+      }
+
+      .timeline-row strong {
+        color: var(--gold);
+      }
+
+      .caption {
+        margin-top: 0.75rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .footer {
+        position: absolute;
+        left: 56px;
+        right: 56px;
+        bottom: 34px;
+        display: flex;
+        justify-content: space-between;
+        color: rgba(244, 242, 235, 0.6);
+        font-size: 0.92rem;
+      }
+
+      .nav {
+        position: fixed;
+        right: 1rem;
+        top: 1rem;
+        display: flex;
+        gap: 0.65rem;
+        z-index: 2;
+      }
+
+      .nav button {
+        border: 0;
+        border-radius: 999px;
+        background: rgba(7, 20, 47, 0.82);
+        color: var(--ink);
+        padding: 0.7rem 0.95rem;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .small {
+        font-size: 0.96rem;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .deck {
+          padding: 0;
+          gap: 0;
+        }
+
+        .slide {
+          width: 100vw;
+          min-height: 100vh;
+          border-radius: 0;
+          box-shadow: none;
+          margin: 0;
+        }
+
+        .nav {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <button type="button" onclick="scrollBySlide(-1)">Prev</button>
+      <button type="button" onclick="scrollBySlide(1)">Next</button>
+    </div>
+
+    <main class="deck">
+      <section class="slide" id="slide-1">
+        <div class="hero">
+          <div class="hero-copy">
+            <div>
+              <p class="eyebrow">Vizij Afternoon Workshop</p>
+              <h1>Design, Animate, and Deploy Robot Faces with Vizij</h1>
+              <div class="accent-bar"></div>
+              <p class="muted">
+                A hands-on session built around the current Vizij authoring,
+                runtime, animation, and deployment surfaces.
+              </p>
+            </div>
+            <div class="hero-meta">
+              <div class="metric">
+                <strong>3.5 hrs</strong>
+                <span class="muted">tutorial + breakout flow</span>
+              </div>
+              <div class="metric">
+                <strong>5 apps</strong>
+                <span class="muted">current demo anchors</span>
+              </div>
+              <div class="metric">
+                <strong>2 labs</strong>
+                <span class="muted">plus roadmap session</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <img
+              class="screenshot"
+              src="../assets/screenshots/tutorial-agent-face.png"
+              alt="Tutorial Agent Face screenshot"
+            />
+            <p class="caption">
+              Capstone teaser: live face runtime with gaze, emotions, and
+              conversation controls.
+            </p>
+          </div>
+        </div>
+        <div class="footer">
+          <span>vizij-docs workshop kit</span>
+          <span>1 / 13</span>
+        </div>
+      </section>
+
+      <section class="slide" id="slide-2">
+        <p class="eyebrow">Outcomes</p>
+        <h2>What Participants Leave Able To Do</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <ol class="agenda-list">
+              <li>Load and control a Vizij face in a React runtime.</li>
+              <li>Inspect the renderer data model and trace control paths.</li>
+              <li>Use `vizij-authoring` to reason about rigging and poses.</li>
+              <li>Understand stored animation versus live runtime control.</li>
+              <li>Explain the path from local demo to robot-facing deployment.</li>
+              <li>Contribute grounded roadmap and strategy feedback.</li>
+            </ol>
+          </div>
+          <div class="card">
+            <p class="small muted">Teaching rhythm</p>
+            <div class="pill-row">
+              <span class="pill">Orient</span>
+              <span class="pill">Demo</span>
+              <span class="pill">Try</span>
+              <span class="pill">Debrief</span>
+            </div>
+            <p class="caption">
+              Every block is structured around a visible success check, not a
+              lecture-only explanation.
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Workshop outcomes</span><span>2 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-3">
+        <p class="eyebrow">Agenda</p>
+        <h2>Run of Show</h2>
+        <div class="card timeline">
+          <div class="timeline-row">
+            <strong>2:30 pm</strong>
+            <span>Tutorial introduction and capstone teaser</span>
+          </div>
+          <div class="timeline-row">
+            <strong>2:45 pm</strong>
+            <span>Activity 1: face design, Hello Face, renderer data model, rigging</span>
+          </div>
+          <div class="timeline-row">
+            <strong>3:30 pm</strong>
+            <span>Technical support or exploration time</span>
+          </div>
+          <div class="timeline-row">
+            <strong>3:45 pm</strong>
+            <span>Activity 2: animation, integration, deployment</span>
+          </div>
+          <div class="timeline-row">
+            <strong>4:30 pm</strong>
+            <span>Technical support or exploration time</span>
+          </div>
+          <div class="timeline-row">
+            <strong>4:45 pm</strong>
+            <span>Coffee break</span>
+          </div>
+          <div class="timeline-row">
+            <strong>5:00 pm</strong>
+            <span>Roadmap, research, and strategy breakouts</span>
+          </div>
+          <div class="timeline-row">
+            <strong>6:00 pm</strong>
+            <span>Tutorial concludes</span>
+          </div>
+        </div>
+        <div class="footer"><span>Exact schedule</span><span>3 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-4">
+        <p class="eyebrow">Architecture</p>
+        <h2>How Today’s Apps Fit Together</h2>
+        <div class="slide-grid three-col">
+          <div class="card">
+            <p class="small muted">Authoring</p>
+            <h3>`vizij-authoring`</h3>
+            <p>Import, inspect, organize, and export face assets and rig data.</p>
+          </div>
+          <div class="card">
+            <p class="small muted">Runtime</p>
+            <h3>`tutorial-fullscreen-face`</h3>
+            <p>Smallest useful runtime-react face with gaze and pose hotkeys.</p>
+          </div>
+          <div class="card">
+            <p class="small muted">Animation</p>
+            <h3>`demo-vizij-player`</h3>
+            <p>Blend rigs, trigger clips, and inspect orchestrator diagnostics.</p>
+          </div>
+          <div class="card">
+            <p class="small muted">Conversation</p>
+            <h3>`tutorial-agent-face`</h3>
+            <p>Live visemes, emotion tools, and function-called gaze control.</p>
+          </div>
+          <div class="card">
+            <p class="small muted">Deployment</p>
+            <h3>`vizij-standalone`</h3>
+            <p>Desktop runtime with WebSocket control and a built-in control panel.</p>
+          </div>
+          <div class="card">
+            <p class="small muted">Strategy</p>
+            <h3>`vizij-docs/ROADMAP`</h3>
+            <p>Translate workshop experience into informed product direction.</p>
+          </div>
+        </div>
+        <div class="footer"><span>System framing</span><span>4 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-5">
+        <p class="eyebrow">Activity 1</p>
+        <h2>Face Design and Control Starts in Authoring</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <img
+              class="screenshot"
+              src="../assets/screenshots/vizij-authoring.png"
+              alt="Vizij Authoring screenshot"
+            />
+          </div>
+          <div class="card">
+            <ul class="checklist">
+              <li>Load a sample GLB or bundled face.</li>
+              <li>Identify standard input routes and visible animatable features.</li>
+              <li>Explain the difference between a standard control and a pose weight.</li>
+              <li>Use the empty-scene entry points to keep setup fast in the room.</li>
+            </ul>
+            <p class="caption">
+              Presenter note: the empty-state sample buttons are useful for
+              workshops because they remove file-picking friction.
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Activity 1 anchor</span><span>5 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-6">
+        <p class="eyebrow">Hello Face</p>
+        <h2>Runtime React in the Small</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <img
+              class="screenshot"
+              src="../assets/screenshots/tutorial-fullscreen-face.png"
+              alt="Tutorial fullscreen face screenshot"
+            />
+          </div>
+          <div class="card">
+            <ul class="checklist">
+              <li>`VizijAssetBundle` defines the face and metadata.</li>
+              <li>`VizijRuntimeProvider` owns loading and orchestration.</li>
+              <li>`VizijRuntimeFace` renders the visual surface.</li>
+              <li>Mouse gaze and pose hotkeys prove the path wiring quickly.</li>
+            </ul>
+            <p class="caption">
+              Workshop checkpoint: participants should be able to point at one
+              path and explain what visible change it causes.
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Minimal runtime</span><span>6 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-7">
+        <p class="eyebrow">Renderer Data Model</p>
+        <h2>What Changes When You Set a Value</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <ul class="checklist">
+              <li>Inputs are staged into the orchestrator.</li>
+              <li>Resolved paths include the face id and namespace.</li>
+              <li>Outputs flow into the renderer store and change the face.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <pre><code>rig/{face}/standard/left_eye/pos/x
+rig/{face}/standard/right_eye/pos/y
+rig/{face}/poses/{pose_name}.weight</code></pre>
+            <p class="caption">
+              These three path shapes are enough to explain most of the
+              workshop’s visible control flows.
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Control model</span><span>7 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-8">
+        <p class="eyebrow">Rigging</p>
+        <h2>Standard Inputs Give You Reuse, Pose Weights Give You Expression</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <ul class="checklist">
+              <li>Standard inputs make different faces interoperable.</li>
+              <li>Pose groups are the fastest workshop-friendly abstraction.</li>
+              <li>Authoring is the place to inspect naming before runtime code.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="pill-row">
+              <span class="pill">standard/left_eye/pos/x</span>
+              <span class="pill">standard/mouth/...</span>
+              <span class="pill">poses/smile.weight</span>
+              <span class="pill">visemes/...</span>
+            </div>
+            <p class="caption">
+              Suggested teaching move: ask participants which controls should be
+              universal versus face-specific.
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Rigging story</span><span>8 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-9">
+        <p class="eyebrow">Support Window</p>
+        <h2>Keep the Room Moving</h2>
+        <div class="slide-grid three-col">
+          <div class="card">
+            <p class="small muted">Lane 1</p>
+            <h3>Install + env</h3>
+            <p>Recover setup blockers without stopping the main flow.</p>
+          </div>
+          <div class="card">
+            <p class="small muted">Lane 2</p>
+            <h3>Path confusion</h3>
+            <p>Use the handouts to reconnect visuals to path patterns.</p>
+          </div>
+          <div class="card">
+            <p class="small muted">Lane 3</p>
+            <h3>Stretch tasks</h3>
+            <p>Give fast participants exploration prompts instead of idle time.</p>
+          </div>
+        </div>
+        <div class="footer"><span>Mid-session recovery</span><span>9 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-10">
+        <p class="eyebrow">Activity 2</p>
+        <h2>Animation and Orchestration</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <img
+              class="screenshot"
+              src="../assets/screenshots/demo-vizij-player.png"
+              alt="Demo Vizij Player screenshot"
+            />
+          </div>
+          <div class="card">
+            <ul class="checklist">
+              <li>Use the panel layout to explain assets, controls, and diagnostics.</li>
+              <li>Describe how manual rig inputs and stored animation can both contribute.</li>
+              <li>Keep this as the backup concept anchor if live conversation is unavailable.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer"><span>Animation concepts</span><span>10 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-11">
+        <p class="eyebrow">Conversation</p>
+        <h2>Live Control Adds Timing, Audio, and Emotion</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <img
+              class="screenshot"
+              src="../assets/screenshots/tutorial-agent-face.png"
+              alt="Tutorial agent face screenshot"
+            />
+          </div>
+          <div class="card">
+            <ul class="checklist">
+              <li>Mouth source modes let you compare baseline, synth, and align strategies.</li>
+              <li>Emotion buttons and function-calling show non-verbal behavior hooks.</li>
+              <li>This segment depends on `VITE_GEMINI_API_KEY`, so treat it as facilitator-led by default.</li>
+            </ul>
+            <p class="caption">
+              Good workshop move: teach the control model even if the room is not fully credentialed.
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Live integration</span><span>11 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-12">
+        <p class="eyebrow">Deployment</p>
+        <h2>From Laptop Demo to Robot-Facing Runtime</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <ul class="checklist">
+              <li>`vizij-standalone` packages a runtime plus WebSocket control surface.</li>
+              <li>The face stays the same; the control layer changes.</li>
+              <li>Typed slot values make external control explicit and predictable.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <pre><code>{
+  "type": "set_slot_values",
+  "values": {
+    "rig/robot/standard/left_eye/pos/x": { "f64": 0.5 }
+  }
+}</code></pre>
+            <p class="caption">
+              Use the README walkthrough and message format instead of trying to
+              force a full Tauri build for every participant.
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Deployment story</span><span>12 / 13</span></div>
+      </section>
+
+      <section class="slide" id="slide-13">
+        <p class="eyebrow">Breakouts and Close</p>
+        <h2>Turn the Hands-On Session into a Next-Step Decision</h2>
+        <div class="slide-grid two-col">
+          <div class="card">
+            <ol class="agenda-list">
+              <li>Product and roadmap priorities</li>
+              <li>Research and technical opportunities</li>
+              <li>Deployment and adoption risks</li>
+            </ol>
+          </div>
+          <div class="card">
+            <ul class="checklist">
+              <li>Each group reports one opportunity.</li>
+              <li>Each group reports one blocker.</li>
+              <li>Each group proposes one next experiment or milestone.</li>
+            </ul>
+            <p class="caption">
+              Close with the question: what can you now control, explain, or
+              ship more confidently than you could at 2:30 pm?
+            </p>
+          </div>
+        </div>
+        <div class="footer"><span>Report-back and close</span><span>13 / 13</span></div>
+      </section>
+    </main>
+
+    <script>
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      function scrollBySlide(direction) {
+        const positions = slides.map((slide) => slide.getBoundingClientRect().top);
+        const index = positions.findIndex((top) => top >= -20);
+        const nextIndex =
+          direction > 0
+            ? Math.min((index === -1 ? 0 : index) + 1, slides.length - 1)
+            : Math.max((index <= 0 ? 0 : index) - 1, 0);
+        slides[nextIndex].scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === "PageDown") {
+          scrollBySlide(1);
+        }
+        if (event.key === "ArrowLeft" || event.key === "PageUp") {
+          scrollBySlide(-1);
+        }
+      });
+    </script>
+  </body>
+</html>
