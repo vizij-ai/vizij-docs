@@ -4,7 +4,7 @@ Last updated: 2026-03-09
 
 ## Status Snapshot
 
-Current phase: `source audit and structure`
+Current phase: `core materials`
 
 ## Completed
 
@@ -17,16 +17,24 @@ Current phase: `source audit and structure`
    - `vizij-standalone`
 3. Found a previously drafted tutorial packet outside the committed docs repos and marked it as source material to upgrade rather than the final destination.
 4. Created the committed workshop-kit directory structure in `vizij-docs/current_documentation/workshops/vizij-afternoon-workshop`.
+5. Wrote the core written packet:
+   - facilitator guide
+   - demo command sheet
+   - participant guide
+   - activity sheets
+   - handouts
+   - troubleshooting and day-of checklists
+   - breakout packet
+   - slide-plan document
 
 ## In Progress
 
-1. Converting the initial audit into a current-state workshop packet.
-2. Re-mapping older material to the exact workshop schedule.
-3. Replacing outdated deployment references with `vizij-standalone`.
+1. Building the presentation deck.
+2. Capturing current screenshots from the live apps.
+3. Reviewing the packet against actual app behavior.
 
 ## Next
 
-1. Write the facilitator run-of-show and packet guide.
-2. Draft participant-facing exercises and handouts.
-3. Build the slide deck and capture screenshots from the live apps.
-4. Validate the packet against live app behavior.
+1. Export the presentation deck.
+2. Add screenshots and visual references.
+3. Validate the apps and tighten workshop fallback paths.
