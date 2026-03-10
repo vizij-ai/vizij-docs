@@ -1,56 +1,59 @@
-# Proposal: Multi-Screen Support
-<!-- tags: status=draft; topics=runtime,puppeteering,display -->
+# Proposal: Distributed Face + Control Screen Control
+<!-- tags: type=proposal; status=planned; topics=runtime,puppeteering,display -->
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Runtime Summary](../summary.md)
+> **Related documents:** [Plan](multi_screen-plan.md) · [Runtime Summary](../summary.md)
 
 ## Context
 
-Advanced puppeteering and installation use cases require displaying content across multiple screens (e.g., a control panel on one screen and the character on another, or a multi-monitor installation). Today, each Vizij runtime is typically associated with a single view, making it awkward to synchronize multiple canvases/windows that should share the same underlying orchestrator and animation state.
+Many deployments now separate rendering and control across screens or devices. A common setup is one machine showing the avatar and another machine, tablet, or phone running a control UI that talks to it over the same WebSocket endpoint.
+
+This proposal is focused on making that workflow a first-class path: control UI should be driven by the runtime's available slots, not by assumptions baked into a hardcoded path strategy.
+
+Near-term acceptance is intentionally limited to the operator-control branch. Namespacing and deeper shared-runtime multi-face routing remain follow-on runtime-expressiveness work.
 
 ## Goals
 
-- **Decoupled Rendering**: Allow the renderer to target multiple canvases/windows while sharing a single orchestrator/animation state.
-- **Unified State**: Keep one authoritative runtime (orchestrator + graphs + animations) that drives all views.
-- **Synchronization**: Ensure frame-perfect or near frame-perfect sync between displays, within practical constraints.
-- **Integration with Namespacing**: Work cleanly with the Namespacing & Multi-Face project so multiple faces/actors can be addressed within the same multi-screen setup.
+- **Distributed Control Surface**: Make it straightforward to run the avatar view and the control UI on different screens/devices.
+- **Dynamic Discovery**: Discover controls from the active model's slots and constraints, then render the UI automatically.
+- **Namespace-Agnostic Control**: Avoid hardcoding `standard/*`; let operators filter and target any available control namespace/topic.
+- **Puppeteer UX**: Provide an organized, filterable dashboard with clear widgets for numeric control values.
 
 ## Proposed Strategy
 
-- **Shared/Worker Runtime Host**
-  - Move the core runtime (Orchestrator/Animation/Graphs) into a Shared Worker or dedicated Web Worker.
-  - Treat each view (canvas/window or control surface) as a client that connects to this worker-hosted runtime.
-- **State Broadcasting**
-  - Efficiently broadcast frame updates and relevant state snapshots to all connected renderer clients.
-  - Allow clients to subscribe to subsets of data (e.g., specific actors or regions of the scene) to avoid unnecessary bandwidth.
-- **Input Aggregation**
-  - Collect inputs from control surfaces (e.g., UI panels, hotkeys, external devices) and route them to the central worker, where they are applied via the orchestrator.
-  - Use namespaced paths to distinguish inputs for different actors or screens when necessary.
+- **Single Runtime Source of Truth**
+  - Keep the avatar/runtime host as authoritative for slot state.
+  - Control clients apply updates through the existing slot control protocol.
+- **Slot-Driven UI Generation**
+  - Read available inputs from runtime metadata and build grouped UI controls dynamically.
+  - Group and filter by path-derived namespaces/topics, then render sliders and numeric inputs consistently.
+- **Separation of Concerns**
+  - Treat rendering (face screen) and operator experience (control screen) as distinct roles using the same backend protocol.
 
 ## Phased Approach
 
-1. **Worker-Based Orchestrator (Single View)**
-   - First, move the orchestrator/animation runtime into a Web Worker for a single view app.
-   - Validate performance, error handling, and debugging workflows in this simpler case.
-2. **Multi-Client Support**
-   - Extend the worker host to support multiple view clients (e.g., multiple canvases in one window, or multiple windows).
-   - Define a lightweight messaging protocol for:
-     - Frame ticks / time updates.
-     - Renderable state snapshots or incremental updates.
-     - Input events routed back to the worker.
-3. **Installation & Puppeteering Scenarios**
-   - Add support for:
-     - Dedicated control surfaces (e.g., a control UI on one device controlling a character on another).
-     - Multi-display installations where different screens show different views of a shared scene.
-   - Integrate Namespacing so actors can be selectively shown/controlled per screen.
+1. **Discoverable Control Surface Baseline**
+   - Define rules for path parsing and grouping that work for arbitrary slot prefixes (including but not only `standard`).
+   - Confirm control widgets can be rendered from slot metadata alone.
+
+2. **Filterable Dashboard**
+   - Add namespace/topic filters and search.
+   - Allow operators to limit the interface to relevant controls (for example, a dedicated `standard` filter).
+
+3. **Deployment and Reliability**
+   - Validate remote-control usage on multiple devices with the same endpoint.
+   - Define connection/availability expectations for long-running sessions.
+
+4. **Later Follow-On**
+   - Revisit namespaced multi-face control and deeper shared-runtime routing after the current deployment/operator branch is stable.
 
 ## Risks & Unknowns
 
-- **Complexity of Synchronization**: Achieving frame-perfect sync across multiple displays and devices can be challenging due to browser and hardware variability; we must define reasonable targets and fallback behavior.
-- **Debugging & Tooling**: Worker-based architectures complicate debugging; we need good logging and inspection hooks.
-- **API Surface**: The messaging/API surface between worker and views must be carefully designed to avoid becoming a long-term constraint.
+- **Session Semantics Across Devices**: There may be multiple clients and/or transient network interruptions; we should define clear behavior for stale controls and reconnect.
+- **Operator UX Scaling**: Large slot sets need good grouping/filter defaults so the control surface stays usable.
+- **Security and Access Scope**: A LAN-visible control endpoint should be protected when moved beyond trusted local networks.
 
 ## Success Metrics
 
-- **Synchronization Quality**: Multi-screen demos show visually acceptable sync between views under typical conditions.
-- **Developer Ergonomics**: It is straightforward for developers to attach additional views or control surfaces to an existing worker-hosted runtime.
-- **Adoption in Demos**: Key puppeteering and installation demos migrate to the multi-screen architecture without major regressions.
+- **Discovery Coverage**: New rigs and controls become available in the dashboard with no hardcoded path exceptions.
+- **Usability**: Operators can quickly narrow large control sets to what they need.
+- **Deployment Confidence**: Face and control screens can be deployed separately with predictable behavior.

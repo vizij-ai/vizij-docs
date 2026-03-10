@@ -1,126 +1,82 @@
-# Multi-Screen Support – Plan & Tracking
-<!-- tags: status=planning; topics=runtime,puppeteering,display -->
+# Multi-Screen Operator Control Plan
+<!-- tags: type=plan; status=planned; topics=runtime,puppeteering,display -->
 
 > **Related documents:** [Proposal](multi_screen-proposal.md) · [Runtime Summary](../summary.md)
 
 ## Objective & Scope
 
-Enable a single Vizij runtime (orchestrator + graphs + animations) to drive multiple views (canvases/windows) for advanced puppeteering and installation use cases. This phase focuses on worker-hosted orchestration and a simple, reliable messaging model between the worker and multiple clients.
+Deliver a production-ready split-screen puppeteering workflow where the avatar renderer and operator dashboard can run on different screens or devices, and controls are discovered from runtime metadata instead of hardcoded namespaces.
+
+This phase does not include namespaced multi-face routing or deeper shared-runtime actor orchestration. Those remain later runtime-expressiveness follow-on work.
 
 ## Plan
 
-The steps below can be executed by a junior developer in order, with explicit acceptance criteria.
+The steps below can be executed in order and reviewed independently.
 
-### 1. Understand current orchestrator usage in web demos
+### 1. Define control-surface control model
 
-1.1 Identify relevant demo apps:
-- [ ] Inspect `vizij-web/apps` and pick at least one orchestrator-focused app, such as:
-    - `apps/minimal-demo-orchestrator`
-    - `apps/demo-vizij-player`
+1.1 Capture source of truth for control widgets
+- [ ] Confirm each control widget is derived from the available slot list and its constraints (`min`, `max`, `defaultValue`).
+- [ ] Define path parsing rules for:
+  - top-level namespace/topic extraction,
+  - nested group labels,
+  - stable control keys for UI state.
 
-1.2 Map current orchestration flow:
-- [ ] For the chosen app:
-    - Identify where `@vizij/orchestrator-react` and `@vizij/runtime-react` are used.
-    - Understand how the orchestrator is currently created (on the main thread) and how frames are advanced.
-
-Acceptance criteria:
-- A short note describing:
-  - Which app will be used as the initial target for worker-based orchestration.
-  - How the orchestrator is currently created and driven in that app.
-
-### 2. Prototype a worker-hosted orchestrator
-
-2.1 Create a worker module:
-- [ ] In `vizij-web` (e.g., under `apps/minimal-demo-orchestrator/src/worker/`), create a `runtimeWorker.ts` that:
-    - Imports the necessary orchestrator/runtime setup code.
-    - Listens for messages from the main thread (e.g., `postMessage`).
-
-2.2 Move orchestrator creation into the worker:
-- [ ] Inside `runtimeWorker.ts`:
-    - Create the orchestrator and any required runtime structures upon an initialization message.
-    - Handle messages to:
-        - Register graphs.
-        - Update inputs.
-        - Advance frames.
+1.2 Confirm protocol expectations
+- [ ] Document the control session expectation for remote devices (single active renderer + one or more control clients).
+- [ ] Add operational notes for reconnects and stale slot state.
 
 Acceptance criteria:
-- The worker can be started from the main thread and responds to simple messages (e.g., “ping”, “init orchestrator”) without errors.
+- One-page note describing:
+  - how controls are discovered,
+  - how keys/labels are derived,
+  - what happens when constraints are missing.
 
-### 3. Implement a basic messaging protocol between worker and main thread
+### 2. Build dynamic control dashboard (standalone runtime app)
 
-3.1 Define message types:
-- [ ] Create a small TypeScript enum or union type representing messages such as:
-    - `InitRuntime`
-    - `RegisterGraph`
-    - `SetInput`
-    - `AdvanceFrame`
-    - `FrameState` (worker → main) containing snapshot data for rendering.
+2.1 Add discover/displays layer
+- [ ] In `apps/vizij-standalone`, render all available constraints from `useWebSocketSync().inputConstraints`.
+- [ ] Group controls by namespace/topic and show a clear section layout.
 
-3.2 Implement handling in worker:
-- [ ] In `runtimeWorker.ts`, implement a `self.onmessage` handler that:
-    - Switches on message `type`.
-    - Applies inputs or advances the orchestrator as requested.
-    - Posts back `FrameState` messages after advancing frames.
+2.2 Add filter mechanics
+- [ ] Add namespace/topic quick filters (e.g., `standard`, `debug`, others).
+- [ ] Add free-text search over label and full path.
 
-3.3 Implement handling in main thread:
-- [ ] In the chosen app:
-    - Create a worker instance.
-    - Set up `onmessage` to receive `FrameState` and update the React state/world accordingly.
+2.3 Add widget set
+- [ ] Add numeric control widgets for input slots using constraints:
+  - range slider,
+  - numeric input fallback.
+- [ ] Provide reset actions (all controls + per-control if feasible).
 
 Acceptance criteria:
-- The app can:
-  - Initialize the worker.
-  - Send `AdvanceFrame` messages.
-  - Receive `FrameState` updates and render them.
+- A loaded model shows at least one usable control.
+- Filtering reduces visible controls without affecting runtime updates.
 
-### 4. Extend to multiple views/clients
+### 3. Improve model reload behavior in UI
 
-4.1 Support multiple view subscriptions:
-- [ ] Adjust the worker protocol so that:
-    - Multiple clients (e.g., multiple components or windows) can subscribe to `FrameState` updates.
-    - Optionally include a `viewId` in messages to distinguish different views if needed.
-
-4.2 Implement a second view:
-- [ ] In the chosen app or a new demo:
-    - Add a second canvas or UI section that also listens for `FrameState`.
-    - Demonstrate that both views are driven by the same worker-hosted runtime.
+3.1 Handle input model changes safely
+- [ ] Verify the dashboard updates immediately when constraints are replaced.
+- [ ] Preserve control component state only when the same slot key remains valid; otherwise reset to new defaults.
 
 Acceptance criteria:
-- Two views within the same app show consistent state coming from the single worker-hosted runtime.
+- Re-loading an avatar with a different rig updates the discovered controls and current values cleanly.
 
-### 5. Integrate with Namespacing for multi-actor scenarios
+### 4. Validate distributed deployments
 
-5.1 Namespaced actors:
-- [ ] Use the `namespace` support from the Namespacing project to:
-    - Register multiple actors/faces with distinct namespaces in the worker-hosted orchestrator.
+4.1 Device separation smoke checks
+- [ ] Test control and face app running on separate browsers/devices against one runtime session.
+- [ ] Confirm controls send updates reliably and that failures produce actionable logs.
 
-5.2 View-specific focus:
-- [ ] Demonstrate that:
-    - One view can focus on one actor while another view focuses on another, using namespaced paths to filter or route data.
-
-Acceptance criteria:
-- Multi-screen demo shows at least two actors driven by a single runtime, with clear separation via namespaces.
-
-### 6. Document usage and limitations
-
-6.1 Add documentation to the app:
-- [ ] Update the demo app’s README or documentation to explain:
-    - How the worker is started.
-    - What message types are supported.
-    - How to add additional views.
-
-6.2 Note open questions:
-- [ ] Capture outstanding design questions, such as:
-    - How to persist or replay worker messages.
-    - How to handle error reporting and debugging in a worker context.
+4.2 Update docs and operator workflow
+- [ ] Update `vizij-web/apps/vizij-standalone/README.md` and related docs to describe:
+  - how to filter controls,
+  - how to run a separate control screen.
 
 Acceptance criteria:
-- Documentation exists that a junior developer can follow to add worker-based orchestration and multi-view support to another app.
+- Clear deployment/runbook that a teammate can execute without code reads.
 
 ## Acceptance Criteria (Overall)
 
-- A demo app runs with the orchestrator hosted in a Web Worker and renders based on worker-sent state.
-- The same worker-hosted runtime can drive at least two views in the app.
-- Namespacing is usable in the multi-screen scenario to distinguish actors.
-- The messaging model and limitations are documented for future expansion.
-
+- The control dashboard is automatically generated from constraints and is namespace-agnostic.
+- Operators can filter by namespace/topic and search without restart.
+- A split-screen or remote-control setup is documented and validated on local LAN.
