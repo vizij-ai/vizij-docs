@@ -1,6 +1,6 @@
 # Vizij Glossary
 
-<!-- tags: status=reference; topics=glossary,concepts -->
+<!-- tags: type=glossary; status=living; topics=glossary,concepts -->
 
 ## A–F
 
@@ -46,9 +46,15 @@ by the graph runtime.
 
 **IR (Graph IR)**: A higher‑level authoring representation of a graph that
 includes metadata and issues, then compiles down to a GraphSpec for execution.
+See [IR_GRAPH.md](IR_GRAPH.md) for canonical schema and compilation notes.
 
 **Input**: A live value staged into the blackboard or graph runtime, typically
 from UI or application drivers.
+
+**Binding Expression**: A small expression language used in authoring to combine
+binding slots (standard inputs, self, etc.) into a final driven value. It is
+parsed/validated in tooling and compiled into graph logic. See
+[BINDING_EXPRESSIONS.md](BINDING_EXPRESSIONS.md).
 
 **Keyframe**: A time‑stamped value on an animation track.
 
@@ -74,6 +80,11 @@ weights blend toward these targets at runtime.
 
 **Pose Graph**: The graph that blends pose weights and neutral values into
 concrete rig inputs.
+
+**Pose Graph Creation**: The authoring workflow and tooling that turns pose
+definitions and neutral inputs into a runnable pose graph (GraphSpec),
+including validation, remapping, and export/import. See
+[POSE_GRAPH_CREATION.md](POSE_GRAPH_CREATION.md).
 
 **Pose Rig**: The collection of pose definitions plus neutral inputs and
 metadata.

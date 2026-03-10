@@ -1,20 +1,32 @@
-# Vizij Authoring UI Program Summary
-<!-- tags: status=backlog; topics=ui-ux,workflow,theme,visuals -->
+# Vizij Secondary Creator Programs Summary
+<!-- tags: status=planned; topics=authoring,workflow,extensions,creator-programs -->
 
 ## Goals
-Refine and polish the Vizij Authoring experience to be a world-class, productivity-focused tool. This project focuses on visual aesthetics, interaction patterns, and workflow efficiency.
 
-## Backlog Projects
+Track the creator-facing programs that remain important in the current phase, but do not block the main creator/build reliability spine.
 
-### UI Improvements
-- **Function Editor**: Implement autocomplete (VSCode-like) and dedicated remap settings.
-- **Theme**: Update look/feel to Vizij branding (dense, power-user aesthetic).
-- **Undo/Redo Support**: Implement robust undo/redo for rig and binding state.
+## Status Note
 
-### Workflows
-- **Visual Handles**: On-screen manipulators for scene posing. See [Visual Handles Proposal](../../backlog/backlog_proposals/visual_handles-proposal.md).
-- **Face Editing**: Dedicated workflow for scene/face editing (parenting, duplicating). See [Face Editing Proposal](../../backlog/backlog_proposals/face_editing-proposal.md).
-- **Animation Authoring**: Import/Export and advanced timeline tools. See [Animation Authoring Proposal](../../backlog/backlog_proposals/animation_authoring-proposal.md).
+This summary lives under a historical `backlog/` path, but the items below should not be read as abandoned. They are subordinate creator programs that stay active while the current phase prioritizes reliability, sample assets, and deployable workflows.
 
-## Backlog Notes
-Moved to backlog on 2026-02-04 as priorities shifted toward HRI March deliverables.
+## Program Structure
+
+### Secondary creator programs
+
+- **Face Editing** — active secondary creator work for scene/face setup, hierarchy cleanup, and face-specific configuration. See [Face Editing Proposal](../../backlog_proposals/face_editing-proposal.md).
+- **Pose Rig Library** — active secondary creator work for reusable pose-rig artifacts and import/rebinding flows. See [Pose Rig Library Proposal](../../backlog_proposals/pose_rig_library-proposal.md).
+
+### Supporting creator backlog
+
+- **Animation Authoring** — richer timeline/import-export authoring beyond the current blocking creator spine. See [Animation Authoring Proposal](../../backlog_proposals/animation_authoring-proposal.md).
+
+### Later-horizon creator UX
+
+- **Visual Handles** — keep visible, but later-horizon for the current phase. See [Visual Handles Proposal](../../backlog_proposals/visual_handles-proposal.md).
+- **Function Editor**, **Theme**, and **Undo/Redo** remain useful UX work, but should not read as equally urgent with the blocking creator reliability/assets spine.
+
+## Current-Phase Rule
+
+These programs should stay visible and documented, but they should not block completion of the main creator gate:
+
+`import -> author/export -> runtime`

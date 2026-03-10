@@ -1,6 +1,6 @@
 # Vizij Reference Guide
 
-<!-- tags: status=reference; topics=reference,rigs,poses,graphs,animation -->
+<!-- tags: type=reference-guide; status=living; topics=reference,rigs,poses,graphs,animation -->
 
 ## 1. Rigs
 
@@ -218,6 +218,11 @@ core graph model.
   runtime.  
 - **IR (optional)**: a higher‑level authoring representation with metadata,
   issues, and bindings that compiles to GraphSpec.
+  - See: [IR_GRAPH.md](IR_GRAPH.md) for the canonical IR schema, compilation contract, and versioning guidance.
+- **Binding expressions**: authoring expressions that combine binding slots into final driven values; these compile into rig graph logic.
+  - See: [BINDING_EXPRESSIONS.md](BINDING_EXPRESSIONS.md).
+- **Pose graphs**: graphs that blend pose weights and neutral values into rig inputs; authoring tooling can create, validate, remap, and export these graphs.
+  - See: [POSE_GRAPH_CREATION.md](POSE_GRAPH_CREATION.md).
 
 **Where It Lives**  
 - As JSON graph specs in assets or bundles.  

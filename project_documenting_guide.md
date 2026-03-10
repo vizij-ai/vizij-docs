@@ -1,146 +1,161 @@
 # Project Documentation Guide
 
-> This guide defines how we structure project documentation inside the Authoring workspace. Every major architecture pillar should own a trio of documents – a proposal, a plan & tracking log, and a reference summary – so contributors can see where we are, what’s left, and how to use the finished work.
+> This guide defines how documentation is organized inside `vizij-docs` and how it relates to repo-local docs, the public website, assets, and transitional workspace notes.
 
-## 1. Document Families
+## 1. Source of Truth Model
 
-For each architecture element (e.g., Authoring Control Stack, Derived Input Hierarchy, Graph Authoring IR, Import/Export Pipeline, Robot Rig Mapping) create three documents. Maintain a single **project summary** (see Section 2) that indexes all pillars.
+Always verify against the current code surface first: workspace manifests, `package.json`, `Cargo.toml`, active README files, and real app/package presence are the primary evidence. Repo-local planning docs are useful, but they can drift.
 
-| Type | Purpose | Status Tag Defaults | When to Author |
-| --- | --- | --- | --- |
-| **Proposal** | Capture the problem, goals, high-level architecture, and rough execution plan before work starts. | `status=proposal` | During discovery/alignment. Update until the plan is accepted, then freeze (mark approvals/decision dates). |
-| **Plan & Tracking** | Provide the detailed work breakdown, ownership, sequencing, status, and immediate next steps while the effort is active. | `status=tracking` while in flight, `status=completed-with-follow-ups` or `status=reference` after closure | At kickoff (seed from approved proposal). Keep current during execution. Archive once the work becomes routine. |
-| **Reference** | Describe the delivered solution for future readers: goals, design, trade-offs, usage instructions, and maintenance notes. | `status=reference` (or `status=completed-archival` when superseded) | As work ships. Start with a skeleton so contributors can add notes during implementation. |
-| **Pillar Summary** | Maintain one index per pillar (e.g., `active_projects/authoring/summary.md`) that links to every project’s proposal/plan/reference, highlights current status, and notes recent updates/risks. | — | As projects are added or statuses change. |
-- **Pillar summary:** maintain one index per pillar that links to every project’s proposal/plan/reference.
+| Surface | Canonical For | Not Canonical For |
+| --- | --- | --- |
+| `vizij-docs` | Cross-repo architecture, roadmap framing, lifecycle status, decisions, known issues, release-note policy, pillar summaries | Repo-specific implementation detail or local operating procedures |
+| `vizij-rs` / `vizij-web` repo-local docs | Implementation contracts, package/app/crate workflows, detailed feature trackers, operator runbooks | Cross-repo strategic truth or public-facing narrative |
+| `vizij-ai.github.io` | Curated public docs, tutorials, showcases, external-facing narrative | Internal planning or detailed execution tracking |
+| `vizij-assets` | Binary source of truth for meshes, rigs, and graph assets | Architectural narrative or provenance explanations |
+| top-level `/docs` and `vizij-afternoon-workshop` | Transitional or historical material unless explicitly reactivated | Canonical internal or public documentation |
 
-## 2. Directory Structure & Naming
+### Cross-repo rule
 
-- **Hierarchy:** `active_projects/<pillar>/<project>/`
-  - Example: `active_projects/authoring/modular_pose_rig/`
-- **File naming:** `<project>-(proposal|plan|reference).md`.
-  - `modular_pose_rig-proposal.md`
-  - `modular_pose_rig-plan.md`
-  - `modular_pose_rig-reference.md`
-- **Tag header:** the first non-blank line after the `# Title` must include a comment with status/topic tags, e.g.
-  ```markdown
-  <!-- tags: status=proposal; topics=graph-ir,architecture,workflow -->
-  ```
-- **Cross-links:** immediately after the tag header, add a blockquote that links to the sibling documents and project summary, e.g. `> **Related documents:** [Plan](project-plan.md) · [Reference](project-reference.md) · [Pillar Summary](../../summary.md)`.
-- **Pillar Summary maintenance:** update the pillar's `summary.md` (e.g. `active_projects/authoring/summary.md`) whenever new project docs are created or statuses change. The summary should list each project and link to its proposal/plan/reference documents.
+If a repo-local doc owns the implementation detail for an area, `vizij-docs` should summarize it and link down to it rather than duplicate the whole tracker.
 
-## 3. Proposal Template
+Current example:
 
-Recommended outline (feel free to adapt per pillar):
+- `vizij-web/apps/vizij-authoring/docs` is authoritative for detailed authoring execution tracking.
+- `vizij-docs/active_projects/authoring/summary.md` is authoritative for the cross-repo summary, strategic framing, and links to related work.
 
-1. **Title** – `<Pillar Name> Proposal`
-2. **Tag header** – `status=proposal` plus relevant topics (e.g., `architecture`, `graph-ir`, `ui-ux`).
-3. **Context & Problem Statement**
-   - What currently exists?
-   - Why must it change (pain points, risks, opportunities)?
-4. **Goals & Non-goals**
-   - Bullet the outcomes we expect.
-   - Note explicit exclusions to limit scope.
-5. **Architectural Design**
-   - System overview diagrams or textual walkthrough.
-   - How the proposal integrates with adjacent systems.
-   - Data model updates / APIs / contracts to touch.
-6. **Risks & Trade-offs**
-   - Performance, complexity, migration considerations.
-7. **Approval & Decision Log**
-   - Stakeholders, decision dates, blockers.
-8. **High-level Execution Plan**
-   - Coarse workstreams or stages.
-   - Dependencies or sequencing notes.
+## 2. Document System
 
-## 4. Plan & Tracking Template
+The lifecycle system in `vizij-docs` has two axes:
 
-Seed from the proposal, then expand into a living tracker.
+1. **Document family** describes what kind of project doc it is.
+2. **Lifecycle status** describes where that work is in its lifecycle.
 
-1. **Title** – `<Pillar Name> – Plan & Tracking`
-2. **Tag header** – start with `status=tracking`. Append topics (e.g., `tooling`, `automation-testing`).
-3. **Objective & Scope Recap** – distilled from the proposal.
-4. **Workstreams / Deliverables**
-   - Break into subsections with status emojis or badges (✅, ⚠️, ☐, etc.).
-   - Each task should include: description, owner (optional), links to PRs/issues, and status notes.
-5. **Timeline / Stages**
-   - Stage definitions and completion status.
-6. **Immediate Next Steps**
-   - Short list of the next 2–4 actions with owners/due dates if known.
-7. **Risks & Mitigations**
-   - Keep current as work progresses.
-8. **Decision & Change Log**
-   - Reference major pivots, scope changes, approvals.
-9. **Validation / QA Checklist**
-   - Tests, sign-off steps, release gates.
-10. **Appendices (optional)**
-    - Links to dashboards, spreadsheets, external trackers.
+This applies to project docs under `active_projects/`, `backlog/`, and `archive/`. Living docs under `current_documentation/` are handled separately.
 
-When the effort winds down, freeze the plan (update status tag to `completed-with-follow-ups` or `reference`) and point readers to the reference doc.
+### Document Families
 
-### Status Emoji Legend
+| Family | Purpose | Typical file name |
+| --- | --- | --- |
+| `proposal` | Problem statement, goals, scope, and high-level direction before work starts | `<project>-proposal.md` |
+| `plan` | Sequencing, work breakdown, status notes, and immediate next steps once work is scoped | `<project>-plan.md` |
+| `reference` | Stable explanation of the delivered or accepted system for future readers | `<project>-reference.md` |
+| `summary` | Pillar or program-level index that links related work and gives the current cross-repo view | `summary.md` |
 
-Use consistent icons in tables or bullet lists so readers can scan progress quickly. Suggested set:
+### Lifecycle Statuses
 
-- ✅ **Complete** – Work is finished and verified.
-- 🚧 **In Progress** – Work actively underway; blockers (if any) should be noted.
-- 📝 **Planned** – Scoped and scheduled but not yet started.
-- ⏳ **Waiting** – Blocked or dependent on an external action (note the dependency).
-- ⚠️ **Risk / Attention** – Needs escalation, decision, or carries a significant issue.
-- ☐ **Backlog** – Known item without timeline commitment (optional if a backlog section already exists).
+Use these statuses consistently in tags, headings, and summary tables:
 
-Feel free to adapt the legend per project, but keep meanings documented near the first usage.
+| Status | Meaning |
+| --- | --- |
+| `proposed` | Discovery or intake stage; not yet accepted into scheduled work |
+| `planned` | Approved/scoped, but not yet actively underway |
+| `in_progress` | Active work or active summary of ongoing work |
+| `blocked` | Work exists but cannot currently move without another decision/dependency |
+| `done` | Completed and stable enough to summarize without active execution tracking |
+| `archived` | Historical, superseded, or intentionally retired |
 
-## 5. Reference Template
+Legacy tags such as `tracking`, `draft`, `planning`, and `backlog` still exist in older docs. Do not normalize the whole repo at once during unrelated work, but any touched docs should move to the current system.
 
-Use the reference doc to teach future readers how the system works and why.
+### Tag Header Pattern
 
-1. **Title** – `<Pillar Name> Reference`
-2. **Tag header** – `status=reference` plus relevant topics.
-3. **Summary**
-   - Goals achieved, current status.
-4. **System Overview**
-   - Architecture diagrams, key components, data flow.
-5. **Key Decisions & Trade-offs**
-   - What we considered, why we chose the current design.
-6. **Usage Guide**
-   - How to operate the system (API snippets, CLI commands, UI walkthroughs).
-7. **Maintenance & Extension**
-   - How to add nodes/features, regenerate assets, update configs.
-8. **Testing & Validation**
-   - Regression suites, manual QA checklists, monitoring dashboards.
-9. **Glossary / Terminology** (optional)
-10. **Further Reading**
-    - Links to proposal, plan, PRs, ADRs, related docs.
+For project docs, use both family and lifecycle state in the tag comment:
 
-For pillars still in flight, create the reference doc with section headings and mark TBDs. Update as features ship.
+```markdown
+<!-- tags: type=plan; status=in_progress; topics=authoring,workflow -->
+```
 
-## 6. Working With Old Documents
+For living docs in `current_documentation/`, use a purpose-specific `type` and `status=living`:
 
-As we migrate to this structure:
+```markdown
+<!-- tags: type=architecture; status=living; topics=architecture,repo-map -->
+```
 
-- **Harvest content** from existing docs (e.g., `stabilise_core_inputs_plan.md`, `stand_up_graph_ir_plan.md`, `hierarchical_graph.md`) and slot into the new templates.
-- **Archive or trim** legacy documents once their content is rehomed. Update their tag to `status=completed-archival` and link to the replacement files.
-- **Summary updates:** ensure `summary.md` points to the new proposal/plan/reference triads and calls out archived docs when relevant.
+Immediately below the tag comment, keep a short related-docs block when sibling docs exist.
+
+## 3. Directory Structure and Transition Rules
+
+| Path | Meaning |
+| --- | --- |
+| `current_documentation/` | Canonical living references: architecture, roadmap, decisions, known issues, release-note policy, workshops, and concepts |
+| `active_projects/<pillar>/` | Work that is currently active or currently summarized as active |
+| `backlog/backlog_proposals/` | Intake proposals and exploratory concepts not yet accepted into execution |
+| `backlog/active_projects/<pillar>/` | Approved/scoped backlog work that is not yet active |
+| `archive/` | Historical or superseded material |
+
+### Transition Rules
+
+1. New work starts in `backlog/backlog_proposals/` unless it is already accepted and scoped.
+2. Approved but not-yet-active work lives in `backlog/active_projects/<pillar>/`.
+3. Once work is truly active, move or summarize it under `active_projects/<pillar>/`.
+4. When a project becomes stable or historical, move it to `archive/` and update any summaries that point to it.
+5. The later comprehensive roadmap review is where broad promotion/demotion/backlog reshuffling should happen. A normal docs refresh should not silently perform that whole portfolio move unless explicitly asked.
+
+## 4. Working With Repo-Local Docs
+
+Repo-local docs can be more detailed and more current than `vizij-docs` for local execution. When that happens:
+
+1. verify the code surface first
+2. treat the repo-local docs as implementation-detail evidence
+3. update `vizij-docs` with the cross-repo summary and authority note
+4. link to the detailed local docs instead of copying their whole tracker
+
+Examples:
+
+- `vizij-web/apps/vizij-authoring/docs/*` for detailed authoring execution tracking
+- crate/package/app READMEs in `vizij-rs` and `vizij-web` for implementation workflows
+
+## 5. Living Documentation in `current_documentation/`
+
+These docs are not project triads. They are living program references and should stay concise and stable:
+
+- `ARCHITECTURE.md` — internal repo map and system boundaries
+- `ROADMAP.md` — current strategic ordering and high-level priorities
+- `DECISIONS.md` — irreversible or sticky decisions
+- `KNOWN_ISSUES.md` — cross-repo issue register
+- `release_notes/` — outward-facing change summaries and release-note policy
+
+Public-facing documentation is curated from these sources into `vizij-ai.github.io`; it is not mirrored automatically.
+
+## 6. Minimal Templates
+
+### Proposal
+
+1. Summary
+2. Context / problem
+3. Goals and non-goals
+4. Proposed direction
+5. Risks / unknowns
+6. Acceptance or success criteria
+
+### Plan
+
+1. Objective and scope
+2. Current state
+3. Planned phases or workstreams
+4. Current blockers / risks
+5. Acceptance criteria
+
+### Reference
+
+1. Summary
+2. How the system works
+3. Key decisions and trade-offs
+4. Usage / maintenance guidance
+5. Related docs
+
+### Summary
+
+1. Goals
+2. Authority note
+3. Linked project docs
+4. Current verified state
+5. Near-term focus
+6. Deferred or later review notes when relevant
 
 ## 7. Maintenance Checklist
 
-1. Create proposal → secure approvals → freeze.
-2. Spawn plan & tracking doc from the proposal once execution starts.
-3. Keep plan current (statuses, next steps, risk log).
-4. As work concludes, draft the reference doc.
-5. Update tags and `summary.md` entries to match the new state.
-6. Retire or simplify older docs to avoid divergence.
-
-## 8. Archiving Projects
-
-When a project is fully completed and stabilized:
-
-1.  **Move the Folder**: Move the entire project folder from `active_projects/<pillar>/<project>/` to `archive/<pillar>/<project>/`.
-2.  **Update Status**: Change the status tag in the plan to `status=completed-archival`.
-3.  **Update Summaries**:
-    -   Remove the project from the Pillar Summary (`active_projects/<pillar>/summary.md`).
-    -   Add a link to the archived project in the "Archived Projects" section of the Pillar Summary (create this section if it doesn't exist).
-    -   Update `ROADMAP.md` to reflect the completion (e.g., move to an "Archived/Completed" list or check it off).
-
-Following this pattern keeps the Authoring project documentation coherent, makes it obvious where to look for strategy vs. execution vs. reference, and helps new contributors ramp quickly.
+1. Verify current code and workspace reality before editing strategic docs.
+2. Update the relevant pillar `summary.md` whenever project state changes.
+3. Update `ARCHITECTURE.md`, `ROADMAP.md`, `DECISIONS.md`, or `KNOWN_ISSUES.md` when the change is cross-repo or irreversible.
+4. Keep public-docs implications in mind, but only move content into `vizij-ai.github.io` when it is ready for curated external use.
+5. If you touch transitional surfaces (`/docs`, workshop packs, one-off plans), either classify them clearly or point readers to the canonical location.

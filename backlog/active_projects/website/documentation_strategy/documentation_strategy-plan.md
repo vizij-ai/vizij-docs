@@ -1,83 +1,95 @@
-# Documentation Strategy & Content – Plan & Tracking
-<!-- tags: status=planning; topics=documentation,website,content-strategy -->
+# Documentation Strategy & Content - Plan & Tracking
+<!-- tags: type=plan; status=planned; topics=documentation,website,externalization -->
 
-> **Related documents:** [Project summary](../summary.md)
+> **Related documents:** [Website & Ecosystem summary](../summary.md) · [Architecture guide](../../../../current_documentation/ARCHITECTURE.md) · [Roadmap](../../../../current_documentation/ROADMAP.md)
 
 ## Objective & Scope
 
-Establish a coherent documentation strategy for Vizij that bridges `vizij-docs`, `vizij-rs`, `vizij-web`, and the external website. This plan focuses on defining what documentation we need, where it lives, and how it will be surfaced to users, without committing to specific website implementation details.
+Define how Vizij moves from internal engineering documentation to curated public docs, tutorials, workshop material, and shareable examples.
 
-## Plan
+This plan is about documentation flow, authority boundaries, and public-doc readiness. It is not yet the full project-by-project portfolio reshuffle, but it now assumes one explicit public system rather than parallel tutorial/workshop tracks.
 
-### 1. Define documentation audiences and goals
+## Current-State Notes
 
-1.1 Identify primary audiences:
-- [ ] Enumerate main reader types:
-    - Engine/runtime developers.
-    - Tooling/authoring developers.
-    - End users/animators.
-    - External integrators.
+- `vizij-docs` is the canonical internal cross-repo documentation layer.
+- Repo-local docs remain authoritative for implementation detail.
+- `vizij-ai.github.io` is already the active public site.
+- Tutorial/workshop content is currently fragmented across public, internal, repo-local, and transitional surfaces.
+- The maintained public path should be:
+  - `website -> Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`
 
-1.2 Map goals for each audience:
-- [ ] For each audience, write down:
-    - What they need to accomplish (e.g., “Integrate Vizij into a React app”).
-    - Which repositories and docs they should start from.
+## Planned Workstreams
 
-### 2. Inventory and classify existing docs
+### 1. Authority and audience model
 
-2.1 Collect existing documentation:
-- [ ] From `vizij-docs`:
-    - `current_documentation` (ARCHITECTURE, ROADMAP, DECISIONS, etc.).
-    - `active_projects` proposals/plans/references for key pillars.
-- [ ] From `vizij-rs` and `vizij-web`:
-    - Top-level READMEs.
-    - Package/crate-level READMEs.
+- Confirm which content stays internal, which content becomes public, and which content remains repo-local implementation detail.
+- Define the primary audiences for the public docs set:
+  - external builders following the maintained public path
+  - developers integrating Vizij runtime surfaces
+  - people learning authoring and deployment workflows
 
-2.2 Classify docs:
-- [ ] Tag each doc as:
-    - Reference (low-level detail, stable).
-    - Guide (task-oriented).
-    - Conceptual/architecture.
+### 2. Content inventory and classification
 
-### 3. Define the docs pipeline at a conceptual level
+- Inventory the current tutorial, workshop, architecture, and example surfaces across:
+  - `vizij-docs`
+  - `vizij-ai.github.io`
+  - repo-local tutorials in `vizij-web`
+  - top-level `/docs`
+  - `vizij-afternoon-workshop`
+- Classify each source as:
+  - internal canonical
+  - public canonical
+  - repo-local implementation detail
+  - transitional/historical
 
-3.1 Decide what flows to the website:
-- [ ] Identify which docs should be:
-    - Consumed directly from `vizij-docs` (e.g., high-level architecture).
-    - Generated from code (`cargo doc`, TypeDoc).
-    - Authored primarily in the website repo (e.g., marketing/landing content).
+Current default classification:
 
-3.2 Sketch pipeline stages:
-- [ ] Describe, at a high level:
-    - How architectural docs from `vizij-docs` will be exported/linked.
-    - Where code-generated API docs will live.
-    - How we might link back to internal references when needed.
+- `vizij-ai.github.io` = public canonical front door + core guides
+- repo tutorial apps in `vizij-web` = implementation-backed hands-on steps in the public spine
+- `vizij-docs` = internal canonical strategy/architecture/roadmap layer
+- top-level `/docs` = extract-and-archive source pack
+- `vizij-afternoon-workshop` = extract-and-archive event/workshop operations pack
 
-### 4. Seed key guides for `vizij-web` and `vizij-rs`
+### 3. Curated public-doc pipeline
 
-4.1 Authoring guides:
-- [ ] Create or refine guides in `vizij-docs` for:
-    - `vizij-web/apps/vizij-authoring` workflows (empty states, badges, derived inputs, import-only flows).
-    - Basic troubleshooting topics outlined in `vizij-web/apps/vizij-authoring/AGENTS.md`.
+- Define the pipeline from internal sources to `vizij-ai.github.io`.
+- Keep public docs curated rather than mirrored verbatim from internal docs.
+- Identify which internal docs should become:
+  - public conceptual guides
+  - public tutorials/walkthroughs
+  - generated reference docs
+  - internal-only documents
 
-4.2 Runtime guides:
-- [ ] Create or refine guides describing:
-    - The Node Graph IR, compiler, and registry.
-    - How `vizij-rs` and `vizij-web` interact via `@vizij/*-wasm`.
+Current target public-guide outputs on the site:
 
-### 5. Design versioning and release-note practices
+- evergreen getting-started guide for the maintained Vizij path
+- evergreen architecture guide that explains both the golden-path view and the deeper platform view
+- links out to repo/package/reference docs until a later migration
 
-5.1 Versioning approach:
-- [ ] Propose how documentation should handle:
-    - Multiple API/ABI versions.
-    - Breaking changes and migration paths.
+### 4. Tutorial and workshop convergence
 
-5.2 Release notes:
-- [ ] Define the structure for release notes in `vizij-docs/current_documentation/release_notes` and how they should be summarized on the website.
+- Unify the HRI tutorial/workshop direction with website walkthroughs and repo-local tutorial examples.
+- Decide which materials become:
+  - public maintained guides
+  - supporting repo examples
+  - archived or redirected historical packs
 
-## Acceptance Criteria (Overall)
+Current policy:
 
-- Documentation audiences and goals are clearly defined.
-- Existing docs are inventoried and classified.
-- A conceptual docs pipeline is described, even if not yet implemented in CI or the website.
-- Key guides for Authoring and Runtime exist and can be used as seed content for the external website.
+- there is one maintained tutorial spine
+- workshop materials wrap that spine operationally rather than competing with it
+- the HRI page remains event-specific and should point toward evergreen guides rather than becoming the hub itself
+
+### 5. Validation and maintenance
+
+- Define how published examples and walkthroughs get validated before sharing.
+- Define how release notes, known issues, and source-of-truth docs feed outward-facing content updates.
+
+## Acceptance Criteria
+
+- The internal/public/repo-local authority split is explicit.
+- Current tutorial/workshop surfaces are inventoried and classified.
+- There is a clear curated pipeline into `vizij-ai.github.io`.
+- The maintained public spine is explicit and tied to the real app sequence.
+- Old tutorial/workshop packs no longer read like co-equal canonical public destinations.
+- The later comprehensive roadmap review can use this plan to decide promotions, migrations, and archival moves without rediscovering the same governance questions.

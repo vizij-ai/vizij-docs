@@ -1,112 +1,227 @@
-# Vizij Architecture & Repo Guide
-<!-- tags: status=living; topics=architecture,repo-map,developer-guide -->
+# Vizij Architecture & Documentation Guide
+<!-- tags: type=architecture; status=living; topics=architecture,repo-map,documentation -->
 
-> **Status**: Living Document
-> **Audience**: Developers and maintainers
-> **Last Updated**: 2026-02-04
+> **Status**: Living document
+> **Audience**: Contributors who need the current cross-repo map
+> **Last updated**: 2026-03-10
 
-## 1. Purpose & Audience
+## 1. Purpose
 
-This document is a developer‑first guide to Vizij’s architecture and repo boundaries. It’s written for new engineers, maintainers, and the core team so we can orient quickly when returning to a subsystem.
+This is the canonical internal map of Vizij's current repo boundaries, major runtime surfaces, and documentation authority model.
 
-The intent is to capture **what exists and why it’s organized this way**. It complements the explainer material in `current_documentation/concepts/`, which focuses on conceptual mental models and user‑facing explanations. For step‑by‑step setup, build, and publishing instructions, defer to the README files in each repo—those are the authoritative “how‑to” sources.
+Read this document as the cross-repo summary, not the lowest-level implementation guide. When details matter, verify the current code surface from workspace manifests and repo-local README files, then follow the linked local docs.
 
-Think of this document as the map: it explains the major repos, how they relate, and the design choices that keep the system coherent. Keep it current as the roadmap evolves and as repo responsibilities shift.
+## 2. Two Simultaneous Views
 
-## 2. Repo Map (At a Glance)
+Vizij now needs to be documented through two views at once:
 
-| Repo | Primary Purpose | Best Entry Points |
+### A. Current public / golden-path view
+
+This is the near-term outward-facing story for external builders:
+
+`website -> Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`
+
+This is the view that should dominate public guides, onboarding, and roadmap framing.
+
+### B. Deeper platform view
+
+This is the structural system view behind that path:
+
+1. `vizij-rs` defines runtime semantics, wasm interfaces, and fixture contracts.
+2. `vizij-web` composes those contracts into authoring, runtime, tutorial, showcase, and standalone surfaces.
+3. `vizij-assets` carries the reusable binary meshes, rigs, and graph artifacts that make the public path demonstrable.
+
+Internal docs must preserve both views. Public docs should lead with view A and reveal view B deliberately.
+
+## 3. Documentation Authority by Surface
+
+| Surface | Canonical for | Notes |
 | --- | --- | --- |
-| `vizij-rs` | Rust runtime cores, WASM bindings, and npm wrappers that define deterministic runtime behavior. | `vizij-rs/README.md`, `vizij-rs/crates/`, `vizij-rs/npm/@vizij/`, `vizij-rs/fixtures/` |
-| `vizij-web` | TypeScript/React packages and apps for tooling, authoring, demos, and integrations that consume the WASM artifacts. | `vizij-web/README.md`, `vizij-web/packages/@vizij/`, `vizij-web/apps/`, `vizij-web/apps/vizij-authoring/` |
-| `vizij-ai.github.io` | Public website (Astro) for community content; will become the home for docs/tutorials/cookbooks. | `vizij-ai.github.io/README.md`, `vizij-ai.github.io/src/content/`, `vizij-ai.github.io/src/pages/`, `vizij-ai.github.io/public/admin/` |
-| `vizij-docs` | Architecture, roadmap, decisions, and long-form documentation for the platform. | `vizij-docs/current_documentation/`, `vizij-docs/active_projects/`, `vizij-docs/backlog/`, `vizij-docs/archive/` |
+| `vizij-docs` | Internal architecture, roadmap framing, lifecycle status, decisions, known issues, release-note policy | Summary-up layer for the whole platform |
+| `vizij-rs` / `vizij-web` local docs | Implementation detail, package/app/crate workflows, detailed execution tracking | May be more detailed than `vizij-docs`, but should not override cross-repo strategy |
+| `vizij-ai.github.io` | Curated public front door, core guides, showcase content, external narrative | Public-facing, audience-shaped output with link-outs to deeper reference docs |
+| `vizij-assets` | Binary source of truth for sample meshes, rigs, and graph assets | Narrative and provenance should live in docs, not in the asset repo alone |
+| top-level `/docs` and `vizij-afternoon-workshop` | Transitional or historical material | Extract durable content, then move these packs toward archive rather than treating them as co-equal doc homes |
 
-## 3. System Overview
+## 4. Repo Map
 
-Vizij is organized as a core repo system with a clean separation of concerns:
+| Repo / Surface | Current role | Best entry points |
+| --- | --- | --- |
+| `vizij-rs` | Engine-agnostic Rust runtime cores, wasm bindings, npm wrappers, fixtures | `vizij-rs/README.md`, `vizij-rs/Cargo.toml`, crate READMEs under `crates/**`, `npm/@vizij/*` |
+| `vizij-web` | TypeScript/React packages, demos, authoring surfaces, tutorial apps, standalone app, and protocol-related packages | `vizij-web/README.md`, `vizij-web/package.json`, `vizij-web/pnpm-workspace.yaml`, package/app READMEs |
+| `vizij-docs` | Canonical internal documentation and project/program layer | `current_documentation/*`, `active_projects/*/summary.md`, `backlog/*` |
+| `vizij-ai.github.io` | Active Semio Community / Vizij public site built with Astro and React | `vizij-ai.github.io/README.md`, `src/pages`, `src/content`, `docs/` |
+| `vizij-assets` | Shared sample/source assets used by demos and render/runtime flows | asset folders under `vizij-assets/*` |
+| top-level `/docs` | Workspace-local reports, plans, and tutorial drafts | Transitional input into the canonical docs flow |
+| `vizij-afternoon-workshop` | Historical or event-pack workshop materials | Transitional until unified into the maintained tutorial/workshop pipeline |
 
-- **`vizij-rs` (Rust runtime core)** — The deterministic “engine” that defines runtime semantics (Value/Shape/TypedPath), evaluates graphs, samples animations, and coordinates controllers via the orchestrator. It ships both native crates and WASM bindings.
-- **`vizij-web` (TypeScript + React tooling and apps)** — The primary developer and authoring surface. It consumes the `@vizij/*-wasm` packages from `vizij-rs`, exposes reusable JS/TS and React packages, and hosts apps for authoring, demos, and tutorials.
-- **`vizij-ai.github.io` (public website)** — The outward‑facing site. It will evolve into the canonical home for docs, tutorials, walkthroughs, and cookbooks, alongside broader communication and community content.
+## 5. System Overview
 
-The architectural split is intentional: the Rust core is the single source of truth for runtime behavior, while the web ecosystem focuses on tooling, authoring, and demos that exercise the engine. WASM packages are the bridge between these worlds, allowing web apps to consume the core without compiling Rust locally.
+Vizij is currently organized around three core technical layers and two documentation layers:
 
-React is a delivery mechanism, not a requirement. The React packages are meant to be published and used by teams who want them, but they are not the only way to build Vizij integrations. The render stack (`@vizij/render`) and authoring utilities (`@vizij/node-graph-authoring`) are core utilities, and the rest of the packages are structured to be useful even if the consumer chooses a different framework.
+1. **Rust runtime layer (`vizij-rs`)** — canonical runtime semantics, wasm bindings, shared fixtures, and support packages.
+2. **Web tooling and app layer (`vizij-web`)** — React/runtime packages, authoring app, tutorials, demos, showcase, and standalone application work.
+3. **Assets layer (`vizij-assets`)** — binary meshes, rigs, and graph artifacts reused across demos and tutorials.
+4. **Internal documentation layer (`vizij-docs`)** — cross-repo architecture, priorities, status, and operating rules.
+5. **Curated public documentation layer (`vizij-ai.github.io`)** — outward-facing tutorials, docs, and examples.
 
-Not all apps are product surfaces. Many apps in `vizij-web` are demos or tutorials that act as proofs of concept; those may later migrate to the public website (direction still open). The **authoring app** and the **public website repo** are the exceptions: they are ongoing tools that the team relies on beyond demonstration value.
+The cross-repo contract still runs through Rust-defined runtime data structures and wasm packages. The web layer consumes those packages and adds authoring, rendering, standalone, and tutorial surfaces on top.
 
-Longer‑term, the Rust side is expected to deepen its native integration (including Bevy/ECS). For now, Bevy adapters exist largely as stubs while the core runtime remains engine‑agnostic. This keeps the system focused on deterministic runtime logic, with optional integrations layered on top.
+## 6. Current External Delivery Surfaces
 
-## 4. vizij-rs Architecture
+The current public-facing delivery surfaces should be read in this order:
 
-`vizij-rs` is the source of truth for Vizij’s runtime semantics. It houses the deterministic engines for animation, node graphs, and orchestration, and it produces the WASM bindings that the web stack consumes.
+1. **`vizij-ai.github.io`** — public discovery, demos, project framing, and core guides.
+2. **`tutorial-fullscreen-face`** — first practical runtime success path.
+3. **`vizij-authoring`** — import, inspect, rig, and bundled export.
+4. **`demo-vizij-player`** — animation, orchestrator blending, and runtime integration.
+5. **`tutorial-agent-face`** — live conversation, gaze, and viseme-rich extension.
+6. **deployment references** — browser runtime and `vizij-standalone`.
 
-At a high level:
+These are not equal-weight demos. Together they define the maintained outward-facing system for this phase.
 
-- **Core runtime crates** live under `vizij-rs/crates/` and implement the real‑time engines.
-- **WASM bindings** expose those cores to JavaScript and are re‑packaged as npm modules under `vizij-rs/npm/@vizij/*-wasm`.
-- **Fixtures** under `vizij-rs/fixtures/` (and the `vizij-test-fixtures` crate) provide shared assets used by both Rust tests and web tooling to keep parity across stacks.
+`vizij-showcase` remains important as a shareable reference/demo surface, but not as the first onboarding step.
 
-The runtime is organized into domain stacks that mirror the conceptual layers described in the concepts docs:
+## 7. `vizij-rs` Current Architecture
 
-- **Animation stack** — deterministic sampling and blending of time‑based tracks.
-- **Node graph stack** — typed, deterministic data‑flow graphs for rig logic and control.
-- **Orchestrator stack** — the blackboard and scheduling layer that merges controller outputs into a single coherent frame.
+### Runtime stacks
 
-The web stack consumes these cores as pre‑built WASM packages: `vizij-web` treats the Rust output as a dependency, not as a build step. This keeps front‑end workflows fast and decoupled, while still grounding all runtime behavior in the Rust engine.
+`vizij-rs` currently contains these primary workspace crates:
 
-For domain‑specific details (crate layout, build workflows, and publish steps), start with `vizij-rs/README.md` and then drill into the crate‑level READMEs inside `vizij-rs/crates/`.
+- **API stack**
+  - `vizij-api-core`
+  - `vizij-api-wasm`
+  - `bevy_vizij_api`
+- **Animation stack**
+  - `vizij-animation-core`
+  - `vizij-animation-wasm`
+  - `bevy_vizij_animation`
+- **Node graph stack**
+  - `vizij-graph-core`
+  - `vizij-graph-wasm`
+  - `bevy_vizij_graph`
+  - `vizij-graph-registry-export`
+- **Orchestrator stack**
+  - `vizij-orchestrator-core`
+  - `vizij-orchestrator-wasm`
+- **Shared fixtures**
+  - `vizij-test-fixtures`
 
-## 5. vizij-web Architecture
+### Current architecture notes
 
-`vizij-web` is the TypeScript/React monorepo that turns the Rust runtime into practical tools and experiences. It is split into **packages** (reusable libraries) and **apps** (authoring surfaces, demos, and tutorials).
+- Rust remains the runtime source of truth for `Value`, `Shape`, `TypedPath`, graph evaluation, animation sampling, and orchestrator scheduling.
+- Bevy adapters currently exist for API, animation, and node graph. There is **no** orchestrator Bevy crate in the current workspace.
+- The npm wrappers under `vizij-rs/npm/@vizij/*` expose the wasm layer to the web stack.
+- Shared helper packages such as `@vizij/value-json`, `@vizij/wasm-loader`, and `@vizij/test-fixtures` keep JSON/loader/fixture behavior consistent across repos.
 
-Key points:
+## 8. `vizij-web` Current Architecture
 
-- **Packages** under `vizij-web/packages/@vizij/` wrap WASM runtimes and provide JS/TS utilities. The most foundational are **`@vizij/render`** (renderer + controllers) and **`@vizij/node-graph-authoring`** (graph IR tooling). These are core utilities, not just demo helpers.
-- **React packages** (`@vizij/*-react`) provide providers, hooks, and runtime bindings. They are intended for real usage but remain optional—teams can build integrations in other frameworks if desired.
-- **Apps** under `vizij-web/apps/` range from proof‑of‑concept demos to production‑quality tooling. The primary product‑like surface is **`vizij-authoring`**, which is used for rigging, binding, and export workflows. The rest of the apps are mostly demos/tutorials used for testing and showcasing capabilities, and may later migrate into the public website (direction still open).
+`vizij-web` is broader than the older repo summary docs implied. The current workspace includes published libraries, local-only helper packages, demo infrastructure, tutorials, and standalone-related surfaces.
 
-When working in this repo, the README is the canonical source for setup, build, validation, and local WASM linking workflows. Use it as the entry point, then dive into package‑level READMEs for deeper details.
+### Packages
 
-## 6. Website (vizij-ai.github.io) Role
+| Package | Role |
+| --- | --- |
+| `@vizij/animation-react` | React bindings for animation wasm |
+| `@vizij/node-graph-react` | React bindings for graph wasm |
+| `@vizij/orchestrator-react` | React orchestration provider/hooks |
+| `@vizij/render` | Three.js renderer and related controllers |
+| `@vizij/runtime-react` | Higher-level runtime provider that wires renderer + orchestration |
+| `@vizij/utils` | Shared utility layer |
+| `@vizij/node-graph-authoring` | Authoring/compiler helpers and IR inspection CLI |
+| `@vizij/minimal-demo-ui` | Shared UI/chrome for minimal demo apps |
+| `@vizij/arora-types` | TypeScript protocol contract surface for standalone/control work |
 
-`vizij-ai.github.io` is the public‑facing Vizij website. It is intentionally decoupled from the runtime/tooling repos and focuses on communication, documentation, and learning content.
+### Local protocol / standalone crates inside `vizij-web/packages`
 
-Key points for developers:
+- `packages/arora-connection`
+- `packages/arora-websocket`
 
-- It is built with Astro, MDX, and a CMS workflow geared toward content publishing.
-- This site will become the canonical home for Vizij docs, tutorials, walkthroughs, and cookbooks.
-- It has its own build/deploy pipeline and does not ship runtime code; it is a content surface, not a product runtime.
+These are real current implementation surfaces even though they are not TypeScript workspace packages.
 
-If you are working on product capabilities, you will likely be in `vizij-rs` or `vizij-web`. If you are documenting those capabilities for external readers, this repo is where that material will live.
+### Apps
 
-## 7. Cross-Repo Integration & Data Contracts
+| App | Role |
+| --- | --- |
+| `vizij-authoring` | Runtime-truthful authoring surface for rigs, bindings, pose workflows, and export |
+| `demo-vizij-player` | Authoring/runtime-facing demo for orchestrated playback |
+| `demo-animation-studio` | Animation-focused playground |
+| `demo-graph-studio` | Graph authoring/editor demo |
+| `minimal-demo-animation` | Minimal animation smoke surface |
+| `minimal-demo-animation-graph` | Combined animation + graph sample |
+| `minimal-demo-graph` | Minimal graph surface |
+| `minimal-demo-orchestrator` | Minimal orchestrator surface |
+| `tutorial-fullscreen-face` | Runtime tutorial example |
+| `tutorial-agent-face` | Tutorial/demo surface with agent interaction |
+| `vizij-showcase` | Shareable fullscreen showcase with runtime and voice features |
+| `vizij-standalone` | Tauri-based standalone application surface |
 
-Vizij’s cross‑repo integration is deliberately narrow and contract‑driven. The Rust core defines the canonical data model, and the web stack consumes it via published WASM packages and shared helpers.
+### Transitional runtime surface
 
-Key integration points:
+An additional `apps/vizij-ws-app` directory exists in the repo, but it is not part of the primary current pnpm app map or root app command set. Treat it as a still-normalizing implementation surface tied to the standalone/protocol work rather than as a first-class current app entry point.
 
-- **Core contracts**: `Value`, `Shape`, and `TypedPath` are defined in Rust (`vizij-api-core`) and mirrored in TypeScript via `@vizij/value-json`. These contracts keep graphs, animations, and rendering interoperable across stacks.
-- **WASM boundary**: `vizij-rs` publishes `@vizij/*-wasm` npm packages. `vizij-web` consumes those packages as dependencies rather than compiling Rust locally.
-- **ABI safety**: WASM packages expose an `abi_version()` and the loaders verify compatibility at runtime to avoid silent mismatches.
-- **Shared fixtures**: `vizij-test-fixtures` provides a common set of JSON fixtures used by both Rust tests and web tooling to keep behavior aligned.
-- **Glue utilities**: `@vizij/wasm-loader` standardizes WASM initialization and caching across apps; `@vizij/value-json` keeps JSON coercion behavior consistent.
+## 9. Deployment and Operator View
 
-Local linking and watch workflows exist for deep integration work, but the default assumption is to consume published packages so the web stack stays decoupled from the Rust toolchain.
+The near-term deployment story is intentionally broader than a single app:
 
-## 8. How the Pieces Work Together (End-to-End Flow)
+- **browser/runtime deployments** and **`vizij-standalone`** are both first-class references
+- **multi-screen and operator-control workflows** are core to the deployment story
+- **Arora / standalone protocol work** is part of the deploy branch, not a separate product story
+- **namespacing and shared multi-face runtimes** remain important, but they are later follow-on work rather than current deployment prerequisites
 
-A typical Vizij workflow starts in the authoring stack: in `vizij-authoring`, a developer or animator builds a rig, defines pose behavior, and configures graph logic. The resulting bundle is exported as a **GLB with embedded Vizij metadata**, including rig graphs, pose graphs/config, and optional animations. At runtime, a web app loads that GLB, registers the embedded graphs and animations with the orchestrator via the WASM bindings, and begins the update loop. Live inputs are staged onto the blackboard, graphs and animations evaluate and emit `WriteBatch` updates, the orchestrator merges those updates deterministically, and the renderer applies the resulting values to animatables in the scene. This same flow is mirrored across stacks: the Rust engine remains the source of truth, and the web layer simply hosts the loop and applies outputs.
+## 10. Authoring and Runtime Detail Ownership
 
-## 9. Roadmap Alignment & Where to Look Next
+- `vizij-docs` owns the cross-repo summary of authoring and runtime status.
+- `vizij-web/apps/vizij-authoring/docs/*` owns detailed authoring execution state, backlog detail, stage tracking, and local contracts.
+- `vizij-rs` README and crate docs own detailed runtime/package implementation notes.
+- Runtime/standalone work is currently spread across the `vizij-docs` runtime plan, `vizij-web` manifests, and the `arora-*` protocol surfaces.
 
-This document is the architectural map; the roadmap and supporting docs capture the shifting priorities and deeper rationale:
+## 11. Assets, Website, and Transitional Content
 
-- **Roadmap**: `vizij-docs/current_documentation/ROADMAP.md` for current priorities and sequencing.
-- **Concepts explainer**: `vizij-docs/current_documentation/concepts/` for user‑facing mental models and terminology.
-- **Decisions**: `vizij-docs/current_documentation/DECISIONS.md` for architectural trade‑offs.
-- **Repo READMEs**: `vizij-rs/README.md`, `vizij-web/README.md`, and `vizij-ai.github.io/README.md` for setup/build/publish workflows.
+### `vizij-assets`
 
-When repo boundaries or responsibilities change, update this architecture guide alongside the roadmap so new engineers always land in the right place.
+`vizij-assets` is the binary source of truth for shareable sample meshes and rig/graph assets.
+
+Current visible inventory includes raw and rigged assets such as Hugo, Quori, and Tiago. The near-term roadmap, however, treats **Quori / Hugo / Toasty** as the intended canonical sample set for the maintained creator path. That mismatch is real and should be resolved explicitly rather than hand-waved in docs.
+
+### `vizij-ai.github.io`
+
+`vizij-ai.github.io` is already an active public site, even though older internal docs sometimes described the website as a future state. In this phase, it should be treated as:
+
+- the public front door
+- the showcase surface
+- the home for evergreen core guides
+- the router into deeper reference docs that still live elsewhere
+
+### Transitional content
+
+Top-level `/docs` and `vizij-afternoon-workshop` still hold useful planning and workshop material, but they should now be treated as extract-and-archive sources rather than long-term maintained tutorial destinations.
+
+## 12. Cross-Repo Contracts
+
+The most important technical contracts still cross repo boundaries through:
+
+- `Value`, `Shape`, `TypedPath`, and related JSON helpers
+- wasm ABI/version alignment and loader behavior
+- fixture manifests and shareable sample assets
+- runtime bundle/export semantics used by authoring, tutorials, demos, and showcase surfaces
+
+Docs should describe these contracts once at the internal architecture layer and then link to repo-local implementation detail or public-facing examples as needed.
+
+## 13. Documentation Flow
+
+The intended flow is:
+
+1. verify current implementation from code and repo-local docs
+2. summarize cross-repo truth in `vizij-docs`
+3. curate stable public-facing guides into `vizij-ai.github.io`
+
+That means public docs are shaped outputs, not automatic mirrors of internal engineering docs.
+
+## 14. Where to Look Next
+
+- `vizij-docs/current_documentation/ROADMAP.md`
+- `vizij-docs/current_documentation/DECISIONS.md`
+- `vizij-rs/README.md`
+- `vizij-web/README.md`
+- `vizij-web/apps/vizij-authoring/docs/README.md`

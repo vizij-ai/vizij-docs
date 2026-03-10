@@ -1,26 +1,43 @@
 # Vizij Website & Ecosystem Program Summary
-<!-- tags: status=backlog; topics=website,documentation,showcase,cms,automation -->
+<!-- tags: type=summary; status=planned; topics=website,documentation,externalization,showcase -->
+
+Last updated: 2026-03-10
 
 ## Goals
-Build a comprehensive, high-quality web presence for Vizij that serves as the central hub for learning, documentation, and community. The site will be hosted in a separate repository, powered by a CMS, and utilize automated workflows to pull documentation directly from source repositories.
 
-## Backlog Projects
+Turn the current public site and surrounding tutorial/workshop/docs surfaces into one coherent outward-facing system for external builders.
 
-### Foundation
-- **Repo Setup**: Initialize `vizij_website` with CMS integration.
-- **Content Strategy**: Define "Zero to Hero" tutorial structure.
+## Status Note
 
-### Content & Launch
-- **Automated Docs**: Build GitHub workflows to sync API docs and guides.
-- **Interactive Tutorials**: "Zero to Hero" series with embedded Vizij players.
-- **Migration**: Move minimal demos and examples to the new site.
-- **Community Standards**: Publish standard faces and assets.
+This summary still lives under a `backlog/` path because the broader portfolio reshuffle has not happened yet. That folder placement is historical; the current roadmap now treats externalization and sharing as the lead strategic theme.
 
-### Full Site Sections
-- **Home**: Landing page with "wow" factor.
-- **Learn / Tutorials**: Structured learning paths.
-- **Reference / Docs**: Comprehensive API and usage documentation.
-- **Showcase**: Highlight partners and community projects.
+## Current Verified State
 
-## Backlog Notes
-Moved to backlog on 2026-02-04 as priorities shifted toward HRI March deliverables.
+- `vizij-ai.github.io` already exists as an active public-facing Astro/React site.
+- Vizij tutorial and workshop material is currently split across:
+  - `vizij-ai.github.io`
+  - `vizij-docs`
+  - repo-local tutorial apps in `vizij-web`
+  - top-level `/docs`
+  - `vizij-afternoon-workshop`
+- Public examples and walkthroughs depend on stable internal docs, shareable sample assets, and validated runtime/example flows.
+- The current site still behaves more like a discovery/showcase front door than a complete maintained onboarding path.
+
+## Document Families
+
+| Project | Status | Proposal | Plan | Reference |
+| --- | --- | --- | --- | --- |
+| Documentation Strategy & Content | `planned` | — | [`documentation_strategy-plan.md`](documentation_strategy/documentation_strategy-plan.md) | — |
+
+## Near-Term Priorities
+
+- Make `vizij-ai.github.io` the canonical public front door and home for evergreen core Vizij guides.
+- Publish the maintained public spine explicitly as:
+  - `website -> Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`
+- Keep deeper package/reference/generated docs linked out for now instead of pretending the site already hosts everything.
+- Reclassify top-level `/docs` and `vizij-afternoon-workshop` as source material to extract from and move toward archive.
+- Keep the HRI tutorial page event-specific rather than allowing it to read as the main evergreen onboarding hub.
+
+## Deferred Follow-Up
+
+The next comprehensive roadmap review should decide whether this program moves out of `backlog/`, what additional public guide pages it needs, and how quickly the older tutorial/workshop packs can be archived after extraction.

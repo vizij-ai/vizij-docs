@@ -1,49 +1,55 @@
-# Proposal: Rust Audio & Video Processing
-<!-- tags: status=draft; topics=runtime,rust,audio,video -->
+# Proposal: Speech + Viseme + Conversation Enablement
+<!-- tags: status=draft; topics=runtime,speech,viseme,conversation,audio -->
 
 > **Related documents:** Plan (pending) · Reference (pending) · [Runtime Summary](../summary.md)
 
 ## Context
 
-To enable rich interactive experiences and improved lip sync, we need to move audio and video processing into the Rust core. Currently, these are handled (if at all) in the web layer or via external tools, which limits performance and integration with the animation engine. We want to treat audio/video as first-class signals in the Vizij runtime, feeding into standard inputs (e.g., phoneme strengths, gaze targets) and orchestrated behaviors.
+The near-term AV need is narrower and more concrete than a generic full audio/video platform. The current public path already depends on conversation and voice-facing runtime behavior in places like `tutorial-agent-face` and `vizij-showcase`, and the main gap is making speech playback, viseme driving, and conversation-linked runtime inputs feel like a clean, deployable part of Vizij rather than ad-hoc demo logic.
+
+Broader Rust-centric audio/video feature extraction may still matter later, but it should not be the primary framing for the current phase.
 
 ## Goals
 
-- **Lip Sync**: Real-time audio analysis for high-quality lip sync that can drive standard inputs and facial pose rigs.
-- **Interaction**: Video processing for gaze tracking and facial expression mirroring, exposed to the orchestrator and graph systems.
-- **Performance**: Leverage Rust's performance for low-latency processing, with clear WASM boundaries and predictable resource usage.
+- **Speech Provider Abstraction**: Define a provider-based interface for speech playback and viseme event ingestion so demos and apps are not hard-coupled to one vendor or one app.
+- **Viseme Runtime Integration**: Drive viseme channels through the orchestrator/runtime path using stable standard-input or rig-channel conventions.
+- **Conversation Enablement**: Support live conversation and speech-rich demos as real maintained surfaces rather than special-case prototypes.
+- **Deployable Behavior**: Keep the speech/viseme line aligned with the browser and standalone deployment story where feasible.
 
-## Proposed Architecture
+## Proposed Strategy
 
-- **`vizij-av-core`**: A new crate for audio/video processing logic (analysis, feature extraction, basic filters).
-- **WASM Bridge**: Expose processing capabilities to the web runtime via dedicated WASM bindings, aligned with WASM Hardening practices.
-- **Integration**:
-  - Feed processed audio/video features directly into `vizij-animation-core` or `vizij-orchestrator-core` as values that can be mapped onto standard inputs (e.g., mouth openness, eye direction).
-  - Provide configuration options for how AV-derived features map into the standard-input schema for a given face or rig.
+- **Provider-first near-term architecture**
+  - Keep the near-term implementation centered on provider-based runtime integration in the web/runtime layer.
+  - Reuse `@vizij/runtime-react` input-driver patterns and orchestrator staging rather than introducing a broad new runtime subsystem first.
+- **Speech / viseme routing**
+  - Map speech/viseme events into rig inputs through orchestrator input staging.
+  - Keep mappings explicit and testable for maintained demo and deployment surfaces.
+- **Conversation surfaces**
+  - Treat `tutorial-agent-face` and similar conversation-linked apps as the proving ground for this line.
+- **Broader AV later**
+  - Keep larger Rust audio/video feature extraction as a later-horizon expansion once the current speech/viseme path is settled.
 
-## Phased Approach (Concept)
+## Phased Approach (Current)
 
-1. **Audio-Only Lip Sync (Phase 1)**
-   - Implement basic audio analysis (e.g., volume, energy bands, phoneme estimation) in `vizij-av-core`.
-   - Expose results as numeric streams that can be consumed by graphs or directly mapped to standard inputs (e.g., `mouthOpen`, `jawOpen`).
-2. **Video-Based Features (Phase 2)**
-   - Add video processing hooks (e.g., face tracking, gaze estimation) with a focus on feature extraction rather than full image processing.
-   - Expose outputs as values suitable for standard inputs (e.g., gaze direction) or BT conditions.
-3. **Configuration & Mapping**
-   - Provide configuration options (in JSON or bundle metadata) that define how AV features map to a given face's standard inputs and/or face-specific controls.
-   - Integrate these mappings into the Rigging/Face Editing workflow so authors can adjust and validate them.
-4. **Performance & Resource Control**
-   - Allow hosts to configure sampling rates, processing windows, and feature sets to balance quality and performance.
-   - Provide clear defaults and guidance for common use cases (e.g., streaming lip sync vs. occasional gaze updates).
+1. **Speech provider abstraction**
+   - Define the provider API for speech playback and viseme events.
+   - Keep app-level UI and runtime components decoupled from specific providers.
+2. **Viseme routing and timing**
+   - Route viseme events into the orchestrator/runtime path with clear timing and diagnostics.
+   - Validate behavior in maintained tutorial/demo surfaces.
+3. **Conversation-facing enablement**
+   - Support live conversation flows and deployment-friendly demos without forcing the whole roadmap through a broad AV-core rewrite.
+4. **Later-horizon AV expansion**
+   - Revisit broader audio/video feature extraction, video-derived inputs, and Rust-heavy AV architecture after the current public-system phase.
 
 ## Risks & Unknowns
 
-- **Complexity**: Audio and video processing can quickly become complex; we must scope this work to feature extraction and integration, not full DCC-grade processing.
-- **Performance & Latency**: Real-time processing has strict latency requirements; careful tuning and profiling on target platforms is required.
-- **Quality & Robustness**: AV feature extraction quality will vary with input conditions; we need to document assumptions and limitations clearly.
+- **Sync quality**: Speech playback and viseme timing must be good enough for public-facing demos and deployment stories.
+- **Provider variability**: Different backends may expose different timing and event fidelity.
+- **Scope drift**: It is easy for this line to collapse back into an overly broad “full Rust AV platform” project before the near-term speech/viseme needs are solved.
 
 ## Success Metrics
 
-- **Lip Sync Quality**: Ability to drive convincing lip sync for standard faces using live or recorded audio.
-- **Integration**: Clean integration with standard inputs and Pose Rig/Behavior Tree workflows.
-- **Performance**: Measured latency and CPU usage stay within acceptable bounds for typical use cases.
+- **Deployable speech/viseme flow**: Maintained Vizij demos can drive convincing speech-linked face behavior through the orchestrator/runtime path.
+- **Clean integration**: Speech and viseme routing fit the runtime/provider model rather than living as app-local glue only.
+- **Roadmap discipline**: The AV line stays framed around speech/viseme/conversation enablement now, while leaving room for broader later-horizon AV work.
