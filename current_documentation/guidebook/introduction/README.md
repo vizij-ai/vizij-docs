@@ -79,7 +79,7 @@ This bucket should establish:
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
 | What Is Vizij? | Surface | concept page | explain what Vizij is and what it enables |
-| How To Use This Guidebook | Surface | decision guide | route readers into the right bucket and depth |
+| [How To Use This Guidebook](how-to-use-this-guidebook.md) | Surface | decision guide | route readers into the right bucket and depth |
 | System Mental Model | Fundamentals | concept page | explain how the major parts relate |
 | Architecture Bridge | Advanced | reference bridge | connect the guidebook model to real implementation surfaces |
 

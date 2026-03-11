@@ -14,7 +14,7 @@ This bucket is the bridge between having a face or asset and having a runtime su
 This bucket should help a reader:
 
 1. get a face into a minimal useful player quickly,
-2. understand loading, transfer, playback, and embedding basics,
+2. understand loading, playback, and embedding basics,
 3. see how richer applications build on the same underlying ideas,
 4. move toward deployment with a real integrated artifact rather than a disconnected sample.
 
@@ -40,7 +40,7 @@ This bucket should help a reader:
 
 ### Fundamentals
 
-**Teaching objective:** establish the basic mechanics of loading, transfer, playback, embedding, and application-level integration.
+**Teaching objective:** establish the basic mechanics of loading, playback, embedding, and application-level integration.
 
 **Misunderstandings to prevent:**
 
@@ -80,8 +80,8 @@ This bucket should help a reader:
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
-| Minimal Web Player | Surface | walkthrough | get to the first useful integration success quickly |
-| Loading, Transfer, Playback, and Embedding | Fundamentals | concept page | explain the core mechanics of simple integration |
+| [Minimal Web Player](minimal-web-player.md) | Surface | walkthrough | get to the first useful integration success quickly |
+| [Loading, Playback, and Embedding](loading-playback-and-embedding.md) | Fundamentals | concept page | explain the core mechanics of simple integration |
 | Application Integration Patterns | Fundamentals | comparison | compare common simple embedding patterns |
 | API-Backed Interactive Application | Advanced | walkthrough | teach a richer API-backed application pattern |
 | Rich Interactive Applications | Advanced | operational guide | teach broader advanced application patterns |

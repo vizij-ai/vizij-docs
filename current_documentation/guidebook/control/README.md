@@ -81,8 +81,8 @@ This bucket should help a reader:
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
 | First Control Interactions | Surface | walkthrough | teach obvious visible control cause and effect |
-| Paths and Standard Controls | Fundamentals | concept page | establish the core control vocabulary |
-| Runtime Inputs and Semantics | Fundamentals | concept page | explain what inputs mean and what they write |
+| [Paths and Standard Controls](paths-and-standard-controls.md) | Fundamentals | concept page | establish the core control vocabulary |
+| [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md) | Fundamentals | concept page | explain what inputs mean and what they write |
 | Orchestration and Diagnostics | Advanced | operational guide | teach deeper runtime behavior and debugging |
 
 ## Recommended Teaching Approaches

@@ -80,8 +80,8 @@ This bucket should help a reader:
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
-| Easiest Standalone Deployment | Surface | walkthrough | deliver the first real deployment path |
-| Operator and Deployment Model | Fundamentals | concept page | explain what the deployed system consists of |
+| [Easiest Standalone Deployment](easiest-standalone-deployment.md) | Surface | walkthrough | deliver the first real deployment path |
+| [Operator and Deployment Model](operator-and-deployment-model.md) | Fundamentals | concept page | explain what the deployed system consists of |
 | Deployment Checks and Recovery | Fundamentals | operational guide | explain success criteria and recovery basics |
 | Hardware, ROS, and Multi-Screen Topologies | Advanced | comparison | teach deeper deployment patterns and tradeoffs |
 

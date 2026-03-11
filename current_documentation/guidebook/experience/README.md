@@ -80,9 +80,9 @@ This bucket should help a reader:
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
-| Hello Face Quickstart | Surface | walkthrough | deliver the fastest convincing first interaction |
+| [Hello Face Quickstart](hello-face-quickstart.md) | Surface | walkthrough | deliver the fastest convincing first interaction |
 | Richer Interactive Example | Surface | demo page | show a richer first-contact example without making it the main route |
-| Existing Asset Sandbox | Fundamentals | concept page | explain what the reader is touching and what the demo proves |
+| [Existing Asset Sandbox](existing-asset-sandbox.md) | Fundamentals | concept page | explain what the reader is touching and what the demo proves |
 | Sample Asset Exploration | Advanced | walkthrough | compare examples and mark the boundary to deeper work |
 
 ## Recommended Teaching Approaches
