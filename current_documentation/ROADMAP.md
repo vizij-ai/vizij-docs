@@ -5,9 +5,12 @@ This roadmap defines the current outward-facing Vizij system after the strategy 
 
 ## Current Phase Rule
 
-Protect one maintained golden path:
+Protect one maintained public learning system:
 
-`website -> Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`
+1. website as the landing and routing layer
+2. one mandatory builder spine:
+   `Hello Face -> Authoring -> Player -> Deployment`
+3. optional richer examples may branch after `Player`, but they should remain clearly secondary to the main route.
 
 This phase is intentionally **Layer-3-led** in presentation. Public readers should encounter the working product surfaces first, while `vizij-docs` continues to preserve the deeper Layer-1/2 platform architecture underneath them.
 
@@ -37,7 +40,7 @@ This phase is intentionally **Layer-3-led** in presentation. Public readers shou
 ### Near-term work
 
 - **Front door and core-guide cleanup**: update the public site so it points readers into evergreen Vizij guides instead of event-first learning paths.
-- **Canonical tutorial spine**: present the maintained public path explicitly as `Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`.
+- **Canonical tutorial spine**: present the maintained builder spine explicitly as `Hello Face -> Authoring -> Player -> Deployment`, with richer interactive examples framed as optional extensions rather than a mandatory middle step.
 - **Public doc routing with link-outs**: keep the site as the audience-shaped layer and link outward to repo/package/reference docs until a later migration.
 - **Historical hygiene**: reclassify old tutorial/workshop packs as source material to extract from and move toward archive quickly.
 - **Example validation**: keep published examples, walkthroughs, and tutorial snippets tied to real maintained apps.
@@ -55,9 +58,9 @@ This phase is intentionally **Layer-3-led** in presentation. Public readers shou
 A reader should be able to understand that current creator/build success means:
 
 1. import or start from a supported face
-2. author and rig it in `vizij-authoring`
+2. author and rig it in the current authoring surface
 3. export a bundled GLB
-4. run it successfully in the maintained runtime path
+4. run it successfully in the maintained player and deployment path
 
 ### Blocking spine for this phase
 

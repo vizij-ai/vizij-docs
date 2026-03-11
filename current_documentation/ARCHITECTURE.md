@@ -19,7 +19,10 @@ Vizij now needs to be documented through two views at once:
 
 This is the near-term outward-facing story for external builders:
 
-`website -> Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`
+1. website as the landing and routing layer
+2. one mandatory builder spine:
+   `Hello Face -> Authoring -> Player -> Deployment`
+3. optional richer examples may branch after `Player`, but they remain secondary to the main route.
 
 This is the view that should dominate public guides, onboarding, and roadmap framing.
 
@@ -72,11 +75,11 @@ The cross-repo contract still runs through Rust-defined runtime data structures 
 The current public-facing delivery surfaces should be read in this order:
 
 1. **`vizij-ai.github.io`** — public discovery, demos, project framing, and core guides.
-2. **`tutorial-fullscreen-face`** — first practical runtime success path.
-3. **`vizij-authoring`** — import, inspect, rig, and bundled export.
-4. **`demo-vizij-player`** — animation, orchestrator blending, and runtime integration.
-5. **`tutorial-agent-face`** — live conversation, gaze, and viseme-rich extension.
-6. **deployment references** — browser runtime and `vizij-standalone`.
+2. **Hello Face** — currently anchored by `tutorial-fullscreen-face` as the first practical runtime success path.
+3. **Authoring** — currently anchored by `vizij-authoring` for import, inspect, rigging, and bundled export.
+4. **Player** — currently anchored by `demo-vizij-player` for minimal web playback and runtime validation.
+5. **Richer interactive examples** — currently including `tutorial-agent-face` as optional API-backed extensions.
+6. **Deployment** — browser runtime, `vizij-standalone`, and future hardware-connected deployment paths.
 
 These are not equal-weight demos. Together they define the maintained outward-facing system for this phase.
 
