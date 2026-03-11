@@ -15,8 +15,9 @@ This bucket should help a reader:
 
 1. trigger clear visible responses,
 2. understand the difference between a visible control and the underlying runtime meaning,
-3. learn the core vocabulary of paths, standard controls, and runtime inputs,
-4. recognize where deeper orchestration, diagnostics, and richer interaction begin.
+3. learn the core vocabulary of paths, standard controls, runtime inputs, and related configuration layers,
+4. understand which control or configuration surface they are actually looking at,
+5. recognize where deeper orchestration, diagnostics, and richer interaction begin.
 
 ## Depth Ladder
 
@@ -46,7 +47,8 @@ This bucket should help a reader:
 
 1. confusing UI controls with runtime paths or values,
 2. not understanding what standard controls represent,
-3. not knowing how gaze, visemes, poses, or inputs differ in meaning.
+3. not knowing how gaze, visemes, poses, inputs, and bundle-level configuration differ in meaning,
+4. confusing authoring-facing configuration with deployment-facing operator controls.
 
 **Often useful content:**
 
@@ -83,13 +85,14 @@ This bucket should help a reader:
 | First Control Interactions | Surface | walkthrough | teach obvious visible control cause and effect |
 | [Paths and Standard Controls](paths-and-standard-controls.md) | Fundamentals | concept page | establish the core control vocabulary |
 | [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md) | Fundamentals | concept page | explain what inputs mean and what they write |
+| [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md) | Fundamentals | concept page | explain the major control and configuration surfaces and what they mean |
 | Orchestration and Diagnostics | Advanced | operational guide | teach deeper runtime behavior and debugging |
 
 ## Recommended Teaching Approaches
 
 1. Prefer cause-and-effect teaching over abstract control theory.
 2. Use diagrams or payload examples when they make semantics legible.
-3. Keep `Control` focused on runtime behavior before `Customize`.
+3. Keep `Control` focused on runtime behavior and configuration meaning before `Customize`.
 4. Make failure recognition part of advanced teaching rather than an afterthought.
 
 ## Cross-Links

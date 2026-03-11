@@ -15,8 +15,9 @@ This bucket should establish:
 
 1. that the guidebook is a teaching structure rather than the system architecture,
 2. the broad relationship between assets, runtime, control, customization, integration, and deployment,
-3. the main reader routes through the guidebook,
-4. where implementation truth lives when a reader is ready to go deeper.
+3. the core customization concepts readers will meet later, such as rigs, poses, animations, and procedural programs,
+4. the main reader routes through the guidebook,
+5. where implementation truth lives when a reader is ready to go deeper.
 
 ## Depth Ladder
 
@@ -46,7 +47,8 @@ This bucket should establish:
 
 1. confusing asset, runtime face, player, integration surface, and deployment target,
 2. assuming the quick-start surface is the whole system,
-3. assuming the teaching buckets are the engineering boundaries.
+3. entering `Customize` without understanding the basic meaning of rig, pose, animation, or procedural program,
+4. assuming the teaching buckets are the engineering boundaries.
 
 **Often useful content:**
 
@@ -81,6 +83,7 @@ This bucket should establish:
 | What Is Vizij? | Surface | concept page | explain what Vizij is and what it enables |
 | [How To Use This Guidebook](how-to-use-this-guidebook.md) | Surface | decision guide | route readers into the right bucket and depth |
 | System Mental Model | Fundamentals | concept page | explain how the major parts relate |
+| [Customization Concepts Primer](customization-concepts-primer.md) | Fundamentals | concept page | explain the core customization vocabulary before the authoring branch |
 | Architecture Bridge | Advanced | reference bridge | connect the guidebook model to real implementation surfaces |
 
 ## Recommended Teaching Approaches
@@ -88,7 +91,7 @@ This bucket should establish:
 1. Prefer clarity and routing over volume.
 2. Keep this bucket reader-facing even when it references architecture.
 3. Use diagrams when they reduce ambiguity, not because every page needs one.
-4. End pages with concrete next-step links into `Experience`, `Control`, or the relevant route.
+4. End pages with concrete next-step links into `Experience`, `Control`, `Customize`, or the relevant route.
 
 ## Cross-Links
 
@@ -98,4 +101,5 @@ This bucket should establish:
 4. [Guidebook Module Inventory](../module_inventory-reference.md)
 5. [Experience](../experience/README.md)
 6. [Control](../control/README.md)
-7. [Guidebook Support](../support/README.md)
+7. [Customize](../customize/README.md)
+8. [Guidebook Support](../support/README.md)
