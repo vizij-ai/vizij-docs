@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-bucket; status=in_progress; topics=guidebook,control,paths,inputs -->
+<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,control,paths,inputs -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** help readers see and control a face before they try to customize it
@@ -78,15 +78,15 @@ This bucket should help a reader:
 5. failure-state examples,
 6. implementation anchors.
 
-## Planned Modules
+## Bucket Modules
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
-| First Control Interactions | Surface | walkthrough | teach obvious visible control cause and effect |
+| [First Control Interactions](first-control-interactions.md) | Surface | walkthrough | teach obvious visible control cause and effect |
 | [Paths and Standard Controls](paths-and-standard-controls.md) | Fundamentals | concept page | establish the core control vocabulary |
 | [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md) | Fundamentals | concept page | explain what inputs mean and what they write |
 | [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md) | Fundamentals | concept page | explain the major control and configuration surfaces and what they mean |
-| Orchestration and Diagnostics | Advanced | operational guide | teach deeper runtime behavior and debugging |
+| [Orchestration and Diagnostics](orchestration-and-diagnostics.md) | Advanced | operational guide | teach deeper runtime behavior and debugging |
 
 ## Recommended Teaching Approaches
 

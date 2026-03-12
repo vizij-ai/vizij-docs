@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-bucket; status=in_progress; topics=guidebook,introduction -->
+<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,introduction -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** orient readers to Vizij and help them choose a route through the guidebook
@@ -76,15 +76,15 @@ This bucket should establish:
 4. architecture diagrams,
 5. guidebook cross-links back into practical modules.
 
-## Planned Modules
+## Bucket Modules
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
-| What Is Vizij? | Surface | concept page | explain what Vizij is and what it enables |
+| [What Is Vizij?](what-is-vizij.md) | Surface | concept page | explain what Vizij is and what it enables |
 | [How To Use This Guidebook](how-to-use-this-guidebook.md) | Surface | decision guide | route readers into the right bucket and depth |
-| System Mental Model | Fundamentals | concept page | explain how the major parts relate |
+| [System Mental Model](system-mental-model.md) | Fundamentals | concept page | explain how the major parts relate |
 | [Customization Concepts Primer](customization-concepts-primer.md) | Fundamentals | concept page | explain the core customization vocabulary before the authoring branch |
-| Architecture Bridge | Advanced | reference bridge | connect the guidebook model to real implementation surfaces |
+| [Architecture Bridge](architecture-bridge.md) | Advanced | reference bridge | connect the guidebook model to real implementation surfaces |
 
 ## Recommended Teaching Approaches
 

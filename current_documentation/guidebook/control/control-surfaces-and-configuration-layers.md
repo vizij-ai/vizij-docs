@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,control,configuration,control-surfaces -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,configuration,control-surfaces -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** explain the main control and configuration surfaces readers encounter and what each one is for
@@ -36,6 +36,8 @@ Readers encounter several different layers that all affect behavior, and those l
 This page explains those layers without collapsing them into one generic idea of “controls.”
 
 ## The Main Surfaces
+
+> TODO(content-model): Add a diagram here to show the six control and configuration layers as one stacked model from reusable rig channels through deployment-facing slots. Best fit because this module is teaching layer separation and readers need a visual map to keep adjacent surfaces from collapsing together.
 
 ### Standard Controls
 
@@ -99,6 +101,8 @@ Those are different surfaces with different responsibilities.
 
 ## Where Readers Encounter These Layers
 
+> TODO(content-model): Add a comparison table here to map each maintained app or package to the control/configuration layers it exposes directly. Best fit because this section is already cross-referencing concrete surfaces and a scan-friendly matrix would turn the prose into a reusable reference bridge.
+
 Current maintained anchors illustrate different parts of this stack:
 
 1. `tutorial-fullscreen-face` exposes standard controls and pose-trigger behavior,
@@ -130,4 +134,4 @@ Use these when you need the current implementation truth:
 ## Next Step
 
 1. If you want the authoring concepts behind pose, animation, and procedural work, read [Customization Concepts Primer](../introduction/customization-concepts-primer.md).
-2. If you want deeper runtime debugging and richer behavior shaping, continue later to `Orchestration and Diagnostics`.
+2. If you want deeper runtime debugging and richer behavior shaping, continue to [Orchestration and Diagnostics](orchestration-and-diagnostics.md).

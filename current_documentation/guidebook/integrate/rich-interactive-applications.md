@@ -1,0 +1,278 @@
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,interactive-applications,advanced,runtime-react -->
+
+> **Last updated:** 2026-03-11
+> **Purpose:** explain how richer Vizij applications grow beyond the minimal player while preserving the same runtime contract and honest ownership boundaries
+
+# Rich Interactive Applications
+
+## Reader Outcome
+
+After this page, you should be able to explain how richer Vizij applications grow from the same runtime foundation while adding:
+
+1. local interaction layers,
+2. service-backed behavior loops,
+3. larger app-shell responsibilities,
+4. more explicit readiness and failure surfaces.
+
+You should also be able to explain what makes an app `richer` without pretending it is a different Vizij runtime.
+
+## Intended Audience
+
+This page is for readers who already understand:
+
+1. [Loading, Playback, and Embedding](loading-playback-and-embedding.md),
+2. [Application Integration Patterns](application-integration-patterns.md),
+3. [API-Backed Interactive Application](api-backed-interactive-application.md) if they want one concrete advanced example first.
+
+This page is an advanced integration guide. It is not the first page most readers need.
+
+## What You Need
+
+It helps if you can inspect these maintained anchors:
+
+1. `vizij-web/packages/@vizij/runtime-react/README.md`,
+2. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`,
+3. `vizij-web/apps/tutorial-agent-face/src/hooks/useGeminiLive.ts`,
+4. `vizij-web/apps/tutorial-agent-face/src/hooks/useAgentFaceTools.ts`.
+
+It also helps if you keep the `Integrate` boundary clear:
+
+1. this bucket owns application assembly,
+2. `Deploy` owns endpoint and operator topology,
+3. `Support` owns reusable validation and recovery language.
+
+## Artifact Being Touched
+
+The artifact here is the richer application shell around a Vizij runtime surface:
+
+1. one or more face runtime views,
+2. local interaction hooks and behavior rules,
+3. service or session layers when present,
+4. stateful surrounding UI,
+5. readiness, error, and recovery surfaces.
+
+This is broader than a minimal player because the face is now one feature inside a more capable product surface.
+
+## Why This Page Exists
+
+This page needs to exist separately because the guidebook now has:
+
+1. fundamentals pages that explain the integration model,
+2. one concrete advanced page that shows an API-backed pattern,
+3. a remaining need for a broader advanced page that explains how richer apps stay coherent as they grow.
+
+Without this page, readers often make one of two mistakes:
+
+1. they stretch a simple player into a larger app without defining new ownership boundaries,
+2. they assume a richer app must replace the existing Vizij runtime model.
+
+This page prevents both.
+
+## What Makes An Application Richer
+
+A richer application is not defined by having more chrome on the screen.
+
+It becomes richer when the app owns more than basic loading and face display. In practice, that usually means the app now owns some mix of:
+
+1. local interaction rules,
+2. service or session coordination,
+3. higher-stakes feedback and status surfaces,
+4. larger product workflows around the face.
+
+The face is still important, but it is no longer the entire product surface.
+
+## One Runtime Contract, More App Ownership
+
+The stable contract still looks the same:
+
+```text
+asset bundle
+-> runtime provider
+-> orchestrator-managed updates
+-> renderer-facing output
+-> visible face
+```
+
+What changes in richer applications is the amount of application-owned logic around that chain.
+
+The important rule is:
+
+add app ownership without bypassing the runtime contract.
+
+That means:
+
+1. keep runtime readiness explicit,
+2. keep path and face identity discipline intact,
+3. translate app or service intent into runtime helpers,
+4. expose failures at the layer that actually failed.
+
+## The Main Rich-App Shapes
+
+> TODO(content-model): Add a comparison table here to distinguish local interactive surfaces, service-backed app shells, and orchestration-heavy shells by ownership, complexity, and teaching goal. Best fit because this section introduces multiple advanced shapes and readers need a compact contrast before the prose branches further.
+
+Richer Vizij applications usually grow along three axes.
+
+### 1. Local interactive face surfaces
+
+This is the first richer step.
+
+The app keeps the provider-owned runtime shell, then adds local behavior such as:
+
+1. gaze input,
+2. pose triggers,
+3. lightweight idle behavior,
+4. local HUD controls,
+5. immediate status feedback.
+
+This shape is still fairly contained, but it already requires the app to own behavior timing and readiness gating more carefully than a minimal player.
+
+### 2. Service-backed interactive surfaces
+
+This is the next richer step.
+
+The app now owns a separate service or session layer and a translation boundary between that layer and the Vizij runtime.
+
+The maintained `tutorial-agent-face` example shows this clearly:
+
+1. the runtime shell stays provider-based,
+2. the service session has its own connection state,
+3. tool calls are translated into runtime actions,
+4. the app surfaces transcripts, toggles, and connection feedback.
+
+This is richer because the face participates in a broader behavior loop instead of only reacting to local UI events.
+
+### 3. Larger app shells around the face
+
+A richer app can also grow by surrounding the face with more application state and user workflow.
+
+That can include:
+
+1. panels and controls around the face,
+2. session management,
+3. comparison or diagnostics surfaces,
+4. explicit mode switching,
+5. app-specific feature state that is not itself part of Vizij runtime semantics.
+
+This is still `Integrate` work as long as the question is:
+
+`How does the face live inside my application?`
+
+Once the question becomes:
+
+`How do operators, devices, or deployment topologies use this endpoint?`
+
+you are crossing into `Deploy`.
+
+## The Four Ownership Boundaries That Matter
+
+> TODO(content-model): Add a diagram here to show runtime readiness, session readiness, app UI ownership, and control-path ownership as separate boundaries. Best fit because this section is about keeping layers disentangled and a boundary map would reinforce that separation better than text alone.
+
+Richer apps stay understandable when four ownership boundaries stay explicit.
+
+### 1. Runtime readiness ownership
+
+The Vizij runtime still owns whether the face is loaded, initialized, and ready to accept meaningful control.
+
+Do not hide this behind app-level session state.
+
+### 2. Session readiness ownership
+
+If a service or live API is involved, that layer owns its own readiness.
+
+Do not collapse session connection truth into runtime truth.
+
+### 3. Tool or behavior translation ownership
+
+The application owns the bridge between external intent and valid Vizij runtime action.
+
+That includes:
+
+1. validating requested behaviors,
+2. resolving supported paths or pose bindings,
+3. deciding which runtime helper to call,
+4. surfacing failures honestly.
+
+### 4. Product-surface ownership
+
+The application also owns the surrounding user experience:
+
+1. which controls are visible,
+2. what status is shown,
+3. what fallback or recovery path the user gets,
+4. how the face relates to the broader feature.
+
+If these four ownership boundaries blur together, richer apps become difficult to maintain and difficult to teach.
+
+## What Rich Applications Still Must Not Do
+
+A richer app still must not:
+
+1. treat service events as direct renderer writes,
+2. ignore path and face identity contracts,
+3. claim the face is healthy when only the service is healthy,
+4. drift into deployment concerns before the application surface is stable,
+5. use optional provider-specific behavior as if it were the universal Vizij contract.
+
+These are the most common sources of conceptual drift.
+
+## A Practical Growth Sequence
+
+> TODO(content-model): Add a workflow map here to show the safest progression from minimal provider shell through local interaction, service-backed behavior, and larger app-shell ownership. Best fit because this section is explicitly sequencing growth and readers need a visual of the layering logic, not just the numbered list.
+
+The safest way to grow into a richer application is usually:
+
+1. start with a minimal provider shell,
+2. add local interactive behavior,
+3. add a service-backed or session-backed layer if the product needs it,
+4. expand surrounding UI and diagnostics only when the previous layer is already understandable.
+
+This sequence matters because it lets the app add responsibility in layers without losing the stable runtime foundation underneath.
+
+## What This Page Does And Does Not Cover
+
+This page does cover:
+
+1. the stable runtime contract inside richer apps,
+2. the main ways a Vizij app becomes richer,
+3. the ownership boundaries that keep richer apps coherent,
+4. the boundary between advanced integration and deployment.
+
+This page does not cover:
+
+1. provider account setup,
+2. speech transport engineering,
+3. production auth, security, or observability,
+4. operator hardware and multi-screen topology,
+5. ROS or robot middleware integration.
+
+Those are downstream concerns.
+
+## Success Check
+
+You are done with this page when:
+
+1. you can explain what makes an app richer without calling it a different runtime,
+2. you can describe the difference between runtime readiness and session readiness,
+3. you can explain why the app owns the translation boundary from service or UI intent into Vizij runtime actions,
+4. you know when an advanced integration question has become a deployment question.
+
+## Implementation Anchors
+
+Use these when you need the current implementation truth:
+
+1. `vizij-web/packages/@vizij/runtime-react/README.md`
+2. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
+3. `vizij-web/apps/tutorial-agent-face/src/hooks/useGeminiLive.ts`
+4. `vizij-web/apps/tutorial-agent-face/src/hooks/useAgentFaceTools.ts`
+5. `current_documentation/guidebook/integrate/loading-playback-and-embedding.md`
+6. `current_documentation/guidebook/integrate/application-integration-patterns.md`
+7. `current_documentation/guidebook/integrate/api-backed-interactive-application.md`
+8. `current_documentation/guidebook/control/orchestration-and-diagnostics.md`
+
+## Next Step
+
+If you want to see one richer surface from the user side, continue to [Richer Interactive Example](../experience/richer-interactive-example.md).
+
+If you are ready to think about operator-facing endpoints and deployment choices, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+
+If you realize you still need the lighter route, go back to [Application Integration Patterns](application-integration-patterns.md).

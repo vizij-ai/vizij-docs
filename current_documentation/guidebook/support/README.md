@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-bucket; status=in_progress; topics=guidebook,support,validation,troubleshooting -->
+<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,support,validation,troubleshooting -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** provide the reusable validation and recovery layer behind the maintained guidebook route
@@ -18,14 +18,14 @@ This section should help readers and facilitators:
 3. recover without losing the teaching objective,
 4. reuse the same support language across docs, tutorials, and workshops.
 
-## Planned Modules
+## Bucket Modules
 
 | Module | Module type | Teaching focus |
 | --- | --- | --- |
 | [Validation Checkpoints](validation-checkpoints.md) | support guide | define reusable success criteria across the maintained route |
 | [Troubleshooting Matrix](troubleshooting-matrix.md) | support guide | collect route-level failure patterns and recovery paths |
-| Media Intake and Usage Guide | operational guide | classify screenshots, videos, and evergreen media usage |
-| Glossary and Terminology Bridge | reference bridge | stabilize public vocabulary across buckets |
+| [Media Intake and Usage Guide](media-intake-and-usage-guide.md) | operational guide | classify screenshots, videos, and evergreen media usage |
+| [Glossary and Terminology Bridge](glossary-and-terminology-bridge.md) | reference bridge | stabilize public vocabulary across buckets |
 
 ## Rule
 

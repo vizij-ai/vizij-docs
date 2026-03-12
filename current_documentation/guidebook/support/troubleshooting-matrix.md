@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,support,troubleshooting,matrix -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,support,troubleshooting,matrix -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** collect the common route-level failure patterns and the fastest guidebook-aligned recovery paths
@@ -29,6 +29,8 @@ The artifact here is the route-level recovery model:
 
 ## Matrix
 
+> TODO(content-model): Add annotated failure-state screenshots here to show what the most important wrong states look like across the maintained route. Best fit because this matrix is symptom-driven and readers need visual recognition cues, not only textual symptom names.
+
 | Symptom | Likely cause | Where to inspect | Fast recovery |
 | --- | --- | --- | --- |
 | Face does not render | missing asset, missing WASM, wrong repo root, broken dev environment | app terminal output, app loading state, current working directory | restart the app, verify repo root, confirm asset path and WASM setup |
@@ -40,6 +42,8 @@ The artifact here is the route-level recovery model:
 | Deployment section feels too heavy | packaging or Tauri setup is unrealistic for the current context | room constraints, machine readiness, available time | keep the teaching goal at operator-model understanding and defer binary shipping to a later session |
 
 ## How To Read The Matrix
+
+> TODO(content-model): Add an escalation-flow diagram here to show when a reader should retry, simplify the route, switch to conceptual recovery, or escalate into deeper debugging. Best fit because this support page is about recovery decisions and those decisions are easier to follow as a small branching flow.
 
 Use the matrix in this order:
 

@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,control,paths,standard-controls -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,paths,standard-controls -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** explain the core path and standard-control vocabulary behind visible runtime behavior
@@ -78,6 +78,8 @@ These are useful when you want named facial states or authored expressions that 
 
 ## Viseme Weight Path Shape
 
+> TODO(content-model): Add a comparison here to distinguish standard controls, pose weights, and viseme weights in one compact block of path shape, semantic role, and typical UI surface. Best fit because this page is defining adjacent vocabulary that readers will otherwise blur together.
+
 Another common category is visemes:
 
 ```text
@@ -115,6 +117,8 @@ You will see these ideas repeated across Vizij:
 4. Would this path make sense to expose in a simple UI, or is it more diagnostic or advanced?
 
 ## Current Useful Visual
+
+> TODO(content-model): Add a diagram here to label the face id, category, channel, track, and attribute parts of a representative path. Best fit because this fundamentals page is teaching path anatomy and a dedicated diagram is more durable than asking readers to infer structure from prose alone.
 
 The best wave-1 visual is still the existing `tutorial-fullscreen-face` screenshot plus the code in:
 

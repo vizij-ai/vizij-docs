@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-bucket; status=in_progress; topics=guidebook,customize,authoring -->
+<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,customize,authoring -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** organize the customization and ownership work that lets readers make a face their own
@@ -76,18 +76,19 @@ This bucket should help a reader:
 5. failure-state examples,
 6. implementation anchors.
 
-## Planned Modules
+## Bucket Modules
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
-| Tweak an Existing Face | Surface | walkthrough | deliver the fastest customization success |
-| Import and Reference-Face Transfer | Fundamentals | concept page | explain source assets and transfer flow |
-| Rigging | Fundamentals | concept page | explain what rigging means in Vizij |
-| Poses | Fundamentals | concept page | explain pose authoring and visible changes |
-| Animations | Fundamentals | concept page | explain animation authoring and usage |
-| Procedural Programs | Fundamentals | concept page | explain authored procedural behavior |
-| Export | Fundamentals | operational guide | explain what leaves authoring and how later stages consume it |
-| Deep Custom Pipeline | Advanced | walkthrough | teach the fuller make-it-your-own path |
+| [Tweak an Existing Face](tweak-an-existing-face.md) | Surface | walkthrough | deliver the fastest customization success |
+| [Import](import.md) | Fundamentals | concept page | explain what enters authoring and what import validates |
+| [Reference-Face Transfer](reference-face-transfer.md) | Fundamentals | concept page | explain authoring-side transfer from a reference face to the main face |
+| [Rigging](rigging.md) | Fundamentals | concept page | explain what rigging means in Vizij |
+| [Poses](poses.md) | Fundamentals | concept page | explain pose authoring and visible changes |
+| [Animations](animations.md) | Fundamentals | concept page | explain animation authoring and usage |
+| [Procedural Programs](procedural-programs.md) | Fundamentals | concept page | explain authored procedural behavior |
+| [Export](export.md) | Fundamentals | operational guide | explain what leaves authoring and how later stages consume it |
+| [Deep Custom Pipeline](deep-custom-pipeline.md) | Advanced | walkthrough | teach the fuller make-it-your-own path |
 
 ## Recommended Teaching Approaches
 

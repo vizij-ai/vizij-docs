@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,experience,hello-face,runtime -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,hello-face,runtime -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** deliver the fastest convincing first Vizij runtime success with a working face
@@ -55,6 +55,8 @@ Open the local URL printed by Vite.
 
 You should see a fullscreen face render successfully.
 
+> TODO(content-model): Add an annotated screenshot here to show the fullscreen face state and the interaction hotspots a first-time reader should notice. Best fit because this walkthrough teaches a real visible surface and an annotated screenshot would reduce first-contact ambiguity before the reader starts interacting.
+
 ### 2. Trigger one visible runtime behavior
 
 Do two quick interaction checks:
@@ -87,6 +89,8 @@ Open `useMouseGaze.ts` and find the eye-control path pattern.
 Open `usePoseHotkeys.ts` and find the pose-weight path pattern.
 
 You do not need to understand every line yet. The important idea is that visible behavior is being driven through stable runtime path writes, not through one-off view logic.
+
+> TODO(content-model): Add a short video clip here to show mouse gaze and pose hotkey cause-and-effect in motion. Best fit because Experience surface pages benefit from motion evidence and the live behavior is the teaching point, not the code listing alone.
 
 ## What To Notice
 

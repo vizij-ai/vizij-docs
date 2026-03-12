@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,introduction,routing -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,routing -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** help readers choose the right route and depth in the guidebook without front-loading unnecessary complexity
@@ -49,6 +49,8 @@ Each bucket supports three depth levels:
 3. `Advanced`
    - go deeper into ownership, extension, or more complex implementation patterns
 
+> TODO(content-model): Add a workflow map here to connect bucket order with the three depth levels. Best fit because this page is a decision guide and readers need one compact visual that shows how route choice and depth choice interact.
+
 ## Start Here If
 
 ### You want the fastest believable route to a working deployment
@@ -86,6 +88,8 @@ Jump directly to the bucket that matches the problem you are trying to solve:
 3. `Customize` if you need authoring and export,
 4. `Integrate` if you need a runtime shell or application embedding,
 5. `Deploy` if you need a real endpoint, operator flow, or standalone path.
+
+> TODO(content-model): Add a comparison here to contrast the fast deployment route, the customization route, and the single-bucket jump-in option. Best fit because this section is already where readers choose among adjacent paths and would benefit from a scan-friendly side-by-side.
 
 ## What This Guidebook Does Not Replace
 
@@ -125,5 +129,5 @@ Use these when you need the canonical framing behind this page:
 ## Next Step
 
 1. New reader: [Hello Face Quickstart](../experience/hello-face-quickstart.md)
-2. Reader who wants the system map first: [Introduction](README.md)
+2. Reader who wants the bucket overview first: [Introduction](README.md)
 3. Reader who already saw a demo and needs semantics: [Paths and Standard Controls](../control/paths-and-standard-controls.md)

@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook; status=in_progress; topics=guidebook,documentation,website,tutorials,workshops,matrix -->
+<!-- tags: type=guidebook; status=written; topics=guidebook,documentation,website,tutorials,workshops,matrix -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** canonical markdown source of truth for reusable Vizij teaching content

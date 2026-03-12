@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,deploy,standalone,operator -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,standalone,operator -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** deliver the cleanest first deployment endpoint in the guidebook route
@@ -52,6 +52,8 @@ It means:
 That is enough for the first deployment endpoint. ROS, hardware, and multi-screen topologies come later.
 
 ## Walkthrough
+
+> TODO(content-model): Add an annotated screenshot here to show the standalone app’s first deployment states, including loading, ready, error, and no-model-loaded. Best fit because this walkthrough teaches readers how to judge a deployment-shaped surface from visible state first.
 
 ### 1. Launch the standalone app in development
 
@@ -108,6 +110,8 @@ That is the boundary between the first deployment walkthrough and deeper operato
 
 ## First Operator Check
 
+> TODO(content-model): Add a checklist here to turn the operator check into a reusable pre-demo or pre-installation gate. Best fit because this section is already phrased as a compact readiness loop and would be stronger as an explicitly reusable operational artifact.
+
 The first operator check is simple:
 
 1. the face is loaded,
@@ -143,5 +147,5 @@ Use these when you need the current implementation truth:
 
 ## Next Step
 
-1. If you now need the operational model behind this endpoint, the next wave should deepen the `Deploy` bucket with `Operator and Deployment Model`.
-2. If you need richer application behavior before deployment, return to the `Integrate` bucket for later advanced modules.
+1. If you now need the operational model behind this endpoint, continue to [Operator and Deployment Model](operator-and-deployment-model.md).
+2. If you want the first deployment validation loop after that, continue to [Deployment Checks and Recovery](deployment-checks-and-recovery.md).

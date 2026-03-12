@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,experience,sandbox,existing-assets -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,sandbox,existing-assets -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** explain what the first Vizij sandbox experience is actually proving and what parts are already prebuilt
@@ -60,6 +60,8 @@ Already chosen for you:
 
 This is why the sandbox is a good starting point. It reduces the number of variables while still showing a real Vizij surface.
 
+> TODO(content-model): Add a comparison diagram here to separate the prebuilt sandbox pieces from the later `Control`, `Customize`, and `Integrate` responsibilities. Best fit because this module is establishing a fundamentals mental model and the “already provided versus later owned” boundary is easier to retain visually.
+
 ## What The Sandbox Does Not Prove
 
 The sandbox does not yet prove that you can:
@@ -71,6 +73,8 @@ The sandbox does not yet prove that you can:
 5. operate a deployment endpoint.
 
 Those are later buckets.
+
+> TODO(content-model): Add an FAQ here to answer common confusion about whether the sandbox counts as authoring, integration, or deployment. Best fit because this section is already framing what the sandbox does not prove and predictable reader misreadings belong in a targeted FAQ.
 
 ## A Useful Way To Read The Sandbox
 

@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-bucket; status=in_progress; topics=guidebook,integrate,player,embedding -->
+<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,integrate,player,embedding -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** explain how a face gets loaded, played back, embedded, and turned into a usable runtime surface
@@ -76,15 +76,15 @@ This bucket should help a reader:
 5. troubleshooting,
 6. repo and package links.
 
-## Planned Modules
+## Bucket Modules
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
 | [Minimal Web Player](minimal-web-player.md) | Surface | walkthrough | get to the first useful integration success quickly |
 | [Loading, Playback, and Embedding](loading-playback-and-embedding.md) | Fundamentals | concept page | explain the core mechanics of simple integration |
-| Application Integration Patterns | Fundamentals | comparison | compare common simple embedding patterns |
-| API-Backed Interactive Application | Advanced | walkthrough | teach a richer API-backed application pattern |
-| Rich Interactive Applications | Advanced | operational guide | teach broader advanced application patterns |
+| [Application Integration Patterns](application-integration-patterns.md) | Fundamentals | comparison | compare common simple embedding patterns |
+| [API-Backed Interactive Application](api-backed-interactive-application.md) | Advanced | walkthrough | teach a richer API-backed application pattern |
+| [Rich Interactive Applications](rich-interactive-applications.md) | Advanced | operational guide | teach broader advanced application patterns |
 
 ## Recommended Teaching Approaches
 

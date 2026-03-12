@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,introduction,customize,concepts -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,customize,concepts -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** give readers the core customization vocabulary before they enter the authoring branch
@@ -78,6 +78,8 @@ In Vizij, that usually means some combination of:
 
 That is why `Export` belongs in `Customize` even though it also affects `Integrate` and `Deploy`.
 
+> TODO(content-model): Add a comparison here to distinguish rig, pose, animation, procedural program, and exportable artifact in one compact teaching block. Best fit because this section introduces a cluster of adjacent terms that readers will otherwise blur together before they reach the Customize bucket.
+
 ## How These Concepts Relate
 
 A useful mental model is:
@@ -89,6 +91,8 @@ A useful mental model is:
 5. export carries the authored result into later runtime surfaces.
 
 This is not yet the authoring workflow. It is the conceptual stack underneath it.
+
+> TODO(content-model): Add a diagram here to show the conceptual stack from controllable structure through exported artifact. Best fit because this section is already phrased as a layered mental model and would benefit from a visual ordering cue.
 
 ## What This Page Is Not
 
@@ -128,5 +132,5 @@ Use these when you need the current implementation truth:
 
 ## Next Step
 
-1. If you want the broader system relationship next, continue to the future `System Mental Model` page.
-2. If you want the actual authoring branch, continue later to the `Customize` bucket.
+1. If you want the broader system relationship next, continue to [System Mental Model](system-mental-model.md).
+2. If you want the actual authoring branch, continue to [Tweak an Existing Face](../customize/tweak-an-existing-face.md).

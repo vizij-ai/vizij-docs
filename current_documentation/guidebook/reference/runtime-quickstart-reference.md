@@ -1,4 +1,4 @@
-<!-- tags: type=reference; status=in_progress; topics=guidebook,runtime,quickstart -->
+<!-- tags: type=reference; status=written; topics=guidebook,runtime,quickstart -->
 
 > **Last updated:** 2026-03-11
 > **Guidebook note:** promoted from the workshop handout so this version can become the reusable canonical source

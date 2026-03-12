@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,integrate,loading,embedding,playback -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,loading,embedding,playback -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** explain the basic mechanics of getting a Vizij face loaded into a usable application surface and keeping that surface honest
@@ -58,6 +58,8 @@ Playback can be very simple in a minimal player or much richer in a more interac
 
 ### 3. Embedding
 
+> TODO(content-model): Add a code snippet here to show the minimal `VizijRuntimeProvider` plus `VizijRuntimeFace` embedding pattern with one app-owned hook layered on top. Best fit because this section defines embedding in React terms and a small implementation example would make the boundary between runtime shell and app logic concrete.
+
 Embedding is how a Vizij runtime surface lives inside a broader application.
 
 In React terms, the basic embedded pattern is:
@@ -103,6 +105,8 @@ That is why this bucket exists before `Deploy`. Integration is where a face beco
 
 ## A Small Integration Anatomy
 
+> TODO(content-model): Add a diagram here to show `VizijAssetBundle`, `VizijRuntimeProvider`, `VizijRuntimeFace`, and app-specific hooks or panels as one repeatable shell anatomy. Best fit because this section is defining the bucket’s core recurring structure and readers need a visual anchor for that repeated pattern.
+
 The smallest recurring anatomy in the current repo is:
 
 1. `VizijAssetBundle`
@@ -137,6 +141,8 @@ Keeping these terms separate prevents that confusion.
 
 ## Current Useful Visuals
 
+> TODO(content-model): Add a comparison note here to explain what the `demo-vizij-player` screenshot teaches better than the `tutorial-agent-face` screenshot, and what the richer screenshot adds. Best fit because this section is using two visuals for two different teaching jobs and readers should know why both are here.
+
 Existing screenshots already live at:
 
 1. `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/demo-vizij-player.png`
@@ -165,5 +171,6 @@ Use these when you need the current implementation truth:
 
 ## Next Step
 
-1. If your goal is the operator-facing endpoint, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
-2. If you only need the first practical shell, keep [Minimal Web Player](minimal-web-player.md) as the compact route anchor.
+1. If you need to choose the right simple app shape next, continue to [Application Integration Patterns](application-integration-patterns.md).
+2. If your goal is the operator-facing endpoint, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+3. If you only need the first practical shell, keep [Minimal Web Player](minimal-web-player.md) as the compact route anchor.

@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,deploy,operator,standalone -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,operator,standalone -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** explain what a deployed Vizij runtime consists of and how an operator actually interacts with it
@@ -103,6 +103,8 @@ The guidebook should treat this as part of the first deployment story, not as a 
 
 ## What Counts As A Healthy Deployment
 
+> TODO(content-model): Add a comparison block here to distinguish a healthy deployment from a useful demo and from an unfinished runtime shell. Best fit because this section is making a boundary judgment and readers need a quick contrast between adjacent states they often collapse together.
+
 A healthy first deployment has all of these:
 
 1. the face is loaded,
@@ -126,6 +128,8 @@ This page deliberately stops before:
 Those are real deployment topics, but they belong in the advanced deployment branch.
 
 ## Current Useful Visuals
+
+> TODO(content-model): Add a diagram here to show the runtime app, WebSocket server, control client, and built-in panel as one operator-facing topology. Best fit because this module teaches an operating model and the topology is easier to remember visually than from the candidate-visual list alone.
 
 Wave 2 still needs dedicated standalone screenshots or operator diagrams promoted into guidebook assets.
 
@@ -155,5 +159,6 @@ Use these when you need the current implementation truth:
 
 ## Next Step
 
-1. For reusable readiness checks across the route, continue to [Validation Checkpoints](../support/validation-checkpoints.md).
-2. For failure recovery patterns, continue to [Troubleshooting Matrix](../support/troubleshooting-matrix.md).
+1. If you want the first deployment readiness loop and recovery sequence, continue to [Deployment Checks and Recovery](deployment-checks-and-recovery.md).
+2. For reusable readiness checks across the route, continue to [Validation Checkpoints](../support/validation-checkpoints.md).
+3. For failure recovery patterns, continue to [Troubleshooting Matrix](../support/troubleshooting-matrix.md).

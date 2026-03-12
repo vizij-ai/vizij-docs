@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,integrate,player,runtime-shell -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,player,runtime-shell -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** establish the smallest believable player-stage runtime surface in the guidebook route
@@ -42,6 +42,8 @@ That app is richer than the eventual smallest public shell, but it already shows
 
 ## What Makes a Player Minimal
 
+> TODO(content-model): Add a comparison table here to separate the minimum trustworthy player states from richer app concerns that intentionally belong later. Best fit because this section is defining scope by exclusion and readers benefit from a scan-friendly boundary between “minimal” and “not yet.”
+
 A minimal player is not “the smallest amount of code possible.”
 
 It is the smallest runtime shell that still behaves like a real app.
@@ -54,6 +56,8 @@ For wave 1, that means the player should make these states obvious:
 4. errors visible when something fails.
 
 ## Walkthrough
+
+> TODO(content-model): Add an annotated screenshot here to label the bootstrap checklist, face viewer, controls, animations, and diagnostics panels. Best fit because this walkthrough is teaching readers how to read the shell anatomy before they understand every panel in depth.
 
 ### 1. Launch the player anchor
 
@@ -118,6 +122,8 @@ The first player is the calm runtime branch point. Once it is healthy, you can m
 
 ## Current Useful Visual
 
+> TODO(content-model): Add a checklist here to summarize the minimum player validation pass a reader should complete before branching to richer integration or deployment. Best fit because this is the last surface-stage pause point and a compact gate would reinforce what “trustworthy enough to continue” actually means.
+
 An existing screenshot already lives at:
 
 `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/demo-vizij-player.png`
@@ -143,5 +149,5 @@ Use these when you need the current implementation truth:
 
 ## Next Step
 
-1. If your goal is a real endpoint, continue to [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md).
-2. If your goal is richer application behavior, stay in the `Integrate` bucket for later wave-2 and advanced modules.
+1. If you want the fundamentals behind what this shell is loading and hosting, continue to [Loading, Playback, and Embedding](loading-playback-and-embedding.md).
+2. If your goal is a real endpoint right away, continue to [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md).

@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,control,inputs,semantics -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,inputs,semantics -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** explain what runtime inputs mean, where they are written, and how visible face behavior maps to runtime semantics
@@ -73,6 +73,8 @@ This is different from directly mutating a scene or attaching view-only state to
 
 ## Common Semantic Categories
 
+> TODO(content-model): Add a comparison here to map standard controls, pose weights, viseme weights, animation controls, and renderer outputs to what each category means and when a reader usually encounters it. Best fit because this section is sorting similar-looking path families by semantic job rather than by UI label.
+
 The most useful categories for guidebook readers are:
 
 1. standard controls, which expose reusable channels such as gaze or shared rig movement,
@@ -120,6 +122,8 @@ That question usually clarifies whether the reader is dealing with:
 4. a deployment-facing control signal.
 
 ## Current Useful Diagram
+
+> TODO(content-model): Add a diagram here to show the semantic chain from app or hook through staged input, orchestrator evaluation, renderer output, and visible face behavior. Best fit because this module is about the continuity between runtime layers and a chain diagram would anchor that mental model better than text alone.
 
 Wave 2 should add a simple runtime-semantics diagram showing:
 

@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-module; status=in_progress; topics=guidebook,support,validation,checkpoints -->
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,support,validation,checkpoints -->
 
 > **Last updated:** 2026-03-11
 > **Purpose:** define reusable success checks across the maintained guidebook route
@@ -42,6 +42,8 @@ Validation checkpoints keep the guidebook honest in three ways:
 3. they expose when a page needs stronger recovery guidance.
 
 ## Route-Level Checkpoints
+
+> TODO(content-model): Add a comparison table here to line up each major route stage with its minimum success signals, likely failure clues, and fallback page. Best fit because this support module is cross-cutting and readers need one compact reusable checkpoint reference.
 
 ### Experience: Hello Face
 
@@ -98,6 +100,8 @@ Weak signals:
 3. “the code probably loaded the right thing.”
 
 ## Current Known Validation Caveats
+
+> TODO(content-model): Add a troubleshooting note here to connect each caveat to the checkpoint it can invalidate and the fastest recovery path. Best fit because this section already names concrete caveats and would be stronger if it immediately turned them into recovery guidance.
 
 The current workshop validation pass already found caveats that guidebook pages should keep in mind:
 

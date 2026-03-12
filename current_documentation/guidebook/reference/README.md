@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-index; status=in_progress; topics=guidebook,reference -->
+<!-- tags: type=guidebook-index; status=written; topics=guidebook,reference -->
 
 # Guidebook Reference
 

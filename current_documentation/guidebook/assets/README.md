@@ -1,4 +1,4 @@
-<!-- tags: type=guidebook-assets; status=in_progress; topics=guidebook,assets,screenshots,video -->
+<!-- tags: type=guidebook-assets; status=written; topics=guidebook,assets,screenshots,video -->
 
 # Guidebook Assets
 

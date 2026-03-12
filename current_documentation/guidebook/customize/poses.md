@@ -1,0 +1,252 @@
+<!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,poses,authoring -->
+
+> **Last updated:** 2026-03-11
+> **Purpose:** explain named authored states in Vizij and how pose semantics sit between rigging and animation
+
+# Poses
+
+## Reader Outcome
+
+After this page, you should be able to explain what a pose is in Vizij, how poses are grouped and weighted, and why poses are different from both raw rig inputs and animations over time.
+
+## Intended Audience
+
+This page is for readers who already understand that a face needs a controllable rig structure and now want to understand how Vizij turns that structure into named, reusable authored states.
+
+It is especially for readers who need to stop using `pose` as a vague synonym for either:
+
+1. any facial control change,
+2. a whole animation clip,
+3. a one-off tweak in the editor.
+
+## What You Need
+
+From `vizij-web`:
+
+```bash
+pnpm run dev:vizij-authoring
+```
+
+It also helps if you have already read:
+
+1. [Rigging](rigging.md),
+2. [Customization Concepts Primer](../introduction/customization-concepts-primer.md).
+
+You do not need to understand animation playback transport yet.
+
+## Artifact Being Touched
+
+The artifact in this page is the face's authored pose layer inside `vizij-authoring`.
+
+In practice, that means:
+
+1. named pose definitions,
+2. the target values each pose stores for selected rig inputs,
+3. pose-group membership and blend behavior,
+4. pose-weight controls that let those named states be blended at runtime.
+
+This matters because the pose layer is not just UI labeling. It becomes part of the authored face behavior that later runtime and export flows depend on.
+
+## Why This Page Exists Separately
+
+`Poses` needs its own page because it protects a specific boundary in the `Customize` route.
+
+`Rigging` explains controllable structure.
+
+`Poses` explains semantic named states over that structure.
+
+`Animations` explains authored motion over time.
+
+If those ideas collapse into one another, readers lose the point of pose authoring:
+
+1. a pose is not only a live slider adjustment,
+2. a pose is not yet a timeline,
+3. a pose is a reusable authored state that can be named, grouped, blended, and triggered consistently.
+
+## What A Pose Means In Vizij
+
+In Vizij, a pose is a named facial state defined over rig inputs.
+
+That state is semantic rather than purely mechanical. A pose gives a reader or runtime a meaningful handle such as:
+
+1. smile,
+2. blink,
+3. surprised,
+4. any other authored expression or state the face needs.
+
+The important point is that a pose does not directly rewrite animatable scene leaves.
+
+In the current authoring and runtime contract:
+
+1. poses target rig inputs by identity,
+2. pose authoring is compiled into pose graph behavior,
+3. pose graph outputs feed internal pose-control paths,
+4. the rig graph still owns final composition into effective channel values.
+
+That is why poses belong after `Rigging`: they assume a trustworthy control structure already exists.
+
+## How Poses Differ From Raw Rig Tweaking
+
+Raw rig tweaking is about changing a live control value directly.
+
+Pose authoring is about storing a named target state so that the same expression can be recalled and blended later.
+
+That difference matters.
+
+When you tweak a rig input directly, you are changing the face right now.
+
+When you author a pose, you are defining:
+
+1. which rig inputs matter for that state,
+2. what target values those inputs should move toward,
+3. how that state should be addressed later as a named concept.
+
+So a pose is closer to a reusable authored state than to an isolated editor gesture.
+
+## Identity, Grouping, and Weight
+
+The current pose system treats identity and grouping as first-class behavior.
+
+### Pose identity
+
+Each pose has a stable identity rather than only a display label.
+
+That matters for:
+
+1. weight-control paths,
+2. grouping and membership,
+3. import and export round-trips,
+4. later runtime triggering.
+
+Current architecture docs call out canonical per-pose weight paths:
+
+`rig/{face}/poses/{poseId}.weight`
+
+That gives each pose one stable runtime-facing control regardless of how the pose is grouped in authoring.
+
+### Pose groups
+
+Poses can belong to one or more pose groups.
+
+In the current model, group membership is identity-driven and normalized for compatibility rather than being only a loose path convention.
+
+Groups matter because they let authoring express semantic collections such as:
+
+1. related facial expressions,
+2. shared composition contexts,
+3. blend behavior that should apply inside a meaningful set of poses.
+
+### Pose weights
+
+Each pose can be blended by weight rather than only turned fully on or off.
+
+That is why pose authoring is useful in runtime: it lets the system move toward named states with controlled intensity instead of only jumping between hard-coded facial presets.
+
+## How Pose Composition Works
+
+> TODO(content-model): Add a before/after pair here to show how combining two named poses differs from raw rig-value tweaking. Best fit because this section is about authored state composition and the visible facial delta is the clearest way to make the abstraction concrete.
+
+The current pose authoring model has more structure than "store some values and play them back."
+
+At a high level:
+
+1. a pose stores target values for one or more rig channels,
+2. poses can be blended inside a group,
+3. groups can then be composed across the wider pose system,
+4. the resulting pose signal is combined with direct rig-control values later in the rig graph.
+
+Two distinctions matter here.
+
+### Group blend behavior
+
+Current authoring docs describe local group blend modes such as:
+
+1. `average`,
+2. `additive`.
+
+Those modes answer how multiple poses in the same group should combine.
+
+### Per-channel compose behavior
+
+Current pose-channel rows also expose compose behavior for how direct control and pose contribution meet later.
+
+That is different from group blending.
+
+It exists so the authored pose layer can stay semantic while still composing honestly with the rest of the rig runtime.
+
+## What Poses Are Not
+
+This page is easier to trust if the boundaries stay sharp.
+
+Poses are not:
+
+1. the rig layer itself,
+2. raw animatable scene targets,
+3. a timeline of keyframes,
+4. a full animation clip,
+5. the export package.
+
+That means this page does not teach:
+
+1. how to define the rig contract from scratch,
+2. how to author tracks and timing over time,
+3. how export serializes pose artifacts into later runtime bundles.
+
+Those belong to neighboring modules because they prevent different misunderstandings.
+
+## Why Pose Semantics Matter
+
+Pose semantics matter because later tooling and runtime behavior need more than loose channel values.
+
+They need a state the system can refer to meaningfully.
+
+That supports:
+
+1. clearer authoring language,
+2. more reusable runtime triggers,
+3. cleaner grouping and blending,
+4. more trustworthy transfer and round-trip behavior.
+
+Without pose semantics, the system would fall back toward anonymous channel manipulation, which is weaker for both teaching and authoring.
+
+## How To Recognize Pose Work In The Current App
+
+> TODO(content-model): Add an annotated screenshot here to point out the panel regions, group structure, and weight controls that make pose work identifiable in the current authoring surface. Best fit because this section is translating pose semantics into UI evidence and readers need help seeing what counts as pose work.
+
+In the current `vizij-authoring` surface, pose work shows up as a distinct authoring layer:
+
+1. the `Poses` tab lets you capture and manage named states,
+2. the `Pose Groups` surface manages grouping and blend structure,
+3. pose import and round-trip flows treat pose config as a real authored artifact,
+4. pose-related diagnostics and normalization exist because the system is preserving authored meaning, not only transient UI values.
+
+You do not need every internal file to use this page.
+
+You do need the mental model that pose authoring is a semantic layer over the rig, not a side effect of moving sliders around.
+
+## Success Check
+
+You are done with this page when:
+
+1. you can explain the difference between a pose and a raw rig-input tweak,
+2. you can explain why a pose is different from an animation clip,
+3. you can explain what pose groups and pose weights contribute,
+4. you can explain why pose identity has to stay stable across authoring and runtime use.
+
+## Implementation Anchors
+
+Use these when you need the current implementation truth:
+
+1. `vizij-web/apps/vizij-authoring/docs/Authoring_Blueprint.md`
+2. `vizij-web/apps/vizij-authoring/docs/pose_grouping_explainer.md`
+3. `vizij-web/apps/vizij-authoring/docs/ARCHITECTURE.md`
+4. `vizij-web/apps/vizij-authoring/src/poseRig/store.tsx`
+5. `vizij-web/apps/vizij-authoring/src/poseRig/groupMembership.ts`
+6. `vizij-web/apps/vizij-authoring/src/poseRig/services/poseGraphService.ts`
+7. `vizij-web/apps/vizij-authoring/src/components/panels/VariablesPanel.tsx`
+8. `vizij-web/apps/vizij-authoring/e2e/pose-roundtrip.workflow.pw.ts`
+
+## Next Step
+
+1. If you want to understand authored motion over time rather than named states, continue to [Animations](animations.md).
+2. If you want to understand what later leaves authoring and crosses into runtime consumption, continue to [Export](export.md).
