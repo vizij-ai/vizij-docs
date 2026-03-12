@@ -5,17 +5,38 @@
 
 # Hello Face Quickstart
 
+## Guidebook Context
+
+1. **Bucket:** [Experience](README.md)
+2. **Depth:** `Surface`
+3. **Module type:** walkthrough
+4. **Bucket overview:** [Experience](README.md)
+5. **Useful previous module:** [Experience](README.md)
+6. **Useful next module:** [Richer Interactive Example](richer-interactive-example.md)
+
 ## Reader Outcome
 
 After this page, you should be able to run a working Vizij face, trigger visible changes, and identify the three core runtime pieces that make the page work.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for:
 
 1. first-time Vizij readers,
 2. workshop participants or builders who want an immediate success,
 3. anyone who needs a trustworthy runtime baseline before moving into control, customization, or deployment.
+
+### Artifact Being Touched
+
+This page uses `tutorial-fullscreen-face`, the current maintained runtime tutorial surface for first contact with Vizij.
+
+The smallest useful runtime app has three pieces:
+
+1. a `VizijAssetBundle`,
+2. a `VizijRuntimeProvider`,
+3. a `VizijRuntimeFace`.
 
 ## What You Need
 
@@ -30,16 +51,6 @@ Then you need the maintained Hello Face app:
 ```bash
 pnpm run dev:tutorial-fullscreen-face
 ```
-
-## Artifact Being Touched
-
-This page uses `tutorial-fullscreen-face`, the current maintained runtime tutorial surface for first contact with Vizij.
-
-The smallest useful runtime app has three pieces:
-
-1. a `VizijAssetBundle`,
-2. a `VizijRuntimeProvider`,
-3. a `VizijRuntimeFace`.
 
 ## Walkthrough
 
@@ -104,11 +115,17 @@ This is why it is the first maintained route through the guidebook.
 
 ## Current Useful Visual
 
-An existing screenshot already lives at:
+![Tutorial Fullscreen Face](../assets/screenshots/tutorial-fullscreen-face.png)
 
-`current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/tutorial-fullscreen-face.png`
+### Interaction Hotspots
 
-It is good enough for wave 1 and can be promoted into the guidebook assets flow later.
+| Feature | Visual Feedback | Runtime Path |
+| :--- | :--- | :--- |
+| **Mouse Gaze** | Eyes follow cursor | `rig/{face}/standard/*_eye/pos/*` |
+| **Hotkeys (1-9)** | Expression changes | `rig/{face}/poses/*.weight` |
+| **Center Face** | Stable rendering | `rig/{face}/...` |
+
+The screenshot shows the "ready" state where the face is active and responding to standard control writes.
 
 ## Success Check
 

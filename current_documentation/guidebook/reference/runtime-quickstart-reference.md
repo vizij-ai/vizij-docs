@@ -5,6 +5,15 @@
 
 # Runtime Quickstart
 
+## Guidebook Context
+
+1. **Bucket:** [Guidebook Reference](README.md)
+2. **Depth role:** cross-cutting reusable reference layer
+3. **Module type:** reference bridge
+4. **Bucket overview:** [Guidebook Reference](README.md)
+5. **Useful previous module:** [Guidebook Reference](README.md)
+6. **Useful next module:** [Renderer and Rigging Reference](renderer-and-rigging-reference.md)
+
 ## The Core Mental Model
 
 The smallest useful Vizij runtime app has three pieces:

@@ -5,11 +5,22 @@
 
 # Procedural Programs
 
+## Guidebook Context
+
+1. **Bucket:** [Customize](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Customize](README.md)
+5. **Useful previous module:** [Animations](animations.md)
+6. **Useful next module:** [Export](export.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what a procedural program is in Vizij, how it uses inputs, expressions, and graph logic to produce behavior, and when to choose procedural behavior instead of a pose or an animation clip.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand that Vizij can author named states and timed clips and now need the third behavior tool:
 
@@ -18,6 +29,53 @@ This page is for readers who already understand that Vizij can author named stat
 3. procedural programs for computed behavior.
 
 It is especially for readers who might otherwise treat `procedural`, `graph`, `expression`, and `animation` as if they all mean the same thing.
+
+### Artifact Being Touched
+
+The artifact in this page is the authored procedural behavior layer inside `vizij-authoring`.
+
+In current implementation terms, that means two closely related authoring surfaces:
+
+1. derived rig-input logic authored through expressions and parent bindings,
+2. procedural animation programs authored in the `Program` workspace canvas with nodes, edges, selected inputs, and selected outputs.
+
+This matters because procedural behavior is not a loose idea. It is stored authored logic that computes values from other values.
+
+### Why This Page Exists Separately
+
+`Procedural Programs` needs its own page because it protects a boundary the neighboring pages cannot protect by themselves.
+
+`Poses` answer: "what named state should this face have?"
+
+`Animations` answer: "how should values move over time?"
+
+`Procedural Programs` answer: "what values should be computed from other values right now?"
+
+If those ideas collapse together, readers make three common mistakes:
+
+1. treating a pose like a little program,
+2. treating a timeline clip like the only way to get dynamic behavior,
+3. treating graph-driven logic like hidden runtime magic instead of authored behavior.
+
+### What This Page Does And Does Not Cover
+
+This page does cover:
+
+1. the learner-facing meaning of graph-driven control logic,
+2. inputs, expressions, outputs, and composition,
+3. how procedural programs differ from poses and animations,
+4. the current authoring surfaces where procedural behavior shows up.
+
+This page does not cover:
+
+1. GraphSpec structure,
+2. GraphRuntime execution details,
+3. scheduler order,
+4. compile-plan or IR internals,
+5. deep export packaging rules,
+6. node-by-node runtime architecture.
+
+Those are real implementation topics, but they are not the teaching job of this module.
 
 ## What You Need
 
@@ -34,33 +92,6 @@ pnpm run dev:vizij-authoring
 ```
 
 You do not need to understand GraphSpec, GraphRuntime, scheduler order, or export internals yet.
-
-## Artifact Being Touched
-
-The artifact in this page is the authored procedural behavior layer inside `vizij-authoring`.
-
-In current implementation terms, that means two closely related authoring surfaces:
-
-1. derived rig-input logic authored through expressions and parent bindings,
-2. procedural animation programs authored in the `Program` workspace canvas with nodes, edges, selected inputs, and selected outputs.
-
-This matters because procedural behavior is not a loose idea. It is stored authored logic that computes values from other values.
-
-## Why This Page Exists Separately
-
-`Procedural Programs` needs its own page because it protects a boundary the neighboring pages cannot protect by themselves.
-
-`Poses` answer: "what named state should this face have?"
-
-`Animations` answer: "how should values move over time?"
-
-`Procedural Programs` answer: "what values should be computed from other values right now?"
-
-If those ideas collapse together, readers make three common mistakes:
-
-1. treating a pose like a little program,
-2. treating a timeline clip like the only way to get dynamic behavior,
-3. treating graph-driven logic like hidden runtime magic instead of authored behavior.
 
 ## What Procedural Behavior Means In Vizij
 
@@ -220,26 +251,6 @@ In the current authoring surface, procedural work usually looks like this:
 7. inspect the selected program or node in the inspector.
 
 This is why the page belongs in `Customize`: the reader is still authoring behavior, not yet embedding or deploying it.
-
-## What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the learner-facing meaning of graph-driven control logic,
-2. inputs, expressions, outputs, and composition,
-3. how procedural programs differ from poses and animations,
-4. the current authoring surfaces where procedural behavior shows up.
-
-This page does not cover:
-
-1. GraphSpec structure,
-2. GraphRuntime execution details,
-3. scheduler order,
-4. compile-plan or IR internals,
-5. deep export packaging rules,
-6. node-by-node runtime architecture.
-
-Those are real implementation topics, but they are not the teaching job of this module.
 
 ## Success Check
 

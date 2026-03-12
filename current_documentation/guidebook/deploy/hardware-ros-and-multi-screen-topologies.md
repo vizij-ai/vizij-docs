@@ -5,6 +5,15 @@
 
 # Hardware, ROS, and Multi-Screen Topologies
 
+## Guidebook Context
+
+1. **Bucket:** [Deploy](README.md)
+2. **Depth:** `Advanced`
+3. **Module type:** comparison
+4. **Bucket overview:** [Deploy](README.md)
+5. **Useful previous module:** [Deployment Checks and Recovery](deployment-checks-and-recovery.md)
+6. **Useful next module:** [Deploy](README.md)
+
 ## Reader Outcome
 
 After this page, you should be able to compare the main advanced deployment topology directions around Vizij:
@@ -15,7 +24,9 @@ After this page, you should be able to compare the main advanced deployment topo
 
 You should also be able to explain which parts are current implementation truth, which parts are planned next-step deployment work, and which parts are still future-facing.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand:
 
@@ -25,20 +36,23 @@ This page is for readers who already understand:
 
 It is not a first deployment page. It is for readers who are choosing a deeper topology after the simple deployment path already makes sense.
 
-## What You Need
+### Why This Page Exists
 
-It helps if you can inspect:
+The earlier deploy pages establish the first believable endpoint and the operator model.
 
-1. `vizij-web/apps/vizij-standalone/README.md`,
-2. `vizij-web/apps/vizij-standalone/src/App.tsx`,
-3. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`,
-4. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`,
-5. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`,
-6. `vizij-docs/active_projects/runtime/multi_screen/multi_screen-plan.md`.
+That still leaves one advanced decision space:
 
-You do not need full ROS integration knowledge to use this page well.
+how the endpoint, operator, and surrounding hardware are arranged.
 
-## Artifact Being Touched
+Without this page, readers tend to make one of three mistakes:
+
+1. treating advanced topologies as if they are the required next step for everyone,
+2. assuming multi-screen and ROS are already the same maturity level,
+3. reading aspirational docs language as if it were guaranteed by the current implementation.
+
+This page exists to prevent that.
+
+### Artifact Being Touched
 
 The artifact here is the deployed runtime endpoint plus its control and display topology:
 
@@ -55,21 +69,35 @@ It is now:
 
 `What deployment shape am I actually choosing?`
 
-## Why This Page Exists
+### What This Page Does And Does Not Cover
 
-The earlier deploy pages establish the first believable endpoint and the operator model.
+This page does cover:
 
-That still leaves one advanced decision space:
+1. the major advanced topology directions,
+2. the distinction between current support and planned direction,
+3. the tradeoffs around host, display, and control-surface arrangement.
 
-how the endpoint, operator, and surrounding hardware are arranged.
+This page does not cover:
 
-Without this page, readers tend to make one of three mistakes:
+1. a full ROS package or middleware walkthrough,
+2. distributed security and network hardening,
+3. multi-face shared-runtime architecture,
+4. a complete remote-control production runbook.
 
-1. treating advanced topologies as if they are the required next step for everyone,
-2. assuming multi-screen and ROS are already the same maturity level,
-3. reading aspirational docs language as if it were guaranteed by the current implementation.
+Those would require deeper implementation docs than this guidebook module should claim.
 
-This page exists to prevent that.
+## What You Need
+
+It helps if you can inspect:
+
+1. `vizij-web/apps/vizij-standalone/README.md`,
+2. `vizij-web/apps/vizij-standalone/src/App.tsx`,
+3. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`,
+4. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`,
+5. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`,
+6. `vizij-docs/active_projects/runtime/multi_screen/multi_screen-plan.md`.
+
+You do not need full ROS integration knowledge to use this page well.
 
 ## The Three Topology Directions
 
@@ -189,23 +217,6 @@ Use this decision framing:
 3. you need topology framing before a deeper implementation plan exists.
 
 That last choice is strategic, not a shortcut around current deployment maturity.
-
-## What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the major advanced topology directions,
-2. the distinction between current support and planned direction,
-3. the tradeoffs around host, display, and control-surface arrangement.
-
-This page does not cover:
-
-1. a full ROS package or middleware walkthrough,
-2. distributed security and network hardening,
-3. multi-face shared-runtime architecture,
-4. a complete remote-control production runbook.
-
-Those would require deeper implementation docs than this guidebook module should claim.
 
 ## Success Check
 

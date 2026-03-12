@@ -1,17 +1,42 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,player,runtime-shell -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** establish the smallest believable player-stage runtime surface in the guidebook route
 
 # Minimal Web Player
+
+## Guidebook Context
+
+1. **Bucket:** [Integrate](README.md)
+2. **Depth:** `Surface`
+3. **Module type:** walkthrough
+4. **Bucket overview:** [Integrate](README.md)
+5. **Useful previous module:** [Integrate](README.md)
+6. **Useful next module:** [Loading, Playback, and Embedding](loading-playback-and-embedding.md)
 
 ## Reader Outcome
 
 After this page, you should understand what the first trustworthy player-stage runtime surface needs, how the current maintained player anchor exposes those pieces, and what to validate before moving toward deployment.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who have already seen a face work and now want to understand the smallest useful application shell that can host it on the web.
+
+### Artifact Being Touched
+
+The guidebook idea of a minimal player is:
+
+1. a known-good asset or bundle,
+2. a runtime shell that can load it honestly,
+3. a visible face surface,
+4. clear loading, ready, and error states,
+5. only enough control to prove the shell is healthy.
+
+The current maintained implementation anchor is `demo-vizij-player`.
+
+That app is richer than the eventual smallest public shell, but it already shows the discipline this page needs to teach: clear bootstrap state, visible loading behavior, a face viewport, and explicit diagnostics.
 
 ## What You Need
 
@@ -26,38 +51,20 @@ It also helps if you have already completed:
 1. [Hello Face Quickstart](../experience/hello-face-quickstart.md)
 2. [Paths and Standard Controls](../control/paths-and-standard-controls.md)
 
-## Artifact Being Touched
-
-The guidebook idea of a minimal player is:
-
-1. a known-good asset or bundle,
-2. a runtime shell that can load it honestly,
-3. a visible face surface,
-4. clear loading, ready, and error states,
-5. only enough control to prove the shell is healthy.
-
-The current maintained implementation anchor is `demo-vizij-player`.
-
-That app is richer than the eventual smallest public shell, but it already shows the discipline this page needs to teach: clear bootstrap state, visible loading behavior, a face viewport, and explicit diagnostics.
-
 ## What Makes a Player Minimal
 
-> TODO(content-model): Add a comparison table here to separate the minimum trustworthy player states from richer app concerns that intentionally belong later. Best fit because this section is defining scope by exclusion and readers benefit from a scan-friendly boundary between “minimal” and “not yet.”
+| Minimal player concern | Must be visible now | Leave for later |
+| --- | --- | --- |
+| Asset state | whether a GLB or bundle is loaded | asset authoring workflows |
+| Runtime state | bootstrap, ready, and error signals | deep orchestration ownership decisions |
+| Viewport honesty | loading, empty, error, and visible-face states | product-level UI polish |
+| Controls | only enough to prove the shell is healthy | full operator dashboards or conversation loops |
 
 A minimal player is not “the smallest amount of code possible.”
 
 It is the smallest runtime shell that still behaves like a real app.
 
-For wave 1, that means the player should make these states obvious:
-
-1. asset loaded or not loaded,
-2. runtime bootstrapped or not bootstrapped,
-3. face visible or not visible,
-4. errors visible when something fails.
-
 ## Walkthrough
-
-> TODO(content-model): Add an annotated screenshot here to label the bootstrap checklist, face viewer, controls, animations, and diagnostics panels. Best fit because this walkthrough is teaching readers how to read the shell anatomy before they understand every panel in depth.
 
 ### 1. Launch the player anchor
 
@@ -120,15 +127,25 @@ Do not treat the first player as:
 
 The first player is the calm runtime branch point. Once it is healthy, you can move either toward richer integration or toward deployment.
 
-## Current Useful Visual
+## Minimal Validation Gate
 
-> TODO(content-model): Add a checklist here to summarize the minimum player validation pass a reader should complete before branching to richer integration or deployment. Best fit because this is the last surface-stage pause point and a compact gate would reinforce what “trustworthy enough to continue” actually means.
+Before leaving the player stage, confirm all of these:
+
+1. a face asset loads without hidden failures,
+2. bootstrap state is readable from the UI,
+3. the viewport has honest loading, empty, and error states,
+4. at least one control or animation path proves that updates reach the face,
+5. diagnostics are good enough to explain the next failure.
+
+If one of those is missing, you still have a demo. You do not yet have a trustworthy player anchor.
+
+## Current Useful Visual
 
 An existing screenshot already lives at:
 
-`current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/demo-vizij-player.png`
+`current_documentation/guidebook/assets/screenshots/demo-vizij-player.png`
 
-It captures the panel structure clearly enough for wave 1.
+It captures the panel structure clearly enough for this page.
 
 ## Success Check
 
@@ -142,9 +159,9 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. `vizij-web/apps/demo-vizij-player/src/App.tsx`
-2. `vizij-web/apps/demo-vizij-player/src/renderer/FaceViewport.tsx`
-3. `vizij-web/apps/demo-vizij-player/README.md`
+1. `vizij-web/apps/demo-vizij-player/README.md`
+2. `vizij-web/apps/demo-vizij-player/src/App.tsx`
+3. `vizij-web/apps/demo-vizij-player/src/renderer/FaceViewport.tsx`
 4. `current_documentation/guidebook/reference/animation-integration-and-deployment-reference.md`
 
 ## Next Step

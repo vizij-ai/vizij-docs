@@ -1,15 +1,26 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,routing -->
 
-> **Last updated:** 2026-03-11
-> **Purpose:** help readers choose the right route and depth in the guidebook without front-loading unnecessary complexity
+> **Last updated:** 2026-03-12
+> **Purpose:** help readers choose the right Vizij learning route and know when to stay in the guidebook versus when to switch to implementation docs
 
 # How To Use This Guidebook
 
+## Guidebook Context
+
+1. **Bucket:** [Introduction](README.md)
+2. **Depth:** `Surface`
+3. **Module type:** decision guide
+4. **Bucket overview:** [Introduction](README.md)
+5. **Useful previous module:** [What Is Vizij?](what-is-vizij.md)
+6. **Useful next module:** [System Mental Model](system-mental-model.md)
+
 ## Reader Outcome
 
-After this page, you should be able to choose the right Vizij learning route for your goal and know where to go next.
+After this page, you should be able to choose the right Vizij learning route for your goal, pick the right depth, and know when to leave the guidebook for repo-local implementation docs.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for:
 
@@ -17,17 +28,17 @@ This page is for:
 2. builders who want to know where customization fits,
 3. contributors who need to understand the guidebook structure before going deeper.
 
+### Artifact Being Touched
+
+The guidebook is the artifact here.
+
+It is the canonical teaching system for Vizij. It is not the same thing as the internal architecture of the platform.
+
 ## What You Need
 
 You do not need to understand Vizij architecture before using this page.
 
 It is enough to know that Vizij can load and control expressive faces and that the guidebook is organized to help you learn that system in stages.
-
-## Artifact Being Touched
-
-The guidebook is the artifact here.
-
-It is the canonical teaching system for Vizij. It is not the same thing as the internal architecture of the platform.
 
 ## Route Map
 
@@ -49,7 +60,23 @@ Each bucket supports three depth levels:
 3. `Advanced`
    - go deeper into ownership, extension, or more complex implementation patterns
 
-> TODO(content-model): Add a workflow map here to connect bucket order with the three depth levels. Best fit because this page is a decision guide and readers need one compact visual that shows how route choice and depth choice interact.
+```mermaid
+flowchart LR
+    intro["Introduction"] --> exp["Experience"]
+    exp --> control["Control"]
+    control --> customize["Customize"]
+    control --> integrate["Integrate"]
+    customize --> integrate
+    integrate --> deploy["Deploy"]
+
+    surface["Surface\nfirst success"] --- intro
+    fundamentals["Fundamentals\nmental model + stable contracts"] --- control
+    advanced["Advanced\nownership + implementation bridges"] --- deploy
+```
+
+Use the route to choose *where to learn next*.
+
+Use the depth to choose *how much detail you need right now*.
 
 ## Start Here If
 
@@ -63,8 +90,8 @@ Use this route if you want to:
 
 1. prove that Vizij works,
 2. understand the control model,
-3. get a face into a player,
-4. reach a real deployment endpoint quickly.
+3. get a face into a player or runtime shell,
+4. reach a real endpoint quickly.
 
 ### You want to make the face your own before deploying it
 
@@ -75,9 +102,9 @@ Follow:
 Use this route if you want to:
 
 1. modify an existing face,
-2. work on rigs, poses, or animations,
-3. export something you now own,
-4. then integrate and deploy it.
+2. work on rigs, poses, animations, or export,
+3. carry an authored artifact into integration,
+4. deploy something you now own.
 
 ### You only need one concept right now
 
@@ -89,7 +116,41 @@ Jump directly to the bucket that matches the problem you are trying to solve:
 4. `Integrate` if you need a runtime shell or application embedding,
 5. `Deploy` if you need a real endpoint, operator flow, or standalone path.
 
-> TODO(content-model): Add a comparison here to contrast the fast deployment route, the customization route, and the single-bucket jump-in option. Best fit because this section is already where readers choose among adjacent paths and would benefit from a scan-friendly side-by-side.
+## Route Chooser
+
+| Route | Choose it when | First maintained anchor | What it intentionally skips |
+| --- | --- | --- | --- |
+| Fast deployment route | You need proof, control understanding, a player, and a first deployed endpoint | `tutorial-fullscreen-face`, `demo-vizij-player`, `vizij-standalone` | deep customization and authoring ownership |
+| Customization route | You need to change the face or its behavior before integrating it | `vizij-authoring` and its local docs | the fastest path to a deployed endpoint |
+| Single-bucket jump-in | You already know the route and only need one concept or recovery page | the bucket that matches the immediate problem | route-level context and sequencing |
+
+## When To Stay In The Guidebook
+
+Stay in the guidebook when your question is primarily:
+
+1. what does this concept mean,
+2. what should I learn next,
+3. what artifact am I touching,
+4. what misunderstanding should I avoid,
+5. which maintained app is the right example to inspect.
+
+## When To Leave The Guidebook
+
+Leave the guidebook when your question becomes implementation-specific:
+
+1. which app or package owns this behavior,
+2. what the current code contract is,
+3. how a maintained example is assembled,
+4. which runtime or authoring document is authoritative.
+
+For the maintained route, the usual implementation docs are:
+
+1. `vizij-web/apps/tutorial-fullscreen-face`
+2. `vizij-web/apps/tutorial-agent-face`
+3. `vizij-web/apps/demo-vizij-player`
+4. `vizij-web/apps/vizij-authoring`
+5. `vizij-web/apps/vizij-standalone`
+6. `vizij-web/packages/@vizij/runtime-react`
 
 ## What This Guidebook Does Not Replace
 
@@ -115,7 +176,8 @@ You are done with this page when:
 
 1. you can name the route you want to follow,
 2. you know whether you need `Surface`, `Fundamentals`, or `Advanced` depth first,
-3. you know which page you are opening next.
+3. you know which page you are opening next,
+4. you know when to switch from the guidebook to repo-local docs.
 
 ## Implementation Anchors
 

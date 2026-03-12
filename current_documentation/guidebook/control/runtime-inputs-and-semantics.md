@@ -5,23 +5,26 @@
 
 # Runtime Inputs and Semantics
 
+## Guidebook Context
+
+1. **Bucket:** [Control](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Control](README.md)
+5. **Useful previous module:** [Paths and Standard Controls](paths-and-standard-controls.md)
+6. **Useful next module:** [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what a Vizij runtime input is, how it relates to typed paths and values, and how visible behavior on a face maps to a more stable runtime meaning underneath.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand the basic path vocabulary from [Paths and Standard Controls](paths-and-standard-controls.md) and now need the next layer of runtime reasoning.
 
-## What You Need
-
-It helps if you have already:
-
-1. completed [Hello Face Quickstart](../experience/hello-face-quickstart.md),
-2. read [Paths and Standard Controls](paths-and-standard-controls.md),
-3. seen at least one runtime app show loading, ready, and error states.
-
-## Artifact Being Touched
+### Artifact Being Touched
 
 The artifact here is not a single app screen. It is the runtime contract that multiple Vizij surfaces rely on:
 
@@ -30,6 +33,14 @@ The artifact here is not a single app screen. It is the runtime contract that mu
 3. staged runtime inputs,
 4. blackboard reads and writes,
 5. output paths that can later be observed or rendered.
+
+## What You Need
+
+It helps if you have already:
+
+1. completed [Hello Face Quickstart](../experience/hello-face-quickstart.md),
+2. read [Paths and Standard Controls](paths-and-standard-controls.md),
+3. seen at least one runtime app show loading, ready, and error states.
 
 ## The Core Semantic Chain
 
@@ -73,7 +84,15 @@ This is different from directly mutating a scene or attaching view-only state to
 
 ## Common Semantic Categories
 
-> TODO(content-model): Add a comparison here to map standard controls, pose weights, viseme weights, animation controls, and renderer outputs to what each category means and when a reader usually encounters it. Best fit because this section is sorting similar-looking path families by semantic job rather than by UI label.
+### Semantic Categories
+
+| Category | Meaning | Encountered In |
+| :--- | :--- | :--- |
+| **Standard** | Reusable rig channels (Gaze) | `Hello Face` / `useMouseGaze` |
+| **Poses** | Authored expressions | `Hello Face` / `usePoseHotkeys` |
+| **Visemes** | Speech-related shapes | `Agent Face` / `STT` |
+| **Animations** | Time-based motion | `Authoring` / `Player` |
+| **Outputs** | Derived runtime values | `Player` / `Diagnostics` |
 
 The most useful categories for guidebook readers are:
 
@@ -123,15 +142,20 @@ That question usually clarifies whether the reader is dealing with:
 
 ## Current Useful Diagram
 
-> TODO(content-model): Add a diagram here to show the semantic chain from app or hook through staged input, orchestrator evaluation, renderer output, and visible face behavior. Best fit because this module is about the continuity between runtime layers and a chain diagram would anchor that mental model better than text alone.
+### The Semantic Chain
 
-Wave 2 should add a simple runtime-semantics diagram showing:
+Visible face behavior follows a structured multi-layer evaluation:
 
-1. app or hook,
-2. staged input,
-3. orchestrator and controllers,
-4. renderer output,
-5. visible face behavior.
+```mermaid
+flowchart LR
+    app["App / Hook\n(Write Path)"] --> staged["Staged Input\n(Un-evaluated)"]
+    staged --> orch["Orchestrator\n(Advanced Step)"]
+    orch --> controllers["Controllers\n(Merge Values)"]
+    controllers --> render["Renderer Output\n(Ready to Draw)"]
+    render --> face["Visible Face\n(Success)"]
+```
+
+The screenshot shows the "ready" state where the face is active and responding to standard control writes.
 
 Until then, the architecture primer is the best current textual diagram.
 

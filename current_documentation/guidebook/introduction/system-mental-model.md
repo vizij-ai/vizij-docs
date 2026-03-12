@@ -5,39 +5,28 @@
 
 # System Mental Model
 
+## Guidebook Context
+
+1. **Bucket:** [Introduction](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Introduction](README.md)
+5. **Useful previous module:** [How To Use This Guidebook](how-to-use-this-guidebook.md)
+6. **Useful next module:** [Customization Concepts Primer](customization-concepts-primer.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain the major parts of Vizij, how authored assets and runtime control relate, and which conceptual contracts stay stable as a face moves from authoring into integration and deployment.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already know what Vizij is for, but do not yet have a reliable internal map of the system.
 
 It is especially useful before going deeper into `Control`, `Customize`, `Integrate`, or `Deploy`.
 
-## What You Need
-
-You do not need package-level or crate-level knowledge to use this page.
-
-It helps if you have already:
-
-1. read [What Is Vizij?](what-is-vizij.md),
-2. seen the main public route as `Hello Face -> Authoring -> Player -> Deployment`.
-
-## Artifact Being Touched
-
-The artifact here is the Vizij system model itself:
-
-1. a face asset and its authored metadata,
-2. a runtime shell that loads and coordinates that asset,
-3. control contracts that let values move predictably through the system,
-4. application and deployment surfaces that expose the face to real users or operators.
-
-This page explains how those parts relate.
-
-It does not teach detailed control semantics, authoring steps, or a repo-by-repo implementation audit.
-
-## Why This Page Exists
+### Why This Page Exists
 
 Readers can reach a working face quickly in Vizij.
 
@@ -55,6 +44,47 @@ Vizij is easier to reason about if you keep five layers distinct:
 
 This page exists to keep those layers separate before later buckets teach them in more detail.
 
+### Artifact Being Touched
+
+The artifact here is the Vizij system model itself:
+
+1. a face asset and its authored metadata,
+2. a runtime shell that loads and coordinates that asset,
+3. control contracts that let values move predictably through the system,
+4. application and deployment surfaces that expose the face to real users or operators.
+
+This page explains how those parts relate.
+
+It does not teach detailed control semantics, authoring steps, or a repo-by-repo implementation audit.
+
+### What This Page Teaches And What It Does Not
+
+This page teaches:
+
+1. the major system parts a learner should keep separate,
+2. how authored assets, runtime coordination, app integration, and deployment relate,
+3. which conceptual contracts remain stable across those layers,
+4. how to interpret the public builder route without mistaking it for the internal package map.
+
+This page does not teach:
+
+1. detailed path semantics,
+2. rigging or pose-authoring workflow steps,
+3. package-by-package ownership,
+4. deployment topology or operator procedures,
+5. low-level ABI or file-format details.
+
+Those belong to later bucket pages and deeper implementation docs.
+
+## What You Need
+
+You do not need package-level or crate-level knowledge to use this page.
+
+It helps if you have already:
+
+1. read [What Is Vizij?](what-is-vizij.md),
+2. seen the main public route as `Hello Face -> Authoring -> Player -> Deployment`.
+
 ## The Stable System Map
 
 At the most useful learner level, Vizij is a relationship between four things:
@@ -66,7 +96,38 @@ At the most useful learner level, Vizij is a relationship between four things:
 
 Those are connected by a small set of stable contracts rather than by one single app.
 
-> TODO(content-model): Add a diagram here to show the relationship between authored assets, runtime control, integration surfaces, and deployment surfaces. Best fit because this section establishes the central fundamentals mental model and needs a visual map more than more prose.
+### System Architecture Relationship
+
+```mermaid
+flowchart TD
+    subgraph Assets ["1. Authored Assets"]
+        model["GLB/GLTF + Vizij Metadata\n(Rigs, Poses, Animations)"]
+    end
+
+    subgraph Runtime ["2. Runtime Control"]
+        orch["Orchestrator\n(Scheduling / Merging)"]
+        bb["Blackboard\n(Shared Typed State)"]
+        render["Renderer\n(Face Outputs)"]
+        orch <--> bb
+        bb --> render
+    end
+
+    subgraph Integration ["3. Integration Surfaces"]
+        shell["Application Shell\n(React Provider / Face)"]
+        shell -- "Loads" --> model
+        shell -- "Boots" --> orch
+    end
+
+    subgraph Deployment ["4. Deployment Surfaces"]
+        endpoint["Maintainable Endpoint\n(Standalone / Browser)"]
+        endpoint -- "Hosts" --> shell
+    end
+
+    style Assets fill:#161a33,stroke:#2d3356
+    style Runtime fill:#0b0d18,stroke:#7c4dff,stroke-width:2px
+    style Integration fill:#161a33,stroke:#2d3356
+    style Deployment fill:#161a33,stroke:#2d3356
+```
 
 ### 1. Authored assets
 
@@ -127,7 +188,16 @@ That sentence prevents several later confusions:
 2. a runtime provider is not the same thing as authoring,
 3. deployment is not merely "opening the demo somewhere else."
 
-> TODO(content-model): Add a comparison here to distinguish asset, runtime, app shell, and deployment surface in one quick-reference block. Best fit because this is the exact layer-separation point where readers commonly collapse adjacent concepts together.
+### Comparison of Layers
+
+| Layer | Primary Role | Key Artifact | Stability |
+| :--- | :--- | :--- | :--- |
+| **Asset** | Structure & Metadata | GLB / Vizij Bundle | Foundational |
+| **Runtime** | Execution & Logic | Orchestrator / WASM | Predictable |
+| **App Shell** | Use Case & UI | React Component / Shell | Context-Specific |
+| **Deployment** | Endpoint & Operator | Executable / Web URL | Operational |
+
+This separation ensures that a face can move from a simple tutorial into a high-stakes deployment without changing the underlying architecture.
 
 ## The Runtime Contracts That Stay Stable
 
@@ -212,25 +282,6 @@ This page should help you interpret that route correctly:
 4. `Deployment` makes that application usable in a real operating context.
 
 The route is a teaching sequence, not the literal architecture diagram.
-
-## What This Page Teaches And What It Does Not
-
-This page teaches:
-
-1. the major system parts a learner should keep separate,
-2. how authored assets, runtime coordination, app integration, and deployment relate,
-3. which conceptual contracts remain stable across those layers,
-4. how to interpret the public builder route without mistaking it for the internal package map.
-
-This page does not teach:
-
-1. detailed path semantics,
-2. rigging or pose-authoring workflow steps,
-3. package-by-package ownership,
-4. deployment topology or operator procedures,
-5. low-level ABI or file-format details.
-
-Those belong to later bucket pages and deeper implementation docs.
 
 ## Misunderstandings This Page Should Prevent
 

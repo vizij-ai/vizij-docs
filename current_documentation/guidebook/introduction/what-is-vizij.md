@@ -5,11 +5,22 @@
 
 # What Is Vizij?
 
+## Guidebook Context
+
+1. **Bucket:** [Introduction](README.md)
+2. **Depth:** `Surface`
+3. **Module type:** concept page
+4. **Bucket overview:** [Introduction](README.md)
+5. **Useful previous module:** [Introduction](README.md)
+6. **Useful next module:** [How To Use This Guidebook](how-to-use-this-guidebook.md)
+
 ## Reader Outcome
 
 After this page, you should understand what Vizij is for, what kinds of work it enables, and which maintained route you should follow next.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for:
 
@@ -17,13 +28,7 @@ This page is for:
 2. builders deciding whether Vizij matches their needs,
 3. contributors who need a quick public-facing orientation before reading deeper pages.
 
-## What You Need
-
-You do not need to understand the internal architecture before reading this page.
-
-It is enough to know that Vizij is about expressive digital faces that can be shown, controlled, customized, integrated into applications, and carried through to real deployment surfaces.
-
-## Artifact Being Touched
+### Artifact Being Touched
 
 The artifact here is the Vizij system as a maintained learning and builder path.
 
@@ -32,6 +37,29 @@ At the public route level, that path is:
 `Hello Face -> Authoring -> Player -> Deployment`
 
 This page explains that path at a high level. It does not try to teach the implementation details of each stage.
+
+### What This Page Does And Does Not Teach
+
+This page teaches:
+
+1. the broad purpose of Vizij,
+2. the maintained public route through the system,
+3. the difference between first contact, customization, integration, and deployment at a high level.
+
+This page does not teach:
+
+1. the runtime architecture in depth,
+2. path semantics or control vocabulary,
+3. authoring internals such as rigging and pose structure,
+4. deployment topology or protocol detail.
+
+Those belong to later guidebook modules.
+
+## What You Need
+
+You do not need to understand the internal architecture before reading this page.
+
+It is enough to know that Vizij is about expressive digital faces that can be shown, controlled, customized, integrated into applications, and carried through to real deployment surfaces.
 
 ## What Vizij Is
 
@@ -66,7 +94,9 @@ The current public framing for Vizij is one maintained builder spine:
 
 `Hello Face -> Authoring -> Player -> Deployment`
 
-> TODO(content-model): Add a diagram here to show the maintained builder spine from first proof through deployment. Best fit because this section defines the reader's first route-level mental map and a simple visual would make the stage boundaries easier to retain.
+### The Builder Spine
+
+![Vizij Builder Journey](../assets/infographics/vizij_builder_spine_infographic.png)
 
 Each stage answers a different question.
 
@@ -93,23 +123,6 @@ The player stage matters because it turns a face into something that can be load
 This is where Vizij stops being only a local experiment.
 
 Deployment covers the practical end surfaces where the face is actually run, operated, and checked as a usable system.
-
-## What This Page Does And Does Not Teach
-
-This page teaches:
-
-1. the broad purpose of Vizij,
-2. the maintained public route through the system,
-3. the difference between first contact, customization, integration, and deployment at a high level.
-
-This page does not teach:
-
-1. the runtime architecture in depth,
-2. path semantics or control vocabulary,
-3. authoring internals such as rigging and pose structure,
-4. deployment topology or protocol detail.
-
-Those belong to later guidebook modules.
 
 ## How To Choose Your Next Page
 

@@ -5,11 +5,22 @@
 
 # Sample Asset Exploration
 
+## Guidebook Context
+
+1. **Bucket:** [Experience](README.md)
+2. **Depth:** `Advanced`
+3. **Module type:** walkthrough
+4. **Bucket overview:** [Experience](README.md)
+5. **Useful previous module:** [Existing Asset Sandbox](existing-asset-sandbox.md)
+6. **Useful next module:** [Experience](README.md)
+
 ## Reader Outcome
 
 After this page, you should be able to compare current sample face assets by teaching usefulness, choose a sensible sample for your next step, and explain where sample exploration stops and deeper `Control`, `Customize`, or `Integrate` work begins.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand the quick sample experience and now want to look across the visible sample set more deliberately.
 
@@ -18,6 +29,46 @@ It is especially for readers asking:
 1. which face should I use next,
 2. which sample is actually maintained enough to teach from,
 3. when does browsing assets stop being helpful and deeper work begin.
+
+### Why This Page Exists
+
+The sample set is useful, but it can also mislead readers if every asset is treated as equally ready for every route.
+
+This page exists to prevent three mistakes:
+
+1. choosing a sample only because it looks interesting,
+2. assuming every sample is equally controllable or equally well anchored in maintained apps,
+3. treating exploratory asset browsing as if it were the customization pipeline.
+
+The right sample choice reduces confusion later.
+
+### Artifact Being Touched
+
+The artifact here is the sample asset set itself:
+
+1. raw faces,
+2. rigged faces,
+3. example assets already tied to maintained apps,
+4. the decision about which asset is appropriate for which learning goal.
+
+This is still an `Experience` page because the reader is comparing what is available before committing to deeper authoring or integration work.
+
+### What This Page Does And Does Not Cover
+
+This page does cover:
+
+1. how to choose a sensible sample for the next learning step,
+2. how to avoid over-generalizing from one asset,
+3. how to distinguish route-ready samples from exploratory ones.
+
+This page does not cover:
+
+1. full asset acquisition policy,
+2. asset QA or CI gating,
+3. deep rig standardization work,
+4. the complete customization pipeline.
+
+Those belong elsewhere.
 
 ## What You Need
 
@@ -33,29 +84,6 @@ The current sample inventory is best grounded by:
 2. `demo-vizij-player`,
 3. `tutorial-fullscreen-face`,
 4. the workshop source audit in `vizij-docs`.
-
-## Artifact Being Touched
-
-The artifact here is the sample asset set itself:
-
-1. raw faces,
-2. rigged faces,
-3. example assets already tied to maintained apps,
-4. the decision about which asset is appropriate for which learning goal.
-
-This is still an `Experience` page because the reader is comparing what is available before committing to deeper authoring or integration work.
-
-## Why This Page Exists
-
-The sample set is useful, but it can also mislead readers if every asset is treated as equally ready for every route.
-
-This page exists to prevent three mistakes:
-
-1. choosing a sample only because it looks interesting,
-2. assuming every sample is equally controllable or equally well anchored in maintained apps,
-3. treating exploratory asset browsing as if it were the customization pipeline.
-
-The right sample choice reduces confusion later.
 
 ## Not Every Sample Serves The Same Teaching Job
 
@@ -124,23 +152,6 @@ The healthiest current sample-asset behavior is:
 This keeps sample exploration honest.
 
 > TODO(content-model): Add a guided lab here to have readers pick two sample assets, justify which route each supports, and name the first page they should open next. Best fit because this is an advanced Experience page and a guided lab would turn the comparison framework into actual decision practice.
-
-## What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. how to choose a sensible sample for the next learning step,
-2. how to avoid over-generalizing from one asset,
-3. how to distinguish route-ready samples from exploratory ones.
-
-This page does not cover:
-
-1. full asset acquisition policy,
-2. asset QA or CI gating,
-3. deep rig standardization work,
-4. the complete customization pipeline.
-
-Those belong elsewhere.
 
 ## Success Check
 

@@ -5,19 +5,26 @@
 
 # Troubleshooting Matrix
 
+## Guidebook Context
+
+1. **Bucket:** [Guidebook Support](README.md)
+2. **Depth role:** cross-cutting reusable support layer
+3. **Module type:** support guide
+4. **Bucket overview:** [Guidebook Support](README.md)
+5. **Useful previous module:** [Validation Checkpoints](validation-checkpoints.md)
+6. **Useful next module:** [Glossary and Terminology Bridge](glossary-and-terminology-bridge.md)
+
 ## Reader Outcome
 
 After this page, you should be able to recognize common failure patterns across the maintained route, identify the most likely cause, and choose a fast recovery path that keeps the learner moving.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for guidebook authors, facilitators, and builders who need a practical recovery layer behind the main route.
 
-## What You Need
-
-This page works best after [Validation Checkpoints](validation-checkpoints.md), because troubleshooting is easier once the expected healthy state is clear.
-
-## Artifact Being Touched
+### Artifact Being Touched
 
 The artifact here is the route-level recovery model:
 
@@ -27,9 +34,31 @@ The artifact here is the route-level recovery model:
 4. the fastest recovery path,
 5. when to keep going and when to branch around a broken segment.
 
+## What You Need
+
+This page works best after [Validation Checkpoints](validation-checkpoints.md), because troubleshooting is easier once the expected healthy state is clear.
+
 ## Matrix
 
-> TODO(content-model): Add annotated failure-state screenshots here to show what the most important wrong states look like across the maintained route. Best fit because this matrix is symptom-driven and readers need visual recognition cues, not only textual symptom names.
+
+
+## Visual Recognition of Failure
+
+When something goes wrong, the Vizij runtime usually gives explicit visual clues.
+
+```mermaid
+flowchart TD
+    subgraph StandaloneStates ["Standalone Failure Clues"]
+        nomodel["'No model loaded' center-screen"] -- "Likely" --> pick["User must pick a file or provide --glb"]
+        error["'Asset load failure' text"] -- "Likely" --> corrupt["Corrupt GLB or invalid URL"]
+        ws_off["'WebSocket: Disconnected' tag"] -- "Likely" --> net["Network blocked or port collision"]
+    end
+
+    subgraph PlayerStates ["Player / Authoring Clues"]
+        provider["'Provider not found' in checklist"] -- "Likely" --> context["Missing VizijProvider wrapper"]
+        stuck["Infinite loader / Spinner"] -- "Likely" --> bundle["WASM bundle not found or hung"]
+    end
+```
 
 | Symptom | Likely cause | Where to inspect | Fast recovery |
 | --- | --- | --- | --- |
@@ -43,7 +72,28 @@ The artifact here is the route-level recovery model:
 
 ## How To Read The Matrix
 
-> TODO(content-model): Add an escalation-flow diagram here to show when a reader should retry, simplify the route, switch to conceptual recovery, or escalate into deeper debugging. Best fit because this support page is about recovery decisions and those decisions are easier to follow as a small branching flow.
+
+
+## Escalation Flow
+
+Use this flow to decide whether to keep technical debugging or move to a conceptual fallback.
+
+```mermaid
+flowchart TD
+    Start["Symptom Detected"] --> SimpleCheck["Try smallest fix (Reload / Restart)"]
+    SimpleCheck --> IsFixed{Fixed?}
+    IsFixed -- Yes --> Continue["Continue with Route"]
+    IsFixed -- No --> TimeCheck{Learning Goal Check}
+    
+    TimeCheck -- "Deep fix needed" --> Conceptual["Switch to Conceptual Recovery\n(Reference code/screenshots)"]
+    TimeCheck -- "Fix is fast" --> DeeperFix["Check Implementation Anchors"]
+    
+    DeeperFix --> StillBroken{Still Broken?}
+    StillBroken -- Yes --> Escalated["Escalate to Repo Debugging\n(Archive/Reset repo root)"]
+    StillBroken -- No --> Continue
+    
+    Conceptual --> NextModule["Move to Next Module"]
+```
 
 Use the matrix in this order:
 
@@ -80,13 +130,11 @@ That usually means the issue belongs in repo-level debugging or implementation w
 
 ## Current Useful Visuals
 
-For now, the best support visuals are the same workshop screenshots already captured for the route.
+The best support visuals for troubleshooting are the diagnostic states in our core apps:
 
-This page would later benefit from:
-
-1. annotated screenshots of known failure states,
-2. a small escalation flow diagram,
-3. operator-model screenshots from `vizij-standalone`.
+1. **Healthy Readiness**: [demo-vizij-player](../assets/screenshots/demo-vizij-player.png) (Checklist all green)
+2. **Missing Model State**: [vizij-standalone-status-ui](../assets/screenshots/vizij-standalone-status-ui.png)
+3. **Control Status**: [vizij-standalone-web-control-panel](../assets/screenshots/vizij-standalone-web-control-panel.png) (Shows connection status)
 
 ## Success Check
 

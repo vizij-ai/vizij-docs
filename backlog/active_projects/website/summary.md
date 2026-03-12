@@ -32,8 +32,10 @@ This summary still lives under a `backlog/` path because the broader portfolio r
 ## Near-Term Priorities
 
 - Make `vizij-ai.github.io` the canonical public front door and home for evergreen core Vizij guides.
-- Publish the maintained public spine explicitly as:
-  - `website -> Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`
+- Publish the maintained public learning system explicitly as:
+  - website as the landing and routing layer
+  - mandatory builder spine: `Hello Face -> Authoring -> Player -> Deployment`
+  - optional richer examples after `Player`, kept clearly secondary to the main route
 - Keep deeper package/reference/generated docs linked out for now instead of pretending the site already hosts everything.
 - Reclassify top-level `/docs` and `vizij-afternoon-workshop` as source material to extract from and move toward archive.
 - Keep the HRI tutorial page event-specific rather than allowing it to read as the main evergreen onboarding hub.

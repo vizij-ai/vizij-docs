@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook; status=written; topics=guidebook,documentation,website,tutorials,workshops,matrix -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** canonical markdown source of truth for reusable Vizij teaching content
 
 # Vizij Guidebook
@@ -72,6 +72,8 @@ If a downstream publishing surface lacks support for a needed teaching primitive
    - defines the canonical teaching primitives and how they should be used
 3. [module_inventory-reference.md](module_inventory-reference.md)
    - maps planned guidebook modules to bucket, depth, teaching objective, content forms, anchors, and downstream outputs
+4. [support/guidebook-quality-criteria.md](support/guidebook-quality-criteria.md)
+   - defines how guidebook modules, routes, and downstream projections should be judged as a communication system
 
 ## Bucket Map
 
@@ -93,7 +95,7 @@ If a downstream publishing surface lacks support for a needed teaching primitive
 1. [reference](reference/README.md)
    - concise reusable reference modules that can bridge multiple buckets
 2. [support](support/README.md)
-   - troubleshooting, validation, glossary, media guidance, and support material
+   - troubleshooting, validation, glossary, quality criteria, media guidance, and support material
 3. [assets](assets/README.md)
    - reusable screenshots and video references after classification
 

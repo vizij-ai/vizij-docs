@@ -9,14 +9,20 @@ Define how Vizij moves from internal engineering documentation to curated public
 
 This plan is about documentation flow, authority boundaries, and public-doc readiness. It is not yet the full project-by-project portfolio reshuffle, but it now assumes one explicit public system rather than parallel tutorial/workshop tracks.
 
+The guidebook-first downstream execution plan for this work now lives in:
+
+- [`guidebook_first_documentation_system-plan.md`](guidebook_first_documentation_system-plan.md)
+
 ## Current-State Notes
 
 - `vizij-docs` is the canonical internal cross-repo documentation layer.
 - Repo-local docs remain authoritative for implementation detail.
 - `vizij-ai.github.io` is already the active public site.
 - Tutorial/workshop content is currently fragmented across public, internal, repo-local, and transitional surfaces.
-- The maintained public path should be:
-  - `website -> Hello Face -> vizij-authoring -> demo-vizij-player -> tutorial-agent-face -> deployment`
+- The maintained public learning system should be:
+  - website as the landing and routing layer
+  - mandatory builder spine: `Hello Face -> Authoring -> Player -> Deployment`
+  - optional richer examples after `Player`, kept clearly secondary to the main route
 
 ## Planned Workstreams
 

@@ -5,24 +5,26 @@
 
 # Customization Concepts Primer
 
+## Guidebook Context
+
+1. **Bucket:** [Introduction](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Introduction](README.md)
+5. **Useful previous module:** [System Mental Model](system-mental-model.md)
+6. **Useful next module:** [Architecture Bridge](architecture-bridge.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain the major customization concepts that show up later in the guidebook: rigs, poses, animations, procedural programs, and the artifacts that carry them forward.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who are not ready to author yet, but do need a clean conceptual map of the terms used in the `Customize` bucket.
 
-## What You Need
-
-You do not need to have used `vizij-authoring` yet.
-
-It helps if you have already:
-
-1. read [How To Use This Guidebook](how-to-use-this-guidebook.md),
-2. seen at least one working Vizij face in the `Experience` bucket.
-
-## Why This Page Exists
+### Why This Page Exists
 
 Readers often need to understand the words before they understand the workflow.
 
@@ -35,6 +37,33 @@ Without that vocabulary, the `Customize` bucket can feel like a wall of unexplai
 5. exportable bundle or authored artifact
 
 This page gives the conceptual layer first, so later customization pages can focus on actual authoring work.
+
+### What This Page Is Not
+
+This page does not teach:
+
+1. how to import a face,
+2. how to create a pose group,
+3. how to keyframe an animation,
+4. how to edit a procedural graph,
+5. how to export a finished asset.
+
+Those are `Customize` modules.
+
+### Why This Belongs In Introduction
+
+These concepts appear early in the public story, even when a reader is still deciding whether they need the full customization branch.
+
+So this page belongs in `Introduction` because it helps the reader interpret later buckets before they have to commit to an authoring workflow.
+
+## What You Need
+
+You do not need to have used `vizij-authoring` yet.
+
+It helps if you have already:
+
+1. read [How To Use This Guidebook](how-to-use-this-guidebook.md),
+2. seen at least one working Vizij face in the `Experience` bucket.
 
 ## The Core Concepts
 
@@ -93,24 +122,6 @@ A useful mental model is:
 This is not yet the authoring workflow. It is the conceptual stack underneath it.
 
 > TODO(content-model): Add a diagram here to show the conceptual stack from controllable structure through exported artifact. Best fit because this section is already phrased as a layered mental model and would benefit from a visual ordering cue.
-
-## What This Page Is Not
-
-This page does not teach:
-
-1. how to import a face,
-2. how to create a pose group,
-3. how to keyframe an animation,
-4. how to edit a procedural graph,
-5. how to export a finished asset.
-
-Those are `Customize` modules.
-
-## Why This Belongs In Introduction
-
-These concepts appear early in the public story, even when a reader is still deciding whether they need the full customization branch.
-
-So this page belongs in `Introduction` because it helps the reader interpret later buckets before they have to commit to an authoring workflow.
 
 ## Success Check
 

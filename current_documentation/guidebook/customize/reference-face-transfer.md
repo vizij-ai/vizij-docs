@@ -5,13 +5,60 @@
 
 # Reference-Face Transfer
 
+## Guidebook Context
+
+1. **Bucket:** [Customize](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Customize](README.md)
+5. **Useful previous module:** [Import](import.md)
+6. **Useful next module:** [Rigging](rigging.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what reference-face transfer does in `vizij-authoring`, what it copies into the main face, what stays review-gated, and why transfer is different from import.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand how a face enters authoring and now want to reuse knowledge from a second, known-good face without confusing that process with runtime playback or deployment.
+
+### Artifact Being Touched
+
+The artifact in this page is the main face authoring session plus a separate reference face context.
+
+That distinction matters.
+
+Reference-face transfer is not about replacing the main face with another file. It is about opening a second face as a guide, comparing the two contexts, and copying selected authored information into the main face with explicit review.
+
+In the current workflow, the reference face is a helper context, not a second full authoring target.
+
+### Why This Page Exists Separately
+
+Transfer needs its own page because it prevents a very specific misunderstanding:
+
+1. import gets a face and its metadata into authoring,
+2. transfer uses a second face to help author the first one,
+3. integration and deployment consume the result later, but do not define this workflow.
+
+If those boundaries blur, readers start using the word `transfer` for too many different things.
+
+This page keeps transfer inside `Customize`, where it belongs.
+
+### What Reference-Face Transfer Does Not Teach
+
+This page does not teach:
+
+1. how a new face asset enters the tool,
+2. how rigging is defined for the main face,
+3. how pose groups and animations work in depth,
+4. how authored output is exported,
+5. how a runtime app consumes the result.
+
+Those belong to neighboring modules.
+
+Reference-face transfer is narrower: it is the guided reuse of authored knowledge from one face to another.
 
 ## What You Need
 
@@ -27,28 +74,6 @@ It also helps if you have already read:
 2. [Customization Concepts Primer](../introduction/customization-concepts-primer.md)
 
 You do not need to understand export or application integration yet.
-
-## Artifact Being Touched
-
-The artifact in this page is the main face authoring session plus a separate reference face context.
-
-That distinction matters.
-
-Reference-face transfer is not about replacing the main face with another file. It is about opening a second face as a guide, comparing the two contexts, and copying selected authored information into the main face with explicit review.
-
-In the current workflow, the reference face is a helper context, not a second full authoring target.
-
-## Why This Page Exists Separately
-
-Transfer needs its own page because it prevents a very specific misunderstanding:
-
-1. import gets a face and its metadata into authoring,
-2. transfer uses a second face to help author the first one,
-3. integration and deployment consume the result later, but do not define this workflow.
-
-If those boundaries blur, readers start using the word `transfer` for too many different things.
-
-This page keeps transfer inside `Customize`, where it belongs.
 
 ## What Reference-Face Transfer Means In Vizij
 
@@ -131,20 +156,6 @@ In the current workflow:
 That means some information is preserved directly, some is mapped into the main face, and some cannot be safely applied until the user resolves it.
 
 This is why transfer belongs after `Import`: the main face has to exist first, and its controllable structure has to be the destination truth.
-
-## What Reference-Face Transfer Does Not Teach
-
-This page does not teach:
-
-1. how a new face asset enters the tool,
-2. how rigging is defined for the main face,
-3. how pose groups and animations work in depth,
-4. how authored output is exported,
-5. how a runtime app consumes the result.
-
-Those belong to neighboring modules.
-
-Reference-face transfer is narrower: it is the guided reuse of authored knowledge from one face to another.
 
 ## A Useful Mental Model
 

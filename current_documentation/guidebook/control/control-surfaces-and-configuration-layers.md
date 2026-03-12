@@ -5,22 +5,26 @@
 
 # Control Surfaces and Configuration Layers
 
+## Guidebook Context
+
+1. **Bucket:** [Control](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Control](README.md)
+5. **Useful previous module:** [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md)
+6. **Useful next module:** [Orchestration and Diagnostics](orchestration-and-diagnostics.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain the main control and configuration surfaces in Vizij and say what each one is responsible for.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand paths and runtime semantics, and now need to understand where those controls and configurations actually show up across the system.
 
-## What You Need
-
-It helps if you have already read:
-
-1. [Paths and Standard Controls](paths-and-standard-controls.md),
-2. [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md).
-
-## Why This Page Exists
+### Why This Page Exists
 
 Vizij does not have only one control surface.
 
@@ -34,6 +38,13 @@ Readers encounter several different layers that all affect behavior, and those l
 6. deployment-facing slot or operator control surfaces.
 
 This page explains those layers without collapsing them into one generic idea of “controls.”
+
+## What You Need
+
+It helps if you have already read:
+
+1. [Paths and Standard Controls](paths-and-standard-controls.md),
+2. [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md).
 
 ## The Main Surfaces
 

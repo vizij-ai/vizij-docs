@@ -5,6 +5,15 @@
 
 # Glossary and Terminology Bridge
 
+## Guidebook Context
+
+1. **Bucket:** [Guidebook Support](README.md)
+2. **Depth role:** cross-cutting reusable support layer
+3. **Module type:** reference bridge
+4. **Bucket overview:** [Guidebook Support](README.md)
+5. **Useful previous module:** [Troubleshooting Matrix](troubleshooting-matrix.md)
+6. **Useful next module:** [Media Intake and Usage Guide](media-intake-and-usage-guide.md)
+
 ## Reader Outcome
 
 After this page, you should be able to translate the same Vizij thing across buckets without confusing:
@@ -14,7 +23,9 @@ After this page, you should be able to translate the same Vizij thing across buc
 3. integration language with deployment language,
 4. surface UI labels with the more stable runtime meaning underneath.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who are moving between `Customize`, `Control`, `Integrate`, and `Deploy` and keep seeing familiar words used at slightly different layers.
 
@@ -24,31 +35,7 @@ It is especially useful for:
 2. workshop readers who need a compact shared vocabulary,
 3. guidebook authors who want one stable route-level language.
 
-## What You Need
-
-It helps if you have already read:
-
-1. [What Is Vizij?](../introduction/what-is-vizij.md),
-2. [System Mental Model](../introduction/system-mental-model.md),
-3. [Paths and Standard Controls](../control/paths-and-standard-controls.md),
-4. [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
-
-You do not need package-level knowledge or a full architecture audit.
-
-## Artifact Being Touched
-
-The artifact here is the route-level vocabulary itself.
-
-This page is about how one maintained Vizij face is described as it moves through:
-
-1. asset and authoring language,
-2. runtime control language,
-3. integration language,
-4. deployment and operator language.
-
-It is not a giant dictionary and it is not a replacement for the deeper bucket pages.
-
-## Why This Page Exists
+### Why This Page Exists
 
 This page needs to exist separately because several important Vizij words are correct in more than one bucket, but they do not mean exactly the same thing in each one.
 
@@ -61,7 +48,20 @@ Without a bridge page, readers often make these mistakes:
 
 This page prevents those misunderstandings by giving the smallest shared vocabulary that lets readers switch buckets cleanly.
 
-## What This Page Covers And Does Not Cover
+### Artifact Being Touched
+
+The artifact here is the route-level vocabulary itself.
+
+This page is about how one maintained Vizij face is described as it moves through:
+
+1. asset and authoring language,
+2. runtime control language,
+3. integration language,
+4. deployment and operator language.
+
+It is not a giant dictionary and it is not a replacement for the deeper bucket pages.
+
+### What This Page Covers And Does Not Cover
 
 This page covers:
 
@@ -76,6 +76,17 @@ This page does not cover:
 3. full authoring internals,
 4. deployment topology decisions,
 5. every specialized term used inside repo-local implementation docs.
+
+## What You Need
+
+It helps if you have already read:
+
+1. [What Is Vizij?](../introduction/what-is-vizij.md),
+2. [System Mental Model](../introduction/system-mental-model.md),
+3. [Paths and Standard Controls](../control/paths-and-standard-controls.md),
+4. [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
+
+You do not need package-level knowledge or a full architecture audit.
 
 ## Fast Orientation Map
 

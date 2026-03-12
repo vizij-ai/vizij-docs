@@ -5,15 +5,55 @@
 
 # Deployment Checks and Recovery
 
+## Guidebook Context
+
+1. **Bucket:** [Deploy](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** operational guide
+4. **Bucket overview:** [Deploy](README.md)
+5. **Useful previous module:** [Operator and Deployment Model](operator-and-deployment-model.md)
+6. **Useful next module:** [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md)
+
 ## Reader Outcome
 
 After this page, you should be able to decide whether the first Vizij deployment endpoint is actually deployed, run a compact readiness loop against that endpoint, and recover the most common first-line failures without drifting into a full support runbook.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand the first standalone deployment path and operator model and now need a practical answer to a narrower question:
 
 Is this endpoint healthy enough to call deployed, and what should I try first when that loop breaks?
+
+### Why This Page Exists
+
+The standalone deployment page gets the endpoint running.
+
+The operator-model page explains what the endpoint consists of.
+
+This page exists separately because operators still need one more layer: a repeatable readiness loop. Without that loop, it is easy to mistake “the app opened” for “the endpoint is deployed,” or to jump too quickly into deep debugging when a small recovery step would have been enough.
+
+### Artifact Being Touched
+
+The artifact here is the first real deployment endpoint:
+
+1. the `vizij-standalone` runtime,
+2. one loaded face asset,
+3. the local WebSocket control service, usually `ws://localhost:9000`,
+4. one operator path, either through the built-in web control panel or a direct WebSocket client.
+
+### What This Page Does Not Cover
+
+This page deliberately stops before:
+
+1. full failure classification across all route stages,
+2. deep protocol debugging,
+3. security and network-hardening decisions,
+4. packaging internals or shipping workflows,
+5. ROS, hardware, or multi-screen deployment patterns.
+
+Those belong in other pages because the goal here is a fast, dependable first recovery loop, not full operational ownership of every deployment topology.
 
 ## What You Need
 
@@ -25,23 +65,6 @@ This page assumes:
 4. you already understand the runtime-plus-operator model from [Operator and Deployment Model](operator-and-deployment-model.md).
 
 This page does not repeat the standalone setup walkthrough, packaging steps, or deeper topology choices.
-
-## Artifact Being Touched
-
-The artifact here is the first real deployment endpoint:
-
-1. the `vizij-standalone` runtime,
-2. one loaded face asset,
-3. the local WebSocket control service, usually `ws://localhost:9000`,
-4. one operator path, either through the built-in web control panel or a direct WebSocket client.
-
-## Why This Page Exists
-
-The standalone deployment page gets the endpoint running.
-
-The operator-model page explains what the endpoint consists of.
-
-This page exists separately because operators still need one more layer: a repeatable readiness loop. Without that loop, it is easy to mistake “the app opened” for “the endpoint is deployed,” or to jump too quickly into deep debugging when a small recovery step would have been enough.
 
 ## What “Deployed” Means For This First Endpoint
 
@@ -269,18 +292,6 @@ Fast action:
 1. invoke `reset` from the panel or socket client,
 2. confirm the face returns toward defaults,
 3. rerun one small write to prove the loop still works.
-
-## What This Page Does Not Cover
-
-This page deliberately stops before:
-
-1. full failure classification across all route stages,
-2. deep protocol debugging,
-3. security and network-hardening decisions,
-4. packaging internals or shipping workflows,
-5. ROS, hardware, or multi-screen deployment patterns.
-
-Those belong in other pages because the goal here is a fast, dependable first recovery loop, not full operational ownership of every deployment topology.
 
 ## When To Escalate To Support
 

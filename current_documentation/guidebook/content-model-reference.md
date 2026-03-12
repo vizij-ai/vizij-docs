@@ -1,6 +1,6 @@
 <!-- tags: type=reference; status=written; topics=guidebook,content-model,teaching-primitives -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** define the canonical teaching primitives for the Vizij guidebook independent of any one publishing surface
 
 # Guidebook Content Model Reference
@@ -23,7 +23,80 @@ Every module should define:
 4. the next useful step,
 5. where implementation truth lives when the reader needs to go deeper.
 
+These do not all need separate top-level sections on the page. Reader-facing scaffolding should stay subordinate to the main teaching flow.
+
 Modules may include as much or as little media as the concept requires. Some concepts may be taught well with pure prose and code. Others may need multiple screenshots, diagrams, walkthroughs, or videos.
+
+### Module Context Contract
+
+Every learner-facing module should expose a clear top-of-page context block or equivalent orientation section so readers do not need to infer where they are from the prose alone.
+
+That context should make clear:
+
+1. the bucket,
+2. the depth,
+3. the module type,
+4. the bucket overview page,
+5. the most relevant previous or next modules in the learning sequence,
+6. the intended audience,
+7. the assumptions or prerequisites,
+8. the next useful step.
+
+This should be treated as reader orientation, not decorative metadata. If a page cannot quickly answer "where am I, what kind of page is this, and where do I go next," it is under-contextualized for the guidebook.
+
+### Module Notes
+
+`Intended Audience`, `Why This Page Exists`, `Artifact Being Touched`, `What This Page Does And Does Not Teach`, and similar page-scope or teaching-scope meta notes should be treated as optional reader-orientation notes, not mandatory top-level page structure.
+
+When those notes genuinely help the reader, prefer grouping them under a single `Module Notes` H2 with short H3 subsections.
+
+Default guidance:
+
+1. keep each note to one or two short sentences unless the reader truly needs more,
+2. omit the note entirely if it mainly helps the writer rather than the reader,
+3. keep the main learning flow visible above the fold,
+4. keep `What You Need` separate only when the page has real prerequisites or setup requirements.
+
+Common examples of notes that usually belong under `Module Notes`:
+
+1. what this page covers or does not cover,
+2. what this page teaches or does not teach,
+3. why this page exists separately,
+4. what this page is not,
+5. what this bucket or page is trying to teach as a page-design note rather than as learner-facing content.
+
+### Content-Type Legibility
+
+The module type should be easy to identify from the page itself.
+
+Readers and reviewers should not have to guess whether a page is primarily:
+
+1. a tutorial or quickstart,
+2. an explainer or concept page,
+3. a comparison or decision guide,
+4. a reference bridge,
+5. an operational guide,
+6. a support page.
+
+Different module types are judged differently. The guidebook should not use one generic quality standard for every page shape.
+
+### Tutorial Executable Contract
+
+Tutorials and quickstarts must be executable, not merely suggestive.
+
+If a reader follows the instructions exactly, the tutorial should succeed without hidden assumptions.
+
+That means tutorials should make explicit:
+
+1. the starting state,
+2. the required tools, repos, assets, credentials, and environment,
+3. the required working directory or app surface,
+4. the exact sequence of mandatory steps,
+5. the expected outputs, states, or observable checkpoints,
+6. the validation check that proves the outcome,
+7. the most relevant recovery path when a likely step fails.
+
+Use [support/guidebook-quality-criteria.md](support/guidebook-quality-criteria.md) when reviewing whether a page actually meets these expectations.
 
 ## 3. Canonical Content Families
 
@@ -34,7 +107,7 @@ Modules may include as much or as little media as the concept requires. Some con
 | Outcome note | what the reader will be able to do or understand | the start of almost any module | the module has no clear reader outcome yet | opens the page and frames the rest | all buckets |
 | Audience note | who the page is for and what it assumes | the page serves a specific reader slice | the audience is truly universal and obvious | sits near the top and narrows scope | introduction, advanced modules |
 | Prerequisite snapshot | what the reader should already know or have available | success depends on prior setup or context | the page is intentionally zero-friction | appears before steps or deeper explanation | tutorials, deployment, customization |
-| Artifact note | what working thing the reader should expect to touch or produce | the page centers on a concrete asset, player, app, or deployment | the page is purely conceptual | ties the concept to a tangible object | experience, integrate, deploy |
+| Artifact note | what working thing the reader should expect to touch or produce | the page centers on a concrete asset, player, app, or deployment | the page is purely conceptual or the note is mainly writer-facing | usually grouped under `Module Notes` unless the artifact is central to the page's main flow | experience, integrate, deploy |
 | Validation check | how the reader knows they succeeded | the page has an operational or experiential goal | success is purely conceptual and cannot be checked directly | follows steps or a concept milestone | tutorials, demos, deployments |
 | Next-step note | where the reader should go next | the page is part of a broader route | the page is fully standalone | closes the page and keeps the route moving | all buckets |
 | Implementation bridge | where engineering truth lives | the guidebook page abstracts implementation detail | the page already is the implementation truth | points outward to repo-local or canonical implementation docs | fundamentals and advanced modules |

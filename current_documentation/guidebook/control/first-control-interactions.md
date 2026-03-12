@@ -5,15 +5,65 @@
 
 # First Control Interactions
 
+## Guidebook Context
+
+1. **Bucket:** [Control](README.md)
+2. **Depth:** `Surface`
+3. **Module type:** walkthrough
+4. **Bucket overview:** [Control](README.md)
+5. **Useful previous module:** [Control](README.md)
+6. **Useful next module:** [Paths and Standard Controls](paths-and-standard-controls.md)
+
 ## Reader Outcome
 
 After this page, you should be able to launch the maintained fullscreen tutorial face, wait for a trustworthy ready state, use mouse gaze and pose hotkeys to trigger obvious visible changes, and explain that these interactions are runtime writes with different meanings underneath.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already have a Vizij face rendering and now want the smallest believable control success before learning the full control model.
 
 It is especially useful after [Hello Face Quickstart](../experience/hello-face-quickstart.md).
+
+### Why This Page Exists
+
+This page is separate because many readers need one fast control success before they are ready for control vocabulary.
+
+It prevents two common mistakes:
+
+1. thinking the face is only a rendered asset with some demo-only UI tricks,
+2. thinking they must understand full path syntax before trying any runtime control.
+
+This page teaches visible cause and effect first. The fundamentals pages explain the deeper model afterward.
+
+### Artifact Being Touched
+
+This page uses the maintained `tutorial-fullscreen-face` app.
+
+The concrete surfaces you are touching are:
+
+1. the runtime lifecycle in `FaceApp.tsx`,
+2. the mouse-gaze hook in `useMouseGaze.ts`,
+3. the hotkey hook in `usePoseHotkeys.ts`.
+
+### What This Page Covers and Does Not Cover
+
+This page covers:
+
+1. readiness before interaction,
+2. mouse gaze as a maintained continuous control example,
+3. hotkeys as a maintained named-state control example,
+4. the idea that visible interactions are runtime writes with meaning underneath.
+
+This page does not cover:
+
+1. full path syntax,
+2. the complete semantic categories of inputs, outputs, visemes, and animations,
+3. all control surfaces or deployment-facing slots,
+4. authoring new poses or changing the exported bundle.
+
+Those belong on the next pages.
 
 ## What You Need
 
@@ -27,27 +77,6 @@ pnpm run dev:tutorial-fullscreen-face
 Then open the local URL printed by Vite.
 
 You do not need to know full path grammar yet.
-
-## Artifact Being Touched
-
-This page uses the maintained `tutorial-fullscreen-face` app.
-
-The concrete surfaces you are touching are:
-
-1. the runtime lifecycle in `FaceApp.tsx`,
-2. the mouse-gaze hook in `useMouseGaze.ts`,
-3. the hotkey hook in `usePoseHotkeys.ts`.
-
-## Why This Page Exists
-
-This page is separate because many readers need one fast control success before they are ready for control vocabulary.
-
-It prevents two common mistakes:
-
-1. thinking the face is only a rendered asset with some demo-only UI tricks,
-2. thinking they must understand full path syntax before trying any runtime control.
-
-This page teaches visible cause and effect first. The fundamentals pages explain the deeper model afterward.
 
 ## Walkthrough
 
@@ -127,24 +156,6 @@ Different visible interactions write into different semantic parts of the runtim
 2. some writes blend named authored states,
 3. both are valid runtime control,
 4. neither should be mistaken for full control theory on its own.
-
-## What This Page Covers and Does Not Cover
-
-This page covers:
-
-1. readiness before interaction,
-2. mouse gaze as a maintained continuous control example,
-3. hotkeys as a maintained named-state control example,
-4. the idea that visible interactions are runtime writes with meaning underneath.
-
-This page does not cover:
-
-1. full path syntax,
-2. the complete semantic categories of inputs, outputs, visemes, and animations,
-3. all control surfaces or deployment-facing slots,
-4. authoring new poses or changing the exported bundle.
-
-Those belong on the next pages.
 
 ## Success Check
 

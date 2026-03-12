@@ -5,6 +5,15 @@
 
 # Animations
 
+## Guidebook Context
+
+1. **Bucket:** [Customize](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Customize](README.md)
+5. **Useful previous module:** [Poses](poses.md)
+6. **Useful next module:** [Procedural Programs](procedural-programs.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what an animation is in Vizij, what a clip, track, and keyframe mean in the current authoring model, and how playback state and transport help you preview authored motion before export.
@@ -14,11 +23,56 @@ You should also be able to explain why animations are different from poses:
 1. poses are named states,
 2. animations are authored change over time.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand rigging and poses and now need to understand how Vizij authors motion instead of only storing static facial states.
 
 It is especially for readers who might otherwise use `animation`, `pose`, `playback`, and `transport` as if they were interchangeable.
+
+### Artifact Being Touched
+
+The artifact in this page is the authored animation layer inside `vizij-authoring`.
+
+In current implementation terms, that means:
+
+1. animation clips with stable ids, names, and duration,
+2. tracks that target specific rig or standard-input channels,
+3. time-based keyframes stored on those tracks,
+4. transport state used to preview authored or imported clips in the authoring app.
+
+This matters because animation authoring is not only a viewer convenience. It becomes part of the authored face behavior that later export and runtime playback surfaces can consume.
+
+### Why This Page Exists Separately
+
+`Animations` needs its own page because it protects a different concept boundary than `Poses`.
+
+`Rigging` explains what the face can be driven by.
+
+`Poses` explains named authored states over that controllable structure.
+
+`Animations` explains how those controllable values change over time.
+
+If those ideas collapse together, readers make three common mistakes:
+
+1. treating a pose like a whole timeline,
+2. treating animation like a collection of unnamed slider changes,
+3. treating playback buttons as if they were the animation itself.
+
+### What This Page Does Not Teach
+
+This page does not teach:
+
+1. how to build the rig structure from scratch,
+2. how to model poses and pose groups,
+3. how procedural programs differ from timeline animation,
+4. how exported bundles serialize the finished animation payload,
+5. how an embedded app chooses which animation to play at runtime.
+
+Those belong to neighboring modules because they answer different questions.
+
+This page teaches the customization-side mental model for authored motion over time.
 
 ## What You Need
 
@@ -35,35 +89,6 @@ pnpm run dev:vizij-authoring
 ```
 
 You do not need to understand export packaging or runtime embedding details yet.
-
-## Artifact Being Touched
-
-The artifact in this page is the authored animation layer inside `vizij-authoring`.
-
-In current implementation terms, that means:
-
-1. animation clips with stable ids, names, and duration,
-2. tracks that target specific rig or standard-input channels,
-3. time-based keyframes stored on those tracks,
-4. transport state used to preview authored or imported clips in the authoring app.
-
-This matters because animation authoring is not only a viewer convenience. It becomes part of the authored face behavior that later export and runtime playback surfaces can consume.
-
-## Why This Page Exists Separately
-
-`Animations` needs its own page because it protects a different concept boundary than `Poses`.
-
-`Rigging` explains what the face can be driven by.
-
-`Poses` explains named authored states over that controllable structure.
-
-`Animations` explains how those controllable values change over time.
-
-If those ideas collapse together, readers make three common mistakes:
-
-1. treating a pose like a whole timeline,
-2. treating animation like a collection of unnamed slider changes,
-3. treating playback buttons as if they were the animation itself.
 
 ## What Animation Means In Vizij
 
@@ -224,20 +249,6 @@ The inspector can show details such as:
 5. track labels and channels.
 
 That is enough for a reader to understand animation as an authored artifact rather than only a moving preview.
-
-## What This Page Does Not Teach
-
-This page does not teach:
-
-1. how to build the rig structure from scratch,
-2. how to model poses and pose groups,
-3. how procedural programs differ from timeline animation,
-4. how exported bundles serialize the finished animation payload,
-5. how an embedded app chooses which animation to play at runtime.
-
-Those belong to neighboring modules because they answer different questions.
-
-This page teaches the customization-side mental model for authored motion over time.
 
 ## A Useful Mental Model
 

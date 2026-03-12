@@ -5,27 +5,28 @@
 
 # Rigging
 
+## Guidebook Context
+
+1. **Bucket:** [Customize](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Customize](README.md)
+5. **Useful previous module:** [Reference-Face Transfer](reference-face-transfer.md)
+6. **Useful next module:** [Poses](poses.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what rigging means in Vizij specifically, how rigging differs from raw scene data, and why later pose, animation, and export workflows depend on the rig layer being truthful.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who are ready to move from “a face I can load or tweak” to “a face whose controllable structure I can reason about.”
 
 It is especially for readers who have encountered the word `rig` before in other graphics tools and need to understand the Vizij-specific meaning rather than importing a generic CG definition.
 
-## What You Need
-
-It helps if you have already read:
-
-1. [Import](import.md)
-2. [Reference-Face Transfer](reference-face-transfer.md)
-3. [Customization Concepts Primer](../introduction/customization-concepts-primer.md)
-
-You do not need to master pose groups or animation clips yet.
-
-## Artifact Being Touched
+### Artifact Being Touched
 
 The artifact in this page is the face’s controllable structure inside authoring and runtime.
 
@@ -40,7 +41,7 @@ It includes:
 
 That structure is what later authoring pages build on.
 
-## Why This Page Exists Separately
+### Why This Page Exists Separately
 
 Rigging needs its own page because it prevents a different misunderstanding than import or transfer.
 
@@ -51,6 +52,30 @@ Transfer answers “how can one face help author another?”
 Rigging answers “what is the control structure of this face once it is in the system?”
 
 Without that distinction, readers collapse rigging into either raw geometry editing or pose authoring, and both are wrong for Vizij.
+
+### What Rigging Does Not Teach
+
+This page does not teach:
+
+1. how to load a face into authoring,
+2. how to copy poses or variables from a reference face,
+3. how pose grouping semantics work,
+4. how animation clips are authored over time,
+5. how export packages the finished artifact.
+
+Those are separate modules.
+
+This page teaches the control structure those later modules rely on.
+
+## What You Need
+
+It helps if you have already read:
+
+1. [Import](import.md)
+2. [Reference-Face Transfer](reference-face-transfer.md)
+3. [Customization Concepts Primer](../introduction/customization-concepts-primer.md)
+
+You do not need to master pose groups or animation clips yet.
 
 ## What Rigging Means In Vizij
 
@@ -147,20 +172,6 @@ The current README’s Standard Feature Spaces workflow also shows the public si
 3. standardized input structure supports interoperability between faces.
 
 That is rigging in Vizij terms: shaping the face into a controllable, reusable input model.
-
-## What Rigging Does Not Teach
-
-This page does not teach:
-
-1. how to load a face into authoring,
-2. how to copy poses or variables from a reference face,
-3. how pose grouping semantics work,
-4. how animation clips are authored over time,
-5. how export packages the finished artifact.
-
-Those are separate modules.
-
-This page teaches the control structure those later modules rely on.
 
 ## A Useful Mental Model
 

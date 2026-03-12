@@ -5,6 +5,15 @@
 
 # Renderer and Rigging Reference
 
+## Guidebook Context
+
+1. **Bucket:** [Guidebook Reference](README.md)
+2. **Depth role:** cross-cutting reusable reference layer
+3. **Module type:** reference bridge
+4. **Bucket overview:** [Guidebook Reference](README.md)
+5. **Useful previous module:** [Runtime Quickstart](runtime-quickstart-reference.md)
+6. **Useful next module:** [Animation, Integration, and Deployment Reference](animation-integration-and-deployment-reference.md)
+
 ## What To Understand
 
 Vizij’s authoring and runtime surfaces stay aligned when you can answer these questions:

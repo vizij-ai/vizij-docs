@@ -5,13 +5,43 @@
 
 # Validation Checkpoints
 
+## Guidebook Context
+
+1. **Bucket:** [Guidebook Support](README.md)
+2. **Depth role:** cross-cutting reusable support layer
+3. **Module type:** support guide
+4. **Bucket overview:** [Guidebook Support](README.md)
+5. **Useful previous module:** [Guidebook Quality Criteria](guidebook-quality-criteria.md)
+6. **Useful next module:** [Troubleshooting Matrix](troubleshooting-matrix.md)
+
 ## Reader Outcome
 
 After this page, you should be able to validate whether a reader has actually succeeded at each major stage of the maintained route rather than only reading along conceptually.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for guidebook authors, workshop facilitators, and builders who want a stable definition of success for the current maintained path.
+
+### Why This Page Exists
+
+Vizij pages should not stop at explanation. They should help a reader confirm that the system is actually doing what the page claims.
+
+Validation checkpoints keep the guidebook honest in three ways:
+
+1. they reduce false positives where a reader thinks they succeeded but did not,
+2. they make workshop facilitation easier,
+3. they expose when a page needs stronger recovery guidance.
+
+### Artifact Being Touched
+
+The artifact here is the validation layer itself:
+
+1. success criteria,
+2. observable runtime states,
+3. small practical checks,
+4. stage-by-stage confidence that the route is working.
 
 ## What You Need
 
@@ -22,28 +52,32 @@ This page is most useful alongside:
 3. [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md),
 4. [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
 
-## Artifact Being Touched
+## Interactive Lifecycle
 
-The artifact here is the validation layer itself:
+A healthy Vizij implementation follows a predictable lifecycle. Use this state machine to validate whether your current stage is behaving correctly.
 
-1. success criteria,
-2. observable runtime states,
-3. small practical checks,
-4. stage-by-stage confidence that the route is working.
+```mermaid
+state_diagram
+    [*] --> Initializing: Bundle loaded
+    Initializing --> NoModel: Runtime ready
+    Initializing --> Error: Bundle/Provider failure
+    NoModel --> LoadingModel: GLB/GLTF requested
+    LoadingModel --> Ready: Face active & published
+    LoadingModel --> Error: Asset load failure
+    Ready --> Degraded: Network/WebGL hitch
+    Degraded --> Ready: Auto-recovery
+    Ready --> [*]: Shutdown
+    Error --> NoModel: Reset/Recovery
+```
 
-## Why This Page Exists
+### Route-Level Checkpoints
 
-Vizij pages should not stop at explanation. They should help a reader confirm that the system is actually doing what the page claims.
-
-Validation checkpoints keep the guidebook honest in three ways:
-
-1. they reduce false positives where a reader thinks they succeeded but did not,
-2. they make workshop facilitation easier,
-3. they expose when a page needs stronger recovery guidance.
-
-## Route-Level Checkpoints
-
-> TODO(content-model): Add a comparison table here to line up each major route stage with its minimum success signals, likely failure clues, and fallback page. Best fit because this support module is cross-cutting and readers need one compact reusable checkpoint reference.
+| Stage | Minimum Success Signal | Likely Failure Clue | Fallback Page |
+| :--- | :--- | :--- | :--- |
+| **Experience** | Gaze follows mouse | Face is static or invisible | Troubleshooting Matrix |
+| **Control** | Path-based writes work | Controls have no effect | Control Reference |
+| **Integrate** | Runtime reports health | "Provider not found" | Minimal Web Player |
+| **Deploy** | Client can connect | "Connection refused" | Standalone Deployment |
 
 ### Experience: Hello Face
 
@@ -124,14 +158,14 @@ If a reader cannot pass a checkpoint, route them to [Troubleshooting Matrix](tro
 
 ## Current Useful Visuals
 
-The strongest current visual evidence lives in the workshop screenshot set:
+The strongest current visual evidence across the route:
 
-1. `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/tutorial-fullscreen-face.png`
-2. `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/tutorial-agent-face.png`
-3. `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/demo-vizij-player.png`
-4. `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/vizij-authoring.png`
+1. **Experience**: [fullscreen-face](../assets/screenshots/tutorial-fullscreen-face.png) and [agent-face](../assets/screenshots/tutorial-agent-face.png)
+2. **Integrate**: [vizij-player](../assets/screenshots/demo-vizij-player.png)
+3. **Authoring**: [vizij-authoring](../assets/screenshots/vizij-authoring.png)
+4. **Deploy**: [standalone-endpoint](../assets/screenshots/vizij-standalone-endpoint.png), [standalone-status](../assets/screenshots/vizij-standalone-status-ui.png) and [web-control-panel](../assets/screenshots/vizij-standalone-web-control-panel.png)
 
-Wave 2 still needs standalone-specific visuals promoted into guidebook assets.
+These captured states provide concrete proof of a healthy deployment and integration surface.
 
 ## Success Check
 

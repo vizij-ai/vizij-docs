@@ -5,15 +5,68 @@
 
 # Tweak an Existing Face
 
+## Guidebook Context
+
+1. **Bucket:** [Customize](README.md)
+2. **Depth:** `Surface`
+3. **Module type:** walkthrough
+4. **Bucket overview:** [Customize](README.md)
+5. **Useful previous module:** [Customize](README.md)
+6. **Useful next module:** [Import](import.md)
+
 ## Reader Outcome
 
 After this page, you should be able to open an existing Vizij face in `vizij-authoring`, make one small believable change to that face, and explain why this counts as customization even though you are not building a rig from scratch.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand the basic customization vocabulary, but do not yet want the full authoring pipeline all at once.
 
 It is especially for readers who need proof that `Customize` can start with a modest, concrete win rather than a full rebuild.
+
+### Artifact Being Touched
+
+The artifact in this page is an already-authored face session inside `vizij-authoring`.
+
+That matters because this page is not about creating a face from nothing. It is about opening a face that already contains usable structure and making a small change to what is already there.
+
+In practice, that usually means:
+
+1. loading a preset or bundled face,
+2. previewing it in the main runtime view,
+3. adjusting an existing authored control, pose target, or label in the main authoring context.
+
+### Why This Page Exists Separately
+
+The first customization page should not begin with import safety, remapping, pose grouping, or export rules.
+
+Readers often need one smaller proof first:
+
+1. that `Customize` does not always mean “start from scratch,”
+2. that `vizij-authoring` is an editing surface, not just a runtime demo,
+3. that an existing face can already be meaningfully changed before the deeper pipeline is understood.
+
+That is the boundary this page protects.
+
+### What This Page Teaches and What It Does Not
+
+This page teaches:
+
+1. how to treat an existing authored face as editable,
+2. how to look for a small believable customization win,
+3. how to keep the first customization step narrower than the full pipeline.
+
+This page does not teach:
+
+1. what source assets are safe to import,
+2. how reference-face copying and mapping work,
+3. how rigging is defined in Vizij,
+4. how poses and animations are authored in depth,
+5. what leaves authoring during export.
+
+Those need their own modules because they prevent different misunderstandings.
 
 ## What You Need
 
@@ -29,30 +82,6 @@ It also helps if you have already read:
 2. [Control Surfaces and Configuration Layers](../control/control-surfaces-and-configuration-layers.md)
 
 You do not need to understand import normalization, rigging theory, or export packaging yet.
-
-## Artifact Being Touched
-
-The artifact in this page is an already-authored face session inside `vizij-authoring`.
-
-That matters because this page is not about creating a face from nothing. It is about opening a face that already contains usable structure and making a small change to what is already there.
-
-In practice, that usually means:
-
-1. loading a preset or bundled face,
-2. previewing it in the main runtime view,
-3. adjusting an existing authored control, pose target, or label in the main authoring context.
-
-## Why This Page Exists Separately
-
-The first customization page should not begin with import safety, remapping, pose grouping, or export rules.
-
-Readers often need one smaller proof first:
-
-1. that `Customize` does not always mean “start from scratch,”
-2. that `vizij-authoring` is an editing surface, not just a runtime demo,
-3. that an existing face can already be meaningfully changed before the deeper pipeline is understood.
-
-That is the boundary this page protects.
 
 ## The Smallest Believable Win
 
@@ -117,24 +146,6 @@ You did not need to:
 5. package an export.
 
 That is why this page belongs at the start of the `Customize` bucket.
-
-## What This Page Teaches and What It Does Not
-
-This page teaches:
-
-1. how to treat an existing authored face as editable,
-2. how to look for a small believable customization win,
-3. how to keep the first customization step narrower than the full pipeline.
-
-This page does not teach:
-
-1. what source assets are safe to import,
-2. how reference-face copying and mapping work,
-3. how rigging is defined in Vizij,
-4. how poses and animations are authored in depth,
-5. what leaves authoring during export.
-
-Those need their own modules because they prevent different misunderstandings.
 
 ## How This Strengthens the Route
 

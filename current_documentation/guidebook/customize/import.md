@@ -5,11 +5,22 @@
 
 # Import
 
+## Guidebook Context
+
+1. **Bucket:** [Customize](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Customize](README.md)
+5. **Useful previous module:** [Tweak an Existing Face](tweak-an-existing-face.md)
+6. **Useful next module:** [Reference-Face Transfer](reference-face-transfer.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what `vizij-authoring` imports, what the import flow assumes about the incoming face and metadata, and why import is a separate concern from reference-face transfer.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already believe they want to customize a face and now need a stable mental model of how authoring begins.
 
@@ -18,6 +29,30 @@ It is especially for readers who need to distinguish:
 1. loading a face and its authored metadata into the tool,
 2. normalizing or remapping imported data so the session stays usable,
 3. copying authored information from a separate reference face later.
+
+### Artifact Being Touched
+
+The artifact in this page is the imported authoring session for a face.
+
+That session can include more than raw geometry.
+
+Based on the current `vizij-authoring` surface and hooks, import can involve:
+
+1. a GLB face asset,
+2. embedded Vizij bundle metadata,
+3. rig graph data,
+4. pose graph or pose configuration data,
+5. the runtime-facing information needed to preview the result honestly inside authoring.
+
+### Why This Page Exists Separately
+
+Import is the beginning of the authoring pipeline, but it is not the same thing as the rest of the pipeline.
+
+This page exists separately because it prevents three common confusions:
+
+1. thinking import is only “open a file” with no authoring assumptions,
+2. thinking import and reference-face transfer are the same operation,
+3. thinking imported graphs or configs can always be trusted without normalization, remapping, or compatibility checks.
 
 ## What You Need
 
@@ -33,30 +68,6 @@ It also helps if you have already read:
 2. [Customization Concepts Primer](../introduction/customization-concepts-primer.md)
 
 You do not need to understand reference-face workflows yet.
-
-## Artifact Being Touched
-
-The artifact in this page is the imported authoring session for a face.
-
-That session can include more than raw geometry.
-
-Based on the current `vizij-authoring` surface and hooks, import can involve:
-
-1. a GLB face asset,
-2. embedded Vizij bundle metadata,
-3. rig graph data,
-4. pose graph or pose configuration data,
-5. the runtime-facing information needed to preview the result honestly inside authoring.
-
-## Why This Page Exists Separately
-
-Import is the beginning of the authoring pipeline, but it is not the same thing as the rest of the pipeline.
-
-This page exists separately because it prevents three common confusions:
-
-1. thinking import is only “open a file” with no authoring assumptions,
-2. thinking import and reference-face transfer are the same operation,
-3. thinking imported graphs or configs can always be trusted without normalization, remapping, or compatibility checks.
 
 ## What Import Means In Vizij
 

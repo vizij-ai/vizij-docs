@@ -1,6 +1,6 @@
 <!-- tags: type=reference; status=written; topics=guidebook,inventory,documentation,matrix -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** map guidebook modules to bucket, depth, teaching objective, likely content forms, implementation anchors, and downstream outputs
 
 # Guidebook Module Inventory
@@ -69,6 +69,7 @@
 | [Runtime Quickstart](reference/runtime-quickstart-reference.md) | reference bridge | provide compact runtime setup and validation reference usable across experience and integrate pages | command examples, checklists, config fragments, implementation bridges | `reference/runtime-quickstart-reference.md`, runtime quickstart handouts | tutorials, participant packets, fundamentals sidebars | `drafted` |
 | [Renderer and Rigging Reference](reference/renderer-and-rigging-reference.md) | reference bridge | provide a concise control and rigging bridge for control and customize modules | diagrams, glossary notes, screenshots, implementation bridges | `reference/renderer-and-rigging-reference.md` | docs sidebars, workshop handouts | `drafted` |
 | [Animation, Integration, and Deployment Reference](reference/animation-integration-and-deployment-reference.md) | reference bridge | provide compact reference material that bridges later-stage workflow pages | code snippets, checklists, comparisons, implementation bridges | `reference/animation-integration-and-deployment-reference.md` | later-stage tutorials, facilitator notes | `drafted` |
+| [Guidebook Quality Criteria](support/guidebook-quality-criteria.md) | support guide | define the quality criteria and success measures for guidebook modules, routes, and downstream projections | checklists, comparisons, implementation bridges, related guidebook links | `support/guidebook-quality-criteria.md`, content model guidance | editorial review, docs QA, workshop prep, public-docs projection checks | `written` |
 | [Validation Checkpoints](support/validation-checkpoints.md) | support guide | define reusable success checks across tutorials and operational guides | validation checks, checklists, troubleshooting, related guidebook links | support docs, workshop activity checks | tutorials, workshops, operator docs | `drafted` |
 | [Troubleshooting Matrix](support/troubleshooting-matrix.md) | support guide | collect common failure patterns and likely fixes across buckets | troubleshooting, failure-state examples, recovery guidance, implementation anchors | support docs, deployment notes | support pages, workshops, facilitator fallback | `drafted` |
 | [Glossary and Terminology Bridge](support/glossary-and-terminology-bridge.md) | reference bridge | stabilize vocabulary across public docs, tutorials, and workshops | glossary notes, FAQs, related guidebook links | support docs, concepts material | docs glossaries, tooltips, handouts | `drafted` |

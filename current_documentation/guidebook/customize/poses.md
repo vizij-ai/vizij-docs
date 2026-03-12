@@ -5,11 +5,22 @@
 
 # Poses
 
+## Guidebook Context
+
+1. **Bucket:** [Customize](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Customize](README.md)
+5. **Useful previous module:** [Rigging](rigging.md)
+6. **Useful next module:** [Animations](animations.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what a pose is in Vizij, how poses are grouped and weighted, and why poses are different from both raw rig inputs and animations over time.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand that a face needs a controllable rig structure and now want to understand how Vizij turns that structure into named, reusable authored states.
 
@@ -18,6 +29,35 @@ It is especially for readers who need to stop using `pose` as a vague synonym fo
 1. any facial control change,
 2. a whole animation clip,
 3. a one-off tweak in the editor.
+
+### Artifact Being Touched
+
+The artifact in this page is the face's authored pose layer inside `vizij-authoring`.
+
+In practice, that means:
+
+1. named pose definitions,
+2. the target values each pose stores for selected rig inputs,
+3. pose-group membership and blend behavior,
+4. pose-weight controls that let those named states be blended at runtime.
+
+This matters because the pose layer is not just UI labeling. It becomes part of the authored face behavior that later runtime and export flows depend on.
+
+### Why This Page Exists Separately
+
+`Poses` needs its own page because it protects a specific boundary in the `Customize` route.
+
+`Rigging` explains controllable structure.
+
+`Poses` explains semantic named states over that structure.
+
+`Animations` explains authored motion over time.
+
+If those ideas collapse into one another, readers lose the point of pose authoring:
+
+1. a pose is not only a live slider adjustment,
+2. a pose is not yet a timeline,
+3. a pose is a reusable authored state that can be named, grouped, blended, and triggered consistently.
 
 ## What You Need
 
@@ -33,35 +73,6 @@ It also helps if you have already read:
 2. [Customization Concepts Primer](../introduction/customization-concepts-primer.md).
 
 You do not need to understand animation playback transport yet.
-
-## Artifact Being Touched
-
-The artifact in this page is the face's authored pose layer inside `vizij-authoring`.
-
-In practice, that means:
-
-1. named pose definitions,
-2. the target values each pose stores for selected rig inputs,
-3. pose-group membership and blend behavior,
-4. pose-weight controls that let those named states be blended at runtime.
-
-This matters because the pose layer is not just UI labeling. It becomes part of the authored face behavior that later runtime and export flows depend on.
-
-## Why This Page Exists Separately
-
-`Poses` needs its own page because it protects a specific boundary in the `Customize` route.
-
-`Rigging` explains controllable structure.
-
-`Poses` explains semantic named states over that structure.
-
-`Animations` explains authored motion over time.
-
-If those ideas collapse into one another, readers lose the point of pose authoring:
-
-1. a pose is not only a live slider adjustment,
-2. a pose is not yet a timeline,
-3. a pose is a reusable authored state that can be named, grouped, blended, and triggered consistently.
 
 ## What A Pose Means In Vizij
 

@@ -5,6 +5,15 @@
 
 # Media Intake and Usage Guide
 
+## Guidebook Context
+
+1. **Bucket:** [Guidebook Support](README.md)
+2. **Depth role:** cross-cutting reusable support layer
+3. **Module type:** operational guide
+4. **Bucket overview:** [Guidebook Support](README.md)
+5. **Useful previous module:** [Glossary and Terminology Bridge](glossary-and-terminology-bridge.md)
+6. **Useful next module:** [Guidebook Support](README.md)
+
 ## Reader Outcome
 
 After this page, you should be able to:
@@ -14,7 +23,9 @@ After this page, you should be able to:
 3. avoid using media that misrepresents the current maintained route,
 4. choose the right next support surface when a capture is stale or misleading.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for people maintaining guidebook media and downstream projections, including:
 
@@ -25,29 +36,7 @@ This page is for people maintaining guidebook media and downstream projections, 
 
 This is a support page, not a general design or video-production tutorial.
 
-## What You Need
-
-It helps if you have already read:
-
-1. [Guidebook Assets](../assets/README.md),
-2. [Validation Checkpoints](validation-checkpoints.md),
-3. [Troubleshooting Matrix](troubleshooting-matrix.md),
-4. [Glossary and Terminology Bridge](glossary-and-terminology-bridge.md).
-
-It also helps if you understand the maintained route order from the guidebook and roadmap.
-
-## Artifact Being Touched
-
-The artifact here is the guidebook media layer:
-
-1. screenshots,
-2. short video clips,
-3. media references awaiting classification,
-4. the decision about whether a capture is evergreen, temporary, or superseded.
-
-This matters because media is teaching material. A wrong screenshot can teach the wrong route just as easily as a wrong paragraph can.
-
-## Why This Page Exists
+### Why This Page Exists
 
 This page needs to exist separately because guidebook media has a different job from the guidebook prose.
 
@@ -62,6 +51,47 @@ Without a clear media policy, three things go wrong quickly:
 3. screenshots from optional or historical surfaces get mistaken for the maintained public path.
 
 This page prevents that drift.
+
+### Artifact Being Touched
+
+The artifact here is the guidebook media layer:
+
+1. screenshots,
+2. short video clips,
+3. media references awaiting classification,
+4. the decision about whether a capture is evergreen, temporary, or superseded.
+
+This matters because media is teaching material. A wrong screenshot can teach the wrong route just as easily as a wrong paragraph can.
+
+### What This Page Does And Does Not Cover
+
+This page does cover:
+
+1. classification,
+2. route-faithful reuse,
+3. evergreen versus temporary media boundaries,
+4. the relationship between support media and canonical guidebook teaching.
+
+This page does not cover:
+
+1. design-system rules for image styling,
+2. editing software workflows,
+3. storage or hosting infrastructure,
+4. automated capture tooling,
+5. full production video standards.
+
+Those may matter later, but they are not the core support problem right now.
+
+## What You Need
+
+It helps if you have already read:
+
+1. [Guidebook Assets](../assets/README.md),
+2. [Validation Checkpoints](validation-checkpoints.md),
+3. [Troubleshooting Matrix](troubleshooting-matrix.md),
+4. [Glossary and Terminology Bridge](glossary-and-terminology-bridge.md).
+
+It also helps if you understand the maintained route order from the guidebook and roadmap.
 
 ## The First Question: What Teaching Job Does This Media Serve
 
@@ -178,25 +208,6 @@ When new screenshots or clips arrive, evaluate them in this order:
 4. check that the route implication is correct,
 5. check whether a stronger existing media item already covers the same teaching job,
 6. place or reference the asset in the guidebook asset system only after that classification is clear.
-
-## What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. classification,
-2. route-faithful reuse,
-3. evergreen versus temporary media boundaries,
-4. the relationship between support media and canonical guidebook teaching.
-
-This page does not cover:
-
-1. design-system rules for image styling,
-2. editing software workflows,
-3. storage or hosting infrastructure,
-4. automated capture tooling,
-5. full production video standards.
-
-Those may matter later, but they are not the core support problem right now.
 
 ## Success Check
 

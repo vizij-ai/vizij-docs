@@ -1,9 +1,18 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,architecture,repo-map,documentation-authority -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** connect the guidebook’s learner-facing route model to the real cross-repo architecture and documentation authority model without confusing either one for the other
 
 # Architecture Bridge
+
+## Guidebook Context
+
+1. **Bucket:** [Introduction](README.md)
+2. **Depth:** `Advanced`
+3. **Module type:** reference bridge
+4. **Bucket overview:** [Introduction](README.md)
+5. **Useful previous module:** [Customization Concepts Primer](customization-concepts-primer.md)
+6. **Useful next module:** [Introduction](README.md)
 
 ## Reader Outcome
 
@@ -14,7 +23,9 @@ After this page, you should be able to explain:
 3. how the maintained public route maps onto the deeper cross-repo platform,
 4. when to stay in the guidebook and when to move into repo-local implementation docs.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand:
 
@@ -23,6 +34,33 @@ This page is for readers who already understand:
 3. the main route through `Experience`, `Control`, `Customize`, `Integrate`, and `Deploy`.
 
 It is especially for contributors, facilitators, and advanced readers who are starting to cross the boundary between learner-facing explanation and implementation-facing documentation.
+
+### Artifact Being Touched
+
+The artifact here is the documentation boundary itself:
+
+1. learner-facing guidebook structure,
+2. cross-repo architecture framing,
+3. documentation authority mapping,
+4. route-to-implementation handoff.
+
+### What This Page Does And Does Not Cover
+
+This page does cover:
+
+1. the difference between teaching structure and platform structure,
+2. the current authority map for major documentation surfaces,
+3. the bridge from learner route to repo reality.
+
+This page does not cover:
+
+1. ABI details,
+2. crate or package signatures,
+3. detailed runtime internals,
+4. operational hardening decisions,
+5. current bug-by-bug implementation status.
+
+Those belong in architecture docs, repo-local docs, or project-tracking docs.
 
 ## What You Need
 
@@ -35,77 +73,43 @@ It helps if you can inspect these internal anchors:
 
 You do not need crate-by-crate or package-by-package detail to use this page well.
 
-## Artifact Being Touched
+## Teaching View vs. Platform View
 
-The artifact here is not a runtime bundle or app surface.
+Vizij is easiest to navigate when you keep two views in mind at the same time:
 
-The artifact is the documentation boundary itself:
+```mermaid
+flowchart TD
+    subgraph TeachingView ["Guidebook / Teaching View"]
+        t1["Experience\n(Proof of Life)"] --> t2["Control\n(Runtime Specs)"]
+        t2 --> t3["Customize\n(Authoring)"]
+        t3 --> t4["Integrate\n(App Shells)"]
+        t4 --> t5["Deploy\n(Endpoints)"]
+    end
 
-1. learner-facing guidebook structure,
-2. cross-repo architecture framing,
-3. documentation authority mapping,
-4. route-to-implementation handoff.
+    subgraph PlatformView ["Platform / Implementation View"]
+        p1["vizij-rs\n(Rust Cores / WASM)"]
+        p2["vizij-web\n(TS Packages / Apps)"]
+        p3["vizij-assets\n(Binary Sources)"]
+        p4["vizij-docs\n(Architecture / Roadmap)"]
+    end
 
-This page exists so those four things do not drift into one another.
+    t1 -.-> p2
+    t2 -.-> p1
+    t3 -.-> p2
+    t4 -.-> p2
+    t5 -.-> p2
+    p1 -.-> p2
+    p3 -.-> p2
+    p4 -.-> TeachingView
 
-## Why This Page Exists
-
-The guidebook is organized into buckets because that is the cleanest way to teach Vizij.
-
-Vizij itself is not organized that way.
-
-That difference is healthy, but only if it is explicit.
-
-Without this page, advanced readers often make one of four mistakes:
-
-1. they treat guidebook pages as if they were implementation specifications,
-2. they assume the repo map should look like the teaching route,
-3. they treat every repo as equally authoritative for every kind of truth,
-4. they blur together asset, runtime shell, integration surface, and deployment endpoint.
-
-This page prevents that drift.
-
-## Two Views Have To Coexist
-
-The current architecture docs require Vizij to be read through two views at once.
-
-### 1. The guidebook or public-route view
-
-This is the maintained learner-facing route:
-
-```text
-Hello Face
--> Authoring
--> Player
--> Deployment
+    style TeachingView fill:#161a33,stroke:#2d3356
+    style PlatformView fill:#0b0d18,stroke:#7c4dff,stroke-width:2px
 ```
 
-In guidebook terms, that route is taught through:
+The teaching view organizes concepts in the order that helps readers learn.
+The platform view organizes implementation truth by repo, app, package, and asset ownership.
 
-1. `Experience`,
-2. `Control`,
-3. `Customize`,
-4. `Integrate`,
-5. `Deploy`,
-6. supported by `Introduction` and `Support`.
-
-This view is about teaching order and reader confidence.
-
-### 2. The deeper platform view
-
-This is the cross-repo system behind the route:
-
-1. `vizij-rs` defines core runtime semantics and WASM-facing contracts,
-2. `vizij-web` composes those contracts into authoring, runtime, tutorial, and standalone apps,
-3. `vizij-assets` carries reusable meshes, rigs, and graph artifacts,
-4. `vizij-docs` carries cross-repo strategy, architecture framing, and lifecycle truth,
-5. `vizij-ai.github.io` is the curated public front door.
-
-This view is about implementation authority and system boundaries.
-
-> TODO(content-model): Add a diagram here to show the teaching-route view beside the deeper platform view. Best fit because this section introduces the page's core coexistence claim and a side-by-side visual would make the boundary between the two views more legible.
-
-Both views are real. The mistake is treating one as if it replaces the other.
+Both views are real. The bridge ensures you can transition from "learning a concept" to "finding the code" without losing the narrative thread.
 
 ## The Guidebook Is A Teaching Structure
 
@@ -125,29 +129,28 @@ They do not answer:
 
 That is why the guidebook can be canonical for teaching without pretending to be the canonical implementation spec.
 
-## Documentation Authority By Surface
+## Documentation Authority Matrix
 
-At a practical level, the current authority model is:
+| Surface | Owns this kind of truth | Best used for | Not the right source for |
+| --- | --- | --- | --- |
+| `vizij-docs/current_documentation` | cross-repo architecture, roadmap framing, decisions, known issues | understanding stable platform direction | app-by-app behavior or package usage details |
+| `vizij-web` app docs | maintained app behavior, setup, shell anatomy, operator flow | understanding the current route anchors | cross-repo architectural decisions |
+| `vizij-web` package docs | package contracts and usage surfaces | integration details and API shape | learner route framing |
+| `vizij-rs` docs | runtime semantics, WASM boundaries, crate-level truth | low-level runtime ownership | public route teaching |
+| `vizij-assets` | asset files and provenance | source asset truth | runtime or app behavior |
+| guidebook | learner path, terminology, concept boundaries, next steps | teaching and routing | exact implementation truth |
 
-1. `vizij-docs` owns cross-repo architecture, roadmap framing, decisions, known issues, and documentation strategy.
-2. `vizij-rs` and `vizij-web` local docs own package, crate, app, and workflow detail.
-3. `vizij-assets` owns the binary asset source of truth.
-4. `vizij-ai.github.io` owns the curated public-facing narrative and route entry.
-5. transitional workshop or top-level `/docs` material should be treated as source material to extract from, not co-equal long-term authority.
-
-This is the main bridge the page needs to establish.
-
-> TODO(content-model): Add a comparison here to map each documentation surface to the type of truth it owns. Best fit because this section is already enumerating authority boundaries and would be stronger as a scan-friendly reference bridge.
-
-## Mapping The Public Route To The Platform
-
-A simple way to keep the bridge clear is to map the learner route to the deeper system surfaces.
+## Mapping The Maintained Route To The Platform
 
 ### Experience and Control
 
 These buckets are mostly taught through maintained apps and guidebook language.
 
-They are often implemented in `vizij-web` tutorial or demo surfaces, but their deeper runtime truth still depends on the runtime contracts summarized in `vizij-docs` and implemented across `vizij-rs` and `vizij-web`.
+The strongest maintained anchors are:
+
+1. `tutorial-fullscreen-face` for the minimal runtime shell,
+2. `tutorial-agent-face` for the richer optional branch,
+3. `@vizij/runtime-react` for the provider and hook surface.
 
 ### Customize
 
@@ -159,17 +162,24 @@ The app and local authoring docs own the fine-grained implementation behavior.
 
 ### Integrate
 
-This bucket is where runtime provider, embedding, application shells, and richer app patterns become the main teaching concern.
+This bucket teaches runtime provider, embedding, application shells, and richer app patterns.
 
-The guidebook route teaches those ideas.
+The concrete implementation truth lives mostly in:
 
-The concrete implementation truth lives mostly in `vizij-web` apps and packages such as `@vizij/runtime-react`.
+1. `vizij-web/packages/@vizij/runtime-react`,
+2. `vizij-web/apps/demo-vizij-player`,
+3. `vizij-web/apps/tutorial-fullscreen-face`,
+4. `vizij-web/apps/tutorial-agent-face`.
 
 ### Deploy
 
 This bucket teaches the endpoint and operator model.
 
-Its deeper current truth is spread across `vizij-docs` runtime plans and the `vizij-web` standalone surfaces, not inside the guidebook alone.
+Its deeper current truth is spread across:
+
+1. `vizij-web/apps/vizij-standalone`,
+2. the related standalone source,
+3. `vizij-docs` runtime and deployment planning docs.
 
 ## When To Stay In The Guidebook
 
@@ -180,36 +190,16 @@ Stay in the guidebook when your main question is:
 3. what artifact am I touching,
 4. how does this bucket connect to the larger route.
 
-That is the guidebook’s job.
-
 ## When To Leave The Guidebook
 
 Leave the guidebook when your main question becomes:
 
 1. which repo or package owns this behavior,
 2. what is the current code contract,
-3. what does this app or crate actually implement,
+3. what does this app or package actually implement,
 4. where is the authoritative implementation detail.
 
-At that point, the guidebook should route you outward instead of stretching itself beyond scope.
-
-## What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the difference between teaching structure and platform structure,
-2. the current authority map for major documentation surfaces,
-3. the bridge from learner route to repo reality.
-
-This page does not cover:
-
-1. ABI details,
-2. crate or package signatures,
-3. detailed runtime internals,
-4. operational hardening decisions,
-5. current bug-by-bug implementation status.
-
-Those belong in architecture docs, repo-local docs, or project-tracking docs.
+For the maintained route, that usually means switching to repo-local docs before switching to raw source files.
 
 ## Success Check
 
@@ -234,8 +224,6 @@ Use these when you need the current implementation truth:
 
 ## Next Step
 
-If you want to return to learner-facing system framing, go to [System Mental Model](system-mental-model.md).
-
-If you want the route-first builder path, go to [How To Use This Guidebook](how-to-use-this-guidebook.md) and then [Hello Face Quickstart](../experience/hello-face-quickstart.md).
-
-If you need stable vocabulary before leaving the guidebook, go to [Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md).
+1. If you want to return to learner-facing system framing, go to [System Mental Model](system-mental-model.md).
+2. If you want the route-first builder path, go to [How To Use This Guidebook](how-to-use-this-guidebook.md) and then [Hello Face Quickstart](../experience/hello-face-quickstart.md).
+3. If you need stable vocabulary before leaving the guidebook, go to [Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md).

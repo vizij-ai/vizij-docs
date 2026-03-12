@@ -5,6 +5,15 @@
 
 # Orchestration and Diagnostics
 
+## Guidebook Context
+
+1. **Bucket:** [Control](README.md)
+2. **Depth:** `Advanced`
+3. **Module type:** operational guide
+4. **Bucket overview:** [Control](README.md)
+5. **Useful previous module:** [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md)
+6. **Useful next module:** [Control](README.md)
+
 ## Reader Outcome
 
 After this page, you should be able to trace a control action through the Vizij runtime in the right order:
@@ -18,7 +27,9 @@ After this page, you should be able to trace a control action through the Vizij 
 
 You should also be able to recognize where that chain is breaking when control does not behave as expected.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand:
 
@@ -28,28 +39,7 @@ This page is for readers who already understand:
 
 It is an advanced control page, not a getting-started page.
 
-## What You Need
-
-It helps if you have already looked at:
-
-1. `tutorial-fullscreen-face`,
-2. `@vizij/runtime-react`,
-3. one operational control surface such as `vizij-standalone`.
-
-You do not need to know authoring internals or deployment packaging details to use this page.
-
-## Artifact Being Touched
-
-The artifact here is the runtime execution chain itself:
-
-1. `VizijRuntimeProvider` lifecycle and status,
-2. staged input writes from hooks, drivers, or external clients,
-3. orchestrator scheduling and merge behavior,
-4. shared blackboard state,
-5. renderer-facing output application,
-6. observability surfaces that reveal which stage failed.
-
-## Why This Page Exists
+### Why This Page Exists
 
 This page needs to exist separately because readers often understand paths and input semantics but still cannot explain why a real runtime control succeeds, lags, conflicts, or appears to do nothing.
 
@@ -65,7 +55,18 @@ Vizij does not work that way. A control action usually succeeds only if the full
 
 If you skip that model, debugging becomes guesswork.
 
-## What This Page Covers and Does Not Cover
+### Artifact Being Touched
+
+The artifact here is the runtime execution chain itself:
+
+1. `VizijRuntimeProvider` lifecycle and status,
+2. staged input writes from hooks, drivers, or external clients,
+3. orchestrator scheduling and merge behavior,
+4. shared blackboard state,
+5. renderer-facing output application,
+6. observability surfaces that reveal which stage failed.
+
+### What This Page Covers and Does Not Cover
 
 This page covers:
 
@@ -85,6 +86,16 @@ This page does not cover:
 6. deployment support runbooks.
 
 For those, branch later into `Integrate` or `Support`.
+
+## What You Need
+
+It helps if you have already looked at:
+
+1. `tutorial-fullscreen-face`,
+2. `@vizij/runtime-react`,
+3. one operational control surface such as `vizij-standalone`.
+
+You do not need to know authoring internals or deployment packaging details to use this page.
 
 ## The Runtime Control Chain
 

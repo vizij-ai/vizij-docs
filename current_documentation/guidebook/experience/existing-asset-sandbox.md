@@ -5,23 +5,26 @@
 
 # Existing Asset Sandbox
 
+## Guidebook Context
+
+1. **Bucket:** [Experience](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Experience](README.md)
+5. **Useful previous module:** [Richer Interactive Example](richer-interactive-example.md)
+6. **Useful next module:** [Sample Asset Exploration](sample-asset-exploration.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain what the existing-asset sandbox gives you for free, what parts of the experience are already prebuilt, and why this bucket comes before `Control`, `Customize`, or `Integrate`.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who have already completed [Hello Face Quickstart](hello-face-quickstart.md) and now want a more accurate mental model of what they just touched.
 
-## What You Need
-
-It helps if you have already:
-
-1. run `tutorial-fullscreen-face`,
-2. seen a working face respond to mouse and hotkey input,
-3. looked briefly at the app code without trying to understand the whole runtime yet.
-
-## Artifact Being Touched
+### Artifact Being Touched
 
 The existing-asset sandbox is not a blank project.
 
@@ -34,6 +37,14 @@ It is a prebuilt runtime experience composed of:
 5. a UI surface that makes the result immediately visible.
 
 The maintained first sandbox anchor is `tutorial-fullscreen-face`.
+
+## What You Need
+
+It helps if you have already:
+
+1. run `tutorial-fullscreen-face`,
+2. seen a working face respond to mouse and hotkey input,
+3. looked briefly at the app code without trying to understand the whole runtime yet.
 
 ## What The Sandbox Proves
 
@@ -104,8 +115,8 @@ The important distinction is not whether the sample is simple or rich. It is whe
 
 Existing screenshots already live at:
 
-1. `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/tutorial-fullscreen-face.png`
-2. `current_documentation/workshops/vizij-afternoon-workshop/assets/screenshots/tutorial-agent-face.png`
+1. `current_documentation/guidebook/assets/screenshots/tutorial-fullscreen-face.png`
+2. `current_documentation/guidebook/assets/screenshots/tutorial-agent-face.png`
 
 For this page, the `tutorial-fullscreen-face` screenshot is the primary visual anchor.
 

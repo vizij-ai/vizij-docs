@@ -5,15 +5,37 @@
 
 # Paths and Standard Controls
 
+## Guidebook Context
+
+1. **Bucket:** [Control](README.md)
+2. **Depth:** `Fundamentals`
+3. **Module type:** concept page
+4. **Bucket overview:** [Control](README.md)
+5. **Useful previous module:** [First Control Interactions](first-control-interactions.md)
+6. **Useful next module:** [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md)
+
 ## Reader Outcome
 
 After this page, you should be able to read common Vizij control paths, distinguish standard controls from pose-weight paths, and connect visible face behavior to the runtime values being written underneath it.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who have already seen a face working and now need the mental model underneath it.
 
 It is especially useful after [Hello Face Quickstart](../experience/hello-face-quickstart.md).
+
+### Artifact Being Touched
+
+The artifact here is the control vocabulary itself:
+
+1. runtime input paths,
+2. standard control paths,
+3. pose-weight paths,
+4. related categories like visemes.
+
+These are the stable handles that let different Vizij surfaces stay aligned.
 
 ## What You Need
 
@@ -24,17 +46,6 @@ It helps if you have already:
 1. run `tutorial-fullscreen-face`,
 2. looked briefly at `useMouseGaze.ts` or `usePoseHotkeys.ts`,
 3. seen at least one face in `vizij-authoring`.
-
-## Artifact Being Touched
-
-The artifact here is the control vocabulary itself:
-
-1. runtime input paths,
-2. standard control paths,
-3. pose-weight paths,
-4. related categories like visemes.
-
-These are the stable handles that let different Vizij surfaces stay aligned.
 
 ## The Core Idea
 
@@ -78,7 +89,13 @@ These are useful when you want named facial states or authored expressions that 
 
 ## Viseme Weight Path Shape
 
-> TODO(content-model): Add a comparison here to distinguish standard controls, pose weights, and viseme weights in one compact block of path shape, semantic role, and typical UI surface. Best fit because this page is defining adjacent vocabulary that readers will otherwise blur together.
+### Control Category Comparison
+
+| Category | Path Component | Use Case | Implementation |
+| :--- | :--- | :--- | :--- |
+| **Standard** | `/standard/` | Reusable gaze, jaw, brows | Consistent across rigs |
+| **Poses** | `/poses/` | Named facial expressions | Authored in Customize |
+| **Visemes** | `/visemes/` | Speech shaping / Lip sync | Mapped to phonemes |
 
 Another common category is visemes:
 
@@ -118,7 +135,24 @@ You will see these ideas repeated across Vizij:
 
 ## Current Useful Visual
 
-> TODO(content-model): Add a diagram here to label the face id, category, channel, track, and attribute parts of a representative path. Best fit because this fundamentals page is teaching path anatomy and a dedicated diagram is more durable than asking readers to infer structure from prose alone.
+### Path Anatomy
+
+Understanding the segments of a path helps you navigate any Vizij face:
+
+```mermaid
+flowchart LR
+    p["rig / {face} / {category} / {channel} / {track} / {attribute}"]
+    
+    subgraph Anatomy ["Path Segments"]
+        direction LR
+        cat["Category\n(standard/poses)"]
+        chan["Channel\n(left_eye/smile)"]
+        track["Track\n(pos/weight)"]
+        attr["Attribute\n(x/y/z)"]
+    end
+    
+    p --- Anatomy
+```
 
 The best wave-1 visual is still the existing `tutorial-fullscreen-face` screenshot plus the code in:
 

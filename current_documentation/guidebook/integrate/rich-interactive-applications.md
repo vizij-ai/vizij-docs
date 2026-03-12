@@ -5,6 +5,15 @@
 
 # Rich Interactive Applications
 
+## Guidebook Context
+
+1. **Bucket:** [Integrate](README.md)
+2. **Depth:** `Advanced`
+3. **Module type:** operational guide
+4. **Bucket overview:** [Integrate](README.md)
+5. **Useful previous module:** [API-Backed Interactive Application](api-backed-interactive-application.md)
+6. **Useful next module:** [Integrate](README.md)
+
 ## Reader Outcome
 
 After this page, you should be able to explain how richer Vizij applications grow from the same runtime foundation while adding:
@@ -16,7 +25,9 @@ After this page, you should be able to explain how richer Vizij applications gro
 
 You should also be able to explain what makes an app `richer` without pretending it is a different Vizij runtime.
 
-## Intended Audience
+## Module Notes
+
+### Intended Audience
 
 This page is for readers who already understand:
 
@@ -25,6 +36,52 @@ This page is for readers who already understand:
 3. [API-Backed Interactive Application](api-backed-interactive-application.md) if they want one concrete advanced example first.
 
 This page is an advanced integration guide. It is not the first page most readers need.
+
+### Why This Page Exists
+
+This page needs to exist separately because the guidebook now has:
+
+1. fundamentals pages that explain the integration model,
+2. one concrete advanced page that shows an API-backed pattern,
+3. a remaining need for a broader advanced page that explains how richer apps stay coherent as they grow.
+
+Without this page, readers often make one of two mistakes:
+
+1. they stretch a simple player into a larger app without defining new ownership boundaries,
+2. they assume a richer app must replace the existing Vizij runtime model.
+
+This page prevents both.
+
+### Artifact Being Touched
+
+The artifact here is the richer application shell around a Vizij runtime surface:
+
+1. one or more face runtime views,
+2. local interaction hooks and behavior rules,
+3. service or session layers when present,
+4. stateful surrounding UI,
+5. readiness, error, and recovery surfaces.
+
+This is broader than a minimal player because the face is now one feature inside a more capable product surface.
+
+### What This Page Does And Does Not Cover
+
+This page does cover:
+
+1. the stable runtime contract inside richer apps,
+2. the main ways a Vizij app becomes richer,
+3. the ownership boundaries that keep richer apps coherent,
+4. the boundary between advanced integration and deployment.
+
+This page does not cover:
+
+1. provider account setup,
+2. speech transport engineering,
+3. production auth, security, or observability,
+4. operator hardware and multi-screen topology,
+5. ROS or robot middleware integration.
+
+Those are downstream concerns.
 
 ## What You Need
 
@@ -40,33 +97,6 @@ It also helps if you keep the `Integrate` boundary clear:
 1. this bucket owns application assembly,
 2. `Deploy` owns endpoint and operator topology,
 3. `Support` owns reusable validation and recovery language.
-
-## Artifact Being Touched
-
-The artifact here is the richer application shell around a Vizij runtime surface:
-
-1. one or more face runtime views,
-2. local interaction hooks and behavior rules,
-3. service or session layers when present,
-4. stateful surrounding UI,
-5. readiness, error, and recovery surfaces.
-
-This is broader than a minimal player because the face is now one feature inside a more capable product surface.
-
-## Why This Page Exists
-
-This page needs to exist separately because the guidebook now has:
-
-1. fundamentals pages that explain the integration model,
-2. one concrete advanced page that shows an API-backed pattern,
-3. a remaining need for a broader advanced page that explains how richer apps stay coherent as they grow.
-
-Without this page, readers often make one of two mistakes:
-
-1. they stretch a simple player into a larger app without defining new ownership boundaries,
-2. they assume a richer app must replace the existing Vizij runtime model.
-
-This page prevents both.
 
 ## What Makes An Application Richer
 
@@ -227,25 +257,6 @@ The safest way to grow into a richer application is usually:
 4. expand surrounding UI and diagnostics only when the previous layer is already understandable.
 
 This sequence matters because it lets the app add responsibility in layers without losing the stable runtime foundation underneath.
-
-## What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the stable runtime contract inside richer apps,
-2. the main ways a Vizij app becomes richer,
-3. the ownership boundaries that keep richer apps coherent,
-4. the boundary between advanced integration and deployment.
-
-This page does not cover:
-
-1. provider account setup,
-2. speech transport engineering,
-3. production auth, security, or observability,
-4. operator hardware and multi-screen topology,
-5. ROS or robot middleware integration.
-
-Those are downstream concerns.
 
 ## Success Check
 
