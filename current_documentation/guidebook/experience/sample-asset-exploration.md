@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,sample-assets,comparison -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** help readers compare sample face assets without confusing exploratory asset browsing with the maintained build route
 
 # Sample Asset Exploration
 
 ## Guidebook Context
 
-1. **Bucket:** [Experience](README.md)
-2. **Depth:** `Advanced`
-3. **Module type:** walkthrough
-4. **Bucket overview:** [Experience](README.md)
-5. **Useful previous module:** [Existing Asset Sandbox](existing-asset-sandbox.md)
-6. **Useful next module:** [Experience](README.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Introduction](../introduction/README.md)<br>Current: [Experience](README.md)<br>Next: [Control](../control/README.md) |
+| Depth ladder in this bucket | Above: [Hello Face Quickstart](hello-face-quickstart.md), [Richer Interactive Example](richer-interactive-example.md), [Existing Asset Sandbox](existing-asset-sandbox.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
+| Module position in this bucket | Previous in bucket: [Existing Asset Sandbox](existing-asset-sandbox.md)<br>Current module: `Sample Asset Exploration`<br>Next in bucket: none, this is the last module in the bucket sequence |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | walkthrough |
+| Bucket overview | [Experience](README.md) |
 
 ## Reader Outcome
 
@@ -99,59 +101,75 @@ The safest rule is:
 
 prefer the sample that is already tied to the teaching job you actually want next.
 
-## A Practical Comparison Frame
+## Walkthrough
 
-When comparing sample assets, ask four questions.
+Use this page as a guided decision lab for choosing the right sample for the next bucket.
 
-> TODO(content-model): Add a comparison table here to score the current sample assets by maintained app anchor, rig readiness, representative teaching value, and best next bucket. Best fit because this module is explicitly comparative and readers need a compact decision surface, not prose alone.
+The goal is not to browse everything. The goal is to pick one sample that is honest for the bucket you actually want next.
 
-### 1. Is there a maintained app anchor for this asset
+### 1. Start with the next bucket, not the prettiest face
 
-If a sample already appears in a maintained tutorial or player surface, it is usually a better teaching choice than a visually interesting asset with no current walkthrough anchor.
+Use this route-first table before you open anything else:
 
-That is the difference between:
+| If your next bucket is... | Start with this maintained sample anchor | Why it is the best first sample | What it does not prove yet |
+| --- | --- | --- | --- |
+| `Control` | `tutorial-fullscreen-face` / [Hello Face Quickstart](hello-face-quickstart.md) | the interaction path is already route-ready and visibly responsive | deeper control semantics or richer app-shell ownership |
+| `Customize` | `vizij-authoring` preset path / [Tweak an Existing Face](../customize/tweak-an-existing-face.md) | the face is already editable inside authoring | import repair, deep rigging, or export readiness |
+| `Integrate` | `demo-vizij-player` / [Minimal Web Player](../integrate/minimal-web-player.md) | the face already lives inside a believable player shell | deployment or operator topology |
+| exploratory browsing only | `vizij-assets/raw_faces` and lightly prepared assets | useful for visual exploration or future prep work | route-ready teaching value on their own |
 
-1. exploring an asset,
-2. learning from an asset.
+If a sample is not already tied to a maintained app anchor, treat it as exploratory by default.
 
-### 2. Is the asset already rigged enough for your goal
+### 2. Open one route-ready sample and one exploratory sample
 
-Some assets are useful because they are already bound to a believable control or playback path.
+Choose two comparison targets:
 
-Others are better treated as raw material for later authoring work.
+1. one route-ready sample from the table above,
+2. one exploratory asset from `vizij-assets/raw_faces` or another lightly prepared source.
 
-If your goal is fast proof, pick the asset that is already route-ready.
+Use that pair to make the boundary visible:
 
-If your goal is authoring ownership, pick the asset that makes the next customization step believable.
+1. the route-ready sample shows what the next bucket can immediately build on,
+2. the exploratory sample shows what still needs more preparation, authoring, or validation before it can carry teaching weight.
 
-### 3. Does the sample match your next bucket
+Expected result:
 
-Choose by next step:
+1. one sample already has a believable next page,
+2. the other sample is interesting, but not yet a trustworthy route anchor.
 
-1. if you want more runtime interaction, prefer a sample already tied to `Experience`, `Control`, or `Integrate`,
-2. if you want to author changes, prefer a sample that has a believable path into `Customize`,
-3. if you want to compare visual behavior only, stay in `Experience` and do not pretend you are already customizing or deploying.
+### 3. Compare the pair with four concrete questions
 
-### 4. Is the sample representative or just exploratory
+Ask these in order:
 
-Some samples are useful for exploration but not for the maintained public route.
+1. **Is there a maintained app anchor for it?**
+   If not, it is probably exploratory rather than route-ready.
+2. **Is it rigged enough for the next bucket you want?**
+   A sample can be visually impressive and still be the wrong next choice.
+3. **Does it match the bucket you actually want next?**
+   A strong `Customize` sample is not automatically the best `Integrate` sample.
+4. **Is it representative or just available?**
+   Use the sample that teaches the next move honestly, not the one that merely exists in the repo.
 
-That is fine, as long as it stays explicit.
+### 4. Make the route decision immediately
 
-Exploratory assets should not quietly become canonical teaching examples just because they are available.
+Once the comparison is done, do not stay in asset-browsing mode.
 
-## The Current Healthy Way To Use Sample Assets
+Pick the next bucket and open the matching page now:
 
-The healthiest current sample-asset behavior is:
+1. if the route-ready sample is best for hands-on interaction, continue to [First Control Interactions](../control/first-control-interactions.md),
+2. if the route-ready sample is best for authoring ownership, continue to [Tweak an Existing Face](../customize/tweak-an-existing-face.md),
+3. if the route-ready sample is best for app-shell work, continue to [Minimal Web Player](../integrate/minimal-web-player.md).
 
-1. use maintained app anchors first,
-2. treat rigged and route-ready samples as the easiest next step,
-3. treat raw or lightly prepared assets as exploratory unless the guidebook says otherwise,
-4. move into `Customize` only when the goal is to change the artifact rather than compare it.
+### 5. Write down what the chosen sample proves and what it does not
 
-This keeps sample exploration honest.
+Before leaving this page, state the result in one short sentence:
 
-> TODO(content-model): Add a guided lab here to have readers pick two sample assets, justify which route each supports, and name the first page they should open next. Best fit because this is an advanced Experience page and a guided lab would turn the comparison framework into actual decision practice.
+1. `This sample is route-ready for <bucket> because ...`
+2. `This sample is not yet enough for <other bucket> because ...`
+
+That small discipline prevents the most common mistake in sample exploration:
+
+confusing an interesting asset with a trustworthy next teaching step.
 
 ## Success Check
 
@@ -174,10 +192,8 @@ Use these when you need the current implementation truth:
 6. `current_documentation/ROADMAP.md`
 7. `current_documentation/workshops/vizij-afternoon-workshop/planning/source-audit.md`
 
-## Next Step
+## Recommended Next Steps
 
-If you want to keep interacting with a maintained sample, continue to [Existing Asset Sandbox](existing-asset-sandbox.md) and then into `Control`.
-
-If you want to start changing the chosen artifact, continue to [Tweak an Existing Face](../customize/tweak-an-existing-face.md).
-
-If you want to load a chosen face into a real app shell, continue to [Minimal Web Player](../integrate/minimal-web-player.md).
+1. If your chosen sample is best for hands-on interaction, continue to [First Control Interactions](../control/first-control-interactions.md).
+2. If your chosen sample is best for authoring ownership, continue to [Tweak an Existing Face](../customize/tweak-an-existing-face.md).
+3. If your chosen sample is best for app-shell work, continue to [Minimal Web Player](../integrate/minimal-web-player.md).

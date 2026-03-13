@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,customize,concepts -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** give readers the core customization vocabulary before they enter the authoring branch
 
 # Customization Concepts Primer
 
 ## Guidebook Context
 
-1. **Bucket:** [Introduction](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Introduction](README.md)
-5. **Useful previous module:** [System Mental Model](system-mental-model.md)
-6. **Useful next module:** [Architecture Bridge](architecture-bridge.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: Start of guidebook<br>Current: [Introduction](README.md)<br>Next: [Experience](../experience/README.md) |
+| Depth ladder in this bucket | Above: [What Is Vizij?](what-is-vizij.md), [How To Use This Guidebook](how-to-use-this-guidebook.md)<br>Current: `Fundamentals`<br>Below: [Architecture Bridge](architecture-bridge.md) |
+| Module position in this bucket | Previous in bucket: [System Mental Model](system-mental-model.md)<br>Current module: `Customization Concepts Primer`<br>Next in bucket: [Architecture Bridge](architecture-bridge.md) |
+| Reference bridges | [Guidebook Learning Model](../learning-model.md)<br>[Guidebook Module Inventory](../module_inventory-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | concept page |
+| Bucket overview | [Introduction](README.md) |
 
 ## Reader Outcome
 
@@ -105,7 +107,7 @@ In Vizij, that usually means some combination of:
 4. animation data,
 5. bundled metadata that later runtime or deployment surfaces can load.
 
-That is why `Export` belongs in `Customize` even though it also affects `Integrate` and `Deploy`.
+That is why [Export](../customize/export.md) belongs in `Customize` even though it also affects `Integrate` and `Deploy`.
 
 > TODO(content-model): Add a comparison here to distinguish rig, pose, animation, procedural program, and exportable artifact in one compact teaching block. Best fit because this section introduces a cluster of adjacent terms that readers will otherwise blur together before they reach the Customize bucket.
 
@@ -141,7 +143,7 @@ Use these when you need the current implementation truth:
 4. `current_documentation/concepts/ARCHITECTURE_PRIMER.md`
 5. `current_documentation/guidebook/customize/README.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want the broader system relationship next, continue to [System Mental Model](system-mental-model.md).
 2. If you want the actual authoring branch, continue to [Tweak an Existing Face](../customize/tweak-an-existing-face.md).

@@ -57,12 +57,42 @@ Website docs, tutorials, demos, workshops, and event pages are downstream projec
 
 If a downstream publishing surface lacks support for a needed teaching primitive, that surface should eventually be extended rather than forcing the guidebook to become less expressive.
 
+## Guidebook Teaching Standard
+
+Guidebook learner pages should feel complete in their own right.
+
+In practice, that means:
+
+1. tutorial and walkthrough pages should be executable end to end from the guidebook alone
+2. concept pages should explain the maintained examples with enough concrete specificity that the reader does not need to guess which app, package, or file the page is talking about
+3. implementation anchors should deepen or verify the lesson, not carry the lesson on their own
+4. the main route should move quickly into the real task, not spend most of the page on meta framing
+
+The writing bar for tutorial-class pages is the best current `vizij-web` walkthroughs: clear setup, small relevant code excerpts, visible checkpoints, honest scope boundaries, and an obvious next move.
+
 ## Common Routes
 
 1. Fast existing-face deployment route:
    `Introduction -> Experience -> Control -> Integrate -> Deploy`
 2. Customization route:
    `Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`
+
+## Five Navigation Directions
+
+Every learner-facing guidebook module should make five movements easy:
+
+1. process movement across buckets:
+   readers should be able to see the previous bucket, current bucket, and next bucket immediately
+2. depth movement inside the current bucket:
+   readers should be able to see whether they are at `Surface`, `Fundamentals`, or `Advanced`, plus what sits above or below that depth
+3. local module movement inside the current bucket:
+   readers should be able to move to the previous or next module in the bucket sequence without guessing
+4. recommendation movement:
+   readers should be able to follow linked recommended next steps or optional next steps at the bottom of the page
+5. reference movement:
+   readers should be able to follow linked guidebook references or implementation anchors when they need verification or deeper detail
+
+If a page does not make those five movements legible, it is under-contextualized for the guidebook.
 
 ## Core Guidebook Docs
 

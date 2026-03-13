@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,orchestration,diagnostics -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** teach how Vizij runtime control actually executes frame to frame and how to diagnose control failures without drifting into deployment or authoring runbooks
 
 # Orchestration and Diagnostics
 
 ## Guidebook Context
 
-1. **Bucket:** [Control](README.md)
-2. **Depth:** `Advanced`
-3. **Module type:** operational guide
-4. **Bucket overview:** [Control](README.md)
-5. **Useful previous module:** [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md)
-6. **Useful next module:** [Control](README.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Experience](../experience/README.md)<br>Current: [Control](README.md)<br>Next: [Customize](../customize/README.md) on the customization route or [Integrate](../integrate/README.md) on the fast route |
+| Depth ladder in this bucket | Above: [First Control Interactions](first-control-interactions.md), [Paths and Standard Controls](paths-and-standard-controls.md), [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md), [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
+| Module position in this bucket | Previous in bucket: [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md)<br>Current module: `Orchestration and Diagnostics`<br>Next in bucket: none, this is the last module in the bucket sequence |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | operational guide |
+| Bucket overview | [Control](README.md) |
 
 ## Reader Outcome
 
@@ -435,7 +437,7 @@ Use these when you need the current implementation truth:
 7. [useWebSocketSync.ts](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts)
 8. [orchestrator-react README.md](/home/chris/Code/Semio/vizij_ws/vizij-web/packages/@vizij/orchestrator-react/README.md)
 
-## Next Step
+## Recommended Next Steps
 
 If your next problem is application assembly, continue to the `Integrate` bucket, especially the maintained integration modules that explain loading and embedding around the runtime.
 

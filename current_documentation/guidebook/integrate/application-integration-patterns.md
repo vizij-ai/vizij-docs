@@ -7,12 +7,14 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Integrate](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** comparison
-4. **Bucket overview:** [Integrate](README.md)
-5. **Useful previous module:** [Loading, Playback, and Embedding](loading-playback-and-embedding.md)
-6. **Useful next module:** [API-Backed Interactive Application](api-backed-interactive-application.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
+| Depth ladder in this bucket | Above: [Minimal Web Player](minimal-web-player.md)<br>Current: `Fundamentals`<br>Below: [API-Backed Interactive Application](api-backed-interactive-application.md), [Rich Interactive Applications](rich-interactive-applications.md) |
+| Module position in this bucket | Previous in bucket: [Loading, Playback, and Embedding](loading-playback-and-embedding.md)<br>Current module: `Application Integration Patterns`<br>Next in bucket: [API-Backed Interactive Application](api-backed-interactive-application.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
+| Module type | comparison |
+| Bucket overview | [Integrate](README.md) |
 
 ## Reader Outcome
 
@@ -174,7 +176,7 @@ Use these when you need the current implementation truth:
 3. `vizij-web/apps/tutorial-agent-face/README.md`
 4. `vizij-web/apps/demo-vizij-player/README.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want one concrete advanced pattern explained in detail, continue to [API-Backed Interactive Application](api-backed-interactive-application.md).
 2. If you want the calmest maintained shell first, go back to [Minimal Web Player](minimal-web-player.md).

@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,validation,recovery,standalone -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** define the first deployment readiness loop and the fastest recovery path for the standalone endpoint
 
 # Deployment Checks and Recovery
 
 ## Guidebook Context
 
-1. **Bucket:** [Deploy](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** operational guide
-4. **Bucket overview:** [Deploy](README.md)
-5. **Useful previous module:** [Operator and Deployment Model](operator-and-deployment-model.md)
-6. **Useful next module:** [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Integrate](../integrate/README.md)<br>Current: [Deploy](README.md)<br>Next: End of guidebook route |
+| Depth ladder in this bucket | Above: [Easiest Standalone Deployment](easiest-standalone-deployment.md)<br>Current: `Fundamentals`<br>Below: [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md) |
+| Module position in this bucket | Previous in bucket: [Operator and Deployment Model](operator-and-deployment-model.md)<br>Current module: `Deployment Checks and Recovery`<br>Next in bucket: [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md) |
+| Reference bridges | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | operational guide |
+| Bucket overview | [Deploy](README.md) |
 
 ## Reader Outcome
 
@@ -332,8 +334,8 @@ Use these when you need the current implementation truth:
 6. `vizij-docs/current_documentation/guidebook/support/validation-checkpoints.md`
 7. `vizij-docs/current_documentation/guidebook/support/troubleshooting-matrix.md`
 
-## Next Step
+## Recommended Next Steps
 
-If the endpoint passes this loop, the next useful move is to keep the support layer handy through [Validation Checkpoints](../support/validation-checkpoints.md).
-
-If the endpoint does not pass this loop, go directly to [Troubleshooting Matrix](../support/troubleshooting-matrix.md).
+1. If the endpoint passes this loop and you need the deeper deployment branch, continue to [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md).
+2. If the endpoint passes this loop and you want the support checklist beside you, keep [Validation Checkpoints](../support/validation-checkpoints.md) open as the reusable companion page.
+3. If the endpoint does not pass this loop, go directly to [Troubleshooting Matrix](../support/troubleshooting-matrix.md).

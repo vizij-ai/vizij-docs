@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,rigging,propsrig -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** define what rigging means in Vizij and explain the controllable structure that later poses, animations, and exports depend on
 
 # Rigging
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Reference-Face Transfer](reference-face-transfer.md)
-6. **Useful next module:** [Poses](poses.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Reference-Face Transfer](reference-face-transfer.md)<br>Current module: `Rigging`<br>Next in bucket: [Poses](poses.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
@@ -43,13 +45,13 @@ That structure is what later authoring pages build on.
 
 ### Why This Page Exists Separately
 
-Rigging needs its own page because it prevents a different misunderstanding than import or transfer.
+[Rigging](rigging.md) needs its own page because it prevents a different misunderstanding than import or transfer.
 
-Import answers “how does the face enter authoring?”
+[Import](import.md) answers “how does the face enter authoring?”
 
-Transfer answers “how can one face help author another?”
+[Reference-Face Transfer](reference-face-transfer.md) answers “how can one face help author another?”
 
-Rigging answers “what is the control structure of this face once it is in the system?”
+[Rigging](rigging.md) answers “what is the control structure of this face once it is in the system?”
 
 Without that distinction, readers collapse rigging into either raw geometry editing or pose authoring, and both are wrong for Vizij.
 
@@ -141,7 +143,7 @@ That rule is what keeps the authored control model stable and reusable.
 
 ## Why Rigging Comes Before Poses and Animations
 
-Poses and animations both assume there is already a trustworthy control surface to target.
+[Poses](poses.md) and [Animations](animations.md) both assume there is already a trustworthy control surface to target.
 
 In the current contract:
 
@@ -154,7 +156,21 @@ So when later pages talk about named states or motion over time, they are buildi
 
 ## What Readers Actually Do In Authoring
 
-> TODO(content-model): Add an annotated screenshot here to show where rig structure is inspected or validated inside the current authoring surface. Best fit because this section is turning the rigging concept back into a maintained UI surface and readers need to see where the structure becomes tangible.
+Current inspection anchors:
+
+![Face Elements Panel](../assets/screenshots/authoring-panel-face-elements.png)
+
+_Caption: the scene and element tree where imported structure first becomes inspectable inside authoring._
+
+![Inspector Panel](../assets/screenshots/authoring-inspector-face-elements.png)
+
+_Caption: the inspector surface where the selected structure resolves into concrete properties and channels._
+
+These do not replace a future rig-layer diagram, but they are the maintained UI surfaces where rigging first becomes tangible to a reader:
+
+1. the scene and element tree shows what authoring has discovered and made inspectable,
+2. the inspector shows the concrete properties and channels attached to the selected structure,
+3. together they let you verify that the imported face is no longer just raw scene data.
 
 Rigging in the guidebook sense is not a demand to memorize every internal file.
 
@@ -204,7 +220,7 @@ Use these when you need the current implementation truth:
 4. `vizij-web/apps/vizij-authoring/src/hooks/useRigGraphImport.ts`
 5. `current_documentation/guidebook/reference/renderer-and-rigging-reference.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want to understand named authored facial states next, continue to [Poses](poses.md).
 2. If you want to understand authored motion over time later, continue to [Animations](animations.md).

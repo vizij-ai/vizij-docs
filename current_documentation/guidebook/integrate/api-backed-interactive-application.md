@@ -7,192 +7,208 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Integrate](README.md)
-2. **Depth:** `Advanced`
-3. **Module type:** walkthrough
-4. **Bucket overview:** [Integrate](README.md)
-5. **Useful previous module:** [Application Integration Patterns](application-integration-patterns.md)
-6. **Useful next module:** [Rich Interactive Applications](rich-interactive-applications.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
+| Depth ladder in this bucket | Above: [Minimal Web Player](minimal-web-player.md), [Loading, Playback, and Embedding](loading-playback-and-embedding.md), [Application Integration Patterns](application-integration-patterns.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
+| Module position in this bucket | Previous in bucket: [Application Integration Patterns](application-integration-patterns.md)<br>Current module: `API-Backed Interactive Application`<br>Next in bucket: [Rich Interactive Applications](rich-interactive-applications.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
+| Module type | walkthrough |
+| Bucket overview | [Integrate](README.md) |
 
 ## Reader Outcome
 
-After this page, you should be able to explain how a richer API-backed Vizij application is assembled:
+After this page, you should be able to run the maintained richer integration example, separate runtime readiness from session readiness, and explain how an external service loop becomes visible face behavior through a tool bridge instead of bypassing the Vizij runtime.
 
-1. the Vizij runtime shell becomes ready,
-2. an external session becomes ready,
-3. service events are translated into runtime tool calls,
-4. the face and surrounding UI reflect those results honestly.
+## Starting State
 
-You should also be able to explain why this is still the same Vizij runtime model, not a different system.
+Use the `vizij-web` workspace root:
 
-## Module Notes
+```bash
+cd /home/chris/Code/Semio/vizij_ws/vizij-web
+```
 
-### Intended Audience
+This walkthrough uses `apps/tutorial-agent-face`, the maintained Vizij example that layers a live service loop on top of the same runtime foundation used in `tutorial-fullscreen-face`.
 
-This page is for readers who already understand:
+## Required And Optional Setup
 
-1. [Loading, Playback, and Embedding](loading-playback-and-embedding.md),
-2. [Application Integration Patterns](application-integration-patterns.md),
-3. [Orchestration and Diagnostics](../control/orchestration-and-diagnostics.md) if they want the deepest runtime framing.
+Install dependencies once:
 
-It is for readers who now need one concrete advanced integration pattern, not just a comparison page.
+```bash
+pnpm install
+```
 
-### Artifact Being Touched
+If you want the full live-session path, create the app-local env file:
 
-The artifact here is the application layer around a Vizij face runtime:
+```bash
+cat > apps/tutorial-agent-face/.env.local <<'EOF'
+VITE_GEMINI_API_KEY=your_google_ai_studio_key
+EOF
+```
 
-1. a `VizijAssetBundle` and `VizijRuntimeProvider`,
-2. a visible face surface rendered through `VizijRuntimeFace`,
-3. an external API or live-service session,
-4. a tool bridge that translates service events into runtime actions,
-5. UI state that exposes readiness, transcripts, controls, and failures.
-
-## What You Need
-
-It helps if you can inspect the current maintained example in `vizij-web`:
-
-1. `apps/tutorial-agent-face/README.md`,
-2. `apps/tutorial-agent-face/tutorial.md`,
-3. `apps/tutorial-agent-face/src/FaceApp.tsx`,
-4. `apps/tutorial-agent-face/src/hooks/useGeminiLive.ts`,
-5. `apps/tutorial-agent-face/src/hooks/useAgentFaceTools.ts`.
-
-If you want to run that example locally:
+Then start the app:
 
 ```bash
 pnpm run dev:tutorial-agent-face
 ```
 
-The live session layer currently requires `VITE_GEMINI_API_KEY`.
+Two valid ways to use this page:
 
-## One Stable Runtime Shell
+1. without `VITE_GEMINI_API_KEY`, inspect the runtime shell and local interaction layers
+2. with `VITE_GEMINI_API_KEY`, complete the full runtime-plus-session walkthrough
 
-The current maintained example still starts with the same stable runtime shell:
+## The Pattern You Are Learning
 
-1. define a `VizijAssetBundle`,
-2. mount `VizijRuntimeProvider`,
-3. render `VizijRuntimeFace`,
-4. wait for `loading`, `error`, and `ready` to settle,
-5. stage a neutral pose baseline before richer interaction begins.
+This page teaches one reusable application shape:
 
-The app does not bypass the runtime because it talks to an API.
+1. a stable Vizij runtime shell
+2. a separate external session layer
+3. a tool bridge that translates service events into Vizij runtime actions
+4. UI state that tells you which layer is healthy or failing
 
-It still waits for the runtime to load the asset, initialize the orchestrator, and expose a healthy face surface first.
+That is the whole advanced-integration idea.
 
-## Integration Flow
+## Walkthrough
 
-```mermaid
-sequenceDiagram
-    participant App
-    participant Runtime as Vizij Runtime
-    participant Session as External Session
-    participant Tools as Tool Bridge
-    participant Face as Face UI
+### 1. Launch the richer app and identify the runtime shell
 
-    App->>Runtime: load asset bundle
-    Runtime-->>App: loading / ready / error
-    App->>Session: connect when runtime is usable
-    Session-->>Tools: tool calls / events
-    Tools->>Runtime: animateValue / setInput / pose updates
-    Runtime-->>Face: visible face updates
-    Session-->>Face: transcript and session state
+Run:
+
+```bash
+pnpm run dev:tutorial-agent-face
 ```
 
-The important rule is that readiness and ownership change by layer.
+Open the local URL shown by Vite.
 
-## Readiness Boundaries
+Expected result:
 
-### 1. Runtime readiness comes first
+1. the face appears through the same runtime-react foundation used by the simpler tutorial
+2. the UI has more controls and session-facing chrome than `tutorial-fullscreen-face`
+3. the app is clearly more product-shaped without being a different runtime model
 
-In `FaceApp.tsx`, the app distinguishes:
+Current visual anchor:
 
-1. `Loading face…`,
-2. `Initialising orchestrator…`,
-3. runtime error,
-4. ready runtime.
+![Tutorial Agent Face](../assets/screenshots/tutorial-agent-face.png)
 
-If the runtime is not ready, the tool layer should not pretend the face can respond.
+_Caption: the runtime face remaining visible and healthy even while the outer session layer is disconnected._
 
-### 2. Session readiness is separate
+That is the point of using this capture here: it lets the page separate runtime readiness from session readiness before the live service path enters the story.
 
-Once the face runtime is healthy, the app can establish its external session.
+### 2. Separate runtime readiness from session readiness
 
-In the current example, `useGeminiLive` manages separate states such as:
+Before connecting any live session, inspect the UI and app behavior.
 
-1. disconnected,
-2. connecting,
-3. connected,
-4. error.
+What to look for:
 
-A face can be runtime-ready while the external session is disconnected or failing.
+1. the face runtime can become ready even if the external session is disconnected
+2. a missing API key or disconnected session does not mean the runtime failed
+3. local behavior such as face presence, base interactions, and UI shell rendering still prove that the Vizij layer is healthy
 
-That is one of the main lessons of this page.
+This is the first advanced lesson:
 
-## The Tool Bridge Is The Real Application Layer
+1. runtime readiness answers `can the face load and respond`
+2. session readiness answers `can the external service connect and drive richer behavior`
 
-The richest part of the pattern is the tool bridge between the service and the Vizij runtime.
+Do not collapse those into one state.
 
-In the maintained example:
+### 3. Inspect how the app keeps the runtime foundation small
 
-1. the session emits tool calls such as gaze or expression requests,
-2. `useGeminiLive` receives those calls,
-3. `useAgentFaceTools` validates and translates them,
-4. the translation layer calls runtime helpers such as `animateValue`,
-5. the face updates through the normal orchestration path.
+Open:
 
-That boundary keeps the pattern coherent.
+1. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
+2. `vizij-web/apps/tutorial-agent-face/src/hooks/useGeminiLive.ts`
+3. `vizij-web/apps/tutorial-agent-face/src/hooks/useAgentFaceTools.ts`
 
-The service decides what it wants the face to do.
+The runtime bootstrap still looks like this:
 
-The app decides how that request maps into valid Vizij runtime actions.
+```tsx
+export function FaceApp() {
+  return (
+    <VizijRuntimeProvider assetBundle={assetBundle} autostart>
+      <AgentFaceRuntime />
+    </VizijRuntimeProvider>
+  );
+}
+```
 
-The runtime decides how those staged actions become visible behavior.
+That small bootstrap matters. The app becomes rich by adding layers around the runtime, not by replacing it.
 
-## Tool Parameters Are Not Direct Renderer Writes
+### 4. Follow the live-service bridge in code
 
-Tool parameters are not direct renderer writes.
+Inside `FaceApp.tsx`, look for the boundary between session logic and runtime logic:
 
-In the current example, gaze and emotion requests are translated into runtime paths and helper calls, not direct renderer mutation.
+```tsx
+const { tools, handleFunctionCalls, gazeActive } = useAgentFaceTools({
+  enabled: ready,
+  bindings,
+});
 
-That means the richer application still uses the same runtime vocabulary taught in `Control` and the earlier `Integrate` pages.
+const { status: geminiStatus, connect, disconnect } = useGeminiLive(
+  audioManager,
+  voiceName,
+  {
+    enableTools: toolsEnabled,
+    tools,
+    handleFunctionCalls: toolsEnabled ? handleFunctionCalls : undefined,
+    systemInstruction: SYSTEM_INSTRUCTION,
+  },
+);
+```
 
-## UI Feedback Is Part Of The Pattern
+What this means:
 
-An API-backed face app is not just a face with an invisible backend.
+1. `useGeminiLive` owns the external session
+2. `useAgentFaceTools` owns the translation from tool calls into Vizij runtime actions
+3. the face still moves through runtime helpers such as `setInput(...)` and `animateValue(...)`
 
-The app also owns surrounding surfaces such as:
+This translation layer is the part you copy into your own advanced app.
 
-1. session status chips,
-2. connect and disconnect actions,
-3. transcript display,
-4. toggles for function calling,
-5. voice or mouth-mode selection,
-6. visible error messages.
+### 5. Complete the full live-session path if you configured the API key
 
-Those surfaces matter because they tell the reader what failed:
+If `VITE_GEMINI_API_KEY` is configured:
 
-1. runtime setup,
-2. session connection,
-3. tool execution,
-4. or face behavior itself.
+1. connect the session from the UI
+2. trigger a short interaction
+3. watch for transcript or session-state feedback
+4. observe gaze, emotion, or mouth behavior update through the face surface
 
-## What This Pattern Prevents
+Expected result:
 
-When assembled correctly, this pattern prevents several common advanced mistakes:
+1. the session state changes independently from runtime readiness
+2. tool-driven actions become visible face changes
+3. the UI tells you whether the problem is in the runtime layer, the session layer, or the tool layer
 
-1. treating a richer app as if it needs a different Vizij runtime,
-2. collapsing runtime readiness and session readiness into one ambiguous state,
-3. letting service calls bypass the runtime contract,
-4. assuming any emotion or gaze request is valid without checking the loaded face.
+If you did not configure the API key, stop after step 4 and treat the disconnected session as an intentional boundary, not a failed tutorial.
+
+## Why This Example Teaches Well
+
+This app is the best maintained advanced guide because it shows all of these at once:
+
+1. the runtime shell remains recognizable
+2. a live service loop is clearly separate from runtime loading
+3. the tool bridge is explicit in code
+4. the surrounding UI helps diagnose where the system is healthy or failing
+
+That combination is what makes it a reusable integration pattern instead of just a flashy demo.
+
+## Fast Recovery If It Fails
+
+Use these shortcuts:
+
+1. if the face never loads, treat that as a runtime problem and compare against [Hello Face Quickstart](../experience/hello-face-quickstart.md)
+2. if the face loads but the session will not connect, check whether `VITE_GEMINI_API_KEY` is configured
+3. if the session connects but the face does not react, inspect `useAgentFaceTools.ts` and compare the expected bridge shape in this page
+4. if you need route-level healthy-state checks, use [Validation Checkpoints](../support/validation-checkpoints.md)
+5. if you need failure-driven recovery, use [Troubleshooting Matrix](../support/troubleshooting-matrix.md)
 
 ## Success Check
 
 You are done with this page when:
 
-1. you can describe the API-backed pattern as `runtime shell + external session + tool bridge`,
-2. you can explain why tool calls are translated into runtime helpers instead of direct renderer writes,
-3. you can explain the difference between runtime readiness and session readiness,
-4. you can explain why the maintained example is a pattern anchor, not the only valid provider choice.
+1. `tutorial-agent-face` runs locally
+2. you can explain the difference between runtime readiness and session readiness
+3. you can point to the tool bridge that translates external events into Vizij runtime actions
+4. if the API key is configured, you can trigger a live interaction and see the face respond through that bridge
 
 ## Implementation Anchors
 
@@ -205,8 +221,8 @@ Use these when you need the current implementation truth:
 5. `vizij-web/apps/tutorial-agent-face/src/hooks/useAgentFaceTools.ts`
 6. `vizij-web/packages/@vizij/runtime-react/README.md`
 
-## Next Step
+## Recommended Next Steps
 
-1. If you want the broader advanced picture beyond this one pattern, continue to [Rich Interactive Applications](rich-interactive-applications.md).
-2. If you realize you still need the fundamentals route, go back to [Application Integration Patterns](application-integration-patterns.md) or [Loading, Playback, and Embedding](loading-playback-and-embedding.md).
-3. If your next concern is operator-facing deployment rather than richer app behavior, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+Continue to [Rich Interactive Applications](rich-interactive-applications.md) if you want the broader family of advanced integration patterns.
+
+If you want to return to the simpler integration spine, go back to [Minimal Web Player](minimal-web-player.md).

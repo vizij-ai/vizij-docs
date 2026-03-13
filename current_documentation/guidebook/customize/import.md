@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,import,authoring -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain what import brings into vizij-authoring, what the tool validates during import, and where import stops
 
 # Import
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Tweak an Existing Face](tweak-an-existing-face.md)
-6. **Useful next module:** [Reference-Face Transfer](reference-face-transfer.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current module: `Import`<br>Next in bucket: [Reference-Face Transfer](reference-face-transfer.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
@@ -71,7 +73,21 @@ You do not need to understand reference-face workflows yet.
 
 ## What Import Means In Vizij
 
-> TODO(content-model): Add a workflow map here to show the sequence from incoming face and metadata through parsing, normalization, remap review, and trusted authoring-session setup. Best fit because this module defines the opening stage of the authoring pipeline and readers need a process view, not only definitions.
+Current import-state anchors:
+
+![Authoring Loading Page](../assets/screenshots/authoring-loading-page.png)
+
+_Caption: the empty-scene import boundary before any face or metadata is treated as a live authoring session._
+
+![Authoring Loading Motion](../assets/gifs/authoring-loading.gif)
+
+_Caption: the staged transition from empty scene into a mounted, usable authoring session._
+
+These captures are the most useful current visual proof for import because they show the session boundary clearly:
+
+1. the empty-scene state before a face is trusted,
+2. the centered import and preset actions,
+3. the transition from "no artifact loaded yet" into a real authoring session.
 
 In Vizij, import is the process of turning an incoming face plus any attached authored metadata into a usable `vizij-authoring` session.
 
@@ -215,7 +231,7 @@ Use these when you need the current implementation truth:
 6. `vizij-web/apps/vizij-authoring/src/hooks/usePoseGraphImport.ts`
 7. `vizij-web/apps/vizij-authoring/AGENTS.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want to understand controlled authoring-side copying between two faces, continue to [Reference-Face Transfer](reference-face-transfer.md).
 2. If you want to understand what controllable structure the imported session is trying to preserve, continue to [Rigging](rigging.md).

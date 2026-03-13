@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,media,screenshots,video,operations -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** define how screenshots and videos should be classified, selected, and reused so the guidebook and its downstream projections stay route-faithful and current
 
 # Media Intake and Usage Guide
@@ -106,7 +106,13 @@ If you cannot answer those questions clearly, the media is not ready for evergre
 
 ## The Core Classification System
 
-> TODO(content-model): Add a comparison table here to separate evergreen screenshots, evergreen video, workshop-only media, event-only media, and superseded assets by reuse criteria and storage outcome. Best fit because this module is a classification guide and the core teaching task is distinguishing adjacent media classes quickly.
+| Class | Reuse test | Good current example | Storage outcome |
+| --- | --- | --- | --- |
+| Evergreen screenshot | proves a maintained route state without depending on event framing | [player-demo.png](../assets/screenshots/player-demo.png), [fullscreen-demo.png](../assets/screenshots/fullscreen-demo.png) | keep in the guidebook asset tree and reuse across route pages |
+| Evergreen video or GIF | motion is the teaching point and the capture still matches the maintained route | [authoring-program-editing.gif](../assets/gifs/authoring-program-editing.gif), [authoring-animation-player.gif](../assets/gifs/authoring-animation-player.gif) | keep the source clip plus the guidebook GIF derivative |
+| Workshop-only media | useful for facilitation, but too dependent on teaching context or pacing | workshop handout crops and facilitator-only screenshots, not part of the current evergreen asset tree | keep with the workshop packet |
+| Event-only media | tied to one talk, class, or one-off framing | event decks, booth demos, talk-specific screenshots | keep outside the evergreen guidebook asset tree |
+| Superseded or misleading media | no longer route-faithful, or records a broken or ambiguous intermediate state | [authoring-input-driver-creation-buggy.gif](../assets/gifs/authoring-input-driver-creation-buggy.gif) | hold out of route pages or archive as a cautionary example only |
 
 The current guidebook asset policy already points toward five useful classes.
 
@@ -165,7 +171,25 @@ These should not be kept in the evergreen asset layer as if they were active pro
 
 ## Route Faithfulness Matters More Than Visual Appeal
 
-> TODO(content-model): Add a before/after pair here to contrast a visually strong but route-misleading capture with a plainer but route-faithful evergreen capture. Best fit because this section is making a judgment call about teaching accuracy and one concrete contrast would make the policy easier to apply consistently.
+Route-faithfulness example:
+
+Visually strong but route-misleading for the beginner path:
+
+![Demo Vizij Player](../assets/screenshots/player-demo.png)
+
+_Caption: a strong-looking player shell that would overstate the complexity of the beginner route if used too early._
+
+Plainer but route-faithful for the beginner path:
+
+![Fullscreen Demo](../assets/screenshots/fullscreen-demo.png)
+
+_Caption: the simpler but route-faithful first-contact capture for the maintained Hello Face path._
+
+Why this comparison matters:
+
+1. `player-demo` is a stronger-looking shell, but it would mis-teach the earliest route if it replaced the Hello Face proof surface,
+2. `fullscreen-demo` is simpler, but it matches the maintained first-contact story exactly,
+3. the evergreen choice depends on the page's teaching claim, not on which capture looks more impressive in isolation.
 
 A polished capture can still be wrong for the guidebook.
 
@@ -186,7 +210,13 @@ That means:
 
 ## How To Decide Whether A Capture Is Evergreen
 
-> TODO(content-model): Add a decision guide here to help reviewers choose between promote, hold in workshop media, or reject as superseded. Best fit because this section is already applying evergreen criteria and would benefit from an explicit routing decision instead of checklist prose alone.
+Use this decision guide when triaging a new capture:
+
+| If the capture... | Decision | Current example |
+| --- | --- | --- |
+| shows a maintained route state clearly and the surrounding prose can describe it honestly | promote into the guidebook asset tree | [player-demo-controls.png](../assets/screenshots/player-demo-controls.png) for the player shell, [authoring-loading.gif](../assets/gifs/authoring-loading.gif) for the import boundary |
+| is useful, but only as context or comparison inside support material | hold as support-only reuse | [tutorial-agent-face.png](../assets/screenshots/tutorial-agent-face.png) on route-comparison pages |
+| records a buggy intermediate state, unresolved mapping, or obsolete route | reject as evergreen proof and keep only if it teaches the rejection rule itself | [authoring-input-driver-creation-buggy.gif](../assets/gifs/authoring-input-driver-creation-buggy.gif) |
 
 Treat a capture as evergreen only if all of these are true:
 
@@ -223,7 +253,7 @@ You are done with this page when:
 Use these when you need the current implementation truth:
 
 1. `current_documentation/guidebook/assets/README.md`
-2. `current_documentation/guidebook/assets/screenshots/README.md`
+2. `current_documentation/guidebook/assets/README.md`
 3. `current_documentation/guidebook/support/validation-checkpoints.md`
 4. `current_documentation/guidebook/support/troubleshooting-matrix.md`
 5. `current_documentation/guidebook/support/glossary-and-terminology-bridge.md`

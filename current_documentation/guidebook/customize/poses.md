@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,poses,authoring -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain named authored states in Vizij and how pose semantics sit between rigging and animation
 
 # Poses
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Rigging](rigging.md)
-6. **Useful next module:** [Animations](animations.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Rigging](rigging.md)<br>Current module: `Poses`<br>Next in bucket: [Animations](animations.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
@@ -45,13 +47,13 @@ This matters because the pose layer is not just UI labeling. It becomes part of 
 
 ### Why This Page Exists Separately
 
-`Poses` needs its own page because it protects a specific boundary in the `Customize` route.
+[`Poses`](poses.md) needs its own page because it protects a specific boundary in the `Customize` route.
 
-`Rigging` explains controllable structure.
+[Rigging](rigging.md) explains controllable structure.
 
-`Poses` explains semantic named states over that structure.
+[`Poses`](poses.md) explains semantic named states over that structure.
 
-`Animations` explains authored motion over time.
+[Animations](animations.md) explains authored motion over time.
 
 If those ideas collapse into one another, readers lose the point of pose authoring:
 
@@ -155,7 +157,27 @@ That is why pose authoring is useful in runtime: it lets the system move toward 
 
 ## How Pose Composition Works
 
-> TODO(content-model): Add a before/after pair here to show how combining two named poses differs from raw rig-value tweaking. Best fit because this section is about authored state composition and the visible facial delta is the clearest way to make the abstraction concrete.
+Current pose anchors:
+
+![Pose Creation](../assets/gifs/authoring-pose-creation-fast.gif)
+
+_Caption: capturing a named pose as a reusable authored state._
+
+![Pose Editing](../assets/gifs/authoring-pose-editing.gif)
+
+_Caption: refining the stored pose after creation instead of treating it as a one-shot slider move._
+
+This middle capture is the important bridge between creation and blending: it shows that a pose persists as an authored object you can adjust deliberately.
+
+![Pose Blending](../assets/gifs/authoring-pose-blending.gif)
+
+_Caption: blending named pose weights to produce a composed facial result._
+
+These loops make the composition boundary clearer than a static before/after poster would:
+
+1. pose creation shows that a pose is captured as a named authored state,
+2. pose editing shows that the state stays editable after capture,
+3. pose blending shows why poses are more than raw slider nudges, because named states can be mixed and re-used intentionally.
 
 The current pose authoring model has more structure than "store some values and play them back."
 
@@ -222,7 +244,11 @@ Without pose semantics, the system would fall back toward anonymous channel mani
 
 ## How To Recognize Pose Work In The Current App
 
-> TODO(content-model): Add an annotated screenshot here to point out the panel regions, group structure, and weight controls that make pose work identifiable in the current authoring surface. Best fit because this section is translating pose semantics into UI evidence and readers need help seeing what counts as pose work.
+The three pose captures above are also the clearest current way to recognize pose work in the app:
+
+1. pose creation marks the capture moment,
+2. pose editing shows the maintained authoring surface for refining a named state,
+3. pose blending shows the weight-driven behavior that distinguishes pose work from direct rig tweaking.
 
 In the current `vizij-authoring` surface, pose work shows up as a distinct authoring layer:
 
@@ -257,7 +283,7 @@ Use these when you need the current implementation truth:
 7. `vizij-web/apps/vizij-authoring/src/components/panels/VariablesPanel.tsx`
 8. `vizij-web/apps/vizij-authoring/e2e/pose-roundtrip.workflow.pw.ts`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want to understand authored motion over time rather than named states, continue to [Animations](animations.md).
 2. If you want to understand what later leaves authoring and crosses into runtime consumption, continue to [Export](export.md).

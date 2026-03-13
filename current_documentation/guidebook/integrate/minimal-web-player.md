@@ -7,164 +7,200 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Integrate](README.md)
-2. **Depth:** `Surface`
-3. **Module type:** walkthrough
-4. **Bucket overview:** [Integrate](README.md)
-5. **Useful previous module:** [Integrate](README.md)
-6. **Useful next module:** [Loading, Playback, and Embedding](loading-playback-and-embedding.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
+| Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [Loading, Playback, and Embedding](loading-playback-and-embedding.md), [Application Integration Patterns](application-integration-patterns.md), [API-Backed Interactive Application](api-backed-interactive-application.md), [Rich Interactive Applications](rich-interactive-applications.md) |
+| Module position in this bucket | Previous in bucket: start at [Integrate](README.md)<br>Current module: `Minimal Web Player`<br>Next in bucket: [Loading, Playback, and Embedding](loading-playback-and-embedding.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
+| Module type | walkthrough |
+| Bucket overview | [Integrate](README.md) |
 
 ## Reader Outcome
 
-After this page, you should understand what the first trustworthy player-stage runtime surface needs, how the current maintained player anchor exposes those pieces, and what to validate before moving toward deployment.
+After this page, you should be able to launch the maintained player-stage app, explain what makes it a trustworthy runtime shell instead of just another demo, and identify the code shape you would reuse in your own first player.
 
-## Module Notes
+## Starting State
 
-### Intended Audience
-
-This page is for readers who have already seen a face work and now want to understand the smallest useful application shell that can host it on the web.
-
-### Artifact Being Touched
-
-The guidebook idea of a minimal player is:
-
-1. a known-good asset or bundle,
-2. a runtime shell that can load it honestly,
-3. a visible face surface,
-4. clear loading, ready, and error states,
-5. only enough control to prove the shell is healthy.
-
-The current maintained implementation anchor is `demo-vizij-player`.
-
-That app is richer than the eventual smallest public shell, but it already shows the discipline this page needs to teach: clear bootstrap state, visible loading behavior, a face viewport, and explicit diagnostics.
-
-## What You Need
-
-From `vizij-web`:
+Use the `vizij-web` workspace root:
 
 ```bash
+cd /home/chris/Code/Semio/vizij_ws/vizij-web
 pnpm run dev:demo-vizij-player
 ```
 
-It also helps if you have already completed:
+Open the local URL shown by Vite.
 
-1. [Hello Face Quickstart](../experience/hello-face-quickstart.md)
-2. [Paths and Standard Controls](../control/paths-and-standard-controls.md)
+This walkthrough uses `demo-vizij-player` because it is the strongest maintained example of a bundle-first player surface in the workspace.
 
-## What Makes a Player Minimal
+## What A Minimal Player Must Prove
 
-| Minimal player concern | Must be visible now | Leave for later |
-| --- | --- | --- |
-| Asset state | whether a GLB or bundle is loaded | asset authoring workflows |
-| Runtime state | bootstrap, ready, and error signals | deep orchestration ownership decisions |
-| Viewport honesty | loading, empty, error, and visible-face states | product-level UI polish |
-| Controls | only enough to prove the shell is healthy | full operator dashboards or conversation loops |
+For this route, a player is only believable if it makes four things obvious:
 
-A minimal player is not “the smallest amount of code possible.”
+1. what face asset is loaded
+2. whether the runtime is healthy
+3. what the viewer is currently showing
+4. whether at least one control path reaches the face successfully
 
-It is the smallest runtime shell that still behaves like a real app.
+That is the standard you are checking as you walk through the app.
 
 ## Walkthrough
 
-### 1. Launch the player anchor
+### 1. Launch the maintained player anchor
 
-From `vizij-web`:
+Run:
 
 ```bash
 pnpm run dev:demo-vizij-player
 ```
 
-When it opens, look for these panels:
+When the app opens, choose one of the curated sample faces if it is not already selected.
 
-1. `Bootstrap Checklist`
-2. `Face Viewer`
-3. rig controls
-4. animations
-5. diagnostics
+Expected result:
 
-You are not trying to master all of them yet. You are using the app to understand the anatomy of a trustworthy runtime shell.
+1. the app presents a clear player workspace rather than a fullscreen-only tutorial
+2. the face viewer, bootstrap state, and side panels are all visible
+3. you can tell that the app is built to host a bundle, not just show one canned animation
 
-### 2. Read the player shell states
+Current visual anchor:
 
-The `Bootstrap Checklist` teaches the first player rule: runtime state must be visible.
+![Demo Vizij Player](../assets/screenshots/player-demo.png)
 
-The app explicitly shows:
+_Caption: the full bundle-first player shell with library, face stage, controls, and selected-bundle detail visible together._
 
-1. GLB loader state,
-2. orchestrator runtime state,
-3. registered controllers,
-4. active high-level rigs.
+Use this overview to orient yourself before you zoom into the specific control and diagnostic surfaces below.
 
-The `Face Viewer` teaches the second player rule: the viewport must be honest.
+### 2. Read the player shell before touching controls
 
-It shows:
+Look for the app surfaces that make the runtime honest:
 
-1. `Loading GLB...`
-2. a visible error if the GLB fails,
-3. a face when the root id is ready,
-4. a clear empty state when no GLB is loaded.
+1. bootstrap or readiness checklist
+2. face viewer
+3. diagnostics and controller inventory
+4. pose, animation, or face-control panels
 
-### 3. Keep the first player restrained
+Expected result:
 
-The point of the first player is not to rebuild authoring inside the player.
+1. you can see whether the GLB loaded
+2. you can see whether the runtime is ready
+3. you can tell the difference between loading, empty, ready, and error states
 
-The point is to prove:
+This is the core difference between a player and a thin tutorial surface. A player must explain its state while it is running.
 
-1. a face can be loaded,
-2. the shell can report health honestly,
-3. the runtime and viewer are wired clearly enough that later work has a trustworthy base.
+Current shell-detail anchors:
 
-That is why the player stage belongs after `Control` and before `Deploy`.
+![Player Demo Controls](../assets/screenshots/player-demo-controls.png)
 
-## What Not To Add Yet
+_Caption: the control side of the player, where poses, clips, programs, and surfaced face controls become testable._
 
-Do not treat the first player as:
+![Player Demo Details](../assets/screenshots/player-demo-details.png)
 
-1. a full authoring UI,
-2. a live conversation app,
-3. a deployment shell with every operator concern,
-4. a huge custom control dashboard.
+_Caption: the diagnostic side of the player, where bundle summary, runtime outputs, and surfaced-controller state stay inspectable._
 
-The first player is the calm runtime branch point. Once it is healthy, you can move either toward richer integration or toward deployment.
+These two crops are useful because they separate the two teaching jobs that the full player screenshot compresses:
 
-## Minimal Validation Gate
+1. `player-demo-controls` shows the bundle poses, clip transport, procedural program controls, and metadata-driven face controls that prove a control path is really present,
+2. `player-demo-details` shows the selected bundle summary and diagnostics surfaces that make runtime state inspectable instead of mysterious.
 
-Before leaving the player stage, confirm all of these:
+### 3. Prove that a control reaches the face
 
-1. a face asset loads without hidden failures,
-2. bootstrap state is readable from the UI,
-3. the viewport has honest loading, empty, and error states,
-4. at least one control or animation path proves that updates reach the face,
-5. diagnostics are good enough to explain the next failure.
+Use one maintained control path in the player:
 
-If one of those is missing, you still have a demo. You do not yet have a trustworthy player anchor.
+1. trigger a pose from the pose panel
+2. or trigger a simple animation or program if the currently loaded face exposes one
+3. or move a face-control value that the UI surfaces from runtime metadata
 
-## Current Useful Visual
+Expected result:
 
-An existing screenshot already lives at:
+1. the face changes visibly
+2. the app still reports a healthy runtime state
+3. the control feels like part of the player shell rather than an invisible side effect
 
-`current_documentation/guidebook/assets/screenshots/demo-vizij-player.png`
+That is the minimal player confidence test: one known-good control path has to work through the visible runtime shell.
 
-It captures the panel structure clearly enough for this page.
+### 4. Inspect how the app builds the runtime surface
+
+Open:
+
+1. `vizij-web/apps/demo-vizij-player/src/App.tsx`
+2. `vizij-web/apps/demo-vizij-player/src/data/samples.ts`
+3. `vizij-web/apps/demo-vizij-player/src/components/DiagnosticsPanel.tsx`
+4. `vizij-web/apps/demo-vizij-player/src/components/PosePanel.tsx`
+
+The runtime shape to notice is:
+
+```tsx
+<VizijRuntimeProvider
+  key={source.id}
+  assetBundle={assetBundle}
+  autostart
+  orchestratorScope="isolated"
+>
+  <WorkspaceSurface sourceLabel={sourceLabel} sourceMeta={sourceMeta} />
+</VizijRuntimeProvider>
+```
+
+What this shows:
+
+1. the player still starts with one `VizijAssetBundle`
+2. the provider owns runtime startup and controller registration
+3. the app shell then builds panels from the resolved runtime state
+
+That is the reusable pattern for a first player. The shell grows around the runtime instead of bypassing it.
+
+### 5. Notice why this app is still restrained
+
+`demo-vizij-player` is richer than `tutorial-fullscreen-face`, but it is still deliberately focused.
+
+It is not trying to be:
+
+1. a full authoring environment
+2. a live conversation shell
+3. a deployment endpoint
+
+It is trying to be a trustworthy bundle-first player. That scope discipline is part of why it teaches well.
+
+## What To Reuse In Your Own First Player
+
+If you are building a first integration surface, copy these ideas before you copy visual polish:
+
+1. construct one `VizijAssetBundle` from a known source
+2. mount one `VizijRuntimeProvider`
+3. make loading, ready, empty, and error states explicit
+4. build controls from resolved runtime data instead of hard-coded assumptions
+5. prove one known-good control path before adding more product UI
+
+## Fast Recovery If It Fails
+
+Use these shortcuts:
+
+1. if the face does not load, inspect the bootstrap and diagnostics panels before touching controls
+2. if the runtime is unclear, use [Validation Checkpoints](../support/validation-checkpoints.md)
+3. if the player reaches an error state, use [Troubleshooting Matrix](../support/troubleshooting-matrix.md)
+4. if you need the lower-level runtime explanation behind the shell, use [Loading, Playback, and Embedding](loading-playback-and-embedding.md)
 
 ## Success Check
 
 You are done with this page when:
 
-1. you can explain what makes the player shell healthy,
-2. you can name the bootstrap and face-viewer states that matter,
-3. you understand why the player stage should stay restrained before deployment.
+1. `demo-vizij-player` runs locally
+2. you can identify the shell surfaces that expose runtime truth
+3. at least one maintained control path visibly reaches the face
+4. you can explain why this app is a player-stage shell rather than just another runtime demo
 
 ## Implementation Anchors
 
 Use these when you need the current implementation truth:
 
 1. `vizij-web/apps/demo-vizij-player/README.md`
-2. `vizij-web/apps/demo-vizij-player/src/App.tsx`
-3. `vizij-web/apps/demo-vizij-player/src/renderer/FaceViewport.tsx`
-4. `current_documentation/guidebook/reference/animation-integration-and-deployment-reference.md`
+2. `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
+3. `vizij-web/apps/demo-vizij-player/src/App.tsx`
+4. `vizij-web/apps/demo-vizij-player/src/data/samples.ts`
+5. `vizij-web/apps/demo-vizij-player/src/components/DiagnosticsPanel.tsx`
+6. `vizij-web/packages/@vizij/runtime-react/README.md`
 
-## Next Step
+## Recommended Next Steps
 
-1. If you want the fundamentals behind what this shell is loading and hosting, continue to [Loading, Playback, and Embedding](loading-playback-and-embedding.md).
-2. If your goal is a real endpoint right away, continue to [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md).
+Continue to [Loading, Playback, and Embedding](loading-playback-and-embedding.md) if you want the fundamentals behind the player shell.
+
+If your goal is a richer application pattern, continue later to [API-Backed Interactive Application](api-backed-interactive-application.md).

@@ -143,6 +143,22 @@ Automatic failure patterns:
 4. missing expected outputs or observable checkpoints,
 5. "magic" transitions between steps that require knowledge the page did not provide.
 
+### 5. Guidebook-First Sufficiency
+
+Guidebook tutorial-class pages must teach enough locally that the reader is not pushed back into repo-local docs just to complete the route.
+
+Strong evidence:
+
+1. the page carries the full execution spine itself,
+2. repo-local docs are linked as implementation anchors or deeper follow-up,
+3. the reader can complete the task and understand why it worked before leaving the guidebook page.
+
+Automatic failure patterns:
+
+1. the page names a maintained example but only summarizes it,
+2. the reader must open multiple repo-local docs to find the actual steps,
+3. the guidebook outsources the concrete lesson while keeping only the route framing.
+
 ## Module-Level Communication Criteria
 
 Use these criteria for any individual guidebook page.
@@ -198,7 +214,8 @@ Judge primarily on:
 2. reliable task completion,
 3. explicit prerequisites,
 4. low ambiguity,
-5. strong validation.
+5. strong validation,
+6. self-sufficient teaching depth.
 
 ### Explainer or Concept Page
 
@@ -258,7 +275,24 @@ A tutorial is guidebook-ready only if all of the following are true:
 4. every important step has a visible or observable expected result,
 5. the page separates mandatory steps from optional interpretation,
 6. the success check proves the intended outcome rather than a weak proxy,
-7. the fallback path for likely failures is discoverable.
+7. the page includes the exact app, file, hook, or panel the reader is being taught through,
+8. the page shows a compact code or config excerpt when the implementation shape matters,
+9. likely failure points are named with a fast recovery path or support link,
+10. the page leaves the reader with one concrete next move they can perform immediately,
+11. the fallback path for likely failures is discoverable.
+
+## Tutorial Writing Pattern
+
+The strongest maintained Vizij tutorials already use a reliable pattern. Guidebook walkthroughs should reuse it directly:
+
+1. start with the exact runnable surface
+2. show the smallest believable success quickly
+3. explain the runtime or app state the reader is seeing
+4. point to the exact files and code shape that produce that behavior
+5. extract the reusable pattern, not just the local app detail
+6. close with validation and the next real step
+
+This keeps learner pages operational without turning them into raw implementation dumps.
 
 Use this review question directly:
 

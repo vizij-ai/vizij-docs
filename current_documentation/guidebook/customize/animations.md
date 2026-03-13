@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,animations,authoring -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain authored motion over time in Vizij and how animation authoring differs from poses before export
 
 # Animations
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Poses](poses.md)
-6. **Useful next module:** [Procedural Programs](procedural-programs.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Poses](poses.md)<br>Current module: `Animations`<br>Next in bucket: [Procedural Programs](procedural-programs.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
@@ -46,13 +48,13 @@ This matters because animation authoring is not only a viewer convenience. It be
 
 ### Why This Page Exists Separately
 
-`Animations` needs its own page because it protects a different concept boundary than `Poses`.
+[`Animations`](animations.md) needs its own page because it protects a different concept boundary than [Poses](poses.md).
 
-`Rigging` explains what the face can be driven by.
+[Rigging](rigging.md) explains what the face can be driven by.
 
-`Poses` explains named authored states over that controllable structure.
+[Poses](poses.md) explains named authored states over that controllable structure.
 
-`Animations` explains how those controllable values change over time.
+[`Animations`](animations.md) explains how those controllable values change over time.
 
 If those ideas collapse together, readers make three common mistakes:
 
@@ -229,7 +231,20 @@ This page still stays in `Customize` scope. You do not need to learn runtime int
 
 ## What Readers Actually Do In The Current App
 
-> TODO(content-model): Add a short video clip here to show scrubbing, playback, and clip preview behavior in motion. Best fit because this module is about authored time-based change and motion evidence teaches the concept more directly than a still image.
+Current animation anchors:
+
+![Animation Creation](../assets/gifs/authoring-animation-creation.gif)
+
+_Caption: authoring a clip by creating timeline content, not just previewing an existing asset._
+
+![Animation Player](../assets/gifs/authoring-animation-player.gif)
+
+_Caption: transport controls driving playback and preview over the authored timeline._
+
+These two loops are the strongest current teaching evidence for this page:
+
+1. the creation capture shows clips, tracks, and keyframe editing as authored timeline work,
+2. the player capture shows transport behavior in motion, including preview, pause, and clip playback inside the maintained authoring surface.
 
 In the current authoring surface, animation work usually looks like this:
 
@@ -284,6 +299,6 @@ Use these when you need the current implementation truth:
 6. `vizij-web/apps/vizij-authoring/src/hooks/useAnimationTransport.ts`
 7. `vizij-web/apps/vizij-authoring/e2e/runtime-sessions.workflow.pw.ts`
 
-## Next Step
+## Recommended Next Steps
 
 If you want to understand what artifact leaves authoring after rigging, poses, and animations are in place, continue to [Export](export.md).

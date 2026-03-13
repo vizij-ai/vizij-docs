@@ -18,6 +18,13 @@ Always verify against the current code surface first: workspace manifests, `pack
 
 If a repo-local doc owns the implementation detail for an area, `vizij-docs` should summarize it and link down to it rather than duplicate the whole tracker.
 
+There is one important exception for learner-facing guidebook modules:
+
+- guidebook tutorials, walkthroughs, and operational pages must be self-sufficient enough that a reader can complete the route without being forced back into repo-local docs for every execution step
+- that means `vizij-docs/current_documentation/guidebook` may restate the exact commands, file touchpoints, runtime states, validation checks, and small code excerpts needed to teach the maintained path clearly
+- the repo-local docs still remain authoritative for low-level implementation truth, detailed package contracts, and fast-moving local workflow notes
+- when guidebook pages restate implementation detail, they should do it to teach the route end to end, not to recreate repo-local trackers wholesale
+
 Current example:
 
 - `vizij-web/apps/vizij-authoring/docs` is authoritative for detailed authoring execution tracking.
@@ -98,6 +105,22 @@ Repo-local docs can be more detailed and more current than `vizij-docs` for loca
 2. treat the repo-local docs as implementation-detail evidence
 3. update `vizij-docs` with the cross-repo summary and authority note
 4. link to the detailed local docs instead of copying their whole tracker
+
+### Guidebook-first teaching rule
+
+When the guidebook is the intended reader-facing learning route, do not hide critical teaching detail behind repo-local links.
+
+For guidebook tutorial-class pages, include:
+
+1. exact starting state and working directory
+2. exact commands to run
+3. exact app, file, or UI surface being touched
+4. expected runtime or UI state after each meaningful step
+5. a compact code or config excerpt when implementation shape matters
+6. a concrete success check
+7. the next route step and the implementation anchors for deeper truth
+
+Use repo-local docs to support that teaching flow, not to replace it.
 
 Examples:
 

@@ -1,6 +1,6 @@
 <!-- tags: type=reference; status=written; topics=guidebook,learning-model,matrix -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** define how readers move through the Vizij guidebook and how bucket plus depth combine into a teaching system
 
 # Guidebook Learning Model
@@ -43,7 +43,20 @@ The difference between these levels is about teaching goal and conceptual depth,
 
 ## 4. How Readers Move Through the Matrix
 
-This model exists so readers can:
+This model exists so readers can move in five distinct directions:
+
+1. forward or backward across buckets in the process:
+   `Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`
+2. up or down in depth inside the current bucket:
+   `Surface -> Fundamentals -> Advanced`
+3. backward or forward through the local module chain inside the current bucket:
+   the page should expose the nearest previous and next module rather than forcing the reader back to the bucket index
+4. outward through recommended routes:
+   the page should end with linked recommended next steps or optional next steps so the reader knows what to do next
+5. outward through references:
+   the page should expose linked guidebook references and concrete implementation anchors so the reader can verify the lesson or go deeper without losing orientation
+
+Because the matrix supports those five movements, readers can:
 
 1. move across the whole Vizij journey at a shallow depth,
 2. stop at the bucket they need right now,
@@ -69,6 +82,19 @@ This route is for readers who want to modify an existing face or build something
 The bucket-and-depth model describes where a module sits in the teaching system.
 
 The [content-model-reference.md](content-model-reference.md) document describes how that module should be taught. A `Surface` page and an `Advanced` page may both use diagrams, screenshots, code, or video if those are the right tools for the job.
+
+For navigation, the learning model also defines the minimum orientation contract for learner-facing pages:
+
+1. top-of-page bucket chain:
+   previous bucket, current bucket, next bucket
+2. top-of-page depth ladder:
+   current depth plus what sits above or below in the same bucket
+3. top-of-page module chain:
+   previous module, current module, next module
+4. bottom-of-page route links:
+   recommended next steps or optional next steps
+5. reference links:
+   linked guidebook references and implementation anchors where appropriate
 
 ## 7. Relationship to Public Surfaces
 

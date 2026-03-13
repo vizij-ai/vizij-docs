@@ -7,151 +7,159 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Deploy](README.md)
-2. **Depth:** `Surface`
-3. **Module type:** walkthrough
-4. **Bucket overview:** [Deploy](README.md)
-5. **Useful previous module:** [Deploy](README.md)
-6. **Useful next module:** [Operator and Deployment Model](operator-and-deployment-model.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Integrate](../integrate/README.md)<br>Current: [Deploy](README.md)<br>Next: End of guidebook route |
+| Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [Operator and Deployment Model](operator-and-deployment-model.md), [Deployment Checks and Recovery](deployment-checks-and-recovery.md), [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md) |
+| Module position in this bucket | Previous in bucket: start at [Deploy](README.md)<br>Current module: `Easiest Standalone Deployment`<br>Next in bucket: [Operator and Deployment Model](operator-and-deployment-model.md) |
+| Reference bridges | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | walkthrough |
+| Bucket overview | [Deploy](README.md) |
 
 ## Reader Outcome
 
-After this page, you should be able to explain the cleanest first deployment path for a Vizij face, launch the maintained standalone surface in development, and understand what counts as a real deployed result.
+After this page, you should be able to launch the maintained standalone runtime surface, load a face into it, confirm that its local control endpoint is alive, and explain why this counts as a deployment-shaped result rather than another local demo.
 
-## Module Notes
+## Starting State
 
-### Intended Audience
-
-This page is for readers who have already reached the player stage and now need a practical deployment endpoint rather than another demo.
-
-### Artifact Being Touched
-
-The deployment anchor here is `vizij-standalone`.
-
-Its job is to package a Vizij face into a standalone desktop application that:
-
-1. loads a GLB or GLTF face,
-2. exposes a WebSocket control surface,
-3. can serve a built-in web control panel on the same host,
-4. behaves like a real operator-facing endpoint.
-
-## What You Need
-
-From `vizij-web`:
+Use the `vizij-web` workspace root:
 
 ```bash
+cd /home/chris/Code/Semio/vizij_ws/vizij-web
 pnpm run dev:vizij-standalone
 ```
 
-This page assumes you already understand:
+This walkthrough uses `apps/vizij-standalone`, the maintained desktop runtime shell for first deployment work.
 
-1. what a runtime shell is,
-2. what face artifact is being loaded,
-3. why deployment is different from just viewing a face locally in a tutorial.
+## What This First Deployment Must Prove
 
-## What Counts As Deployed
+For this route, deployment means more than `a face rendered`.
 
-For this first deployment page, “deployed” means more than “the face rendered.”
+The standalone surface has to make these things true:
 
-It means:
+1. a face can be loaded into the runtime endpoint
+2. runtime status is visible
+3. a local control surface is exposed
+4. an operator on the same host can connect and drive the face
 
-1. a face is loaded into the standalone app,
-2. the runtime reports a healthy state,
-3. the WebSocket control surface is available,
-4. a same-host operator path is believable.
-
-That is enough for the first deployment endpoint. ROS, hardware, and multi-screen topologies come later.
-
-## Current Networking Boundary
-
-The current implementation binds the control server to `127.0.0.1:{port}`.
-
-That means:
-
-1. the default endpoint is `ws://localhost:9000`,
-2. same-host control is the strongest current truth,
-3. the built-in web control panel is part of the same local deployment surface,
-4. LAN-first operator stories belong to future topology work, not this first deployment page.
+That is the bar for a first believable deployment endpoint.
 
 ## Walkthrough
 
 ### 1. Launch the standalone app in development
 
-From `vizij-web`:
+Run:
 
 ```bash
 pnpm run dev:vizij-standalone
 ```
 
-If no model is loaded on startup, the app presents a file-picker flow.
+If the app starts without a face already loaded, use the file picker to choose a bundled GLB or launch again later with `--glb`.
 
-That is still part of the deployment story: the app is a real runtime surface, not just a static sample page.
+Expected result:
 
-### 2. Confirm the deployment states
+1. the app opens as a desktop runtime surface rather than a browser-only demo
+2. if no model is loaded, the app makes that state explicit
+3. once a model is loaded, the runtime transitions into a visible active state
 
-The standalone app teaches the first deployment checklist through its UI:
+An explicit `no model loaded` state is part of healthy deployment behavior, not a failure in itself.
 
-1. loading state while the bundle is being prepared,
-2. explicit error state if loading fails,
-3. no-model state with file-picker recovery,
-4. runtime state once the face is active,
-5. WebSocket connection state,
-6. visible port and namespace information.
+### 2. Load a face and wait for the runtime to settle
 
-### 3. Confirm the control endpoint
+Use one of these paths:
 
-The default control endpoint is:
+1. interactive file picker in the desktop app
+2. a CLI launch with a known GLB path
+
+Example CLI form from the app README:
+
+```bash
+pnpm --filter vizij-standalone dev -- -- --glb /path/to/avatar.glb --fullscreen
+```
+
+Expected result:
+
+1. the face loads without the app hiding its intermediate states
+2. runtime health becomes visible in the app UI
+3. the surface now looks like an endpoint that can be operated, not only inspected
+
+### 3. Confirm the local control endpoint
+
+The default local control endpoint is:
 
 ```text
-ws://localhost:9000
+ws://127.0.0.1:9000
 ```
 
-The built-in web control panel uses the same local control surface. That makes it a practical operator path for the first deployment story without requiring a second machine.
+Unless disabled, the built-in browser control panel is served from the same host and port.
 
-### 4. Know the first useful commands
+What to confirm:
 
-For local development:
+1. the app surfaces the port or connection state clearly
+2. the runtime is ready before you expect remote or browser-side control to work
+3. the same-host operator path is believable even before you think about LAN or hardware setups
 
-```bash
-pnpm run dev:vizij-standalone
-```
+This localhost-first boundary is the maintained current truth for the first deployment route.
 
-For a built artifact, the app README documents:
+### 4. Prove that operator control reaches the face
 
-1. `pnpm tauri build`,
-2. executable output locations,
-3. runtime CLI flags like `--glb`, `--port`, `--fullscreen`, and `--display`.
+Use the built-in control panel or another same-host client to drive one visible change.
 
-## First Operator Check
+Expected result:
 
-Before you call the result “deployment-shaped,” confirm all of these:
+1. the client can connect to the standalone endpoint
+2. the face responds to control input
+3. the runtime remains healthy while the control path is active
 
-1. the face is loaded,
-2. the WebSocket server is running,
-3. the runtime is ready,
-4. the built-in control panel or another same-host client can connect,
-5. the face responds predictably to control input.
+At that point, the app has crossed from `demo-shaped` to `deployment-shaped`.
 
-If those are true, the reader has crossed from “demo” to “deployment-shaped runtime surface.”
+### 5. Inspect the code layers that make deployment work
 
-## Current Useful Visuals
+Open:
 
-| State | Visual |
-| :--- | :--- |
-| **Endpoint (Face)** | ![Standalone Endpoint](../assets/screenshots/vizij-standalone-endpoint.png) |
-| **Status UI** | ![Standalone Status](../assets/screenshots/vizij-standalone-status-ui.png) |
-| **Control Panel** | ![Web Control Panel](../assets/screenshots/vizij-standalone-web-control-panel.png) |
+1. `vizij-web/apps/vizij-standalone/README.md`
+2. `vizij-web/apps/vizij-standalone/src/App.tsx`
+3. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
+4. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
 
-These captured diagnostics show the "No model loaded" state and the built-in control panel UI.
+What each layer owns:
+
+1. `App.tsx` mounts the runtime-react surface in the desktop shell
+2. `useWebSocketSync.ts` bridges runtime inputs and transport state
+3. `src-tauri/src/lib.rs` owns the CLI flags and endpoint startup
+
+That separation is why this is a deployment surface and not just a richer player app.
+
+## The Smallest Useful Operator Checklist
+
+Call the deployment healthy only when all of these are true:
+
+1. a face is loaded
+2. runtime status is visible and healthy
+3. the WebSocket endpoint is available
+4. a same-host control client can connect
+5. the face responds to control input predictably
+
+If any one of those is missing, keep treating the setup as unfinished.
+
+## Fast Recovery If It Fails
+
+Use these shortcuts:
+
+1. if the app opens with no face, use the file picker or relaunch with `--glb`
+2. if the face loads but control does not connect, verify the port and local endpoint state first
+3. if the runtime appears unhealthy, use [Validation Checkpoints](../support/validation-checkpoints.md)
+4. if the transport or control path is failing, use [Troubleshooting Matrix](../support/troubleshooting-matrix.md)
 
 ## Success Check
 
 You are done with this page when:
 
-1. you can describe why `vizij-standalone` is the first deployment anchor,
-2. you know the default WebSocket endpoint and the role of the built-in control panel,
-3. you can explain what makes the result deployed rather than merely demoed,
-4. you understand that current guidebook truth is same-host control, not LAN-first control.
+1. `vizij-standalone` launches locally
+2. you can load a face into it
+3. you can name the default local control endpoint
+4. you can confirm that a same-host operator path can drive the face
+5. you can explain why this is a deployment endpoint instead of another tutorial app
 
 ## Implementation Anchors
 
@@ -161,9 +169,10 @@ Use these when you need the current implementation truth:
 2. `vizij-web/apps/vizij-standalone/src/App.tsx`
 3. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
 4. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
-5. `current_documentation/guidebook/reference/animation-integration-and-deployment-reference.md`
+5. `vizij-web/packages/@vizij/arora-types`
 
-## Next Step
+## Recommended Next Steps
 
-1. If you now need the operational model behind this endpoint, continue to [Operator and Deployment Model](operator-and-deployment-model.md).
-2. If you want the first deployment validation loop after that, continue to [Deployment Checks and Recovery](deployment-checks-and-recovery.md).
+Continue to [Operator and Deployment Model](operator-and-deployment-model.md) if you want the conceptual model behind this endpoint.
+
+Then continue to [Deployment Checks and Recovery](deployment-checks-and-recovery.md) for the first operational validation loop.

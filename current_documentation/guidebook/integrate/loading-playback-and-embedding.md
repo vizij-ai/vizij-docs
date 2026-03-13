@@ -7,12 +7,14 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Integrate](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Integrate](README.md)
-5. **Useful previous module:** [Minimal Web Player](minimal-web-player.md)
-6. **Useful next module:** [Application Integration Patterns](application-integration-patterns.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
+| Depth ladder in this bucket | Above: [Minimal Web Player](minimal-web-player.md)<br>Current: `Fundamentals`<br>Below: [API-Backed Interactive Application](api-backed-interactive-application.md), [Rich Interactive Applications](rich-interactive-applications.md) |
+| Module position in this bucket | Previous in bucket: [Minimal Web Player](minimal-web-player.md)<br>Current module: `Loading, Playback, and Embedding`<br>Next in bucket: [Application Integration Patterns](application-integration-patterns.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
+| Module type | concept page |
+| Bucket overview | [Integrate](README.md) |
 
 ## Reader Outcome
 
@@ -193,8 +195,8 @@ Use these when you need the current implementation truth:
 4. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
 5. `current_documentation/guidebook/reference/runtime-quickstart-reference.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you need to choose the right simple app shape next, continue to [Application Integration Patterns](application-integration-patterns.md).
-2. If your goal is the operator-facing endpoint, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+2. If you want to see the richer advanced build path after the fundamentals, continue later to [API-Backed Interactive Application](api-backed-interactive-application.md).
 3. If you only need the first practical shell, keep [Minimal Web Player](minimal-web-player.md) as the compact route anchor.

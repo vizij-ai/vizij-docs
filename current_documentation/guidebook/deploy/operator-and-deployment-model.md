@@ -7,12 +7,14 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Deploy](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Deploy](README.md)
-5. **Useful previous module:** [Easiest Standalone Deployment](easiest-standalone-deployment.md)
-6. **Useful next module:** [Deployment Checks and Recovery](deployment-checks-and-recovery.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Integrate](../integrate/README.md)<br>Current: [Deploy](README.md)<br>Next: End of guidebook route |
+| Depth ladder in this bucket | Above: [Easiest Standalone Deployment](easiest-standalone-deployment.md)<br>Current: `Fundamentals`<br>Below: [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md) |
+| Module position in this bucket | Previous in bucket: [Easiest Standalone Deployment](easiest-standalone-deployment.md)<br>Current module: `Operator and Deployment Model`<br>Next in bucket: [Deployment Checks and Recovery](deployment-checks-and-recovery.md) |
+| Reference bridges | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Deploy](README.md) |
 
 ## Reader Outcome
 
@@ -152,10 +154,10 @@ It gives the reader:
 
 The guidebook should treat this as part of the first deployment story, not as a side note.
 
-| Feature | Built-In Visual |
+| Feature | What the operator gets |
 | :--- | :--- |
-| **Control UI** | ![Web Control Panel](../assets/screenshots/vizij-standalone-web-control-panel.png) |
-| **Discovery** | Dynamic slots populate based on the loaded model schema. |
+| **Control UI** | a same-host browser surface for driving the loaded face without building a separate client first |
+| **Discovery** | dynamic slots populate from the loaded model schema |
 
 ## Boundary To Advanced Deployment
 
@@ -187,7 +189,7 @@ Use these when you need the current implementation truth:
 4. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
 5. `current_documentation/workshops/vizij-afternoon-workshop/handouts/animation-integration-deployment-reference.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want the first deployment readiness loop and recovery sequence, continue to [Deployment Checks and Recovery](deployment-checks-and-recovery.md).
 2. For reusable readiness checks across the route, continue to [Validation Checkpoints](../support/validation-checkpoints.md).

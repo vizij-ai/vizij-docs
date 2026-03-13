@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,experience,hello-face -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** give readers the quickest concrete experience of what Vizij can do using an existing face
 
 # Experience
@@ -8,6 +8,15 @@
 `Experience` is the bucket where a reader first feels Vizij as a working system.
 
 This bucket is the natural home for `Hello Face` and other first-contact experiences that prove the capability quickly with an existing asset and low setup friction.
+
+## Process Position
+
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Introduction](../introduction/README.md)<br>Current: [Experience](README.md)<br>Next: [Control](../control/README.md) |
+| Depth ladder in this bucket | Surface: [Hello Face Quickstart](hello-face-quickstart.md), [Richer Interactive Example](richer-interactive-example.md)<br>Fundamentals: [Existing Asset Sandbox](existing-asset-sandbox.md)<br>Advanced: [Sample Asset Exploration](sample-asset-exploration.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Route relationship | First hands-on bucket after [Introduction](../introduction/README.md); usually continues into [Control](../control/README.md). |
 
 ## Bucket Overview
 

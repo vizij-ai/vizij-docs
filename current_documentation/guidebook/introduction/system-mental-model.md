@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,architecture,mental-model -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** give readers the stable system mental model that makes later guidebook buckets easier to interpret correctly
 
 # System Mental Model
 
 ## Guidebook Context
 
-1. **Bucket:** [Introduction](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Introduction](README.md)
-5. **Useful previous module:** [How To Use This Guidebook](how-to-use-this-guidebook.md)
-6. **Useful next module:** [Customization Concepts Primer](customization-concepts-primer.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: Start of guidebook<br>Current: [Introduction](README.md)<br>Next: [Experience](../experience/README.md) |
+| Depth ladder in this bucket | Above: [What Is Vizij?](what-is-vizij.md), [How To Use This Guidebook](how-to-use-this-guidebook.md)<br>Current: `Fundamentals`<br>Below: [Architecture Bridge](architecture-bridge.md) |
+| Module position in this bucket | Previous in bucket: [How To Use This Guidebook](how-to-use-this-guidebook.md)<br>Current module: `System Mental Model`<br>Next in bucket: [Customization Concepts Primer](customization-concepts-primer.md) |
+| Reference bridges | [Guidebook Learning Model](../learning-model.md)<br>[Guidebook Module Inventory](../module_inventory-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | concept page |
+| Bucket overview | [Introduction](README.md) |
 
 ## Reader Outcome
 
@@ -311,7 +313,7 @@ Use these when you need the current implementation truth behind this page:
 5. `vizij-web/apps/vizij-authoring/docs/Authoring_Blueprint.md`
 6. `vizij-web/apps/vizij-authoring/docs/pose_grouping_explainer.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want the customization vocabulary behind rigs, poses, animations, and export, continue to [Customization Concepts Primer](customization-concepts-primer.md).
 2. If you want the control vocabulary behind runtime addresses and standard controls, continue to [Paths and Standard Controls](../control/paths-and-standard-controls.md).

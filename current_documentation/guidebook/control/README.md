@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,control,paths,inputs -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** help readers see and control a face before they try to customize it
 
 # Control
@@ -8,6 +8,15 @@
 `Control` comes before `Customize` in the main learning journey.
 
 This bucket is about understanding how a face behaves once a reader can already see it working and now wants to manipulate it, inspect what is changing, and understand the control model.
+
+## Process Position
+
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Experience](../experience/README.md)<br>Current: [Control](README.md)<br>Next: [Customize](../customize/README.md) on the customization route or [Integrate](../integrate/README.md) on the fast route |
+| Depth ladder in this bucket | Surface: [First Control Interactions](first-control-interactions.md)<br>Fundamentals: [Paths and Standard Controls](paths-and-standard-controls.md), [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md), [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md)<br>Advanced: [Orchestration and Diagnostics](orchestration-and-diagnostics.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Route relationship | Bridge bucket after [Experience](../experience/README.md); branches into [Customize](../customize/README.md) or [Integrate](../integrate/README.md) depending on the route. |
 
 ## Bucket Overview
 

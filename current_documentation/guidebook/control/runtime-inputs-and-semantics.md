@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,inputs,semantics -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain what runtime inputs mean, where they are written, and how visible face behavior maps to runtime semantics
 
 # Runtime Inputs and Semantics
 
 ## Guidebook Context
 
-1. **Bucket:** [Control](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Control](README.md)
-5. **Useful previous module:** [Paths and Standard Controls](paths-and-standard-controls.md)
-6. **Useful next module:** [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Experience](../experience/README.md)<br>Current: [Control](README.md)<br>Next: [Customize](../customize/README.md) on the customization route or [Integrate](../integrate/README.md) on the fast route |
+| Depth ladder in this bucket | Above: [First Control Interactions](first-control-interactions.md)<br>Current: `Fundamentals`<br>Below: [Orchestration and Diagnostics](orchestration-and-diagnostics.md) |
+| Module position in this bucket | Previous in bucket: [Paths and Standard Controls](paths-and-standard-controls.md)<br>Current module: `Runtime Inputs and Semantics`<br>Next in bucket: [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | concept page |
+| Bucket overview | [Control](README.md) |
 
 ## Reader Outcome
 
@@ -177,7 +179,7 @@ Use these when you need the current implementation truth:
 4. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
 5. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want to see how these runtime ideas become an application shell, continue to [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
 2. If you want to stay on the fundamentals path inside `Control`, keep [Paths and Standard Controls](paths-and-standard-controls.md) nearby as the simpler vocabulary bridge.

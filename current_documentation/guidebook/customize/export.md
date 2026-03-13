@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,export,bundle -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain what leaves `vizij-authoring`, what export guardrails protect, and how export bridges customization into integration
 
 # Export
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** operational guide
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Procedural Programs](procedural-programs.md)
-6. **Useful next module:** [Deep Custom Pipeline](deep-custom-pipeline.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Procedural Programs](procedural-programs.md)<br>Current module: `Export`<br>Next in bucket: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | operational guide |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
@@ -46,13 +48,13 @@ There are also narrower export surfaces for authoring and round-trip work, such 
 
 ### Why This Page Exists Separately
 
-`Export` needs its own page because it protects the boundary between authoring and runtime use.
+[`Export`](export.md) needs its own page because it protects the boundary between authoring and runtime use.
 
-`Rigging`, `Poses`, and `Animations` explain how a face is authored.
+[Rigging](rigging.md), [Poses](poses.md), and [Animations](animations.md) explain how a face is authored.
 
-`Export` explains when that authored state becomes a transportable artifact.
+[`Export`](export.md) explains when that authored state becomes a transportable artifact.
 
-`Integrate` explains how later applications load and use that artifact.
+[Integrate](../integrate/README.md) explains how later applications load and use that artifact.
 
 If those ideas collapse together, readers make three common mistakes:
 
@@ -246,6 +248,6 @@ Use these when you need the current implementation truth:
 7. `vizij-web/apps/vizij-authoring/e2e/export.smoke.pw.ts`
 8. `vizij-web/apps/vizij-authoring/e2e/pose-roundtrip.workflow.pw.ts`
 
-## Next Step
+## Recommended Next Steps
 
 If you want to understand how the exported artifact becomes a real runtime surface, continue to [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).

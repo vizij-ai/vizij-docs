@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,procedural-programs,authoring -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain graph-driven authored behavior in Vizij without collapsing it into poses, timeline animation, or runtime internals
 
 # Procedural Programs
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Animations](animations.md)
-6. **Useful next module:** [Export](export.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Animations](animations.md)<br>Current module: `Procedural Programs`<br>Next in bucket: [Export](export.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
@@ -43,11 +45,11 @@ This matters because procedural behavior is not a loose idea. It is stored autho
 
 ### Why This Page Exists Separately
 
-`Procedural Programs` needs its own page because it protects a boundary the neighboring pages cannot protect by themselves.
+[`Procedural Programs`](procedural-programs.md) needs its own page because it protects a boundary the neighboring pages cannot protect by themselves.
 
-`Poses` answer: "what named state should this face have?"
+[Poses](poses.md) answer: "what named state should this face have?"
 
-`Animations` answer: "how should values move over time?"
+[Animations](animations.md) answer: "how should values move over time?"
 
 `Procedural Programs` answer: "what values should be computed from other values right now?"
 
@@ -116,7 +118,33 @@ This page stays at that authoring surface. It does not turn into a runtime archi
 
 ## The Authoring Building Blocks
 
-> TODO(content-model): Add a diagram here to show how inputs, expressions, nodes, and outputs connect into a procedural program. Best fit because this section introduces a graph-shaped authoring concept and readers need a structural map to avoid collapsing it into poses or animation clips.
+Current procedural authoring anchors:
+
+![Program Editor](../assets/screenshots/authoring-program-editor.png)
+
+_Caption: a procedural graph with source nodes, transformation steps, and resolved outputs visible at once._
+
+![Input Controls](../assets/gifs/authoring-inputs-control.gif)
+
+_Caption: the first input-control view showing which live values the program can listen to or drive._
+
+Use this first controls view to see the program's vocabulary before any graph logic is changed.
+
+![Input Controls Part 2](../assets/gifs/authoring-input-controls-prt2.gif)
+
+_Caption: a second authoring view that makes the program's exposed inputs and outputs more explicit._
+
+The follow-up controls view matters because it turns the abstract idea of "program inputs and outputs" into concrete rows a reader can inspect and select.
+
+![Program Editing](../assets/gifs/authoring-program-editing.gif)
+
+_Caption: editing graph-driven logic directly inside the maintained program workspace._
+
+This capture set is the clearest current structural map for the page:
+
+1. the screenshot shows a real graph with source nodes on the left, math or transformation steps in the middle, and resolved outputs on the right,
+2. the input-control loops show how the program's readable and writable values are exposed in authoring,
+3. the editing loop shows that the graph is an authored surface, not hidden runtime magic.
 
 ### Inputs
 
@@ -276,7 +304,7 @@ Use these when you need the current implementation truth:
 9. `vizij-web/apps/vizij-authoring/src/motiongraph/utils/specToEditorState.ts`
 10. `vizij-docs/current_documentation/concepts/ARCHITECTURE_PRIMER.md`
 
-## Next Step
+## Recommended Next Steps
 
 If you are ready to move from authored behavior to the artifact boundary, continue to [Export](export.md).
 

@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,integrate,player,embedding -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain how a face gets loaded, played back, embedded, and turned into a usable runtime surface
 
 # Integrate
@@ -8,6 +8,15 @@
 `Integrate` is the bucket where a face becomes something usable in a player or application context.
 
 This bucket is the bridge between having a face or asset and having a runtime surface that can actually be used in a browser, app, or richer interactive experience.
+
+## Process Position
+
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
+| Depth ladder in this bucket | Surface: [Minimal Web Player](minimal-web-player.md)<br>Fundamentals: [Loading, Playback, and Embedding](loading-playback-and-embedding.md), [Application Integration Patterns](application-integration-patterns.md)<br>Advanced: [API-Backed Interactive Application](api-backed-interactive-application.md), [Rich Interactive Applications](rich-interactive-applications.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
+| Route relationship | Converging bucket where both the fast route and the customization route meet before [Deploy](../deploy/README.md). |
 
 ## Bucket Overview
 

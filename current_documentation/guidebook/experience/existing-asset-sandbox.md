@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,sandbox,existing-assets -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain what the first Vizij sandbox experience is actually proving and what parts are already prebuilt
 
 # Existing Asset Sandbox
 
 ## Guidebook Context
 
-1. **Bucket:** [Experience](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Experience](README.md)
-5. **Useful previous module:** [Richer Interactive Example](richer-interactive-example.md)
-6. **Useful next module:** [Sample Asset Exploration](sample-asset-exploration.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Introduction](../introduction/README.md)<br>Current: [Experience](README.md)<br>Next: [Control](../control/README.md) |
+| Depth ladder in this bucket | Above: [Hello Face Quickstart](hello-face-quickstart.md), [Richer Interactive Example](richer-interactive-example.md)<br>Current: `Fundamentals`<br>Below: [Sample Asset Exploration](sample-asset-exploration.md) |
+| Module position in this bucket | Previous in bucket: [Richer Interactive Example](richer-interactive-example.md)<br>Current module: `Existing Asset Sandbox`<br>Next in bucket: [Sample Asset Exploration](sample-asset-exploration.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Experience](README.md) |
 
 ## Reader Outcome
 
@@ -71,7 +73,20 @@ Already chosen for you:
 
 This is why the sandbox is a good starting point. It reduces the number of variables while still showing a real Vizij surface.
 
-> TODO(content-model): Add a comparison diagram here to separate the prebuilt sandbox pieces from the later `Control`, `Customize`, and `Integrate` responsibilities. Best fit because this module is establishing a fundamentals mental model and the “already provided versus later owned” boundary is easier to retain visually.
+Current sandbox anchors:
+
+![Fullscreen Demo](../assets/screenshots/fullscreen-demo.png)
+
+_Caption: the smallest maintained sandbox surface, with the face, HUD, and known-good interactions visible in one frame._
+
+![Tutorial Agent Face](../assets/screenshots/tutorial-agent-face.png)
+
+_Caption: a richer shell that still starts from a prebuilt runtime experience rather than a reader-owned integration build._
+
+Together these two captures make the boundary easier to see than prose alone.
+
+1. `fullscreen-demo` is the smallest maintained sandbox surface: one face, one runtime, one obvious interaction layer.
+2. `tutorial-agent-face` is still an existing-asset experience, but it proves that the same prebuilt runtime can live inside a larger shell before the reader owns `Integrate` or `Customize`.
 
 ## What The Sandbox Does Not Prove
 
@@ -99,9 +114,9 @@ Treat the first sandbox as a bounded demonstration of a working chain:
 
 That makes it easier to ask the right next question:
 
-1. `How is the face being controlled?` Move to `Control`.
-2. `How do I get this into a usable shell of my own?` Move to `Integrate`.
-3. `How do I change the asset or behavior?` Move later to `Customize`.
+1. `How do these visible interactions actually work?` Move to [First Control Interactions](../control/first-control-interactions.md).
+2. `How do I get this into a usable shell of my own?` Move to [Minimal Web Player](../integrate/minimal-web-player.md).
+3. `How do I change the asset or behavior?` Move later to [Tweak an Existing Face](../customize/tweak-an-existing-face.md).
 
 ## Where Richer Experiences Fit
 
@@ -113,12 +128,11 @@ The important distinction is not whether the sample is simple or rich. It is whe
 
 ## Current Useful Visuals
 
-Existing screenshots already live at:
+The most useful current sandbox references are:
 
-1. `current_documentation/guidebook/assets/screenshots/tutorial-fullscreen-face.png`
-2. `current_documentation/guidebook/assets/screenshots/tutorial-agent-face.png`
-
-For this page, the `tutorial-fullscreen-face` screenshot is the primary visual anchor.
+1. `tutorial-fullscreen-face.png` when you want the smallest route-faithful first-contact view,
+2. `fullscreen-demo.png` when you want the same surface with its interaction HUD visible,
+3. `tutorial-agent-face.png` when you want to show how a richer shell can still be an existing-asset experience rather than a build-your-own integration exercise.
 
 ## Success Check
 
@@ -138,7 +152,8 @@ Use these when you need the current implementation truth:
 4. `current_documentation/workshops/vizij-afternoon-workshop/planning/source-audit.md`
 5. `current_documentation/guidebook/reference/runtime-quickstart-reference.md`
 
-## Next Step
+## Recommended Next Steps
 
-1. If you want to understand the meaning of the input writes behind the sandbox, continue to [Runtime Inputs and Semantics](../control/runtime-inputs-and-semantics.md).
-2. If you want to revisit the quickest runnable page first, return to [Hello Face Quickstart](hello-face-quickstart.md).
+1. If you want the first hands-on teaching page about the sandbox interactions, continue to [First Control Interactions](../control/first-control-interactions.md).
+2. If you want the deeper explanation of those runtime writes after that, continue to [Runtime Inputs and Semantics](../control/runtime-inputs-and-semantics.md).
+3. If you want to revisit the smallest runnable example first, return to [Hello Face Quickstart](hello-face-quickstart.md).

@@ -7,12 +7,14 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Experience](README.md)
-2. **Depth:** `Surface`
-3. **Module type:** demo page
-4. **Bucket overview:** [Experience](README.md)
-5. **Useful previous module:** [Hello Face Quickstart](hello-face-quickstart.md)
-6. **Useful next module:** [Existing Asset Sandbox](existing-asset-sandbox.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Introduction](../introduction/README.md)<br>Current: [Experience](README.md)<br>Next: [Control](../control/README.md) |
+| Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [Existing Asset Sandbox](existing-asset-sandbox.md), [Sample Asset Exploration](sample-asset-exploration.md) |
+| Module position in this bucket | Previous in bucket: [Hello Face Quickstart](hello-face-quickstart.md)<br>Current module: `Richer Interactive Example`<br>Next in bucket: [Existing Asset Sandbox](existing-asset-sandbox.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | demo page |
+| Bucket overview | [Experience](README.md) |
 
 ## Reader Outcome
 
@@ -22,19 +24,15 @@ After this page, you should be able to explain what a richer first-contact Vizij
 
 ### Intended Audience
 
-This page is for readers who have already seen:
+This page is for readers who want one richer example of what Vizij can feel like before they decide whether to stay on the smallest route or go deeper.
 
-1. [Hello Face Quickstart](hello-face-quickstart.md),
-2. [Existing Asset Sandbox](existing-asset-sandbox.md),
-3. or one of the early `Integrate` pages.
-
-It is for readers who want to see a more expressive, more application-shaped example before they decide whether to go deeper into `Integrate`.
+It is especially useful for readers who have already seen [Hello Face Quickstart](hello-face-quickstart.md) and now want to compare that smallest first-contact surface with a more product-shaped example.
 
 ### Why This Page Exists
 
-`Hello Face` is the right main route because it gives the fastest believable proof with the least setup.
+`Hello Face` is still the right main route because it gives the fastest believable proof with the least setup.
 
-Some readers still want to see what Vizij feels like when the face is part of a more expressive application surface.
+Some readers still want to see what Vizij feels like when the face sits inside a larger, more expressive shell before they learn how that shell is assembled.
 
 This page exists to satisfy that need without distorting the main route.
 
@@ -42,12 +40,12 @@ This page exists to satisfy that need without distorting the main route.
 
 The artifact here is a maintained richer sample experience:
 
-1. a provider-backed runtime face,
-2. local interaction around gaze, pose, viseme, and expression behavior,
-3. a larger app shell with status and controls,
-4. an optional live service-backed loop.
+1. a face inside a larger app shell,
+2. more visible panels, toggles, and status surfaces around that face,
+3. a stronger sense of product shape than `Hello Face`,
+4. optional live behavior layered on top of the same underlying runtime.
 
-This is still an `Experience` page because the reader is primarily observing what the system can feel like, not yet learning how to build it.
+This is still an `Experience` page because the reader is primarily observing what the system can feel like, not yet learning how the controls or integration layers are implemented.
 
 ### What This Page Does And Does Not Cover
 
@@ -59,18 +57,20 @@ This page does cover:
 
 This page does not cover:
 
-1. provider setup,
-2. detailed API-backed architecture,
-3. speech or viseme tuning internals,
+1. how the controls are wired,
+2. provider or session setup,
+3. detailed API-backed architecture,
 4. deployment semantics.
 
 Those belong in later buckets.
 
 ## What You Need
 
-The current maintained anchor for this page is `vizij-web/apps/tutorial-agent-face`.
+You do not need to run the richer example to use this page well.
 
-If you want to run it:
+The point here is to look at the example, notice what it adds, and decide which page you actually want next.
+
+If you do want to launch the maintained richer example later, the current anchor is `vizij-web/apps/tutorial-agent-face`:
 
 ```bash
 pnpm run dev:tutorial-agent-face
@@ -90,7 +90,15 @@ The current live conversation loop requires `VITE_GEMINI_API_KEY`.
 | External dependency | none required | live loop is optional, API key required only for that layer |
 | What it proves | the runtime is real | the same runtime can live inside a product-shaped shell |
 
-## What The Current Example Adds
+Current visual anchor:
+
+![Tutorial Agent Face](../assets/screenshots/tutorial-agent-face.png)
+
+_Caption: a richer app shell with connection controls, voice settings, and transcript placeholders wrapped around the same face runtime._
+
+This capture is useful because it shows the richer shell honestly in a disconnected state: the face is already live, but the optional session layer, voice controls, and agent-facing UI are visible as separate concerns instead of being collapsed into one vague "smart demo."
+
+## What To Notice In This Example
 
 Compared with `Hello Face`, the maintained richer example adds:
 
@@ -102,7 +110,9 @@ Compared with `Hello Face`, the maintained richer example adds:
 
 That makes the example feel closer to an actual interactive application instead of a focused runtime tutorial.
 
-## What This Example Proves
+Read those additions as evidence of capability, not as required setup.
+
+## What This Example Proves From The Reader Side
 
 This example proves:
 
@@ -127,13 +137,14 @@ Those are the boundaries that keep this page in `Experience` instead of letting 
 Read the example in this order:
 
 1. notice that the face still starts from the same runtime shell as `Hello Face`,
-2. notice that the app shell owns more status, controls, and feedback,
-3. treat the live session as an optional outer layer,
-4. move to `Integrate` when you want to understand how those layers are assembled.
+2. notice that the shell exposes more status, controls, and feedback than the smallest example,
+3. treat the live session as an optional outer layer rather than the lesson itself,
+4. move to `Control` when you want to understand the visible interaction patterns,
+5. move to `Integrate` only when you want to understand how a richer shell is assembled.
 
 The important learner-facing sentence is:
 
-`same runtime shell, larger app shell, optional live session`
+`same runtime shell, larger shell around it, optional live layer`
 
 ## A Good Reason To Choose This Branch
 
@@ -152,7 +163,7 @@ You are done with this page when:
 1. you can explain why this example is richer than `Hello Face`,
 2. you can explain why it is still optional,
 3. you can describe what it proves without over-claiming production or deployment readiness,
-4. you know that the next teaching step is `Integrate` if you want to understand how it is built.
+4. you know that the next teaching step is `Control` if you want to understand the visible interaction patterns, or `Integrate` if you want to understand how the richer shell is built.
 
 ## Implementation Anchors
 
@@ -164,7 +175,8 @@ Use these when you need the current implementation truth:
 4. `current_documentation/guidebook/integrate/api-backed-interactive-application.md`
 5. `current_documentation/guidebook/integrate/rich-interactive-applications.md`
 
-## Next Step
+## Recommended Next Steps
 
-1. If you want to understand how this richer surface is assembled, continue to [API-Backed Interactive Application](../integrate/api-backed-interactive-application.md) or [Rich Interactive Applications](../integrate/rich-interactive-applications.md).
-2. If you want to stay on the simplest maintained route, go back to [Hello Face Quickstart](hello-face-quickstart.md).
+1. If you want to feel the smaller maintained experience for yourself, continue to [Hello Face Quickstart](hello-face-quickstart.md).
+2. If you want the first teaching page about how the visible interactions work, continue to [First Control Interactions](../control/first-control-interactions.md).
+3. If you later want to understand how a richer shell like this is assembled, continue to [API-Backed Interactive Application](../integrate/api-backed-interactive-application.md).

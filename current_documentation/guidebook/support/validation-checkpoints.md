@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,validation,checkpoints -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** define reusable success checks across the maintained guidebook route
 
 # Validation Checkpoints
@@ -48,9 +48,10 @@ The artifact here is the validation layer itself:
 This page is most useful alongside:
 
 1. [Hello Face Quickstart](../experience/hello-face-quickstart.md),
-2. [Minimal Web Player](../integrate/minimal-web-player.md),
-3. [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md),
-4. [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+2. [First Control Interactions](../control/first-control-interactions.md),
+3. [Minimal Web Player](../integrate/minimal-web-player.md),
+4. [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md),
+5. [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
 
 ## Interactive Lifecycle
 
@@ -75,7 +76,7 @@ state_diagram
 | Stage | Minimum Success Signal | Likely Failure Clue | Fallback Page |
 | :--- | :--- | :--- | :--- |
 | **Experience** | Gaze follows mouse | Face is static or invisible | Troubleshooting Matrix |
-| **Control** | Path-based writes work | Controls have no effect | Control Reference |
+| **Control** | Mouse gaze and pose hotkeys both work | Controls have no effect or feel inconsistent | Troubleshooting Matrix |
 | **Integrate** | Runtime reports health | "Provider not found" | Minimal Web Player |
 | **Deploy** | Client can connect | "Connection refused" | Standalone Deployment |
 
@@ -103,7 +104,8 @@ Treat the `Integrate` stage as successful when:
 1. the runtime shell shows clear loading, ready, and error states,
 2. the face viewer renders a working face,
 3. the reader can identify the artifact-loading and runtime-health surfaces,
-4. the reader understands why the player is a restrained application shell rather than a deployment endpoint.
+4. at least one maintained control path visibly reaches the face,
+5. the reader understands why the player is a restrained application shell rather than a deployment endpoint.
 
 ### Deploy: Standalone
 
@@ -135,8 +137,6 @@ Weak signals:
 
 ## Current Known Validation Caveats
 
-> TODO(content-model): Add a troubleshooting note here to connect each caveat to the checkpoint it can invalidate and the fastest recovery path. Best fit because this section already names concrete caveats and would be stronger if it immediately turned them into recovery guidance.
-
 The current workshop validation pass already found caveats that guidebook pages should keep in mind:
 
 1. a polluted shell environment can break Vite dev runtime behavior,
@@ -144,7 +144,12 @@ The current workshop validation pass already found caveats that guidebook pages 
 3. runtime-heavy apps may show WebGL performance warnings without being functionally broken,
 4. some app builds emit large chunk warnings without failing.
 
-These caveats do not invalidate the route, but they should influence how support pages explain healthy versus unhealthy behavior.
+Fast recovery mapping:
+
+1. shell or Vite problems that block the app from opening invalidate `Experience` and `Integrate` immediately, so recover there before interpreting runtime behavior
+2. a missing `VITE_GEMINI_API_KEY` invalidates only the live-session branch of `tutorial-agent-face`, not the runtime shell itself
+3. WebGL performance warnings matter only when they block visible interaction or make the face non-responsive
+4. large build chunk warnings matter only when the build actually fails or the runtime never becomes healthy afterward
 
 ## How To Use This Page In Practice
 
@@ -160,12 +165,12 @@ If a reader cannot pass a checkpoint, route them to [Troubleshooting Matrix](tro
 
 The strongest current visual evidence across the route:
 
-1. **Experience**: [fullscreen-face](../assets/screenshots/tutorial-fullscreen-face.png) and [agent-face](../assets/screenshots/tutorial-agent-face.png)
-2. **Integrate**: [vizij-player](../assets/screenshots/demo-vizij-player.png)
-3. **Authoring**: [vizij-authoring](../assets/screenshots/vizij-authoring.png)
-4. **Deploy**: [standalone-endpoint](../assets/screenshots/vizij-standalone-endpoint.png), [standalone-status](../assets/screenshots/vizij-standalone-status-ui.png) and [web-control-panel](../assets/screenshots/vizij-standalone-web-control-panel.png)
+1. **Experience**: [fullscreen-face](../assets/screenshots/tutorial-fullscreen-face.png), [fullscreen-demo](../assets/screenshots/fullscreen-demo.png), and [agent-face](../assets/screenshots/tutorial-agent-face.png)
+2. **Integrate**: [player-demo](../assets/screenshots/player-demo.png), [player-demo-controls](../assets/screenshots/player-demo-controls.png), and [player-demo-details](../assets/screenshots/player-demo-details.png)
+3. **Authoring**: [vizij-authoring](../assets/screenshots/vizij-authoring.png), [authoring-panel-face-elements](../assets/screenshots/authoring-panel-face-elements.png), and [authoring-inspector-face-elements](../assets/screenshots/authoring-inspector-face-elements.png)
+4. **Deploy**: the maintained standalone route currently depends more on explicit runtime, endpoint, and connection-state checks than on a reusable screenshot set
 
-These captured states provide concrete proof of a healthy deployment and integration surface.
+These captured states provide concrete proof of the maintained experience, authoring, and integration surfaces without relying on dead legacy screenshot names. For deployment, the reliable evidence is still the operator checklist in [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md).
 
 ## Success Check
 

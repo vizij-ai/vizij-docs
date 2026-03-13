@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,topologies,hardware,ros,multi-screen -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** compare deeper deployment topologies without overstating what the current standalone and operator surfaces already guarantee
 
 # Hardware, ROS, and Multi-Screen Topologies
 
 ## Guidebook Context
 
-1. **Bucket:** [Deploy](README.md)
-2. **Depth:** `Advanced`
-3. **Module type:** comparison
-4. **Bucket overview:** [Deploy](README.md)
-5. **Useful previous module:** [Deployment Checks and Recovery](deployment-checks-and-recovery.md)
-6. **Useful next module:** [Deploy](README.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Integrate](../integrate/README.md)<br>Current: [Deploy](README.md)<br>Next: End of guidebook route |
+| Depth ladder in this bucket | Above: [Easiest Standalone Deployment](easiest-standalone-deployment.md), [Operator and Deployment Model](operator-and-deployment-model.md), [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
+| Module position in this bucket | Previous in bucket: [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Current module: `Hardware, ROS, and Multi-Screen Topologies`<br>Next in bucket: none, this is the last module in the bucket sequence |
+| Reference bridges | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | comparison |
+| Bucket overview | [Deploy](README.md) |
 
 ## Reader Outcome
 
@@ -240,7 +242,7 @@ Use these when you need the current implementation truth:
 7. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`
 8. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
 
-## Next Step
+## Recommended Next Steps
 
 If you need to return to the stable deployment model, go back to [Operator and Deployment Model](operator-and-deployment-model.md).
 

@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,introduction -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** orient readers to Vizij and help them choose a route through the guidebook
 
 # Introduction
@@ -8,6 +8,15 @@
 `Introduction` is the first documentation bucket.
 
 Its job is not to teach every subsystem. Its job is to help a new reader understand what Vizij is, why it exists, what the major pieces are, how the guidebook works, and where they should go next.
+
+## Process Position
+
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: Start of guidebook<br>Current: [Introduction](README.md)<br>Next: [Experience](../experience/README.md) |
+| Depth ladder in this bucket | Surface: [What Is Vizij?](what-is-vizij.md), [How To Use This Guidebook](how-to-use-this-guidebook.md)<br>Fundamentals: [System Mental Model](system-mental-model.md), [Customization Concepts Primer](customization-concepts-primer.md)<br>Advanced: [Architecture Bridge](architecture-bridge.md) |
+| Reference bridges | [Guidebook Learning Model](../learning-model.md)<br>[Guidebook Module Inventory](../module_inventory-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Route relationship | First stop in every route; usually continues into [Experience](../experience/README.md). |
 
 ## Bucket Overview
 

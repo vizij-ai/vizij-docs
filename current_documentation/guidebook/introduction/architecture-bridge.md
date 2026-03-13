@@ -7,12 +7,14 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Introduction](README.md)
-2. **Depth:** `Advanced`
-3. **Module type:** reference bridge
-4. **Bucket overview:** [Introduction](README.md)
-5. **Useful previous module:** [Customization Concepts Primer](customization-concepts-primer.md)
-6. **Useful next module:** [Introduction](README.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: Start of guidebook<br>Current: [Introduction](README.md)<br>Next: [Experience](../experience/README.md) |
+| Depth ladder in this bucket | Above: [What Is Vizij?](what-is-vizij.md), [How To Use This Guidebook](how-to-use-this-guidebook.md), [System Mental Model](system-mental-model.md), [Customization Concepts Primer](customization-concepts-primer.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
+| Module position in this bucket | Previous in bucket: [Customization Concepts Primer](customization-concepts-primer.md)<br>Current module: `Architecture Bridge`<br>Next in bucket: none, this is the last module in the bucket sequence |
+| Reference bridges | [Guidebook Learning Model](../learning-model.md)<br>[Guidebook Module Inventory](../module_inventory-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | reference bridge |
+| Bucket overview | [Introduction](README.md) |
 
 ## Reader Outcome
 
@@ -222,7 +224,7 @@ Use these when you need the current implementation truth:
 6. `current_documentation/guidebook/content-model-reference.md`
 7. `current_documentation/guidebook/reference/README.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want to return to learner-facing system framing, go to [System Mental Model](system-mental-model.md).
 2. If you want the route-first builder path, go to [How To Use This Guidebook](how-to-use-this-guidebook.md) and then [Hello Face Quickstart](../experience/hello-face-quickstart.md).

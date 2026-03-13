@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,deploy,standalone,hardware -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** frame deployment as the real destination of the guidebook journey
 
 # Deploy
@@ -8,6 +8,15 @@
 `Deploy` is the final bucket.
 
 This bucket treats deployment as the real destination of the guidebook, whether the reader is taking the fast existing-face route or the deeper customization route.
+
+## Process Position
+
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Integrate](../integrate/README.md)<br>Current: [Deploy](README.md)<br>Next: End of guidebook route |
+| Depth ladder in this bucket | Surface: [Easiest Standalone Deployment](easiest-standalone-deployment.md)<br>Fundamentals: [Operator and Deployment Model](operator-and-deployment-model.md), [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Advanced: [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md) |
+| Reference bridges | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Route relationship | Final bucket in both maintained routes; usually closes with validation, operator, or topology follow-up rather than another bucket jump. |
 
 ## Bucket Overview
 

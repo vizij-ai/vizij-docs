@@ -1,28 +1,30 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,advanced,pipeline,export -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** synthesize the full advanced customization route from supported input through export-ready artifact without collapsing the stages into one vague authoring task
 
 # Deep Custom Pipeline
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Advanced`
-3. **Module type:** walkthrough
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Export](export.md)
-6. **Useful next module:** [Customize](README.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md), [Import](import.md), [Reference-Face Transfer](reference-face-transfer.md), [Rigging](rigging.md), [Poses](poses.md), [Animations](animations.md), [Procedural Programs](procedural-programs.md), [Export](export.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
+| Module position in this bucket | Previous in bucket: [Export](export.md)<br>Current module: `Deep Custom Pipeline`<br>Next in bucket: none, this is the last module in the bucket sequence |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | walkthrough |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
-After this page, you should be able to explain the full advanced customization route as a sequence of checkpoints:
+After this page, you should be able to carry one believable face package through a full advanced customization pass:
 
 1. start from a supported face or imported asset,
 2. establish or repair controllable structure,
 3. author meaningful states and behavior,
 4. validate export readiness,
-5. hand off a believable artifact to `Integrate`.
+5. export a believable artifact and hand it off to `Integrate`.
 
 ## Module Notes
 
@@ -93,99 +95,140 @@ You should already understand:
 
 The current implementation anchors live mainly in `vizij-web/apps/vizij-authoring`.
 
-## The Deep Pipeline In Order
+## Starting State
 
-> TODO(content-model): Add a workflow map here to show the advanced route from source asset through rigging, authored behavior, validation, and export-ready output. Best fit because this module is explicitly synthesizing the full customization pipeline and a route map would make the stage boundaries easier to carry forward.
+Use the `vizij-web` workspace root:
 
-The clean advanced route is:
-
-```text
-supported base or imported asset
--> controllable structure
--> authored semantic states and motion
--> export validation
--> bundled artifact
--> integration handoff
+```bash
+cd /home/chris/Code/Semio/vizij_ws/vizij-web
+pnpm run dev:vizij-authoring
 ```
 
-Each stage solves a different problem.
+This walkthrough assumes you are starting from one of two believable bases:
 
-### 1. Start from a supported base, not a vague goal
+1. a maintained preset face that already loads cleanly in `vizij-authoring`,
+2. an imported face that has already made it through the earlier `Customize` fundamentals.
 
-The deepest customization work still needs a credible starting point.
+If you do not have one of those yet, stop and go back to [Tweak an Existing Face](tweak-an-existing-face.md) or [Import](import.md).
 
-That can be:
+## Walkthrough
 
-1. a maintained face you are modifying,
-2. an imported face that has passed the right safety and structure checks,
-3. a transferred or mapped reference that gives you a believable path toward usable control.
+Current pipeline motion anchor:
 
-If the starting artifact is unclear, every later stage becomes harder to trust.
+![Authoring Mode Switches](../assets/gifs/authoring-mode-switches.gif)
 
-### 2. Establish controllable structure
+_Caption: the deep route crossing several authoring surfaces as the work moves from structure into behavior and validation._
+
+This clip is not a full authored workflow map, but it is the best current route-faithful capture for this section because it shows the advanced pipeline crossing several real authoring surfaces instead of pretending deep customization happens in one undifferentiated panel.
+
+Counterexample anchor:
+
+![Buggy Input Driver Creation](../assets/gifs/authoring-input-driver-creation-buggy.gif)
+
+_Caption: an unstable intermediate capture that looks active but does not represent a trustworthy pipeline milestone._
+
+Keep this second clip in mind as the wrong shape for the deep route. It is useful here precisely because it records an unstable intermediate authoring moment: something is happening in the tool, but it is not the kind of clean, trustworthy stage transition you should treat as pipeline success.
+
+### 1. Start from a supported base and name the route
+
+Load the maintained preset or imported face you are going to carry through the rest of the pipeline.
+
+Action:
+
+1. load the face and wait for the preview plus side panels to populate,
+2. decide whether this artifact is mainly headed toward `Control`, `Customize`, or `Integrate`,
+3. state out loud what you expect this face to become by the end of the walkthrough.
+
+Expected result:
+
+1. the starting artifact is visible and stable,
+2. you are not doing vague “more authoring” work,
+3. the pipeline has a believable destination.
+
+If the starting artifact is still unclear, every later stage becomes harder to trust.
+
+### 2. Establish controllable structure before authoring more behavior
 
 The next job is not visual polish. It is controllable structure.
 
-In guidebook terms, this is where `Reference-Face Transfer` and `Rigging` matter most.
+Action:
 
-The goal is:
+1. inspect the loaded face and confirm the targets you need are actually present,
+2. check whether copied or transferred structure landed where you expect,
+3. stop immediately if the structure is still ambiguous.
+
+Expected result:
 
 1. the right targets exist,
 2. the structure is mapped in a Vizij-usable way,
 3. later authored behavior has something stable to drive.
 
-If this stage is weak, later poses, animations, or procedural behavior will look more successful than they really are.
+If this stage is weak, later poses, animations, or procedural behavior will look more successful than they really are. Route back to [Reference-Face Transfer](reference-face-transfer.md) or [Rigging](rigging.md) rather than pushing forward.
 
-### 3. Author semantic states and behavior
+### 3. Add one named state and one behavior layer
 
-Once the structure is trustworthy, authored behavior can become meaningful.
+Once the structure is trustworthy, make the artifact do something more deliberate than a static edit.
 
-That usually means some combination of:
+Action:
 
-1. poses for named states,
-2. animations for authored motion over time,
-3. procedural programs for computed behavior.
+1. create or confirm one named pose that expresses a meaningful state,
+2. add one motion layer on top of that structure through [Animations](animations.md) or [Procedural Programs](procedural-programs.md),
+3. verify that the visible behavior now reflects real authored intent rather than one-off tweaking.
 
-These are not interchangeable tools.
+Expected result:
 
-The point of the advanced pipeline is not to use all of them automatically. The point is to choose the right behavior layers for the artifact you are actually building.
+1. the artifact has at least one named state,
+2. it has at least one authored motion or computed behavior layer,
+3. you can explain why you chose that behavior layer instead of treating all advanced authoring tools as interchangeable.
 
-### 4. Validate before export
+### 4. Run export readiness before you call the route complete
 
 A deep custom pipeline becomes reliable only when export readiness is treated as a real checkpoint.
 
-In the current app, export is not just file output. It is also where the authoring surface checks whether the bundle is coherent enough to leave authoring as a believable artifact.
+Action:
 
-That is why export-related guardrails and bundle audits matter.
+1. open the export flow,
+2. read the audit and warning surfaces instead of treating export as a blind file write,
+3. clear any blocker that means the artifact is still structurally or behaviorally untrustworthy.
 
-If the face still depends on unresolved structure mistakes, confusing mappings, or incomplete authored behavior, export may succeed as a file operation while still failing as a route milestone.
+Expected result:
 
-### 5. Hand off to Integrate
+1. the bundle is coherent enough to leave authoring,
+2. unresolved structure mistakes are caught before handoff,
+3. export is functioning as a route milestone rather than only a file operation.
 
-The output of this route is not deployment.
+If warnings still indicate unresolved structure, route back to [Rigging](rigging.md), [Poses](poses.md), [Animations](animations.md), [Procedural Programs](procedural-programs.md), or [Export](export.md) as appropriate.
 
-It is an artifact that is believable enough to enter `Integrate`.
+### 5. Export one bundle and define the handoff
 
-That handoff matters because advanced customization is still upstream of runtime loading, playback, embedding, and deployment.
+The output of this route is not deployment. It is an artifact that is believable enough to enter `Integrate`.
 
-If the reader finishes this page understanding that boundary, the page has done its job.
+Action:
 
-## The Advanced Reader Mistakes This Prevents
+1. export one bundle you are willing to treat as the current handoff artifact,
+2. note what this artifact now proves,
+3. choose the first `Integrate` page you will use to validate the handoff.
 
-> TODO(content-model): Add a troubleshooting note here to connect each common advanced mistake to the stage where it should be caught or corrected. Best fit because this page is trying to prevent fragile pipeline drift and readers need recovery guidance as well as warning prose.
+Expected result:
 
-This page is mainly here to prevent these mistakes:
+1. the artifact has actually crossed the authoring boundary,
+2. you know whether the next practical stop is [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md) or a later `Integrate` page,
+3. the route has moved forward instead of stalling in endless authoring.
 
-1. treating the full pipeline like one long authoring session without checkpoints,
-2. assuming a visually improved face is automatically export-ready,
-3. assuming poses, animations, and procedural behavior are interchangeable,
-4. forgetting that export is a bridge to `Integrate`, not the same thing as successful runtime use.
+## Common Failure Points In This Walkthrough
+
+Use these reroutes instead of pushing forward with a weak artifact:
+
+1. if the starting artifact is not yet believable, go back to [Tweak an Existing Face](tweak-an-existing-face.md) or [Import](import.md),
+2. if copied or transferred structure is still unreliable, go back to [Reference-Face Transfer](reference-face-transfer.md) or [Rigging](rigging.md),
+3. if the face has structure but no convincing authored behavior, go back to [Poses](poses.md), [Animations](animations.md), or [Procedural Programs](procedural-programs.md),
+4. if export still feels like guesswork, go back to [Export](export.md) before entering `Integrate`.
 
 ## Success Check
 
 You are done with this page when:
 
-1. you can describe the deep customization route as a sequence of checkpoints rather than one vague authoring effort,
+1. you have carried one believable face package through structure, behavior, readiness, and export,
 2. you can explain why controllable structure must come before authored behavior,
 3. you can explain why export readiness is its own milestone,
 4. you know that the next bucket after a successful deep custom pipeline is `Integrate`.
@@ -202,8 +245,8 @@ Use these when you need the current implementation truth:
 6. `current_documentation/guidebook/customize/procedural-programs.md`
 7. `current_documentation/guidebook/integrate/loading-playback-and-embedding.md`
 
-## Next Step
+## Recommended Next Steps
 
-If you need the artifact boundary itself, go back to [Export](export.md).
-
-If the face is ready to leave authoring, continue to [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
+1. If you still need to stabilize the artifact boundary, go back to [Export](export.md).
+2. If the face is ready to leave authoring, continue to [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
+3. If the next job is a richer app shell instead of a minimal handoff, continue later to [Rich Interactive Applications](../integrate/rich-interactive-applications.md).

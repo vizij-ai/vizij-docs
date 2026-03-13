@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,orientation -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain what Vizij is, what it enables, and how a new reader should choose the next step
 
 # What Is Vizij?
 
 ## Guidebook Context
 
-1. **Bucket:** [Introduction](README.md)
-2. **Depth:** `Surface`
-3. **Module type:** concept page
-4. **Bucket overview:** [Introduction](README.md)
-5. **Useful previous module:** [Introduction](README.md)
-6. **Useful next module:** [How To Use This Guidebook](how-to-use-this-guidebook.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: Start of guidebook<br>Current: [Introduction](README.md)<br>Next: [Experience](../experience/README.md) |
+| Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [System Mental Model](system-mental-model.md), [Customization Concepts Primer](customization-concepts-primer.md), [Architecture Bridge](architecture-bridge.md) |
+| Module position in this bucket | Previous in bucket: start at [Introduction](README.md)<br>Current module: `What Is Vizij?`<br>Next in bucket: [How To Use This Guidebook](how-to-use-this-guidebook.md) |
+| Reference bridges | [Guidebook Learning Model](../learning-model.md)<br>[Guidebook Module Inventory](../module_inventory-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | concept page |
+| Bucket overview | [Introduction](README.md) |
 
 ## Reader Outcome
 
@@ -96,7 +98,12 @@ The current public framing for Vizij is one maintained builder spine:
 
 ### The Builder Spine
 
-![Vizij Builder Journey](../assets/infographics/vizij_builder_spine_infographic.png)
+| Stage | Current visual anchor | What it proves |
+| --- | --- | --- |
+| Hello Face | [fullscreen-demo.png](../assets/screenshots/fullscreen-demo.png) | the smallest maintained runtime can render a face and respond visibly |
+| Authoring | [vizij-authoring.png](../assets/screenshots/vizij-authoring.png) | the face can become an editable artifact instead of only a runtime demo |
+| Player | [player-demo.png](../assets/screenshots/player-demo.png) | the same runtime can live inside a bundle-first shell with visible diagnostics and controls |
+| Deployment | no canonical guidebook screenshot has been promoted yet | deployment is still taught through operator checks, runtime health, and connection proof rather than a single screenshot |
 
 Each stage answers a different question.
 
@@ -130,8 +137,8 @@ If this page convinced you that Vizij is relevant, the next question is how you 
 
 Choose based on your immediate goal:
 
-1. if you want the fastest concrete proof, go to `Hello Face`,
-2. if you want to understand how the guidebook routes are organized, go to `How To Use This Guidebook`,
+1. if you want the fastest concrete proof, go to [Hello Face Quickstart](../experience/hello-face-quickstart.md),
+2. if you want to understand how the guidebook routes are organized, go to [How To Use This Guidebook](how-to-use-this-guidebook.md),
 3. if you want the conceptual map behind the route before you touch more pages, go to [System Mental Model](system-mental-model.md).
 
 Most new readers should still start by seeing something work.
@@ -154,7 +161,7 @@ Use these when you need the current authoritative framing behind this page:
 4. `vizij-docs/current_documentation/ROADMAP.md`
 5. `vizij-docs/current_documentation/ARCHITECTURE.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want the first concrete proof, read [Hello Face Quickstart](../experience/hello-face-quickstart.md).
 2. If you want the route map first, read [How To Use This Guidebook](how-to-use-this-guidebook.md).

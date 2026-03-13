@@ -1,152 +1,223 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,hello-face,runtime -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** deliver the fastest convincing first Vizij runtime success with a working face
 
 # Hello Face Quickstart
 
 ## Guidebook Context
 
-1. **Bucket:** [Experience](README.md)
-2. **Depth:** `Surface`
-3. **Module type:** walkthrough
-4. **Bucket overview:** [Experience](README.md)
-5. **Useful previous module:** [Experience](README.md)
-6. **Useful next module:** [Richer Interactive Example](richer-interactive-example.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Introduction](../introduction/README.md)<br>Current: [Experience](README.md)<br>Next: [Control](../control/README.md) |
+| Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [Existing Asset Sandbox](existing-asset-sandbox.md), [Sample Asset Exploration](sample-asset-exploration.md) |
+| Module position in this bucket | Previous in bucket: start at [Experience](README.md)<br>Current module: `Hello Face Quickstart`<br>Next in bucket: [Richer Interactive Example](richer-interactive-example.md) |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | walkthrough |
+| Bucket overview | [Experience](README.md) |
 
 ## Reader Outcome
 
-After this page, you should be able to run a working Vizij face, trigger visible changes, and identify the three core runtime pieces that make the page work.
+After this page, you should be able to launch the maintained Hello Face app, confirm that the runtime is actually live, trigger visible behavior with the mouse and keyboard, and point to the small runtime skeleton that makes the app work.
 
-## Module Notes
+## Starting State
 
-### Intended Audience
+Use the `vizij-web` workspace root:
 
-This page is for:
+```bash
+cd /home/chris/Code/Semio/vizij_ws/vizij-web
+```
 
-1. first-time Vizij readers,
-2. workshop participants or builders who want an immediate success,
-3. anyone who needs a trustworthy runtime baseline before moving into control, customization, or deployment.
-
-### Artifact Being Touched
-
-This page uses `tutorial-fullscreen-face`, the current maintained runtime tutorial surface for first contact with Vizij.
-
-The smallest useful runtime app has three pieces:
-
-1. a `VizijAssetBundle`,
-2. a `VizijRuntimeProvider`,
-3. a `VizijRuntimeFace`.
+This walkthrough uses `apps/tutorial-fullscreen-face`, which is the smallest maintained Vizij runtime app in the workspace.
 
 ## What You Need
 
-From the `vizij-web` repo root:
+Install dependencies once:
 
 ```bash
 pnpm install
 ```
 
-Then you need the maintained Hello Face app:
+Start the tutorial app:
 
 ```bash
 pnpm run dev:tutorial-fullscreen-face
 ```
+
+Open the local Vite URL that appears in the terminal.
+
+## What Success Looks Like Up Front
+
+Before you inspect any code, know what a healthy first run should look like:
+
+1. the page opens without a blank canvas or crash
+2. the face becomes visible after loading finishes
+3. moving the mouse changes eye gaze
+4. pressing the number keys changes visible facial poses
+
+If the face never appears, stop and use [Validation Checkpoints](../support/validation-checkpoints.md) or [Troubleshooting Matrix](../support/troubleshooting-matrix.md) before continuing.
 
 ## Walkthrough
 
-### 1. Launch the app
+### 1. Launch the maintained runtime tutorial
 
-From `vizij-web`:
+From `vizij-web`, run:
 
 ```bash
 pnpm run dev:tutorial-fullscreen-face
 ```
 
-Open the local URL printed by Vite.
+When the browser opens, wait for the face to settle into its ready state.
 
-You should see a fullscreen face render successfully.
+Expected result:
 
-> TODO(content-model): Add an annotated screenshot here to show the fullscreen face state and the interaction hotspots a first-time reader should notice. Best fit because this walkthrough teaches a real visible surface and an annotated screenshot would reduce first-contact ambiguity before the reader starts interacting.
+1. you may briefly see a loading or initialization message
+2. the face appears centered on screen
+3. the app stops looking transitional and starts behaving like a live face surface
 
-### 2. Trigger one visible runtime behavior
-
-Do two quick interaction checks:
-
-1. move the mouse and watch the eyes respond,
-2. press number keys and note which visible poses trigger.
-
-These interactions matter because they prove that the runtime is not just rendering a static asset. It is staging inputs and driving a face live.
-
-### 3. Identify the runtime skeleton in the code
-
-Open:
-
-1. `apps/tutorial-fullscreen-face/src/FaceApp.tsx`
-2. `apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
-3. `apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
-
-In `FaceApp.tsx`, find:
-
-1. the asset bundle,
-2. the runtime provider,
-3. the runtime face component.
-
-That is the core Hello Face anatomy.
-
-### 4. Connect the visible behavior to the hooks
-
-Open `useMouseGaze.ts` and find the eye-control path pattern.
-
-Open `usePoseHotkeys.ts` and find the pose-weight path pattern.
-
-You do not need to understand every line yet. The important idea is that visible behavior is being driven through stable runtime path writes, not through one-off view logic.
-
-> TODO(content-model): Add a short video clip here to show mouse gaze and pose hotkey cause-and-effect in motion. Best fit because Experience surface pages benefit from motion evidence and the live behavior is the teaching point, not the code listing alone.
-
-## What To Notice
-
-`Hello Face` is doing three jobs at once:
-
-1. proving the runtime stack is healthy,
-2. exposing obvious cause and effect through gaze and hotkeys,
-3. giving you a concrete code surface to inspect without overwhelming you.
-
-This is why it is the first maintained route through the guidebook.
-
-## Current Useful Visual
+Current visual anchor:
 
 ![Tutorial Fullscreen Face](../assets/screenshots/tutorial-fullscreen-face.png)
 
-### Interaction Hotspots
+_Caption: the settled ready-state view of the smallest maintained runtime tutorial._
 
-| Feature | Visual Feedback | Runtime Path |
-| :--- | :--- | :--- |
-| **Mouse Gaze** | Eyes follow cursor | `rig/{face}/standard/*_eye/pos/*` |
-| **Hotkeys (1-9)** | Expression changes | `rig/{face}/poses/*.weight` |
-| **Center Face** | Stable rendering | `rig/{face}/...` |
+Use this still to confirm the baseline face state before you test motion or hotkey-driven changes.
 
-The screenshot shows the "ready" state where the face is active and responding to standard control writes.
+### 2. Prove that the face is live, not static
+
+Do two checks immediately:
+
+1. move the mouse across the viewport and watch the eyes follow
+2. press the number keys and watch visible expression or pose changes trigger
+
+Expected result:
+
+1. gaze moves continuously with pointer movement
+2. pose changes feel discrete and key-driven
+3. repeated interactions continue working, which proves the runtime is actively staging inputs rather than showing a prerecorded asset
+
+This is the first useful Vizij confidence test. A rendered face is not enough. The face has to respond.
+
+Motion anchor:
+
+![Fullscreen Demo Motion](../assets/gifs/fullscreen-demo.gif)
+
+_Caption: live gaze steering and hotkey-triggered pose changes proving that the face is not static._
+
+The still screenshot above proves the settled ready state. This loop is the stronger proof that the surface is live: gaze keeps steering and hotkey-triggered expressions come and go through the runtime.
+
+### 3. Inspect the runtime skeleton in code
+
+Open these files:
+
+1. `vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx`
+2. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
+3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
+
+In `FaceApp.tsx`, find the three pieces that define the app:
+
+```tsx
+const assetBundle: VizijAssetBundle = {
+  namespace: "fullscreen-face",
+  glb: {
+    kind: "url",
+    src: faceAssetUrl,
+    aggressiveImport: true,
+  },
+  pose: {
+    stageNeutralFilter: (_id, path) => !path.includes("/color/"),
+  },
+};
+
+export function FaceApp() {
+  return (
+    <VizijRuntimeProvider assetBundle={assetBundle} autostart>
+      <VizijRuntimeHud />
+      <FaceRuntime />
+    </VizijRuntimeProvider>
+  );
+}
+```
+
+What each piece is doing:
+
+1. `assetBundle` tells Vizij what face bundle to load
+2. `VizijRuntimeProvider` owns loading, controller registration, and runtime state
+3. `FaceRuntime` and `VizijRuntimeFace` render and control the resolved face
+
+If you understand those three pieces, you understand the core shape of the maintained Hello Face path.
+
+### 4. Connect the visible behavior to the maintained hooks
+
+Open `useMouseGaze.ts` and `usePoseHotkeys.ts`.
+
+You are looking for two different control patterns:
+
+1. mouse gaze writes eye-position inputs continuously while the pointer moves
+2. pose hotkeys animate named pose-weight paths up and back down
+
+You do not need to memorize every line yet. You do need to notice that both behaviors are driven through runtime APIs, not through one-off DOM tricks.
+
+Expected result:
+
+1. the gaze hook explains why the eyes follow the mouse
+2. the hotkey hook explains why number keys trigger expression changes
+3. the code lines up cleanly with the behavior you already saw in the browser
+
+### 5. Name the maintained runtime pattern
+
+At this point, you should be able to say:
+
+1. this app loads one existing face bundle
+2. the runtime provider resolves the face and keeps track of readiness
+3. small hooks stage real runtime input writes
+4. the face is rendered by the same runtime stack other Vizij apps build on
+
+That is the entire reason this app is the first maintained route through the guidebook.
+
+## Why This Page Matters
+
+`Hello Face` is not trying to teach all of Vizij.
+
+It is trying to remove the first doubt:
+
+1. can I run a real Vizij face locally
+2. can I make it do something visible
+3. can I find the code path that produced what I just saw
+
+Once those are true, later control, integration, and deployment pages have something solid to build on.
+
+## Fast Recovery If It Fails
+
+Use these shortcuts instead of guessing:
+
+1. if dependencies are missing or stale, rerun `pnpm install`
+2. if the page loads but the face never appears, use [Validation Checkpoints](../support/validation-checkpoints.md)
+3. if the face appears but does not respond, continue to [First Control Interactions](../control/first-control-interactions.md) and compare the expected behavior there
+4. if the app shows an error state, use [Troubleshooting Matrix](../support/troubleshooting-matrix.md)
 
 ## Success Check
 
 You are done with this page when:
 
-1. the face renders successfully,
-2. the mouse changes gaze,
-3. number keys trigger visible pose changes,
-4. you can point to the asset bundle, provider, and face component in the code.
+1. `tutorial-fullscreen-face` runs locally
+2. the face renders and reaches a stable ready state
+3. mouse movement changes gaze and number keys trigger visible pose changes
+4. you can point to the asset bundle, provider, and interaction hooks in code
 
 ## Implementation Anchors
 
 Use these when you need the current implementation truth:
 
-1. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
-2. `vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx`
-3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
-4. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
-5. `current_documentation/guidebook/reference/runtime-quickstart-reference.md`
+1. `vizij-web/apps/tutorial-fullscreen-face/README.md`
+2. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
+3. `vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx`
+4. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
+5. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
+6. `vizij-web/packages/@vizij/runtime-react/README.md`
 
-## Next Step
+## Recommended Next Steps
 
-1. If you want to understand the path model underneath what you just saw, read [Paths and Standard Controls](../control/paths-and-standard-controls.md).
-2. If you only wanted to prove the runtime works, you can later branch to [Minimal Web Player](../integrate/minimal-web-player.md).
+Continue to [First Control Interactions](../control/first-control-interactions.md).
+
+That page uses the same app, but it slows down and explains what the two maintained interaction patterns are actually doing.

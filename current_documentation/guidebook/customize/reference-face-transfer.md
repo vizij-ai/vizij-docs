@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,reference-face,transfer -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain reference-face transfer as a deliberate authoring workflow rather than a generic import or runtime feature
 
 # Reference-Face Transfer
 
 ## Guidebook Context
 
-1. **Bucket:** [Customize](README.md)
-2. **Depth:** `Fundamentals`
-3. **Module type:** concept page
-4. **Bucket overview:** [Customize](README.md)
-5. **Useful previous module:** [Import](import.md)
-6. **Useful next module:** [Rigging](rigging.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Import](import.md)<br>Current module: `Reference-Face Transfer`<br>Next in bucket: [Rigging](rigging.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Module type | concept page |
+| Bucket overview | [Customize](README.md) |
 
 ## Reader Outcome
 
@@ -123,7 +125,13 @@ Without it, transfer feels like an ambiguous dual-editor rather than a guided co
 
 ## Review, Mapping, and Confirmation
 
-> TODO(content-model): Add an annotated screenshot here to show the mapping modal and the main-face versus reference-face roles during review. Best fit because this section teaches a review-gated UI workflow and the key learning cues are visible labels, unresolved rows, and confirmation boundaries.
+Current transfer review anchor:
+
+![Reference Driver Copy](../assets/gifs/authoring-reference-driver-copy.gif)
+
+_Caption: a reference-assisted copy flow that stays reviewable instead of writing blindly into the destination face._
+
+This capture is the strongest current evidence for the review-gated teaching point on this page: the operator is not blindly overwriting the destination face, but stepping through a reference-assisted copy flow that stays visible and interruptible.
 
 The strongest current implementation truth is that transfer is modal-review-driven.
 
@@ -155,7 +163,7 @@ In the current workflow:
 
 That means some information is preserved directly, some is mapped into the main face, and some cannot be safely applied until the user resolves it.
 
-This is why transfer belongs after `Import`: the main face has to exist first, and its controllable structure has to be the destination truth.
+This is why transfer belongs after [Import](import.md): the main face has to exist first, and its controllable structure has to be the destination truth.
 
 ## A Useful Mental Model
 
@@ -189,7 +197,7 @@ Use these when you need the current implementation truth:
 5. `vizij-web/apps/vizij-authoring/e2e/reference-face.smoke.pw.ts`
 6. `vizij-web/apps/vizij-authoring/src/App.tsx`
 
-## Next Step
+## Recommended Next Steps
 
 1. If you want to understand the controllable structure that copied variables and poses must land on, continue to [Rigging](rigging.md).
 2. If you want to understand named authored states next, continue to [Poses](poses.md).

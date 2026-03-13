@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,customize,authoring -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** organize the customization and ownership work that lets readers make a face their own
 
 # Customize
@@ -8,6 +8,15 @@
 `Customize` is the bucket where readers move from controlling an existing face to changing or creating what the face actually is and does.
 
 This bucket is not mandatory for the fastest deployment of an existing face, but it is essential for the route where readers want to make the system more their own.
+
+## Process Position
+
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
+| Depth ladder in this bucket | Surface: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Fundamentals: [Import](import.md), [Reference-Face Transfer](reference-face-transfer.md), [Rigging](rigging.md), [Poses](poses.md), [Animations](animations.md), [Procedural Programs](procedural-programs.md), [Export](export.md)<br>Advanced: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
+| Route relationship | Optional middle bucket on the customization route; carries authored artifacts forward into [Integrate](../integrate/README.md). |
 
 ## Bucket Overview
 

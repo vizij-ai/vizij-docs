@@ -1,18 +1,20 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,interactive-applications,advanced,runtime-react -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** explain how richer Vizij applications grow beyond the minimal player while preserving the same runtime contract and honest ownership boundaries
 
 # Rich Interactive Applications
 
 ## Guidebook Context
 
-1. **Bucket:** [Integrate](README.md)
-2. **Depth:** `Advanced`
-3. **Module type:** operational guide
-4. **Bucket overview:** [Integrate](README.md)
-5. **Useful previous module:** [API-Backed Interactive Application](api-backed-interactive-application.md)
-6. **Useful next module:** [Integrate](README.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
+| Depth ladder in this bucket | Above: [Minimal Web Player](minimal-web-player.md), [Loading, Playback, and Embedding](loading-playback-and-embedding.md), [Application Integration Patterns](application-integration-patterns.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
+| Module position in this bucket | Previous in bucket: [API-Backed Interactive Application](api-backed-interactive-application.md)<br>Current module: `Rich Interactive Applications`<br>Next in bucket: none, this is the last module in the bucket sequence |
+| Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
+| Module type | operational guide |
+| Bucket overview | [Integrate](README.md) |
 
 ## Reader Outcome
 
@@ -280,10 +282,8 @@ Use these when you need the current implementation truth:
 7. `current_documentation/guidebook/integrate/api-backed-interactive-application.md`
 8. `current_documentation/guidebook/control/orchestration-and-diagnostics.md`
 
-## Next Step
+## Recommended Next Steps
 
-If you want to see one richer surface from the user side, continue to [Richer Interactive Example](../experience/richer-interactive-example.md).
-
-If you are ready to think about operator-facing endpoints and deployment choices, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
-
-If you realize you still need the lighter route, go back to [Application Integration Patterns](application-integration-patterns.md).
+1. If you are ready to think about operator-facing endpoints and deployment choices, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+2. If you need the lighter in-bucket route before that, go back to [Application Integration Patterns](application-integration-patterns.md).
+3. If you need the concrete advanced implementation example again, revisit [API-Backed Interactive Application](api-backed-interactive-application.md).

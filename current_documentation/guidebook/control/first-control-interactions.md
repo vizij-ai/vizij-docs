@@ -1,170 +1,162 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,runtime,interactions -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** teach the smallest believable runtime control win through obvious maintained interactions
 
 # First Control Interactions
 
 ## Guidebook Context
 
-1. **Bucket:** [Control](README.md)
-2. **Depth:** `Surface`
-3. **Module type:** walkthrough
-4. **Bucket overview:** [Control](README.md)
-5. **Useful previous module:** [Control](README.md)
-6. **Useful next module:** [Paths and Standard Controls](paths-and-standard-controls.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: [Experience](../experience/README.md)<br>Current: [Control](README.md)<br>Next: [Customize](../customize/README.md) on the customization route or [Integrate](../integrate/README.md) on the fast route |
+| Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [Paths and Standard Controls](paths-and-standard-controls.md), [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md), [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md), [Orchestration and Diagnostics](orchestration-and-diagnostics.md) |
+| Module position in this bucket | Previous in bucket: start at [Control](README.md)<br>Current module: `First Control Interactions`<br>Next in bucket: [Paths and Standard Controls](paths-and-standard-controls.md) |
+| Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | walkthrough |
+| Bucket overview | [Control](README.md) |
 
 ## Reader Outcome
 
-After this page, you should be able to launch the maintained fullscreen tutorial face, wait for a trustworthy ready state, use mouse gaze and pose hotkeys to trigger obvious visible changes, and explain that these interactions are runtime writes with different meanings underneath.
+After this page, you should be able to use the maintained fullscreen tutorial to trigger two different kinds of control, explain how their behavior differs, and connect each visible interaction to the code that stages it.
 
-## Module Notes
+## Starting State
 
-### Intended Audience
-
-This page is for readers who already have a Vizij face rendering and now want the smallest believable control success before learning the full control model.
-
-It is especially useful after [Hello Face Quickstart](../experience/hello-face-quickstart.md).
-
-### Why This Page Exists
-
-This page is separate because many readers need one fast control success before they are ready for control vocabulary.
-
-It prevents two common mistakes:
-
-1. thinking the face is only a rendered asset with some demo-only UI tricks,
-2. thinking they must understand full path syntax before trying any runtime control.
-
-This page teaches visible cause and effect first. The fundamentals pages explain the deeper model afterward.
-
-### Artifact Being Touched
-
-This page uses the maintained `tutorial-fullscreen-face` app.
-
-The concrete surfaces you are touching are:
-
-1. the runtime lifecycle in `FaceApp.tsx`,
-2. the mouse-gaze hook in `useMouseGaze.ts`,
-3. the hotkey hook in `usePoseHotkeys.ts`.
-
-### What This Page Covers and Does Not Cover
-
-This page covers:
-
-1. readiness before interaction,
-2. mouse gaze as a maintained continuous control example,
-3. hotkeys as a maintained named-state control example,
-4. the idea that visible interactions are runtime writes with meaning underneath.
-
-This page does not cover:
-
-1. full path syntax,
-2. the complete semantic categories of inputs, outputs, visemes, and animations,
-3. all control surfaces or deployment-facing slots,
-4. authoring new poses or changing the exported bundle.
-
-Those belong on the next pages.
-
-## What You Need
-
-From `vizij-web`:
+Run this from the `vizij-web` root:
 
 ```bash
-pnpm install
+cd /home/chris/Code/Semio/vizij_ws/vizij-web
 pnpm run dev:tutorial-fullscreen-face
 ```
 
-Then open the local URL printed by Vite.
+Open the local Vite URL if it is not already open.
 
-You do not need to know full path grammar yet.
+This page assumes you already completed [Hello Face Quickstart](../experience/hello-face-quickstart.md) and have the face rendering locally.
+
+## The Two Control Patterns You Are Learning
+
+This app teaches two useful control ideas immediately:
+
+1. continuous standard-input control through mouse gaze
+2. discrete authored-state control through pose hotkeys
+
+Both are real runtime writes. They just write into different parts of the runtime model.
 
 ## Walkthrough
 
-### 1. Wait for readiness before you trust the interaction
+### 1. Confirm runtime readiness before testing control
 
-> TODO(content-model): Add an annotated screenshot here to call out the loading, initializing, ready, and error states in `tutorial-fullscreen-face`. Best fit because this walkthrough starts with readiness recognition and the key teaching cues are visible UI states.
+Do not test control while the app is still loading.
 
-Open `tutorial-fullscreen-face` and watch the status first.
+Wait until:
 
-In the maintained app, `FaceApp.tsx` distinguishes:
+1. the face is fully visible
+2. there is no loading or initialization message blocking the view
+3. repeated mouse movement produces consistent eye motion
 
-1. loading,
-2. error,
-3. not-ready initialization,
-4. ready.
+Why this matters:
 
-That matters because the interaction hooks are enabled only when the runtime is ready. Once ready, the app also stages the neutral pose baseline with `stagePoseNeutral()`.
+1. `tutorial-fullscreen-face` stages a neutral pose baseline when the runtime becomes ready
+2. the interaction hooks only make sense after the provider has loaded the face and registered the runtime state
+3. a visible face is not automatically a ready control surface
 
-For a learner, the practical rule is simple:
+If you are not confident the app is healthy yet, go back to [Hello Face Quickstart](../experience/hello-face-quickstart.md) or check [Validation Checkpoints](../support/validation-checkpoints.md).
 
-1. if you still see `Loading face…`, wait,
-2. if you see `Initialising orchestrator…`, wait,
-3. if you see an error, fix that before reasoning about control,
-4. only trust the interaction examples after the face is fully live.
+### 2. Use mouse gaze as a continuous control
 
-This is the first control lesson: a visible face is not the same thing as a ready runtime.
+Move the pointer across the viewport and watch the eyes respond.
 
-### 2. Move the mouse and watch gaze respond
+Expected result:
 
-Move the pointer across the face area.
+1. eye movement changes smoothly as the pointer moves
+2. the interaction feels continuous rather than one-shot
+3. the face returns toward neutral when the pointer stops driving gaze
 
-You should see the eyes track the pointer. When the pointer leaves or you release after a pointer interaction, the eyes return to neutral.
+Open:
 
-This is the smallest obvious continuous control win in the maintained tutorial app.
+1. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
 
-Underneath, `useMouseGaze.ts` does not directly animate the canvas. It computes normalized pointer values and writes runtime inputs for left and right eye position channels through `setInput(...)`.
+What to look for:
 
-The important learner takeaway is:
+1. pointer position is normalized into a reusable value range
+2. the hook calls runtime input staging rather than mutating the canvas directly
+3. the control paths target the face's standard eye-position channels
 
-1. the visible effect is eye movement,
-2. the runtime action is writing gaze-related values,
-3. the interaction is continuous while the pointer moves.
+The important mental model is simple: mouse movement becomes a stream of runtime input values.
 
-You do not need the full path anatomy on this page. You only need to recognize that mouse gaze is a runtime write to reusable eye-control channels, not a one-off DOM effect.
+### 3. Use pose hotkeys as a discrete authored-state control
 
-### 3. Press number keys and watch named facial states respond
+Press the number keys shown by the app.
 
-After the face is ready, press the number keys shown in the hint overlay.
+Expected result:
 
-The app maps `1` through `5` to the first available entries in the pose rig config. On key down, the selected entry animates toward full weight. On key up, it animates back toward zero.
+1. a visible face pose or expression animates in
+2. releasing the key lets the pose animate back out
+3. repeated key presses work consistently
 
-What you should notice:
+Open:
 
-1. this interaction is discrete rather than continuous,
-2. it triggers a named facial state rather than eye steering,
-3. the visible change depends on what the current bundle exported as its first pose entries.
+1. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
 
-In the maintained hook, `usePoseHotkeys.ts` builds runtime paths from the current pose definitions and uses `animateValue(...)` to move the relevant weight up and back down.
+What to look for:
 
-The learner-facing point is not the exact string format. The point is that hotkeys are also runtime writes, but they mean something different from mouse gaze.
+1. the hook derives pose-weight paths from the loaded pose config
+2. it uses runtime helpers such as `buildPoseWeightPathMap()` and `animateValue(...)`
+3. the interaction is based on named authored states, not direct eye-position steering
 
-### 4. Notice that both interactions are real runtime control, not the same kind of control
+The mental model here is different: a key press selects one authored state and animates its weight.
 
-> TODO(content-model): Add a comparison here to contrast mouse gaze with pose hotkeys across control style, path kind, and visible behavior. Best fit because this section is the first place readers must separate two valid control patterns without overloading them with full control theory.
+### 4. Compare the two control styles directly
 
-Mouse gaze and hotkeys both make the face change, but they are not interchangeable.
+Use this comparison while the app is open:
 
-Mouse gaze writes continuously into standardized eye-position channels.
+| Interaction | What you do | What changes visibly | Runtime meaning |
+| --- | --- | --- | --- |
+| Mouse gaze | move the pointer | eyes track continuously | writes standardized eye-position inputs |
+| Pose hotkeys | press and release a number key | expression or pose weight animates in and out | writes authored pose-weight values |
 
-Hotkeys animate named weight paths derived from the bundle's pose definitions. In practice, those may represent pose-like, emotion-like, or similar authored groups depending on the bundle.
+This is the first important control lesson in Vizij:
 
-That distinction matters because Vizij control is not just "send a number somehow."
+1. not every control write is the same kind of write
+2. standardized channels and authored pose weights are both valid, but they solve different problems
+3. later pages explain the path grammar and semantics behind these interactions
 
-Different visible interactions write into different semantic parts of the runtime:
+### 5. Inspect the code shape that makes both patterns work
 
-1. some writes steer reusable channels,
-2. some writes blend named authored states,
-3. both are valid runtime control,
-4. neither should be mistaken for full control theory on its own.
+You have already seen the behavior in the browser. Now connect it to the runtime API surface:
+
+1. `useMouseGaze.ts` uses runtime input staging for continuous steering
+2. `usePoseHotkeys.ts` uses runtime animation helpers for temporary pose blends
+3. both hooks depend on the same `VizijRuntimeProvider` and `useVizijRuntime()` foundation from `FaceApp.tsx`
+
+That common foundation matters. Vizij control is not a pile of unrelated tricks. The runtime stays consistent while the control semantics change.
+
+## What You Should Be Able To Say Now
+
+By the end of this page, the correct short explanation is:
+
+1. mouse gaze is a continuous standard-control example
+2. hotkeys are a discrete pose-weight example
+3. both go through runtime APIs
+4. they differ because they write to different semantic control surfaces
+
+## Fast Recovery If It Fails
+
+Use these shortcuts:
+
+1. if the face is visible but gaze does not move, compare the current app state with [Hello Face Quickstart](../experience/hello-face-quickstart.md)
+2. if hotkeys do nothing, verify the app finished loading before testing
+3. if you need a route-level definition of healthy behavior, use [Validation Checkpoints](../support/validation-checkpoints.md)
+4. if the runtime reaches an error state, use [Troubleshooting Matrix](../support/troubleshooting-matrix.md)
 
 ## Success Check
 
 You are done with this page when:
 
-1. you can tell the difference between a rendered face and a ready runtime,
-2. moving the mouse visibly steers gaze,
-3. pressing and releasing number keys visibly triggers and releases named facial states,
-4. you can explain that both interactions are runtime writes, but not the same kind of runtime write.
+1. mouse movement visibly steers gaze
+2. number keys visibly animate authored facial states
+3. you can explain the difference between continuous standard-input control and discrete pose-weight control
+4. you can point to the two hooks that stage those writes
 
 ## Implementation Anchors
 
@@ -175,14 +167,9 @@ Use these when you need the current implementation truth:
 3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
 4. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
 5. `vizij-web/packages/@vizij/runtime-react/README.md`
-6. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
-7. `vizij-web/apps/vizij-standalone/README.md`
-8. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
 
-## Next Step
+## Recommended Next Steps
 
-Go next to [Paths and Standard Controls](paths-and-standard-controls.md).
+Continue to [Paths and Standard Controls](paths-and-standard-controls.md).
 
-That page explains the path vocabulary underneath the gaze and hotkey examples you used here.
-
-After that, continue to [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md) to learn what those writes mean more precisely, and to [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md) to understand where different kinds of controls show up across Vizij.
+That page names the path vocabulary underneath the gaze and pose interactions you just used.

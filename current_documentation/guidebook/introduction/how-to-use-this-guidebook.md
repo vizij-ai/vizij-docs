@@ -7,12 +7,14 @@
 
 ## Guidebook Context
 
-1. **Bucket:** [Introduction](README.md)
-2. **Depth:** `Surface`
-3. **Module type:** decision guide
-4. **Bucket overview:** [Introduction](README.md)
-5. **Useful previous module:** [What Is Vizij?](what-is-vizij.md)
-6. **Useful next module:** [System Mental Model](system-mental-model.md)
+| Axis | Position |
+| --- | --- |
+| Bucket chain | Previous: Start of guidebook<br>Current: [Introduction](README.md)<br>Next: [Experience](../experience/README.md) |
+| Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [System Mental Model](system-mental-model.md), [Customization Concepts Primer](customization-concepts-primer.md), [Architecture Bridge](architecture-bridge.md) |
+| Module position in this bucket | Previous in bucket: [What Is Vizij?](what-is-vizij.md)<br>Current module: `How To Use This Guidebook`<br>Next in bucket: [System Mental Model](system-mental-model.md) |
+| Reference bridges | [Guidebook Learning Model](../learning-model.md)<br>[Guidebook Module Inventory](../module_inventory-reference.md)<br>[Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md) |
+| Module type | decision guide |
+| Bucket overview | [Introduction](README.md) |
 
 ## Reader Outcome
 
@@ -188,7 +190,7 @@ Use these when you need the canonical framing behind this page:
 3. `current_documentation/ROADMAP.md`
 4. `current_documentation/ARCHITECTURE.md`
 
-## Next Step
+## Recommended Next Steps
 
 1. New reader: [Hello Face Quickstart](../experience/hello-face-quickstart.md)
 2. Reader who wants the bucket overview first: [Introduction](README.md)

@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,troubleshooting,matrix -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-12
 > **Purpose:** collect the common route-level failure patterns and the fastest guidebook-aligned recovery paths
 
 # Troubleshooting Matrix
@@ -132,9 +132,12 @@ That usually means the issue belongs in repo-level debugging or implementation w
 
 The best support visuals for troubleshooting are the diagnostic states in our core apps:
 
-1. **Healthy Readiness**: [demo-vizij-player](../assets/screenshots/demo-vizij-player.png) (Checklist all green)
-2. **Missing Model State**: [vizij-standalone-status-ui](../assets/screenshots/vizij-standalone-status-ui.png)
-3. **Control Status**: [vizij-standalone-web-control-panel](../assets/screenshots/vizij-standalone-web-control-panel.png) (Shows connection status)
+1. **Healthy minimal runtime**: [fullscreen-demo](../assets/screenshots/fullscreen-demo.png)
+2. **Player diagnostics**: [player-demo-details](../assets/screenshots/player-demo-details.png)
+3. **Visible control paths**: [player-demo-controls](../assets/screenshots/player-demo-controls.png)
+4. **Authoring empty-state recovery**: [authoring-loading-page](../assets/screenshots/authoring-loading-page.png)
+
+For the standalone deployment route, prefer the explicit runtime, endpoint, and same-host operator checks in [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md) over screenshot-only verification.
 
 ## Success Check
 

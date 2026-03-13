@@ -33,16 +33,28 @@ Every learner-facing module should expose a clear top-of-page context block or e
 
 That context should make clear:
 
-1. the bucket,
-2. the depth,
-3. the module type,
-4. the bucket overview page,
-5. the most relevant previous or next modules in the learning sequence,
+1. the previous bucket, current bucket, and next bucket in the process,
+2. the current depth in the bucket, plus what sits above or below that depth,
+3. the previous module, current module, and next module in the local bucket sequence,
+4. the module type,
+5. the bucket overview page,
 6. the intended audience,
 7. the assumptions or prerequisites,
 8. the next useful step.
 
 This should be treated as reader orientation, not decorative metadata. If a page cannot quickly answer "where am I, what kind of page is this, and where do I go next," it is under-contextualized for the guidebook.
+
+### Path Closure Contract
+
+Every learner-facing module should also end with linked path exits that keep the matrix legible after the main content is done.
+
+At minimum, the page should expose:
+
+1. linked recommended next steps when there is a clear preferred continuation,
+2. linked optional next steps when there are multiple valid continuations,
+3. linked guidebook references or implementation anchors when the reader may need verification or deeper detail.
+
+The guidebook should not force readers to infer their exit path from the final paragraph alone.
 
 ### Module Notes
 
