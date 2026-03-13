@@ -1,6 +1,6 @@
 # Activity 2 Lab: Animation, Integration, and Deployment
 
-Last updated: 2026-03-09
+Last updated: 2026-03-13
 
 Time block: `3:45 pm to 4:30 pm`
 
@@ -35,13 +35,7 @@ Facilitator-led default path:
 1. The facilitator launches the app and connects the conversation engine.
 2. Participants observe the mouth-source selector, emotion buttons, and status chips.
 3. The facilitator demonstrates how blend window and lead affect the mouth timing.
-
-Participant path if credentials are available:
-
-```bash
-export VITE_GEMINI_API_KEY="<set locally>"
-pnpm --filter tutorial-agent-face run dev
-```
+4. Participants stay on the worksheet and partner discussion path rather than treating this as a required local app run.
 
 Checkpoint:
 
@@ -61,6 +55,7 @@ Fallback if no API key is available:
    - load a GLB
    - expose a control surface
    - send typed slot values over WebSocket
+4. Treat this as a guided architecture and control-path exercise, not a participant packaging or shipping exercise.
 
 Checkpoint:
 

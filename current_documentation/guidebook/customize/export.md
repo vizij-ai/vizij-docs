@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,export,bundle -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain what leaves `vizij-authoring`, what export guardrails protect, and how export bridges customization into integration
 
 # Export
@@ -22,59 +22,9 @@ After this page, you should be able to explain what the main exported Vizij arti
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand how a face can be rigged, posed, and animated in `vizij-authoring` and now need to understand what actually leaves the authoring surface.
-
-It is especially for readers who need to stop using `export` as a vague synonym for either:
-
-1. saving the current UI state,
-2. producing any JSON file at all,
-3. already integrating the face into an application.
-
-### Artifact Being Touched
-
-The artifact in this page is the exported Vizij package that leaves `vizij-authoring`.
-
-In the current tool, the main export target is usually a bundled GLB that can carry:
-
-1. the face asset and scene data,
-2. rig graph payloads,
-3. pose payloads and related metadata when authored and valid,
-4. animation payloads when present and included,
-5. bundle metadata that later runtime surfaces can inspect and load.
-
-There are also narrower export surfaces for authoring and round-trip work, such as graph JSON, pose config, and pose IR data.
-
-### Why This Page Exists Separately
-
-[`Export`](export.md) needs its own page because it protects the boundary between authoring and runtime use.
-
-[Rigging](rigging.md), [Poses](poses.md), and [Animations](animations.md) explain how a face is authored.
-
-[`Export`](export.md) explains when that authored state becomes a transportable artifact.
-
-[Integrate](../integrate/README.md) explains how later applications load and use that artifact.
-
-If those ideas collapse together, readers make three common mistakes:
-
-1. assuming authoring is complete as soon as the preview looks right,
-2. assuming every authored concept is always serialized automatically,
-3. assuming export already teaches application embedding and deployment.
-
-### What This Page Does Not Teach
-
-This page does not teach:
-
-1. how to build the rig structure,
-2. how to author poses or animations,
-3. how a React app embeds and boots a runtime surface,
-4. how a deployment endpoint is operated,
-5. how every advanced export toggle behaves internally.
-
-Those belong to neighboring modules because they answer different questions.
-
-This page teaches the authored artifact boundary.
+- Read this after [Rigging](rigging.md), [Poses](poses.md), and [Animations](animations.md) when you need to know what actually leaves `vizij-authoring`.
+- The page stays on the export boundary: what the bundled artifact carries, what narrower round-trip outputs exist, and how to tell authoring state from transportable output.
+- Integration, deployment, and advanced export internals stay out of scope here.
 
 ## What You Need
 
@@ -233,6 +183,18 @@ The correct mental sequence is:
 4. then reason about playback, embedding, and deployment from the runtime side.
 
 That means `Export` should point forward to `Integrate`, but it should not try to teach the whole integration story itself.
+
+## Export Is Not Integration Yet
+
+This page is still about the authoring artifact boundary.
+
+It does not yet answer:
+
+1. how a React or other app shell boots the runtime,
+2. how playback and embedding behave in a player,
+3. how an operator endpoint exposes controls.
+
+Those questions belong to `Integrate` and `Deploy`.
 
 ## A Useful Mental Model
 

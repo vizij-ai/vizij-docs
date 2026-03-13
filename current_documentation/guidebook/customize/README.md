@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,customize,authoring -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** organize the customization and ownership work that lets readers make a face their own
 
 # Customize
@@ -26,6 +26,29 @@ This bucket should help a reader:
 2. understand the authoring stages that change a face or behavior,
 3. learn how import, transfer, rigging, posing, animation, procedural programs, and export relate,
 4. connect customization work to later integration and deployment stages.
+
+## Expressive Face Authoring Path
+
+Use this table when you know you need `Customize` but are not sure which authoring mode comes first:
+
+| If your immediate goal is... | Open this next | Why |
+| --- | --- | --- |
+| make one believable change to an existing maintained face | [Tweak an Existing Face](tweak-an-existing-face.md) | lowest-friction authoring win |
+| bring a new asset or authored metadata into the tool | [Import](import.md) | establishes a trustworthy authoring session |
+| borrow variables or poses from a second face | [Reference-Face Transfer](reference-face-transfer.md) | review-gated copy into the main face |
+| define reusable expression states | [Poses](poses.md) | state-first authoring layer |
+| author timed expressive motion | [Animations](animations.md) | timeline and transport model |
+| author reactive or organic behavior | [Procedural Programs](procedural-programs.md) | computed behavior from inputs plus logic |
+| package the result for runtime use | [Export](export.md) | artifact boundary into `Integrate` |
+
+## Which Authoring Mode Should I Use?
+
+| If the behavior you want is... | Start with | Escalate when... |
+| --- | --- | --- |
+| a reusable named expression such as `smile` or `blink` | [Poses](poses.md) | you need motion over time or continuous reaction |
+| a timed sequence with deliberate beats and duration | [Animations](animations.md) | playback needs to react continuously to live input |
+| a continuously derived response such as wobble, follow, or thresholded reactivity | [Procedural Programs](procedural-programs.md) | the behavior needs a broader app or service loop |
+| a small visible edit before deeper authoring decisions | [Tweak an Existing Face](tweak-an-existing-face.md) | you need a durable authored artifact instead of a quick tweak |
 
 ## Depth Ladder
 

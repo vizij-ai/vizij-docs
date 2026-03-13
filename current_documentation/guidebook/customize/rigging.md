@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,rigging,propsrig -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** define what rigging means in Vizij and explain the controllable structure that later poses, animations, and exports depend on
 
 # Rigging
@@ -22,52 +22,9 @@ After this page, you should be able to explain what rigging means in Vizij speci
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who are ready to move from “a face I can load or tweak” to “a face whose controllable structure I can reason about.”
-
-It is especially for readers who have encountered the word `rig` before in other graphics tools and need to understand the Vizij-specific meaning rather than importing a generic CG definition.
-
-### Artifact Being Touched
-
-The artifact in this page is the face’s controllable structure inside authoring and runtime.
-
-In Vizij, that structure is not just the mesh.
-
-It includes:
-
-1. animatable scene targets,
-2. generated low-level rig channels under `/propsrig/...`,
-3. authored abstract rig inputs and bindings,
-4. the rules that keep authored controls from writing scene leaves directly.
-
-That structure is what later authoring pages build on.
-
-### Why This Page Exists Separately
-
-[Rigging](rigging.md) needs its own page because it prevents a different misunderstanding than import or transfer.
-
-[Import](import.md) answers “how does the face enter authoring?”
-
-[Reference-Face Transfer](reference-face-transfer.md) answers “how can one face help author another?”
-
-[Rigging](rigging.md) answers “what is the control structure of this face once it is in the system?”
-
-Without that distinction, readers collapse rigging into either raw geometry editing or pose authoring, and both are wrong for Vizij.
-
-### What Rigging Does Not Teach
-
-This page does not teach:
-
-1. how to load a face into authoring,
-2. how to copy poses or variables from a reference face,
-3. how pose grouping semantics work,
-4. how animation clips are authored over time,
-5. how export packages the finished artifact.
-
-Those are separate modules.
-
-This page teaches the control structure those later modules rely on.
+- Read this when you need the Vizij-specific meaning of a face rig, not a generic CG definition.
+- The page focuses on controllable structure: scene targets, generated `/propsrig/...` channels, authored abstract rig inputs, and the rules that keep authoring from writing scene leaves directly.
+- Import, transfer, poses, animation authoring, and export each have their own modules.
 
 ## What You Need
 
@@ -111,7 +68,13 @@ It tells the authoring tool and runtime which controls are low-level, which are 
 
 ## PropsRig and Abstract Rig
 
-> TODO(content-model): Add a diagram here to show the relationship between imported scene structure, the abstract rig, and the controllable `PropsRig` channels that later pose and animation layers depend on. Best fit because this section is about layer translation and that boundary is easier to retain visually than through prose alone.
+```mermaid
+flowchart LR
+    scene["Imported Scene Structure\n(animatable leaves)"] --> props["PropsRig Channels\n(/propsrig/...)"]
+    props --> abstract["Abstract Rig Inputs\n(authored controls)"]
+    abstract --> pose["Poses / Animations /\nProcedural Programs"]
+    pose --> export["Exported Artifact"]
+```
 
 Two rigging layers are especially important in current Vizij authoring.
 
@@ -198,6 +161,20 @@ Use this stack when reasoning about rigging:
 3. abstract rig inputs are the higher-level authored controls,
 4. poses and animations later write into or compose with that rig structure,
 5. export carries the resulting structure forward.
+
+## Use Rigging When, Not...
+
+Use this page when the real question is:
+
+1. what controls exist and how they are layered,
+2. why authored controls do not write scene leaves directly,
+3. what later poses, animations, and programs will target.
+
+Do not use this page as the answer to:
+
+1. `Which reusable expression should I author next?` Go to [Poses](poses.md).
+2. `How should motion unfold over time?` Go to [Animations](animations.md).
+3. `How should behavior react continuously to live input?` Go to [Procedural Programs](procedural-programs.md).
 
 If you keep that stack clear, later customization pages become much easier to trust.
 

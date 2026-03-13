@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,media,screenshots,video,operations -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** define how screenshots and videos should be classified, selected, and reused so the guidebook and its downstream projections stay route-faithful and current
 
 # Media Intake and Usage Guide
@@ -25,62 +25,9 @@ After this page, you should be able to:
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for people maintaining guidebook media and downstream projections, including:
-
-1. documentation maintainers,
-2. facilitators,
-3. workshop or website producers,
-4. contributors preparing screenshots or clips for route pages.
-
-This is a support page, not a general design or video-production tutorial.
-
-### Why This Page Exists
-
-This page needs to exist separately because guidebook media has a different job from the guidebook prose.
-
-The prose explains concepts and routes.
-
-The media layer proves them visually.
-
-Without a clear media policy, three things go wrong quickly:
-
-1. stale captures start teaching the wrong route,
-2. workshop-only visuals leak into the canonical guidebook,
-3. screenshots from optional or historical surfaces get mistaken for the maintained public path.
-
-This page prevents that drift.
-
-### Artifact Being Touched
-
-The artifact here is the guidebook media layer:
-
-1. screenshots,
-2. short video clips,
-3. media references awaiting classification,
-4. the decision about whether a capture is evergreen, temporary, or superseded.
-
-This matters because media is teaching material. A wrong screenshot can teach the wrong route just as easily as a wrong paragraph can.
-
-### What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. classification,
-2. route-faithful reuse,
-3. evergreen versus temporary media boundaries,
-4. the relationship between support media and canonical guidebook teaching.
-
-This page does not cover:
-
-1. design-system rules for image styling,
-2. editing software workflows,
-3. storage or hosting infrastructure,
-4. automated capture tooling,
-5. full production video standards.
-
-Those may matter later, but they are not the core support problem right now.
+- This support page is for documentation maintainers, facilitators, and anyone choosing screenshots or clips for the guidebook route.
+- The teaching job is media classification and route-faithful reuse: decide whether a capture is evergreen, temporary, or superseded without turning this page into a production-media handbook.
+- Design-system styling, editing workflows, hosting, and automation tooling stay outside the scope here.
 
 ## What You Need
 
@@ -253,8 +200,8 @@ You are done with this page when:
 Use these when you need the current implementation truth:
 
 1. `current_documentation/guidebook/assets/README.md`
-2. `current_documentation/guidebook/assets/README.md`
-3. `current_documentation/guidebook/support/validation-checkpoints.md`
+2. `current_documentation/guidebook/support/validation-checkpoints.md`
+3. `current_documentation/guidebook/support/guidebook-quality-criteria.md`
 4. `current_documentation/guidebook/support/troubleshooting-matrix.md`
 5. `current_documentation/guidebook/support/glossary-and-terminology-bridge.md`
 6. `vizij-docs/current_documentation/ROADMAP.md`

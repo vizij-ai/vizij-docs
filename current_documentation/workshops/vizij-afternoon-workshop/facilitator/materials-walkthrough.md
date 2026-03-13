@@ -1,19 +1,27 @@
 # Materials Walkthrough
 
-Last updated: 2026-03-09
+Last updated: 2026-03-13
 
 Open this file first when you are preparing to run the workshop.
 
 ## Before the Session
 
-1. Read `checklists/day-of-facilitator-checklist.md`.
-2. Open `facilitator/demo-command-sheet.md`.
-3. Launch the needed apps from `vizij-web`.
-4. Open the deck:
+1. Read `checklists/pre-event-prep-checklist.md`.
+2. Send or review `facilitator/prework-message-template.md`.
+3. Run `facilitator/helper-briefing.md` with the support team.
+4. Read `checklists/day-of-facilitator-checklist.md`.
+5. Open `facilitator/demo-command-sheet.md`.
+6. Launch the needed apps from `vizij-web`.
+7. Open the deck:
    - `slides/vizij-afternoon-workshop-deck.html` for live presentation
    - `slides/vizij-afternoon-workshop-deck.pdf` as the fallback
-5. Keep `slides/speaker-notes.md` open on the presenter machine.
-6. Print or share `participant/vizij-afternoon-workbook.pdf` if you want a single participant handout.
+8. Keep `slides/speaker-notes.md` open on the presenter machine.
+9. Print or share `participant/vizij-afternoon-workbook.pdf` if you want a single participant handout.
+
+Guidebook rule:
+
+1. use the guidebook as facilitator infrastructure and follow-up reading,
+2. use the participant guide, workbook, activity sheets, and handouts as the live room packet.
 
 ## During the Introduction
 
@@ -25,7 +33,7 @@ Use:
 
 Goal:
 
-1. Set expectations, show the teaser, and make the room comfortable with the hands-on flow.
+1. Set expectations, show the teaser, make the pair-based room flow explicit, and reinforce that facilitator demos remain the reference path.
 
 ## During Activity 1
 
@@ -62,7 +70,7 @@ Use:
 
 Goal:
 
-1. Connect animation, live integration, and deployment into one understandable story.
+1. Connect animation, live integration, and deployment into one understandable story while keeping `tutorial-agent-face` facilitator-led and deployment conceptually grounded.
 
 ## During the Breakout Hour
 

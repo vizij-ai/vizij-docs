@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,api-backed,interactive-application,runtime-react -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** teach how a richer API-backed Vizij application is assembled without confusing external service behavior with a different runtime model
 
 # API-Backed Interactive Application
@@ -29,6 +29,16 @@ cd /home/chris/Code/Semio/vizij_ws/vizij-web
 ```
 
 This walkthrough uses `apps/tutorial-agent-face`, the maintained Vizij example that layers a live service loop on top of the same runtime foundation used in `tutorial-fullscreen-face`.
+
+## Scope note
+
+Open this page only if your product really has an external session or service loop.
+
+If you only need a local embedded face:
+
+1. stay with [Minimal Web Player](minimal-web-player.md),
+2. use [Application Integration Patterns](application-integration-patterns.md) to choose the lighter app shape,
+3. come back here only when a separate session layer is a real requirement.
 
 ## Required And Optional Setup
 

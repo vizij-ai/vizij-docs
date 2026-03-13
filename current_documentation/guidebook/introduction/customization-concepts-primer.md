@@ -22,41 +22,9 @@ After this page, you should be able to explain the major customization concepts 
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who are not ready to author yet, but do need a clean conceptual map of the terms used in the `Customize` bucket.
-
-### Why This Page Exists
-
-Readers often need to understand the words before they understand the workflow.
-
-Without that vocabulary, the `Customize` bucket can feel like a wall of unexplained concepts:
-
-1. rig
-2. pose
-3. animation
-4. procedural program
-5. exportable bundle or authored artifact
-
-This page gives the conceptual layer first, so later customization pages can focus on actual authoring work.
-
-### What This Page Is Not
-
-This page does not teach:
-
-1. how to import a face,
-2. how to create a pose group,
-3. how to keyframe an animation,
-4. how to edit a procedural graph,
-5. how to export a finished asset.
-
-Those are `Customize` modules.
-
-### Why This Belongs In Introduction
-
-These concepts appear early in the public story, even when a reader is still deciding whether they need the full customization branch.
-
-So this page belongs in `Introduction` because it helps the reader interpret later buckets before they have to commit to an authoring workflow.
+- Use this page before the `Customize` bucket if you need a vocabulary map before you need hands-on authoring steps.
+- It introduces the main authoring concepts early so later modules can focus on workflow rather than term definition.
+- Import, pose authoring, keyframing, procedural editing, and export stay in the `Customize` modules.
 
 ## What You Need
 

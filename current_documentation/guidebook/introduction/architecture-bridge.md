@@ -27,42 +27,9 @@ After this page, you should be able to explain:
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand:
-
-1. [What Is Vizij?](what-is-vizij.md),
-2. [System Mental Model](system-mental-model.md),
-3. the main route through `Experience`, `Control`, `Customize`, `Integrate`, and `Deploy`.
-
-It is especially for contributors, facilitators, and advanced readers who are starting to cross the boundary between learner-facing explanation and implementation-facing documentation.
-
-### Artifact Being Touched
-
-The artifact here is the documentation boundary itself:
-
-1. learner-facing guidebook structure,
-2. cross-repo architecture framing,
-3. documentation authority mapping,
-4. route-to-implementation handoff.
-
-### What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the difference between teaching structure and platform structure,
-2. the current authority map for major documentation surfaces,
-3. the bridge from learner route to repo reality.
-
-This page does not cover:
-
-1. ABI details,
-2. crate or package signatures,
-3. detailed runtime internals,
-4. operational hardening decisions,
-5. current bug-by-bug implementation status.
-
-Those belong in architecture docs, repo-local docs, or project-tracking docs.
+- Read this after the `Introduction` pages if you need to bridge from the guidebook route into repo and architecture documentation.
+- The page is mainly for contributors, facilitators, and advanced readers who need an authority map and a clean handoff from learner framing to implementation framing.
+- ABI details, package signatures, runtime internals, and project-status tracking remain outside this module.
 
 ## What You Need
 

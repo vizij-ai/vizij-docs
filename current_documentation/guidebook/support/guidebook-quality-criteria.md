@@ -37,17 +37,9 @@ Read these first if needed:
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for guidebook authors, reviewers, workshop and tutorial maintainers, and anyone translating guidebook modules into downstream teaching surfaces.
-
-### Why This Page Exists
-
-The guidebook is a communication system, not just a pile of pages, so quality has to be judged by whether readers can orient, succeed, and move forward without losing the teaching thread.
-
-### Artifact Being Touched
-
-The artifact here is the quality framework itself: the standards for module quality, route quality, and downstream projection quality.
+- This page is for guidebook authors, reviewers, facilitators, and anyone projecting guidebook modules into tutorials, demos, or workshops.
+- It treats the guidebook as a communication system, so the criteria focus on whether readers can orient, succeed, and move forward without losing the teaching thread.
+- The artifact here is the quality framework itself: module quality, route quality, and downstream projection quality.
 
 ## How To Read The Criteria
 

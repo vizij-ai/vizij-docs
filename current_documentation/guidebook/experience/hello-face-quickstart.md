@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,hello-face,runtime -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** deliver the fastest convincing first Vizij runtime success with a working face
 
 # Hello Face Quickstart
@@ -45,6 +45,17 @@ pnpm run dev:tutorial-fullscreen-face
 ```
 
 Open the local Vite URL that appears in the terminal.
+
+## Quick term bridge
+
+Keep these four labels distinct while you work through the first run:
+
+| Term | What it means on this page | What it does not mean yet |
+| --- | --- | --- |
+| `face artifact` | the bundled sample face being loaded | your own authored face |
+| `runtime bundle` | the app-facing bundle handed to `VizijRuntimeProvider` | the whole application shell |
+| `app shell` | the tutorial app that hosts the face and hooks | a deployed operator endpoint |
+| `deployment endpoint` | a later `Deploy` concern with an exposed control path | this first-run tutorial surface |
 
 ## What Success Looks Like Up Front
 
@@ -186,6 +197,27 @@ It is trying to remove the first doubt:
 3. can I find the code path that produced what I just saw
 
 Once those are true, later control, integration, and deployment pages have something solid to build on.
+
+## What This Page Is Not Proving Yet
+
+This page proves a live runtime surface. It does not yet prove:
+
+1. that you understand path semantics in detail,
+2. that you have an application integration shell of your own,
+3. that you have authored or customized the face,
+4. that you have a deployment endpoint an operator can drive.
+
+## Choose Your Next Route
+
+The canonical next step is [First Control Interactions](../control/first-control-interactions.md).
+
+Use one of these branch points after that:
+
+| If your next goal is... | Open this next |
+| --- | --- |
+| understand the visible interactions before going deeper | [First Control Interactions](../control/first-control-interactions.md) |
+| get to a player shell and keep the fast route | [Minimal Web Player](../integrate/minimal-web-player.md) after `Control` |
+| start owning the face and its behavior | [Tweak an Existing Face](../customize/tweak-an-existing-face.md) after `Control` |
 
 ## Fast Recovery If It Fails
 

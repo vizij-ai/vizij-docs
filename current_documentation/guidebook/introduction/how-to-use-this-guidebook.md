@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,routing -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** help readers choose the right Vizij learning route and know when to stay in the guidebook versus when to switch to implementation docs
 
 # How To Use This Guidebook
@@ -82,26 +82,28 @@ Use the depth to choose *how much detail you need right now*.
 
 ## Start Here If
 
-### You want the fastest believable route to a working deployment
+### Fast route: you want the fastest believable route to a working deployment
 
 Follow:
 
 `Introduction -> Experience -> Control -> Integrate -> Deploy`
 
-Use this route if you want to:
+Choose this first if you want to:
 
 1. prove that Vizij works,
 2. understand the control model,
 3. get a face into a player or runtime shell,
 4. reach a real endpoint quickly.
 
-### You want to make the face your own before deploying it
+Most first-time builders should start here.
+
+### Customization route: you want to make the face your own before deploying it
 
 Follow:
 
 `Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`
 
-Use this route if you want to:
+Choose this first if you want to:
 
 1. modify an existing face,
 2. work on rigs, poses, animations, or export,
@@ -125,6 +127,18 @@ Jump directly to the bucket that matches the problem you are trying to solve:
 | Fast deployment route | You need proof, control understanding, a player, and a first deployed endpoint | `tutorial-fullscreen-face`, `demo-vizij-player`, `vizij-standalone` | deep customization and authoring ownership |
 | Customization route | You need to change the face or its behavior before integrating it | `vizij-authoring` and its local docs | the fastest path to a deployed endpoint |
 | Single-bucket jump-in | You already know the route and only need one concept or recovery page | the bucket that matches the immediate problem | route-level context and sequencing |
+
+## Quick chooser
+
+Use this if you are hesitating at the first fork:
+
+| If your immediate question is... | Open this next | Why |
+| --- | --- | --- |
+| `Can I make a face run at all?` | [Hello Face Quickstart](../experience/hello-face-quickstart.md) | fastest route-faithful proof |
+| `What do these runtime interactions actually mean?` | [First Control Interactions](../control/first-control-interactions.md) | same maintained app, slower explanation |
+| `How do I change the face or its behavior before integrating it?` | [Tweak an Existing Face](../customize/tweak-an-existing-face.md) | lowest-friction authoring entry |
+| `How do I embed a face in my app?` | [Minimal Web Player](../integrate/minimal-web-player.md) | first practical integration shell |
+| `How do I get to a same-host operator endpoint?` | [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md) | first maintained deployment floor |
 
 ## When To Stay In The Guidebook
 

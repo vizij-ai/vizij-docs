@@ -102,7 +102,9 @@ If a page does not make those five movements legible, it is under-contextualized
    - defines the canonical teaching primitives and how they should be used
 3. [module_inventory-reference.md](module_inventory-reference.md)
    - maps planned guidebook modules to bucket, depth, teaching objective, content forms, anchors, and downstream outputs
-4. [support/guidebook-quality-criteria.md](support/guidebook-quality-criteria.md)
+4. [public_projection_manifest-reference.md](public_projection_manifest-reference.md)
+   - defines the downstream public docs/tutorial projection contract and points to the machine-readable schema
+5. [support/guidebook-quality-criteria.md](support/guidebook-quality-criteria.md)
    - defines how guidebook modules, routes, and downstream projections should be judged as a communication system
 
 ## Bucket Map
@@ -137,3 +139,4 @@ If a page does not make those five movements legible, it is under-contextualized
 4. Module pages should use as many explainers, visuals, executable examples, interactive elements, operational guides, and reference bridges as needed to teach the concept accurately.
 5. Workshop packets and website pages should package or project these modules rather than becoming the canonical source.
 6. Repo-local docs remain the source for implementation detail and engineering truth at the package, app, and crate level.
+7. Public-route metadata belongs in `public_projection_manifest.json`; guidebook module bodies remain the canonical learner-facing content.

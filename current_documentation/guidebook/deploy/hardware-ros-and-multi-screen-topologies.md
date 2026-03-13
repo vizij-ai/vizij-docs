@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,topologies,hardware,ros,multi-screen -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** compare deeper deployment topologies without overstating what the current standalone and operator surfaces already guarantee
 
 # Hardware, ROS, and Multi-Screen Topologies
@@ -28,65 +28,9 @@ You should also be able to explain which parts are current implementation truth,
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand:
-
-1. [Easiest Standalone Deployment](easiest-standalone-deployment.md),
-2. [Operator and Deployment Model](operator-and-deployment-model.md),
-3. [Deployment Checks and Recovery](deployment-checks-and-recovery.md).
-
-It is not a first deployment page. It is for readers who are choosing a deeper topology after the simple deployment path already makes sense.
-
-### Why This Page Exists
-
-The earlier deploy pages establish the first believable endpoint and the operator model.
-
-That still leaves one advanced decision space:
-
-how the endpoint, operator, and surrounding hardware are arranged.
-
-Without this page, readers tend to make one of three mistakes:
-
-1. treating advanced topologies as if they are the required next step for everyone,
-2. assuming multi-screen and ROS are already the same maturity level,
-3. reading aspirational docs language as if it were guaranteed by the current implementation.
-
-This page exists to prevent that.
-
-### Artifact Being Touched
-
-The artifact here is the deployed runtime endpoint plus its control and display topology:
-
-1. where the rendered face lives,
-2. where the operator controls live,
-3. how many screens or devices participate,
-4. what kind of control connection exists between them.
-
-This is different from earlier deploy pages because the main question is no longer:
-
-`Can I deploy it?`
-
-It is now:
-
-`What deployment shape am I actually choosing?`
-
-### What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the major advanced topology directions,
-2. the distinction between current support and planned direction,
-3. the tradeoffs around host, display, and control-surface arrangement.
-
-This page does not cover:
-
-1. a full ROS package or middleware walkthrough,
-2. distributed security and network hardening,
-3. multi-face shared-runtime architecture,
-4. a complete remote-control production runbook.
-
-Those would require deeper implementation docs than this guidebook module should claim.
+- Read this only after the standalone path, operator model, and recovery loop already make sense.
+- The page compares advanced topology choices across host, display, control surface, and connection shape, with explicit maturity boundaries between current support and aspirational directions.
+- It does not claim a full ROS, distributed-security, or production remote-control runbook.
 
 ## What You Need
 
@@ -101,6 +45,17 @@ It helps if you can inspect:
 7. `vizij-docs/current_documentation/ARCHITECTURE.md` for broader system context.
 
 You do not need full ROS integration knowledge to use this page well.
+
+## Current Deployable Floor
+
+If you need the most credible ship-now answer, stop at:
+
+1. one host,
+2. one `vizij-standalone` runtime,
+3. one same-host operator path,
+4. one proved slot-discovery and write/reset loop.
+
+Everything in this page is a comparison beyond that baseline, not a substitute for it.
 
 ## The Three Topology Directions
 
@@ -163,7 +118,7 @@ This is the farthest-reaching topology direction discussed in current roadmap la
 
 It matters because Vizij is often imagined as part of a robotics or embodied-system surface.
 
-The guidebook should still be honest:
+Be explicit about the current boundary:
 
 the current maintained deploy path is anchored in standalone runtime and typed control endpoints, not in a full ROS deployment playbook.
 

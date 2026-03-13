@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,operator,standalone -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain what a deployed Vizij runtime consists of and how an operator actually interacts with it
 
 # Operator and Deployment Model
@@ -56,6 +56,12 @@ For the guidebook's first deployment path, the model is intentionally simple:
 4. validate that runtime and control are both healthy.
 
 This keeps deployment concrete without immediately pulling the reader into ROS, custom robotics bridges, or multi-screen topology decisions.
+
+Current deployable floor:
+
+`vizij-standalone` on one host with one same-host operator path.
+
+Treat that as the credible baseline before you reason about split surfaces, robot middleware, or broader topology planning.
 
 ## Control Topology
 
@@ -120,6 +126,22 @@ Important operational facts from the current standalone app:
 
 This is why deployment is not just about rendering. The runtime has to expose a believable control surface for an operator.
 
+## Path Contract At The Deployment Boundary
+
+Keep these three strings separate when you validate or debug the standalone endpoint:
+
+| What you are looking at | Example | Trust it for |
+| --- | --- | --- |
+| runtime hint | `rig/{faceId}/standard/vizij/left_eye/pos/x` | internal runtime reasoning and bundle-to-renderer diagnostics |
+| discovered slot name | `standard/vizij/left_eye/pos/x` | external client writes and operator-facing control |
+| namespaced snapshot key | `{namespace}/rig/{faceId}/standard/vizij/left_eye/pos/x` | shared-runtime or orchestrator-level inspection |
+
+The practical rule is simple:
+
+1. copy discovered slot names from the endpoint when writing through WebSocket or the built-in panel,
+2. use the full runtime path when you are inspecting runtime internals,
+3. use the namespaced form only when a shared runtime or diagnostics surface actually shows it.
+
 ## Recommended First Deployment Choice
 
 Use this before you jump into deeper topology pages:
@@ -141,7 +163,7 @@ Use this before you jump into deeper topology pages:
 
 ## Slot-Centric Thinking
 
-Inside the standalone deployment model, the guidebook should teach readers to think in slots:
+In the standalone deployment model, think in discovered slot names at the operator boundary:
 
 1. the deployment surface exposes controllable paths,
 2. those paths are synchronized into the backend,
@@ -163,7 +185,7 @@ It gives the reader:
 4. reset behavior,
 5. a believable first operator path on the same host as the runtime.
 
-The guidebook should treat this as part of the first deployment story, not as a side note.
+Treat this as part of the first deployment story, not as a side note.
 
 | Feature | What the operator gets |
 | :--- | :--- |

@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,procedural-programs,authoring -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain graph-driven authored behavior in Vizij without collapsing it into poses, timeline animation, or runtime internals
 
 # Procedural Programs
@@ -22,62 +22,9 @@ After this page, you should be able to explain what a procedural program is in V
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand that Vizij can author named states and timed clips and now need the third behavior tool:
-
-1. poses for named states,
-2. animations for authored motion over time,
-3. procedural programs for computed behavior.
-
-It is especially for readers who might otherwise treat `procedural`, `graph`, `expression`, and `animation` as if they all mean the same thing.
-
-### Artifact Being Touched
-
-The artifact in this page is the authored procedural behavior layer inside `vizij-authoring`.
-
-In current implementation terms, that means two closely related authoring surfaces:
-
-1. derived rig-input logic authored through expressions and parent bindings,
-2. procedural animation programs authored in the `Program` workspace canvas with nodes, edges, selected inputs, and selected outputs.
-
-This matters because procedural behavior is not a loose idea. It is stored authored logic that computes values from other values.
-
-### Why This Page Exists Separately
-
-[`Procedural Programs`](procedural-programs.md) needs its own page because it protects a boundary the neighboring pages cannot protect by themselves.
-
-[Poses](poses.md) answer: "what named state should this face have?"
-
-[Animations](animations.md) answer: "how should values move over time?"
-
-`Procedural Programs` answer: "what values should be computed from other values right now?"
-
-If those ideas collapse together, readers make three common mistakes:
-
-1. treating a pose like a little program,
-2. treating a timeline clip like the only way to get dynamic behavior,
-3. treating graph-driven logic like hidden runtime magic instead of authored behavior.
-
-### What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the learner-facing meaning of graph-driven control logic,
-2. inputs, expressions, outputs, and composition,
-3. how procedural programs differ from poses and animations,
-4. the current authoring surfaces where procedural behavior shows up.
-
-This page does not cover:
-
-1. GraphSpec structure,
-2. GraphRuntime execution details,
-3. scheduler order,
-4. compile-plan or IR internals,
-5. deep export packaging rules,
-6. node-by-node runtime architecture.
-
-Those are real implementation topics, but they are not the teaching job of this module.
+- Read this after [Poses](poses.md) and [Animations](animations.md) if you need the third behavior tool in the authoring stack.
+- The page stays on authored procedural logic inside `vizij-authoring`, including expression bindings and program-graph outputs, so readers can separate computed behavior from named states and timeline clips.
+- It does not teach runtime graph internals, scheduler order, or export packaging rules.
 
 ## What You Need
 
@@ -94,6 +41,14 @@ pnpm run dev:vizij-authoring
 ```
 
 You do not need to understand GraphSpec, GraphRuntime, scheduler order, or export internals yet.
+
+## Quick chooser
+
+| If the behavior you need is... | Best first tool |
+| --- | --- |
+| one named facial state | [Poses](poses.md) |
+| a replayable timed motion | [Animations](animations.md) |
+| a derived response from live inputs, rules, or graph logic | this page |
 
 ## What Procedural Behavior Means In Vizij
 
@@ -250,6 +205,18 @@ The clean learner-facing stack is:
 
 That separation is why this page exists.
 
+## Where The Logic Executes
+
+| Layer | What lives there | What it should answer |
+| --- | --- | --- |
+| authoring graph or program | selected inputs, nodes, edges, outputs, and preview transport | `What behavior am I designing?` |
+| runtime merge and orchestration | staged inputs, controller evaluation, conflicts, and blackboard updates | `Did the authored behavior actually produce the intended write?` |
+| richer app or service loop | session state, tool calls, or external events | `Why is this behavior being requested now?` |
+
+If the question is about the graph itself, stay in `Customize`.
+
+If the question is about session or service ownership, branch later to [API-Backed Interactive Application](../integrate/api-backed-interactive-application.md).
+
 ## Pose Versus Animation Versus Procedural Program
 
 Use this decision framing:
@@ -301,6 +268,36 @@ In the current authoring surface, procedural work usually looks like this:
 7. inspect the selected program or node in the inspector.
 
 This is why the page belongs in `Customize`: the reader is still authoring behavior, not yet embedding or deploying it.
+
+## Procedural Authoring Loop
+
+Use this compact loop when you want one deterministic pass from idea to visible proof:
+
+1. choose one input or time source,
+2. choose one output you can see change clearly,
+3. connect the smallest graph that transforms the source into that output,
+4. press `Play` and confirm the output moves in the expected direction,
+5. if nothing changes, check the output target, then the enabled input/output set, then the preview transport before changing the graph design.
+
+Common failure signatures:
+
+1. `stale no-op`: the graph plays, but no enabled output target exists for the visible control you expected,
+2. `wrong face namespace`: the authored path looks right conceptually but is not bound to the current face/runtime context,
+3. `merge overwrite`: the graph emits a value, but another controller or reset path wins later in the runtime chain.
+
+## Stay Here Or Switch Layers?
+
+Stay in procedural authoring when:
+
+1. the behavior is still being designed as graph logic,
+2. the question is about inputs, transforms, outputs, or preview,
+3. the face should react without introducing an external service loop.
+
+Switch to `Integrate` when:
+
+1. the same logic now has to live inside a richer app shell,
+2. external session state is driving the behavior,
+3. operator-facing controls or deployment endpoints now matter more than graph design.
 
 ## Success Check
 

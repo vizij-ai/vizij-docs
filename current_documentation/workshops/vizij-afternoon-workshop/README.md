@@ -1,9 +1,20 @@
 # Vizij Afternoon Workshop Kit
 
 Status: `ready for facilitation`
-Last updated: 2026-03-09
+Last updated: 2026-03-13
 
 This folder is the committed, facilitator-ready package for the Vizij afternoon workshop running from 2:30 pm to 6:00 pm. It is built against the current `vizij-web`, `vizij-docs`, and related runtime surfaces so the workshop materials stay tied to the code that exists today.
+
+## Operating Defaults
+
+This kit currently assumes:
+
+1. a facilitator-led room with participant coding encouraged,
+2. participants working in pairs or trios,
+3. mixed setup readiness across attendee laptops,
+4. at least three helpers,
+5. `tutorial-agent-face` as a facilitator-led live segment rather than a required participant app,
+6. the guidebook as facilitator infrastructure and post-session follow-up, not the main live participant script.
 
 ## Target Outcomes
 
@@ -21,19 +32,22 @@ By the end of the workshop, participants should be able to:
 
 Use the packet in this order:
 
-1. `facilitator/materials-walkthrough.md`
-2. `checklists/day-of-facilitator-checklist.md`
-3. `slides/vizij-afternoon-workshop-deck.html` or `slides/vizij-afternoon-workshop-deck.pdf`
-4. `facilitator/facilitator-guide.md`
-5. `participant/vizij-afternoon-workbook.pdf`
-6. `participant/participant-guide.md`
+1. `checklists/pre-event-prep-checklist.md`
+2. `facilitator/prework-message-template.md`
+3. `facilitator/helper-briefing.md`
+4. `facilitator/materials-walkthrough.md`
+5. `checklists/day-of-facilitator-checklist.md`
+6. `slides/vizij-afternoon-workshop-deck.html` or `slides/vizij-afternoon-workshop-deck.pdf`
+7. `facilitator/facilitator-guide.md`
+8. `participant/vizij-afternoon-workbook.pdf`
+9. `participant/participant-guide.md`
 
 ## Deliverables
 
 This workshop kit is being assembled as:
 
 1. `planning/` for execution plan, progress tracking, and source audit.
-2. `facilitator/` for run-of-show, presenter notes, and support playbooks.
+2. `facilitator/` for run-of-show, presenter notes, support playbooks, prework, and helper briefing.
 3. `participant/` for quickstarts and workshop guidance.
 4. `slides/` for the presentation deck and slide notes.
 5. `handouts/` for printable or shareable references.
@@ -54,6 +68,16 @@ This workshop kit is being assembled as:
 1. `participant/vizij-afternoon-workbook.html`
 2. `participant/vizij-afternoon-workbook.pdf`
 3. `participant/participant-guide.md`
+
+## Guidebook Role
+
+Use the guidebook behind this workshop in three ways:
+
+1. facilitator prep and helper briefing before the room opens,
+2. terminology and mental-model backup during the session when deeper explanation is needed,
+3. follow-up reading after the tutorial for participants who want the broader self-study path.
+
+Do not treat the guidebook as the primary live participant packet during the 2:30 pm to 6:00 pm block. The participant guide, workbook, activity sheets, and compact handouts are the primary in-room surfaces.
 
 ## Visual Assets
 

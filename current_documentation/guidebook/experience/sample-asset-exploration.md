@@ -22,55 +22,9 @@ After this page, you should be able to compare current sample face assets by tea
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand the quick sample experience and now want to look across the visible sample set more deliberately.
-
-It is especially for readers asking:
-
-1. which face should I use next,
-2. which sample is actually maintained enough to teach from,
-3. when does browsing assets stop being helpful and deeper work begin.
-
-### Why This Page Exists
-
-The sample set is useful, but it can also mislead readers if every asset is treated as equally ready for every route.
-
-This page exists to prevent three mistakes:
-
-1. choosing a sample only because it looks interesting,
-2. assuming every sample is equally controllable or equally well anchored in maintained apps,
-3. treating exploratory asset browsing as if it were the customization pipeline.
-
-The right sample choice reduces confusion later.
-
-### Artifact Being Touched
-
-The artifact here is the sample asset set itself:
-
-1. raw faces,
-2. rigged faces,
-3. example assets already tied to maintained apps,
-4. the decision about which asset is appropriate for which learning goal.
-
-This is still an `Experience` page because the reader is comparing what is available before committing to deeper authoring or integration work.
-
-### What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. how to choose a sensible sample for the next learning step,
-2. how to avoid over-generalizing from one asset,
-3. how to distinguish route-ready samples from exploratory ones.
-
-This page does not cover:
-
-1. full asset acquisition policy,
-2. asset QA or CI gating,
-3. deep rig standardization work,
-4. the complete customization pipeline.
-
-Those belong elsewhere.
+- Use this page when you need to choose the next sample asset deliberately rather than browsing at random.
+- The page stays on route fit and teaching fit across the current sample set: which assets are maintained enough to learn from, and where exploration stops being useful.
+- Asset intake policy, QA, and the full customization pipeline belong elsewhere.
 
 ## What You Need
 

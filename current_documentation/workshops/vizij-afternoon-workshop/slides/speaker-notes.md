@@ -1,6 +1,6 @@
 # Speaker Notes
 
-Last updated: 2026-03-09
+Last updated: 2026-03-13
 
 Use these notes with `vizij-afternoon-workshop-deck.html`.
 
@@ -8,6 +8,7 @@ Use these notes with `vizij-afternoon-workshop-deck.html`.
 
 1. Open with the teaser image or live capstone demo.
 2. Tell the room this session is about shipping understanding, not just watching demos.
+3. Open with outcomes before architecture.
 
 ## Slide 2: Outcomes
 
@@ -18,6 +19,7 @@ Use these notes with `vizij-afternoon-workshop-deck.html`.
 
 1. Set expectations for the two support windows and the 5:00 pm breakout.
 2. Make the fallback rule explicit: facilitator demos remain the reference path.
+3. Tell participants to self-sort into ready-to-run and needs-setup clusters and work in pairs or trios if setup lags.
 
 ## Slide 4: Architecture
 
@@ -57,14 +59,17 @@ Use these notes with `vizij-afternoon-workshop-deck.html`.
 ## Slide 11: Conversation
 
 1. Name the API-key dependency clearly.
-2. Even if the live demo is limited, use the UI to explain how the control surface is designed.
+2. Make it explicit that this segment is facilitator-led and not a required participant app run.
+3. Even if the live demo is limited, use the UI to explain how the control surface is designed.
 
 ## Slide 12: Deployment
 
 1. Reframe deployment as a control-surface problem, not a different face problem.
 2. Keep the WebSocket example simple and typed.
+3. Frame this as guided architecture plus control-path understanding, not participant binary shipping.
 
 ## Slide 13: Breakouts and Close
 
 1. Ask each group for one opportunity, one blocker, one next step.
 2. Close by tying the workshop back to concrete next actions.
+3. Point the room to the guidebook as the main follow-up reading path after the tutorial ends.

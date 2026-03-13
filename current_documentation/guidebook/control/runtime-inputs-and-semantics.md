@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,inputs,semantics -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain what runtime inputs mean, where they are written, and how visible face behavior maps to runtime semantics
 
 # Runtime Inputs and Semantics
@@ -106,6 +106,19 @@ The most useful categories for guidebook readers are:
 
 These categories can all show up as paths, but they do not mean the same thing.
 
+### Choose The Semantic Family First
+
+Use this chooser before you start wiring a control or debugging a write:
+
+| If you are trying to... | Likely semantic family | Why | Best next page |
+| --- | --- | --- | --- |
+| steer a reusable eye, brow, jaw, or similar channel | standard control | you are driving a reusable rig-facing channel directly | [Paths and Standard Controls](paths-and-standard-controls.md) |
+| blend a named facial state such as `smile` | pose weight | you are changing the strength of an authored expression | [Poses](../customize/poses.md) |
+| play or inspect motion over time | animation control | the main question is clip transport, timing, or playback | [Animations](../customize/animations.md) |
+| drive speech-shaped mouth motion | viseme path | the behavior is speech-timed, not generic expression control | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md) |
+| inspect what the runtime resolved after evaluation | output path | you are validating the result of orchestration, not only the staged input | [Orchestration and Diagnostics](orchestration-and-diagnostics.md) |
+| expose operator control through a deployment endpoint | deployment slot over runtime input | the client sees a deployment slot name, but the runtime still resolves it into the same typed input semantics underneath | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) |
+
 ## Why Semantics Matter More Than UI Labels
 
 Two controls can look similar in a UI and still represent different semantics.
@@ -128,6 +141,12 @@ You can already see the semantic layers in the maintained apps:
 4. `vizij-standalone` maps externally driven values into deployment-facing control slots.
 
 Those apps are different surfaces, but the runtime language underneath them is continuous.
+
+That continuity is the main reason the guidebook keeps separating runtime meaning from surface labels:
+
+1. a deployment client may discover and write slot names such as `standard/vizij/left_eye/pos/x`,
+2. the standalone bridge then resolves those names into runtime paths such as `rig/{faceId}/standard/vizij/left_eye/pos/x`,
+3. the underlying semantic family is still "standard control" even though the operator surface does not expose the full runtime path directly.
 
 ## A Useful Mental Model
 
@@ -183,3 +202,4 @@ Use these when you need the current implementation truth:
 
 1. If you want to see how these runtime ideas become an application shell, continue to [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
 2. If you want to stay on the fundamentals path inside `Control`, keep [Paths and Standard Controls](paths-and-standard-controls.md) nearby as the simpler vocabulary bridge.
+3. If you need to reason about which surface owns each category, continue to [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md).

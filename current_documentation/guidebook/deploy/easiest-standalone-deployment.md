@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,standalone,operator -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** deliver the cleanest first deployment endpoint in the guidebook route
 
 # Easiest Standalone Deployment
@@ -31,6 +31,17 @@ pnpm run dev:vizij-standalone
 
 This walkthrough uses `apps/vizij-standalone`, the maintained desktop runtime shell for first deployment work.
 
+## Preflight
+
+Before you run the standalone path, confirm these assumptions:
+
+1. `pnpm install` has already completed successfully in `vizij-web`,
+2. your machine can already launch the Tauri dev shell for `vizij-standalone`,
+3. you have one known-good bundled GLB available if you do not want to rely on the file picker,
+4. if you plan to launch fullscreen on a specific monitor, you can inspect displays first from the app-local README.
+
+If the desktop shell itself does not start, stop here and use [vizij-web/apps/vizij-standalone/README.md](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/vizij-standalone/README.md) as the implementation authority before debugging runtime behavior.
+
 ## What This First Deployment Must Prove
 
 For this route, deployment means more than `a face rendered`.
@@ -43,6 +54,12 @@ The standalone surface has to make these things true:
 4. an operator on the same host can connect and drive the face
 
 That is the bar for a first believable deployment endpoint.
+
+Current deployable floor:
+
+`vizij-standalone` plus one same-host control path.
+
+This page is not yet claiming LAN-first, ROS-first, or multi-device deployment as the maintained baseline.
 
 ## Walkthrough
 

@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,import,authoring -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain what import brings into vizij-authoring, what the tool validates during import, and where import stops
 
 # Import
@@ -22,39 +22,9 @@ After this page, you should be able to explain what `vizij-authoring` imports, w
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already believe they want to customize a face and now need a stable mental model of how authoring begins.
-
-It is especially for readers who need to distinguish:
-
-1. loading a face and its authored metadata into the tool,
-2. normalizing or remapping imported data so the session stays usable,
-3. copying authored information from a separate reference face later.
-
-### Artifact Being Touched
-
-The artifact in this page is the imported authoring session for a face.
-
-That session can include more than raw geometry.
-
-Based on the current `vizij-authoring` surface and hooks, import can involve:
-
-1. a GLB face asset,
-2. embedded Vizij bundle metadata,
-3. rig graph data,
-4. pose graph or pose configuration data,
-5. the runtime-facing information needed to preview the result honestly inside authoring.
-
-### Why This Page Exists Separately
-
-Import is the beginning of the authoring pipeline, but it is not the same thing as the rest of the pipeline.
-
-This page exists separately because it prevents three common confusions:
-
-1. thinking import is only “open a file” with no authoring assumptions,
-2. thinking import and reference-face transfer are the same operation,
-3. thinking imported graphs or configs can always be trusted without normalization, remapping, or compatibility checks.
+- This page is for the start of the authoring route: getting a face and its metadata into a usable session.
+- The focus is import plus normalization and compatibility checks, not later transfer workflows.
+- Treat [Reference-Face Transfer](reference-face-transfer.md) as a separate reuse step rather than part of import.
 
 ## What You Need
 
@@ -70,6 +40,8 @@ It also helps if you have already read:
 2. [Customization Concepts Primer](../introduction/customization-concepts-primer.md)
 
 You do not need to understand reference-face workflows yet.
+
+Skip directly to [Reference-Face Transfer](reference-face-transfer.md) if your main face is already loaded and your real goal is to borrow variables or poses from a second face rather than establish a new authoring session.
 
 ## What Import Means In Vizij
 
@@ -183,8 +155,6 @@ So import is not only “load pose data.” It is also “make sure the loaded p
 
 ## What Import Does Not Do
 
-> TODO(content-model): Add an FAQ here to answer why import is separate from reference-face transfer, rigging, and export. Best fit because this boundary-setting section is handling predictable reader confusions that are clearer in direct question-and-answer form.
-
 Import is not the same as reference-face transfer.
 
 That later module is about opening a second face as a reference context and copying or mapping variables or poses from that reference into the main face with explicit review and confirmation.
@@ -218,6 +188,26 @@ You are done with this page when:
 2. you can explain why the import flow has validation, normalization, and remap stages,
 3. you can explain why reference-face transfer is a different module,
 4. you know that import establishes the authoring session rather than completing the whole customization pipeline.
+
+## FAQ: Why Import Is Separate
+
+### Why is import not the same as reference-face transfer?
+
+Import establishes the main authoring session.
+
+Reference-face transfer opens a second face as a helper context and copies selected authored information into the already-loaded main face with review gates.
+
+### Why is import not the same as rigging?
+
+Import gets the face and any carried metadata into a trustworthy working session.
+
+Rigging explains and repairs the controllable structure that later authoring layers rely on inside that session.
+
+### Why is import not the same as export?
+
+Import is the entry boundary into authoring.
+
+Export is the packaging boundary that carries authored work back out toward runtime consumers.
 
 ## Implementation Anchors
 

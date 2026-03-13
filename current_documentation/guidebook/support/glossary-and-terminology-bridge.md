@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,glossary,terminology -->
 
-> **Last updated:** 2026-03-11
+> **Last updated:** 2026-03-13
 > **Purpose:** give readers a route-level terminology seam so the same Vizij artifact can be described correctly across authoring, runtime, integration, and deployment pages
 
 # Glossary and Terminology Bridge
@@ -25,57 +25,9 @@ After this page, you should be able to translate the same Vizij thing across buc
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who are moving between `Customize`, `Control`, `Integrate`, and `Deploy` and keep seeing familiar words used at slightly different layers.
-
-It is especially useful for:
-
-1. builders following the full `Hello Face -> Authoring -> Player -> Deployment` route,
-2. workshop readers who need a compact shared vocabulary,
-3. guidebook authors who want one stable route-level language.
-
-### Why This Page Exists
-
-This page needs to exist separately because several important Vizij words are correct in more than one bucket, but they do not mean exactly the same thing in each one.
-
-Without a bridge page, readers often make these mistakes:
-
-1. treating the face artifact, player shell, and deployment endpoint as the same artifact,
-2. using `control` to mean both authored capability and live runtime writes,
-3. using `loading` for everything from asset fetch to runtime readiness to service connection,
-4. reading `slot` as one universal concept when the route uses it differently at different layers.
-
-This page prevents those misunderstandings by giving the smallest shared vocabulary that lets readers switch buckets cleanly.
-
-### Artifact Being Touched
-
-The artifact here is the route-level vocabulary itself.
-
-This page is about how one maintained Vizij face is described as it moves through:
-
-1. asset and authoring language,
-2. runtime control language,
-3. integration language,
-4. deployment and operator language.
-
-It is not a giant dictionary and it is not a replacement for the deeper bucket pages.
-
-### What This Page Covers And Does Not Cover
-
-This page covers:
-
-1. the route-level translation between asset, runtime, integration, and deployment language,
-2. the small set of terms that change meaning by context or look equivalent when they are not,
-3. where to go next for the deeper explanation.
-
-This page does not cover:
-
-1. exhaustive file-format detail,
-2. ABI or package-ownership detail,
-3. full authoring internals,
-4. deployment topology decisions,
-5. every specialized term used inside repo-local implementation docs.
+- Use this page when the same Vizij term seems to shift meaning between `Customize`, `Control`, `Integrate`, and `Deploy`.
+- It is a route-level translator for a small set of terms that commonly blur across asset, runtime, integration, and operator language.
+- It is not meant to replace the deeper bucket pages or become an exhaustive implementation glossary.
 
 ## What You Need
 
@@ -103,6 +55,22 @@ Use this table first when the same artifact seems to get renamed as you move thr
 One sentence to keep in mind:
 
 `the asset carries structure, the runtime executes behavior, the app hosts the face, and deployment exposes an operator-facing endpoint`
+
+## Path Contract Cheat Sheet
+
+These three strings often point at the same control target, but they are not interchangeable names for the same thing:
+
+| If you are looking at... | Example | Trust it for | Do not collapse it into |
+| --- | --- | --- | --- |
+| runtime path | `rig/{face}/standard/left_eye/pos/x` | runtime writes, helper calls, and control reasoning | an operator-facing slot string |
+| deployment slot name | `standard/vizij/left_eye/pos/x` | discovered external control writes in `vizij-standalone` | the full internal runtime path |
+| namespaced observer key | `{namespace}/rig/{face}/standard/left_eye/pos/x` | shared-runtime or orchestrator inspection | the string an operator client should write directly |
+
+Read them in this order:
+
+1. `runtime path` when you are reasoning about the live face runtime itself,
+2. `deployment slot name` when you are writing through an operator-facing endpoint,
+3. `namespaced observer key` when you are inspecting a shared runtime or orchestrator snapshot.
 
 ## The Core Bridge Terms
 
@@ -186,6 +154,20 @@ Use `deployment surface` when the important question is operational:
 
 Deployment is not just integration somewhere else. It adds an operator-facing control story.
 
+### Layer / Mode / Stage
+
+These three words are easy to blur, so keep them separate:
+
+1. `layer` = a stable structural level in the system, such as rigging, poses, runtime control, or deployment
+2. `mode` = the current operating state of a tool or UI, such as selection mode, playback mode, or procedural-program editing mode
+3. `stage` = the current route milestone in the guidebook, such as `Hello Face`, `Player`, or `Deployment`
+
+Use them differently:
+
+1. ask `which layer is this?` when you mean structural responsibility,
+2. ask `which mode is the tool in?` when you mean current UI behavior,
+3. ask `which stage of the route am I in?` when you mean teaching sequence or next-page choice.
+
 ### TypedPath / Path
 
 `Path` is the learner-facing short form. `TypedPath` is the architecture-facing name for the stricter contract.
@@ -199,6 +181,12 @@ This matters across buckets because paths let:
 3. deployment-facing slots map to meaningful control targets.
 
 When a guidebook page says `path`, read it as "stable semantic address," not as an arbitrary string label.
+
+### Runtime Path
+
+Use `runtime path` when the string includes the face-scoped runtime address, usually `rig/{face}/...`.
+
+This is the form used by `setInput(...)`, `animateValue(...)`, and most runtime-control reasoning in the guidebook.
 
 ### Value
 
@@ -218,6 +206,42 @@ A `Shape` is the expected structure of a value.
 At the route level, this matters because Vizij tries to keep control contracts deterministic across authoring, runtime, app integration, and deployment.
 
 If `Value` answers "what payload?", `Shape` answers "what kind of payload is valid here?"
+
+### Controller / Driver
+
+These terms are related, but this guidebook should not treat them as perfect synonyms.
+
+Use `controller` when the important question is ownership at the runtime boundary:
+
+1. which thing is currently staging or owning writes,
+2. which surface the app is mounting or registering,
+3. which runtime source should be inspected first when behavior is present or absent.
+
+Use `driver` when the important question is value production:
+
+1. which rule, transport, hook, graph, or service is producing the values,
+2. where the current motion or behavior is coming from,
+3. how one control signal is being fed over time.
+
+In practice, one surface can play both roles. The distinction is still useful:
+
+1. `controller` answers `who owns the write now?`
+2. `driver` answers `what is feeding that write?`
+
+Do not use either word as a synonym for the authored rig structure itself.
+
+### Control Family
+
+At the route level, a `control family` means the kind of target being written, not the thing producing the write.
+
+The current guidebook-level families are:
+
+1. `standard control paths` for reusable rig-facing channels such as gaze, jaw, or brows,
+2. `pose-weight paths` for named authored facial states,
+3. `viseme paths` for speech-shaped mouth behavior,
+4. `deployment slot names` for external operator-facing aliases that map back into one of the internal runtime families above.
+
+Animation tracks, procedural programs, runtime hooks, and operator clients are common write sources. They usually target one of the internal control families rather than introducing a separate fourth runtime-path grammar.
 
 ### Standard Control Path
 
@@ -295,6 +319,18 @@ In the deployment pages, a slot is the deployment-facing exposed controllable en
 That is the meaning this bridge page cares about.
 
 This page does not try to unify every other implementation-specific use of `slot`, especially deeper authoring internals. If you are reading deployment guidance, think `exposed controllable path/value entry`, not "every slot concept in the repo."
+
+### Namespaced Observer Key
+
+Use this term when a shared runtime or orchestrator snapshot prefixes a runtime path with namespace, such as `{namespace}/rig/{face}/...`.
+
+This is a diagnostics form, not the string an operator client should memorize or write.
+
+### Merge Policy
+
+Use `merge policy` when multiple controllers can write the same target path and the runtime must decide what survives.
+
+This belongs to runtime-execution language, not to basic authoring terminology.
 
 ### Ready / Loading / Error Healthy-State Markers
 

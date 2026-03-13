@@ -1,7 +1,7 @@
 <!-- tags: type=reference; status=written; topics=guidebook,renderer,rigging,paths -->
 
-> **Last updated:** 2026-03-11
-> **Guidebook note:** promoted from the workshop handout so this version can become the reusable canonical source
+> **Last updated:** 2026-03-13
+> **Purpose:** provide the compact reference bridge between rig structure, path families, and the naming rules that keep authored and runtime surfaces aligned
 
 # Renderer and Rigging Reference
 
@@ -13,6 +13,18 @@
 4. **Bucket overview:** [Guidebook Reference](README.md)
 5. **Useful previous module:** [Runtime Quickstart](runtime-quickstart-reference.md)
 6. **Useful next module:** [Animation, Integration, and Deployment Reference](animation-integration-and-deployment-reference.md)
+
+## Reader Outcome
+
+After this page, you should be able to recall the main runtime path families, the basic rigging workflow boundary, and the naming rules that keep authored structure readable at runtime.
+
+## Use This Reference When
+
+Open this page when you already know you are reasoning about rigging or control vocabulary and need a compact reminder of:
+
+1. standard versus pose-path structure,
+2. how authoring flow turns into runtime-addressable controls,
+3. the naming rules that keep those controls stable enough to reuse.
 
 ## What To Understand
 
@@ -44,6 +56,14 @@ Examples:
 1. `rig/{face}/poses/smile.weight`
 2. `rig/{face}/poses/surprised.weight`
 
+## Control Family Reminder
+
+| Family | Runtime shape | Best use |
+| --- | --- | --- |
+| standard control | `rig/{face}/standard/...` | reusable rig-facing channels such as gaze or jaw |
+| pose weight | `rig/{face}/poses/{pose}.weight` | named authored facial states |
+| viseme weight | `rig/{face}/visemes/{viseme}.weight` | speech-shaped mouth motion |
+
 ## Rigging Workflow
 
 In `vizij-authoring`:
@@ -69,10 +89,8 @@ Names used in hotkey- and path-driven flows are typically:
 3. Which poses belong under a simple `poses` path versus another grouping concept?
 4. Which controls are important enough to surface in a participant workshop?
 
-## Downstream Use
+## Best Next Pages
 
-This reference should feed:
-
-1. renderer-data-model and rigging/control concept pages
-2. authoring and rigging workflows
-3. workshop exercises and handouts
+1. If you need the authoring route behind these structures, continue to [Rigging](../customize/rigging.md).
+2. If you need the runtime vocabulary around these structures, continue to [Paths and Standard Controls](../control/paths-and-standard-controls.md).
+3. If you need deployment-slot writing rather than runtime-path structure, continue to [Animation, Integration, and Deployment Reference](animation-integration-and-deployment-reference.md).

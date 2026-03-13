@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,validation,recovery,standalone -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** define the first deployment readiness loop and the fastest recovery path for the standalone endpoint
 
 # Deployment Checks and Recovery
@@ -22,40 +22,9 @@ After this page, you should be able to decide whether the first Vizij deployment
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand the first standalone deployment path and operator model and now need a practical answer to a narrower question:
-
-Is this endpoint healthy enough to call deployed, and what should I try first when that loop breaks?
-
-### Why This Page Exists
-
-The standalone deployment page gets the endpoint running.
-
-The operator-model page explains what the endpoint consists of.
-
-This page exists separately because operators still need one more layer: a repeatable readiness loop. Without that loop, it is easy to mistake “the app opened” for “the endpoint is deployed,” or to jump too quickly into deep debugging when a small recovery step would have been enough.
-
-### Artifact Being Touched
-
-The artifact here is the first real deployment endpoint:
-
-1. the `vizij-standalone` runtime,
-2. one loaded face asset,
-3. the local WebSocket control service, usually `ws://localhost:9000`,
-4. one operator path, either through the built-in web control panel or a direct WebSocket client.
-
-### What This Page Does Not Cover
-
-This page deliberately stops before:
-
-1. full failure classification across all route stages,
-2. deep protocol debugging,
-3. security and network-hardening decisions,
-4. packaging internals or shipping workflows,
-5. ROS, hardware, or multi-screen deployment patterns.
-
-Those belong in other pages because the goal here is a fast, dependable first recovery loop, not full operational ownership of every deployment topology.
+- Read this after [Easiest Standalone Deployment](easiest-standalone-deployment.md) and [Operator and Deployment Model](operator-and-deployment-model.md) when you need a repeatable readiness and first-recovery loop.
+- The page assumes one real endpoint: `vizij-standalone`, one loaded face, and one operator path through the built-in panel or a direct WebSocket client.
+- It stops before deep protocol debugging, hardening, and advanced topology work.
 
 ## What You Need
 
@@ -89,9 +58,9 @@ Keep this compact gate beside the longer walkthrough:
 | Stage | What to check | Healthy signal | First recovery move |
 | --- | --- | --- | --- |
 | 1. face loaded | app is not in `No model loaded`, `Loading...`, or explicit error state | face is visible | reload the asset or choose another known-good GLB |
-| 2. runtime ready | the runtime panel reaches `ready` and shows useful fields such as `Face ID`, `Constraints`, or path hints | runtime state is settled and controllable | stop and compare runtime state before testing the socket |
+| 2. runtime ready | the runtime panel reaches `ready` and shows useful fields such as `Face ID`, `Constraints`, or slot hints | runtime state is settled and controllable | stop and compare runtime state before testing the socket |
 | 3. control service up | the app keeps the local port running and the reported endpoint matches your client target | `ws://127.0.0.1:<port>` is the live endpoint | reconnect to the exact port the app reports |
-| 4. slot discovery works | the built-in panel populates or slot listing returns concrete entries | real slot names are discoverable | stop guessing paths and copy a returned slot |
+| 4. slot discovery works | the built-in panel populates or slot listing returns concrete entries | real slot names are discoverable | stop guessing slot names and copy a returned slot |
 | 5. one write and reset succeed | a visible write lands and `reset` returns the face toward defaults | one successful control round trip plus recoverability | retry with discovered slots, then escalate if visible behavior still fails |
 
 Run the checks in this order.
@@ -124,7 +93,7 @@ When the runtime is ready, the app also exposes useful supporting signals:
 1. `Face ID`,
 2. `Constraints`,
 3. `Outputs`,
-4. `Path: rig/{faceId}/<path>`.
+4. `Path: rig/{faceId}/<slot>`.
 
 Those fields matter because they tell you the runtime has discovered controllable inputs and can map external writes into the loaded face.
 
@@ -146,6 +115,20 @@ Treat the deployment as not yet healthy if:
 
 This page stays at the local first endpoint. It does not cover network exposure strategy or hardening.
 
+## Path Certainty Rule
+
+Treat these as different evidence, not as interchangeable strings:
+
+| String type | Example | Use it for |
+| --- | --- | --- |
+| runtime hint | `rig/{faceId}/standard/vizij/left_eye/pos/x` | confirming which internal runtime path the app expects |
+| discovered slot name | `standard/vizij/left_eye/pos/x` | writing values from the built-in panel or a WebSocket client |
+| namespaced diagnostic key | `{namespace}/rig/{faceId}/standard/vizij/left_eye/pos/x` | shared-runtime inspection only |
+
+The fastest way to lose deployment confidence is to remember one of these forms and guess the others from memory.
+
+Copy the discovered slot name from the endpoint first, then use the runtime hint only to confirm the bridge is targeting the face you think it is.
+
 ### 4. Confirm slot discovery or path availability
 
 Before sending a control write, confirm that the endpoint actually knows what can be controlled.
@@ -155,7 +138,7 @@ You can validate that in either of two simple ways:
 1. use the built-in web control panel and let it discover slots dynamically,
 2. ask the WebSocket endpoint to list slots.
 
-A direct slot-list request looks like this:
+One filtered slot-list request can look like this:
 
 ```json
 {
@@ -164,12 +147,12 @@ A direct slot-list request looks like this:
 }
 ```
 
-A healthy response returns slot entries such as:
+If the loaded face exposes standard gaze slots, a healthy response may return entries such as:
 
 1. `standard/vizij/left_eye/pos/x`,
 2. `standard/vizij/left_eye/pos/y`.
 
-This matters because the standalone app writes incoming values to `rig/{faceId}/{path}` internally. If slot discovery fails or the path is wrong, the deployment is not operational yet even if the face is visible.
+This matters because the standalone app writes incoming values to `rig/{faceId}/{slot}` internally. If slot discovery fails or the slot is wrong, the deployment is not operational yet even if the face is visible.
 
 ### 5. Confirm one successful control write
 
@@ -195,7 +178,7 @@ The success response is:
 
 A visible eye change plus a successful response is the deployment proof you want.
 
-If you instead receive an unknown-path error, do not keep guessing paths. Go back to slot discovery first.
+If you instead receive an unknown-path error, do not keep guessing paths. Go back to slot discovery first and copy a real returned slot name.
 
 ### 6. Confirm basic recoverability with reset
 
@@ -236,9 +219,9 @@ Start at the **first condition that is failing**, perform the matching action, a
 | If this is the first failing condition... | Take this action now | Continue only when... |
 | --- | --- | --- |
 | the app is in `No model loaded`, stuck on `Loading...`, or in an explicit error state | reload the asset or choose another known-good GLB/GLTF | the face is visible and the app is no longer in a load or error state |
-| the face is visible but the runtime panel is not `ready` | stop testing socket or control writes and check runtime readiness first | `Runtime: ready` is visible and the panel shows useful fields such as `Face ID`, `Constraints`, or path hints |
+| the face is visible but the runtime panel is not `ready` | stop testing socket or control writes and check runtime readiness first | `Runtime: ready` is visible and the panel shows useful fields such as `Face ID`, `Constraints`, or slot hints |
 | the runtime is ready but the control client is not clearly connected to the live endpoint | reconnect to the exact port the app reports | the server status is running and your client is pointed at that exact local endpoint |
-| the socket is reachable but you do not yet have a trusted path to write to | run slot discovery or use the built-in panel to discover slots | you have copied one real returned slot or path instead of guessing |
+| the socket is reachable but you do not yet have a trusted slot name to write to | run slot discovery or use the built-in panel to discover slots | you have copied one real returned slot name instead of guessing |
 | you have a discovered slot but do not know whether control is actually working | send one small write to that exact discovered slot | the response reports success and the face changes visibly |
 | the write worked but the face is now left in a driven or uncertain state | invoke `reset` and confirm recoverability | the face returns toward defaults and one small retry still works |
 
@@ -274,7 +257,7 @@ Action:
 
 1. verify the top-right panel reaches `Runtime: ready`,
 2. confirm `Constraints` is not effectively empty for the face you expect to control,
-3. confirm the `Face ID` and `rig/{faceId}/<path>` hint are present.
+3. confirm the `Face ID` and `rig/{faceId}/<slot>` hint are present.
 
 Continue only when:
 
@@ -309,13 +292,13 @@ Enter here when the socket is reachable but writes fail or you are about to gues
 Action:
 
 1. list slots or use the built-in control panel to discover them,
-2. copy a real returned slot or path,
+2. copy a real returned slot name,
 3. retry with that exact discovered value.
 
 Continue only when:
 
-1. you have one concrete slot or path from the endpoint itself,
-2. you are no longer inventing control paths,
+1. you have one concrete slot name from the endpoint itself,
+2. you are no longer inventing control strings,
 3. the next write test is grounded in discovered runtime truth.
 
 ### 5. Recover confidence with one small write
@@ -374,7 +357,7 @@ You are done with this page when you can do all of these without guessing:
 
 1. state what “deployed” means for the first standalone endpoint,
 2. check face loaded, runtime ready, and local WebSocket availability in order,
-3. discover a real slot or path before writing to it,
+3. discover a real slot name before writing to it,
 4. perform one successful control write,
 5. use reset or asset reload to get back to a known-good state,
 6. recognize when to stop and move into Support.

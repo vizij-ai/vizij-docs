@@ -1,0 +1,784 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "guidebook-first-public-docs",
+  "description": "Machine-readable projection manifest for downstream public docs/tutorial routes.",
+  "publicAssetBase": "/guidebook-assets",
+  "hubs": {
+    "docs": {
+      "eyebrow": "Vizij Docs",
+      "title": "Core concepts, contracts, and route decisions for the Vizij learning system.",
+      "description": "Use docs when you need the system framing behind the workflows. These pages stay downstream from the guidebook and keep the bucket, depth, and adjacent route context visible instead of flattening everything into isolated articles.",
+      "presentationStyle": "atlas",
+      "heroFigure": {
+        "src": "/guidebook-assets/screenshots/player-demo-details.png",
+        "alt": "Vizij player details screenshot used as a visual anchor for the docs hub",
+        "title": "Guidebook context, projected publicly",
+        "caption": "The public docs hub stays job-oriented for readers, but every page still exposes where it sits inside the guidebook buckets and depth ladder."
+      },
+      "actions": [
+        {
+          "label": "Open Getting Started",
+          "href": "/docs/getting-started/",
+          "variant": "primary"
+        },
+        {
+          "label": "Follow Tutorials",
+          "href": "/tutorials/",
+          "variant": "secondary"
+        },
+        {
+          "label": "Explore Demos",
+          "href": "/demos/",
+          "variant": "tertiary"
+        }
+      ],
+      "decisionPanels": [
+        {
+          "title": "Need the system map?",
+          "description": "Use docs when the question is conceptual: what this artifact is, how the buckets connect, and where implementation truth lives.",
+          "label": "Mental model",
+          "href": "/docs/getting-started/"
+        },
+        {
+          "title": "Need the runnable path?",
+          "description": "The tutorials hub is the maintained build spine when you want concrete commands, checkpoints, and a visible artifact.",
+          "label": "Build workflow",
+          "href": "/tutorials/"
+        },
+        {
+          "title": "Need to inspect behavior first?",
+          "description": "The demos page stays experiential. Use it to watch the runtime, then come back here to understand what you saw.",
+          "label": "Behavior first",
+          "href": "/demos/"
+        }
+      ],
+      "progressSteps": [
+        "Start with Getting Started to choose the right public route and the next maintained page.",
+        "Use architecture and control-model pages to build the mental model before you overfit to app-local details.",
+        "Use deployment and integration pages when the question shifts from understanding to ownership and delivery."
+      ],
+      "routeStages": [
+        "docs-getting-started",
+        "docs-architecture",
+        "docs-renderer-data-model",
+        "docs-rigging-and-control-model",
+        "docs-animation-model",
+        "docs-deployment-model"
+      ],
+      "sections": [
+        {
+          "id": "orientation",
+          "title": "Foundations",
+          "subtitle": "Use these pages when you are choosing or starting the maintained public route.",
+          "items": [
+            "docs-getting-started",
+            "docs-architecture"
+          ]
+        },
+        {
+          "id": "control-models",
+          "title": "Core Models",
+          "subtitle": "Use these pages when you need the mental model behind runtime inputs, control paths, and rigging vocabulary.",
+          "items": [
+            "docs-renderer-data-model",
+            "docs-rigging-and-control-model"
+          ]
+        },
+        {
+          "id": "integration-and-delivery",
+          "title": "Integration And Delivery",
+          "subtitle": "Use these pages when the question shifts from understanding to motion, operations, and delivery decisions.",
+          "items": [
+            "docs-animation-model",
+            "docs-deployment-model"
+          ]
+        }
+      ]
+    },
+    "tutorials": {
+      "eyebrow": "Vizij Tutorials",
+      "title": "One maintained build spine, projected from the guidebook’s executable route.",
+      "description": "Use tutorials when you want to run something, validate it, and know the next maintained move. These pages stay downstream from the guidebook instead of re-encoding the workflow in site-local copy.",
+      "presentationStyle": "spine",
+      "heroFigure": {
+        "src": "/guidebook-assets/gifs/fullscreen-demo.gif",
+        "alt": "Animated Vizij fullscreen demo used as the tutorial hub hero",
+        "title": "Start with a visible win",
+        "caption": "The tutorial spine is a staged build path: prove the runtime, understand the first interactions, then move into authoring, integration, and delivery."
+      },
+      "actions": [
+        {
+          "label": "Start With Hello Face",
+          "href": "/tutorials/hello-face/",
+          "variant": "primary"
+        },
+        {
+          "label": "See Docs",
+          "href": "/docs/",
+          "variant": "secondary"
+        },
+        {
+          "label": "Explore Demos",
+          "href": "/demos/",
+          "variant": "tertiary"
+        }
+      ],
+      "decisionPanels": [
+        {
+          "title": "Need the first visible win?",
+          "description": "Start with Hello Face when you want the smallest maintained proof that Vizij is actually alive.",
+          "label": "First build",
+          "href": "/tutorials/hello-face/"
+        },
+        {
+          "title": "Need concept support?",
+          "description": "If the workflow feels unclear, jump into docs rather than building on top of a weak mental model.",
+          "label": "Concept check",
+          "href": "/docs/"
+        },
+        {
+          "title": "Need to feel the runtime?",
+          "description": "Use demos when you want to observe finished behavior before reproducing it yourself.",
+          "label": "Behavior probe",
+          "href": "/demos/"
+        }
+      ],
+      "progressSteps": [
+        "Start with Hello Face and do not leave until you can prove the runtime is alive.",
+        "Use the next tutorial card only when the previous page’s artifact or proof state is complete.",
+        "Treat customization and advanced integration as branches off the maintained fast path, not mandatory first steps."
+      ],
+      "routeStages": [
+        "tutorials-hello-face",
+        "tutorials-renderer-data-model",
+        "tutorials-authoring",
+        "tutorials-rigging-and-control",
+        "tutorials-minimal-player",
+        "tutorials-animations",
+        "tutorials-agent-face",
+        "tutorials-deployment"
+      ],
+      "sections": [
+        {
+          "id": "foundations",
+          "title": "Foundations",
+          "subtitle": "Use these pages to prove the runtime and understand the first maintained interaction surface.",
+          "items": [
+            "tutorials-hello-face",
+            "tutorials-renderer-data-model"
+          ]
+        },
+        {
+          "id": "authoring",
+          "title": "Authoring",
+          "subtitle": "Use these pages when you want to adapt or deepen a maintained face rather than starting from a blank slate.",
+          "items": [
+            "tutorials-authoring",
+            "tutorials-rigging-and-control"
+          ]
+        },
+        {
+          "id": "runtime-and-deployment",
+          "title": "Runtime And Deployment",
+          "subtitle": "Use these pages when you need to move from authored assets into runtime shells, integrations, and operator-facing delivery.",
+          "items": [
+            "tutorials-minimal-player",
+            "tutorials-animations",
+            "tutorials-agent-face",
+            "tutorials-deployment"
+          ]
+        }
+      ]
+    }
+  },
+  "pages": [
+    {
+      "pageId": "docs-getting-started",
+      "moduleId": "docs/getting-started",
+      "sourceModuleId": "introduction/how-to-use-this-guidebook",
+      "sourcePath": "introduction/how-to-use-this-guidebook.md",
+      "surface": "docs",
+      "publish": true,
+      "canonical": true,
+      "slug": "getting-started",
+      "hubGroup": "orientation",
+      "order": 10,
+      "routeRole": "orientation",
+      "routeRoleLabel": "Route chooser",
+      "titleOverride": "Getting Started",
+      "summaryOverride": "Choose the right Vizij learning route, understand the maintained public path, and know when to stay in the guidebook versus switch to implementation references.",
+      "redirects": [
+        "how-to-use-this-guidebook"
+      ],
+      "prev": null,
+      "next": {
+        "label": "Architecture",
+        "href": "/docs/architecture/",
+        "description": "Map the public route back to the real cross-repo implementation surfaces."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Guidebook README",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/guidebook/README.md",
+          "description": "Canonical teaching-system framing for the public route."
+        },
+        {
+          "label": "Vizij roadmap",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/ROADMAP.md",
+          "description": "Cross-repo program framing behind the maintained path."
+        }
+      ],
+      "labId": null,
+      "demoLinks": [
+        {
+          "label": "Public demos",
+          "href": "/demos/",
+          "description": "Observe the runtime first, then return to the docs route."
+        }
+      ]
+    },
+    {
+      "pageId": "docs-architecture",
+      "moduleId": "docs/architecture",
+      "sourceModuleId": "introduction/architecture-bridge",
+      "sourcePath": "introduction/architecture-bridge.md",
+      "surface": "docs",
+      "publish": true,
+      "canonical": true,
+      "slug": "architecture",
+      "hubGroup": "orientation",
+      "order": 20,
+      "routeRole": "system-map",
+      "routeRoleLabel": "Architecture bridge",
+      "titleOverride": "Architecture",
+      "summaryOverride": "Connect the public learning model to the real Vizij repos, packages, apps, assets, and deployment surfaces.",
+      "redirects": [
+        "architecture-bridge"
+      ],
+      "prev": {
+        "label": "Getting Started",
+        "href": "/docs/getting-started/",
+        "description": "Choose the right public route before you dive into the repo map."
+      },
+      "next": {
+        "label": "Renderer Data Model",
+        "href": "/docs/renderer-data-model/",
+        "description": "Move from the repo map into the runtime path/value contract."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Cross-repo architecture",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/ARCHITECTURE.md",
+          "description": "Canonical internal repo-boundary reference."
+        },
+        {
+          "label": "Runtime provider",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/runtime-react/src/VizijRuntimeProvider.tsx",
+          "description": "The public route’s runtime boundary in code."
+        }
+      ],
+      "labId": null,
+      "demoLinks": [
+        {
+          "label": "Demos architecture lane",
+          "href": "/demos/#architecture",
+          "description": "Compare the system map with the public behavior slices."
+        }
+      ]
+    },
+    {
+      "pageId": "docs-renderer-data-model",
+      "moduleId": "docs/renderer-data-model",
+      "sourceModuleId": "control/runtime-inputs-and-semantics",
+      "sourcePath": "control/runtime-inputs-and-semantics.md",
+      "surface": "docs",
+      "publish": true,
+      "canonical": true,
+      "slug": "renderer-data-model",
+      "hubGroup": "control-models",
+      "order": 30,
+      "routeRole": "model",
+      "routeRoleLabel": "Runtime semantics",
+      "titleOverride": "Renderer Data Model",
+      "summaryOverride": "Understand the typed input model, path semantics, and visible runtime behavior behind the first maintained interactions.",
+      "redirects": [
+        "runtime-inputs-and-semantics"
+      ],
+      "prev": {
+        "label": "Architecture",
+        "href": "/docs/architecture/",
+        "description": "Return to the repo map and bundle lifecycle."
+      },
+      "next": {
+        "label": "Rigging and Control Model",
+        "href": "/docs/rigging-and-control-model/",
+        "description": "Move from generic runtime inputs into control vocabulary and path families."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Runtime React package",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/runtime-react",
+          "description": "Current runtime hooks and provider primitives."
+        }
+      ],
+      "labId": null,
+      "demoLinks": [
+        {
+          "label": "Rig controls demo",
+          "href": "/demos/#controls",
+          "description": "Observe path writes and visible behavior before reproducing them."
+        }
+      ]
+    },
+    {
+      "pageId": "docs-rigging-and-control-model",
+      "moduleId": "docs/rigging-and-control-model",
+      "sourceModuleId": "control/paths-and-standard-controls",
+      "sourcePath": "control/paths-and-standard-controls.md",
+      "surface": "docs",
+      "publish": true,
+      "canonical": true,
+      "slug": "rigging-and-control-model",
+      "hubGroup": "control-models",
+      "order": 40,
+      "routeRole": "model",
+      "routeRoleLabel": "Control vocabulary",
+      "titleOverride": "Rigging and Control Model",
+      "summaryOverride": "Learn the standard control vocabulary, path families, and portable control abstractions behind public-facing rig behavior.",
+      "redirects": [
+        "paths-and-standard-controls"
+      ],
+      "prev": {
+        "label": "Renderer Data Model",
+        "href": "/docs/renderer-data-model/",
+        "description": "Return to input semantics and typed values."
+      },
+      "next": {
+        "label": "Animation Model",
+        "href": "/docs/animation-model/",
+        "description": "Continue into motion, playback, and embedding guidance."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Renderer and rigging reference",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/guidebook/reference/renderer-and-rigging-reference.md",
+          "description": "Compact reference bridge for control and rigging terms."
+        }
+      ],
+      "labId": null,
+      "demoLinks": [
+        {
+          "label": "Expressions demo",
+          "href": "/demos/#expressions",
+          "description": "Compare the public control model with the visible runtime controls."
+        }
+      ]
+    },
+    {
+      "pageId": "docs-animation-model",
+      "moduleId": "docs/animation-model",
+      "sourceModuleId": "customize/animations",
+      "sourcePath": "customize/animations.md",
+      "surface": "docs",
+      "publish": true,
+      "canonical": true,
+      "slug": "animation-model",
+      "hubGroup": "integration-and-delivery",
+      "order": 50,
+      "routeRole": "model",
+      "routeRoleLabel": "Motion system",
+      "titleOverride": "Animation Model",
+      "summaryOverride": "Understand how animation authoring fits the guidebook route before you move into runtime playback and richer motion behavior.",
+      "redirects": [],
+      "prev": {
+        "label": "Rigging and Control Model",
+        "href": "/docs/rigging-and-control-model/",
+        "description": "Return to the rig and control vocabulary."
+      },
+      "next": {
+        "label": "Deployment Model",
+        "href": "/docs/deployment-model/",
+        "description": "Continue into operator-facing delivery guidance."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Animation, integration, and deployment reference",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/guidebook/reference/animation-integration-and-deployment-reference.md",
+          "description": "Reference bridge for later-stage motion and delivery work."
+        }
+      ],
+      "labId": null,
+      "demoLinks": [
+        {
+          "label": "Voice demo",
+          "href": "/demos/#voice",
+          "description": "Compare authored motion concepts with the public speech/viseme behavior slice."
+        }
+      ]
+    },
+    {
+      "pageId": "docs-deployment-model",
+      "moduleId": "docs/deployment-model",
+      "sourceModuleId": "deploy/operator-and-deployment-model",
+      "sourcePath": "deploy/operator-and-deployment-model.md",
+      "surface": "docs",
+      "publish": true,
+      "canonical": true,
+      "slug": "deployment-model",
+      "hubGroup": "integration-and-delivery",
+      "order": 60,
+      "routeRole": "operations",
+      "routeRoleLabel": "Deployment framing",
+      "titleOverride": "Deployment Model",
+      "summaryOverride": "Compare browser and standalone delivery, operator expectations, and the downstream deployment choices the guidebook makes explicit.",
+      "redirects": [
+        "operator-and-deployment-model"
+      ],
+      "prev": {
+        "label": "Animation Model",
+        "href": "/docs/animation-model/",
+        "description": "Return to motion and authored behavior."
+      },
+      "next": {
+        "label": "Hello Face",
+        "href": "/tutorials/hello-face/",
+        "description": "Switch back into the maintained build spine."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Standalone app",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/vizij-standalone",
+          "description": "Current operator-facing delivery surface."
+        }
+      ],
+      "labId": null,
+      "demoLinks": []
+    },
+    {
+      "pageId": "tutorials-hello-face",
+      "moduleId": "tutorials/hello-face",
+      "sourceModuleId": "experience/hello-face-quickstart",
+      "sourcePath": "experience/hello-face-quickstart.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "hello-face",
+      "hubGroup": "foundations",
+      "order": 10,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "First visible win",
+      "titleOverride": "Hello Face",
+      "summaryOverride": "Launch the smallest maintained Vizij runtime app, prove the face is live, and connect the visible behavior back to the runtime skeleton.",
+      "redirects": [
+        "hello-face-quickstart"
+      ],
+      "prev": {
+        "label": "Getting Started",
+        "href": "/docs/getting-started/",
+        "description": "Choose the route before you run the first app."
+      },
+      "next": {
+        "label": "Renderer Data Model",
+        "href": "/tutorials/renderer-data-model/",
+        "description": "Use the same maintained surface to slow down and inspect the first interactions."
+      },
+      "implementationAnchors": [
+        {
+          "label": "tutorial-fullscreen-face",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/tutorial-fullscreen-face",
+          "description": "Smallest maintained runtime app behind the first public success."
+        }
+      ],
+      "labId": "hello-face",
+      "demoLinks": [
+        {
+          "label": "Public demos",
+          "href": "/demos/",
+          "description": "Compare the guided quickstart with the broader runtime showcase."
+        }
+      ]
+    },
+    {
+      "pageId": "tutorials-renderer-data-model",
+      "moduleId": "tutorials/renderer-data-model",
+      "sourceModuleId": "control/first-control-interactions",
+      "sourcePath": "control/first-control-interactions.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "renderer-data-model",
+      "hubGroup": "foundations",
+      "order": 20,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Control lab",
+      "titleOverride": "Renderer Data Model",
+      "summaryOverride": "Use the first maintained runtime interactions to make path writes, cause and effect, and visible control semantics concrete.",
+      "redirects": [
+        "first-control-interactions"
+      ],
+      "prev": {
+        "label": "Hello Face",
+        "href": "/tutorials/hello-face/",
+        "description": "Return to the first maintained runtime proof."
+      },
+      "next": {
+        "label": "Authoring",
+        "href": "/tutorials/authoring/",
+        "description": "Move from using a working face to changing one."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Control bucket reference",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/guidebook/control/README.md",
+          "description": "The maintained control route behind the first public interactions."
+        }
+      ],
+      "labId": "first-controls",
+      "demoLinks": [
+        {
+          "label": "Rig controls demo",
+          "href": "/demos/#controls",
+          "description": "Compare the guided interaction path with the public demo slice."
+        }
+      ]
+    },
+    {
+      "pageId": "tutorials-authoring",
+      "moduleId": "tutorials/authoring",
+      "sourceModuleId": "customize/tweak-an-existing-face",
+      "sourcePath": "customize/tweak-an-existing-face.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "authoring",
+      "hubGroup": "authoring",
+      "order": 30,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Authoring basics",
+      "titleOverride": "Authoring",
+      "summaryOverride": "Take the lowest-friction authoring path first: tweak a maintained face, validate the visible change, and stay on the guidebook route.",
+      "redirects": [
+        "tweak-an-existing-face"
+      ],
+      "prev": {
+        "label": "Renderer Data Model",
+        "href": "/tutorials/renderer-data-model/",
+        "description": "Return to the first maintained control interactions."
+      },
+      "next": {
+        "label": "Rigging and Control",
+        "href": "/tutorials/rigging-and-control/",
+        "description": "Continue into the deeper customization branch."
+      },
+      "implementationAnchors": [
+        {
+          "label": "vizij-authoring",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/vizij-authoring",
+          "description": "Current authoring app behind the public customization route."
+        }
+      ],
+      "labId": null,
+      "demoLinks": []
+    },
+    {
+      "pageId": "tutorials-rigging-and-control",
+      "moduleId": "tutorials/rigging-and-control",
+      "sourceModuleId": "customize/deep-custom-pipeline",
+      "sourcePath": "customize/deep-custom-pipeline.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "rigging-and-control",
+      "hubGroup": "authoring",
+      "order": 40,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Deep customization",
+      "titleOverride": "Rigging And Control",
+      "summaryOverride": "Follow the deeper customization route through authoring, control structure, export discipline, and validation against a real runtime surface.",
+      "redirects": [
+        "deep-custom-pipeline"
+      ],
+      "prev": {
+        "label": "Authoring",
+        "href": "/tutorials/authoring/",
+        "description": "Return to the lowest-friction authoring path."
+      },
+      "next": {
+        "label": "Minimal Player",
+        "href": "/tutorials/minimal-player/",
+        "description": "Take the authored asset back into a runtime shell."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Authoring docs",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/vizij-authoring/docs",
+          "description": "Implementation-local detail behind the deeper customization path."
+        }
+      ],
+      "labId": "deep-custom-pipeline",
+      "demoLinks": []
+    },
+    {
+      "pageId": "tutorials-minimal-player",
+      "moduleId": "tutorials/minimal-player",
+      "sourceModuleId": "integrate/minimal-web-player",
+      "sourcePath": "integrate/minimal-web-player.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "minimal-player",
+      "hubGroup": "runtime-and-deployment",
+      "order": 50,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Runtime shell",
+      "titleOverride": "Minimal Player",
+      "summaryOverride": "Load the authored face into the smallest useful player shell and keep the runtime surface honest.",
+      "redirects": [
+        "minimal-web-player"
+      ],
+      "prev": {
+        "label": "Rigging and Control",
+        "href": "/tutorials/rigging-and-control/",
+        "description": "Return to the customization branch and export discipline."
+      },
+      "next": {
+        "label": "Animations",
+        "href": "/tutorials/animations/",
+        "description": "Continue into authored motion and richer runtime behavior."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Minimal web player guidebook module",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/guidebook/integrate/minimal-web-player.md",
+          "description": "Canonical runtime-shell walkthrough."
+        }
+      ],
+      "labId": "minimal-web-player",
+      "demoLinks": [
+        {
+          "label": "Architecture demo lane",
+          "href": "/demos/#architecture",
+          "description": "Compare the player shell with the broader public runtime map."
+        }
+      ]
+    },
+    {
+      "pageId": "tutorials-animations",
+      "moduleId": "tutorials/animations",
+      "sourceModuleId": "customize/animations",
+      "sourcePath": "customize/animations.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": false,
+      "slug": "animations",
+      "hubGroup": "runtime-and-deployment",
+      "order": 60,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Motion branch",
+      "titleOverride": "Animations",
+      "summaryOverride": "Understand the authored motion branch before you move into live integrations and heavier runtime behavior.",
+      "redirects": [],
+      "prev": {
+        "label": "Minimal Player",
+        "href": "/tutorials/minimal-player/",
+        "description": "Return to the smallest runtime shell."
+      },
+      "next": {
+        "label": "Agent Face",
+        "href": "/tutorials/agent-face/",
+        "description": "Continue into the richer API-backed integration branch."
+      },
+      "implementationAnchors": [
+        {
+          "label": "Animation reference bridge",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/guidebook/reference/animation-integration-and-deployment-reference.md",
+          "description": "Reference bridge for later-stage motion and runtime delivery."
+        }
+      ],
+      "labId": null,
+      "demoLinks": []
+    },
+    {
+      "pageId": "tutorials-agent-face",
+      "moduleId": "tutorials/agent-face",
+      "sourceModuleId": "integrate/api-backed-interactive-application",
+      "sourcePath": "integrate/api-backed-interactive-application.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "agent-face",
+      "hubGroup": "runtime-and-deployment",
+      "order": 70,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Live integration",
+      "titleOverride": "Agent Face",
+      "summaryOverride": "Build the richer API-backed interactive branch with explicit live-service boundaries, runtime checkpoints, and recovery paths.",
+      "redirects": [
+        "api-backed-interactive-application"
+      ],
+      "prev": {
+        "label": "Animations",
+        "href": "/tutorials/animations/",
+        "description": "Return to authored motion and runtime playback."
+      },
+      "next": {
+        "label": "Deployment",
+        "href": "/tutorials/deployment/",
+        "description": "Finish in an operator-facing delivery surface."
+      },
+      "implementationAnchors": [
+        {
+          "label": "tutorial-agent-face",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/tutorial-agent-face",
+          "description": "Current richer integration app behind the public branch."
+        }
+      ],
+      "labId": null,
+      "demoLinks": [
+        {
+          "label": "Voice demo",
+          "href": "/demos/#voice",
+          "description": "Compare the public speech/viseme behavior slice with the fuller agent integration path."
+        }
+      ]
+    },
+    {
+      "pageId": "tutorials-deployment",
+      "moduleId": "tutorials/deployment",
+      "sourceModuleId": "deploy/easiest-standalone-deployment",
+      "sourcePath": "deploy/easiest-standalone-deployment.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "deployment",
+      "hubGroup": "runtime-and-deployment",
+      "order": 80,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Operator delivery",
+      "titleOverride": "Deployment",
+      "summaryOverride": "Launch the cleanest maintained standalone deployment path and treat operator handoff as part of the route, not an afterthought.",
+      "redirects": [
+        "easiest-standalone-deployment"
+      ],
+      "prev": {
+        "label": "Agent Face",
+        "href": "/tutorials/agent-face/",
+        "description": "Return to the richer live integration branch."
+      },
+      "next": {
+        "label": "Deployment Model",
+        "href": "/docs/deployment-model/",
+        "description": "Return to the conceptual deployment framing."
+      },
+      "implementationAnchors": [
+        {
+          "label": "vizij-standalone",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/vizij-standalone",
+          "description": "Current operator-facing standalone surface."
+        }
+      ],
+      "labId": null,
+      "demoLinks": []
+    }
+  ]
+}

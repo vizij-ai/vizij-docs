@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,integrate,player,embedding -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain how a face gets loaded, played back, embedded, and turned into a usable runtime surface
 
 # Integrate
@@ -8,6 +8,23 @@
 `Integrate` is the bucket where a face becomes something usable in a player or application context.
 
 This bucket is the bridge between having a face or asset and having a runtime surface that can actually be used in a browser, app, or richer interactive experience.
+
+The current maintained examples in this bucket are React applications built on `@vizij/runtime-react`.
+
+That scope matters:
+
+1. the integration lessons about lifecycle, ownership, and validation apply broadly,
+2. the concrete code patterns in this bucket are React-first,
+3. if you are not building in React, use [Loading, Playback, and Embedding](loading-playback-and-embedding.md) plus [Application Integration Patterns](application-integration-patterns.md) for the portable mental model, then switch to repo-local implementation docs for framework-specific assembly.
+
+## Early Handoff Rules
+
+Use these two handoffs to avoid lingering in the wrong part of the bucket:
+
+| If this describes you... | Stay in `Integrate` long enough to... | Then open... |
+| --- | --- | --- |
+| you are not building in React | understand the asset-to-runtime shell model, the provider-owned readiness states, and one believable control path | repo-local implementation docs for your framework after [Loading, Playback, and Embedding](loading-playback-and-embedding.md) |
+| your next real question is operator control, exposed endpoints, or topology | prove one healthy player-stage shell and one working control path | [Deploy](../deploy/README.md), then [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md) or [Hardware, ROS, and Multi-Screen Topologies](../deploy/hardware-ros-and-multi-screen-topologies.md) |
 
 ## Process Position
 
@@ -26,6 +43,20 @@ This bucket should help a reader:
 2. understand loading, playback, and embedding basics,
 3. see how richer applications build on the same underlying ideas,
 4. move toward deployment with a real integrated artifact rather than a disconnected sample.
+
+## Integration Route Chooser
+
+Use this when you know you are in `Integrate` but are not sure which page fits:
+
+| If your immediate goal is... | Open this next | Why |
+| --- | --- | --- |
+| the smallest believable face in an app shell | [Minimal Web Player](minimal-web-player.md) | fastest route-faithful React example |
+| understand the portable runtime model before leaving the React examples behind | [Loading, Playback, and Embedding](loading-playback-and-embedding.md) | captures the transferable artifact, readiness, and ownership model first |
+| understand lifecycle, loading, playback, and embedding terms | [Loading, Playback, and Embedding](loading-playback-and-embedding.md) | definitions before pattern choice |
+| choose among simple app shapes | [Application Integration Patterns](application-integration-patterns.md) | compare ownership boundaries |
+| build a service-backed or session-backed face app | [API-Backed Interactive Application](api-backed-interactive-application.md) | advanced pattern with explicit session boundary |
+| think about broader product shells before deployment | [Rich Interactive Applications](rich-interactive-applications.md) | advanced ownership and status model |
+| you already know deployment is the next real branch | [Minimal Web Player](minimal-web-player.md), then [Deploy](../deploy/README.md) | use one player-stage proof before moving into operator endpoints or topology choices |
 
 ## Depth Ladder
 

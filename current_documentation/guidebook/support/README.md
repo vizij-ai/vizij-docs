@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,support,validation,troubleshooting -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** provide the reusable validation, recovery, and communication-quality layer behind the maintained guidebook route
 
 # Guidebook Support
@@ -18,6 +18,16 @@ This section should help readers and facilitators:
 3. recover without losing the teaching objective,
 4. reuse the same support language across docs, tutorials, and workshops,
 5. evaluate whether guidebook modules and routes communicate clearly enough to trust.
+
+## Support Route Chooser
+
+| If your question is mainly... | Open this page first | Why |
+| --- | --- | --- |
+| "Did the current step actually work?" | [Validation Checkpoints](validation-checkpoints.md) | turns route stages into observable pass/fail signals |
+| "Something failed; what is the fastest recovery path?" | [Troubleshooting Matrix](troubleshooting-matrix.md) | maps common symptoms to the quickest route-faithful recovery |
+| "What does this term mean in this bucket?" | [Glossary and Terminology Bridge](glossary-and-terminology-bridge.md) | keeps one artifact from being renamed differently across buckets |
+| "Should this screenshot or clip count as canonical proof?" | [Media Intake and Usage Guide](media-intake-and-usage-guide.md) | keeps current-route media trustworthy |
+| "How should we judge whether a page is actually good enough?" | [Guidebook Quality Criteria](guidebook-quality-criteria.md) | keeps communication quality explicit rather than implied |
 
 ## Bucket Modules
 

@@ -1,7 +1,7 @@
 <!-- tags: type=reference; status=written; topics=guidebook,animation,integration,deployment -->
 
-> **Last updated:** 2026-03-11
-> **Guidebook note:** promoted from the workshop handout so this version can become the reusable canonical source
+> **Last updated:** 2026-03-13
+> **Purpose:** provide the compact reference bridge between animation transport, richer app integration, and the standalone deployment slot contract
 
 # Animation, Integration, and Deployment Reference
 
@@ -13,6 +13,18 @@
 4. **Bucket overview:** [Guidebook Reference](README.md)
 5. **Useful previous module:** [Renderer and Rigging Reference](renderer-and-rigging-reference.md)
 6. **Useful next module:** [Guidebook Reference](README.md)
+
+## Reader Outcome
+
+After this page, you should be able to recall the main maintained animation and live-integration anchors, plus the operator-facing slot contract used by the standalone deployment path.
+
+## Use This Reference When
+
+Open this page when you already know you are working in one of these three areas and need a compact reminder of:
+
+1. animation transport and playback helpers,
+2. the maintained live-integration anchor,
+3. the deployment-facing slot-writing contract.
 
 ## Animation
 
@@ -53,6 +65,15 @@ Use `vizij-standalone` to discuss:
 3. serving a built-in web control panel
 4. moving from local demo to robot-facing control
 
+## Deployment Transport Contract
+
+Keep the operator-facing slot name separate from the internal runtime path:
+
+| Layer | Example | Use it for |
+| --- | --- | --- |
+| discovered slot name | `standard/vizij/left_eye/pos/x` | WebSocket client writes and operator control |
+| internal runtime path | `rig/{faceId}/standard/vizij/left_eye/pos/x` | runtime and diagnostics reasoning |
+
 ## Handy Commands
 
 ```bash
@@ -63,22 +84,19 @@ pnpm run dev:vizij-standalone
 
 ## Handy Message Format
 
-`vizij-standalone` uses typed values over WebSocket. Most animation-like controls use floats such as:
+`vizij-standalone` uses typed values over WebSocket. If the endpoint exposes standard gaze slots, a write can look like:
 
 ```json
 {
   "type": "set_slot_values",
   "values": {
-    "rig/robot/standard/left_eye/pos/x": { "f64": 0.5 }
+    "standard/vizij/left_eye/pos/x": { "f64": 0.5 }
   }
 }
 ```
 
-## Downstream Use
+## Best Next Pages
 
-This reference should feed:
-
-1. animation workflows
-2. agent-face tutorials
-3. deployment docs and operator guidance
-4. facilitator live-demo notes
+1. If you need the longer animation authoring route, continue to [Animations](../customize/animations.md).
+2. If you need the richer app route, continue to [Application Integration Patterns](../integrate/application-integration-patterns.md).
+3. If you need the deployment readiness loop behind this transport contract, continue to [Deployment Checks and Recovery](../deploy/deployment-checks-and-recovery.md).

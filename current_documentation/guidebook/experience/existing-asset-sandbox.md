@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,sandbox,existing-assets -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain what the first Vizij sandbox experience is actually proving and what parts are already prebuilt
 
 # Existing Asset Sandbox
@@ -100,7 +100,19 @@ The sandbox does not yet prove that you can:
 
 Those are later buckets.
 
-> TODO(content-model): Add an FAQ here to answer common confusion about whether the sandbox counts as authoring, integration, or deployment. Best fit because this section is already framing what the sandbox does not prove and predictable reader misreadings belong in a targeted FAQ.
+## FAQ: What Bucket Is The Sandbox In?
+
+### Does the sandbox count as authoring?
+
+No. The sandbox is still a prebuilt experience with a maintained asset and maintained interactions.
+
+### Does the sandbox count as integration?
+
+Not in the guidebook route sense. The app is a real integrated surface under the hood, but the reader is still consuming it as a prebuilt proof surface rather than assembling an app shell of their own.
+
+### Does the sandbox count as deployment?
+
+No. It proves a healthy existing-asset experience, not an operator-facing endpoint with exposed control and recovery loops.
 
 ## A Useful Way To Read The Sandbox
 

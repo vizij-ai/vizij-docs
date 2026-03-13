@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,runtime,interactions -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** teach the smallest believable runtime control win through obvious maintained interactions
 
 # First Control Interactions
@@ -47,6 +47,17 @@ Quick term bridge before you continue:
 1. `standard control` means a reusable runtime channel such as eye position.
 2. `pose weight` means the current strength of a named authored state such as `happy` or `surprise`.
 3. `path` means the runtime address the hook writes, not the visible UI widget itself.
+
+## What This Page Is Not Proving Yet
+
+This page proves that the runtime can accept and apply different kinds of control writes.
+
+It does not yet prove:
+
+1. that you have an application integration shell,
+2. that you have authored new behavior,
+3. that you have a deployment endpoint,
+4. that every control category in Vizij behaves the same way.
 
 ## Walkthrough
 
@@ -179,3 +190,8 @@ Use these when you need the current implementation truth:
 Continue to [Paths and Standard Controls](paths-and-standard-controls.md).
 
 That page names the path vocabulary underneath the gaze and pose interactions you just used.
+
+Use these branch points after that:
+
+1. If you want to stay on the fast route toward embedding, continue later to [Minimal Web Player](../integrate/minimal-web-player.md).
+2. If you want to start owning the face after the control model is clear, branch to [Tweak an Existing Face](../customize/tweak-an-existing-face.md).

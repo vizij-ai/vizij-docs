@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,authoring,presets -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** deliver the smallest believable authoring win by changing an existing face without requiring the full customization pipeline
 
 # Tweak an Existing Face
@@ -150,6 +150,18 @@ You did not need to:
 5. export a new bundle
 
 Those are real parts of `Customize`, but they come after the first believable edit.
+
+## Choose Your Next Authoring Step
+
+Once the first tweak works, pick the next page by intent:
+
+| If your next goal is... | Open this next |
+| --- | --- |
+| bring your own asset or authored metadata into the tool | [Import](import.md) |
+| understand or repair the controllable structure first | [Rigging](rigging.md) |
+| define reusable expression states | [Poses](poses.md) |
+| author timed motion | [Animations](animations.md) |
+| author reactive behavior from live inputs | [Procedural Programs](procedural-programs.md) |
 
 ## Fast Recovery If It Fails
 

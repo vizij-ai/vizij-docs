@@ -22,42 +22,9 @@ After this page, you should be able to explain the three core integration ideas 
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand the minimal player stage and now need a clearer model of what the runtime is doing when an app becomes a usable Vizij surface.
-
-### Artifact Being Touched
-
-The artifact here is the integration chain itself:
-
-1. a GLB or bundled face asset,
-2. a runtime bundle description,
-3. a provider that boots the runtime,
-4. a face component or equivalent rendering surface,
-5. optional hooks or application logic layered on top.
-
-### What This Bucket Actually Needs To Teach
-
-For the guidebook route, the `Integrate` bucket does not need to teach every possible application pattern at once.
-
-At the fundamentals level, it needs to teach:
-
-1. what is being loaded,
-2. how the runtime surface reports loading, ready, and error states,
-3. what counts as healthy playback,
-4. how a face is embedded into a simple application shell,
-5. where the boundary is between integration and deployment.
-
-### What This Page Should Prevent
-
-Readers often confuse:
-
-1. loading with playback,
-2. a richer application example with a different runtime model entirely,
-3. integration with deployment,
-4. an application shell with an authoring or operator surface.
-
-Keeping these terms separate prevents that confusion.
+- Read this after [Minimal Web Player](minimal-web-player.md) when you need the core integration concepts behind a usable Vizij application surface.
+- The page keeps three things separate: loading the asset and runtime bundle, achieving honest playback and readiness, and embedding the face inside a broader app shell.
+- Richer application patterns come later; deployment is still a separate bucket.
 
 ## What You Need
 

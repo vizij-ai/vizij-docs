@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,troubleshooting,matrix -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** collect the common route-level failure patterns and the fastest guidebook-aligned recovery paths
 
 # Troubleshooting Matrix
@@ -40,7 +40,18 @@ This page works best after [Validation Checkpoints](validation-checkpoints.md), 
 
 ## Matrix
 
-
+| Route stage | Symptom | Most likely interpretation | Inspect next | Fast recovery |
+| --- | --- | --- | --- | --- |
+| Experience | face never becomes visible | asset load, dev shell, or startup state failed before teaching can even begin | app load state, terminal output, selected asset | reload the app or choose another known-good asset before reading farther |
+| Experience or Control | face renders but mouse or hotkeys do nothing | the route is visible but the control proof is missing | pointer focus, hotkey hook, face bundle pose support | retry focus and input once, then use code anchors if the teaching goal is conceptual |
+| Customize | the reader cannot tell whether they should import, rig, pose, animate, or write procedural behavior | routing failure, not merely missing detail | current authoring goal and the next-page chooser tables | return to the closest chooser page and pick one layer explicitly before editing more |
+| Customize | an authored pose, clip, or program exists but runtime behavior still does not change | export, layer choice, or runtime handoff is unclear | exported artifact, bundle/runtime handoff, chosen authoring layer | verify which layer changed, then re-test with one concrete runtime or player proof |
+| Integrate | app compiles but readiness still feels ambiguous | the shell exists but health proof is weak | loading, ready, and error surfaces; provider placement | narrow back to one visible readiness path before adding richer UI |
+| Integrate | service or session is failing while the face runtime seems healthy | session truth and runtime truth are being collapsed | app session status, runtime status, translation boundary | treat runtime and session as separate checks and recover the failing layer only |
+| Deploy | face is visible but runtime never reaches `ready` | deployment has not crossed the control boundary yet | runtime panel, error state, constraints | stop socket testing and recover runtime readiness first |
+| Deploy | socket is reachable but slot discovery fails or returns nothing useful | endpoint is up, but control certainty is not | discovered slots, constraints, path hint | use the built-in panel or list slots again; do not guess slot names |
+| Deploy | `set_slot_values` reports success but nothing visible changes | transport succeeded, but runtime/render proof did not | normalized slot name, `Face ID`, runtime snapshots, output paths | trace the slot into the runtime path and inspect bundle/render target mismatch next |
+| Deploy | reset behaves strangely or the face snaps back unexpectedly | defaults, neutral staging, or reset lifecycle is fighting the visible result | constraint defaults, reset path, neutral-stage flow | compare against defaults, then re-run one small write and one reset |
 
 ## Visual Recognition of Failure
 
@@ -64,15 +75,21 @@ flowchart TD
 | --- | --- | --- | --- |
 | Face does not render | missing asset, missing WASM, wrong repo root, broken dev environment | app terminal output, app loading state, current working directory | restart the app, verify repo root, confirm asset path and WASM setup |
 | `tutorial-fullscreen-face` renders but mouse or hotkeys do nothing | pointer not over app, missing pose data, hook not active, bundle mismatch | `useMouseGaze.ts`, `usePoseHotkeys.ts`, face bundle configuration | reload the page, verify pointer focus, inspect hotkey mapping in code and continue conceptually if needed |
+| authoring route feels directionless | the reader is mixing import, rigging, pose, animation, and procedural layers | chooser tables in `Customize`, current immediate goal | route back to one explicit authoring layer and postpone the others |
+| authored export exists but a player or runtime still does not reflect it | authored layer changed, but the runtime or export handoff is unclear | export output, chosen authoring layer, runtime shell | verify the exported artifact boundary, then retest with one concrete player or runtime proof |
 | `tutorial-agent-face` will not connect | missing `VITE_GEMINI_API_KEY`, missing mic permissions, no network | app status chips, local env vars, browser permissions | treat the page as a richer example only, explain the UI states, and continue with non-live runtime concepts |
 | `demo-vizij-player` starts but feels ambiguous | loader state unclear to the reader, panels not yet understood, asset health not checked | bootstrap checklist, face viewer, diagnostics | narrow the reader back to loading, ready, error, and visible face states before exploring the rest of the app |
 | `vizij-authoring` feels too heavy or slow | machine load, too much tooling for the current teaching goal | system load, participant goal, presenter machine | switch to observation mode, use screenshots, and keep the reader focused on concepts instead of deep editing |
 | Standalone app loads but does not feel deployed | runtime visible but no operator path confirmed | port display, WebSocket state, control panel availability | confirm the endpoint, connect with the built-in panel or a client, and demonstrate one successful control action |
+| WebSocket is up but the face still does not move | slot discovery, runtime identity, or render-target alignment is still wrong | discovered slot names, `Face ID`, runtime path hint, output paths | copy one real discovered slot, trace it into the runtime path, and test one visible channel only |
 | Deployment section feels too heavy | packaging or Tauri setup is unrealistic for the current context | room constraints, machine readiness, available time | keep the teaching goal at operator-model understanding and defer binary shipping to a later session |
 
 ## How To Read The Matrix
 
-
+1. Match the first failing condition, not the loudest later symptom.
+2. Prefer the smallest recovery that restores route confidence before you escalate into repo debugging.
+3. If the issue is really "I do not know which layer I am in," route back to the nearest chooser page instead of searching for a deeper technical fix.
+4. If the route can stay teachable through screenshots, code anchors, or a simpler maintained surface, use conceptual recovery instead of forcing a live fix.
 
 ## Escalation Flow
 

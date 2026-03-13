@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,animations,authoring -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain authored motion over time in Vizij and how animation authoring differs from poses before export
 
 # Animations
@@ -27,54 +27,9 @@ You should also be able to explain why animations are different from poses:
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand rigging and poses and now need to understand how Vizij authors motion instead of only storing static facial states.
-
-It is especially for readers who might otherwise use `animation`, `pose`, `playback`, and `transport` as if they were interchangeable.
-
-### Artifact Being Touched
-
-The artifact in this page is the authored animation layer inside `vizij-authoring`.
-
-In current implementation terms, that means:
-
-1. animation clips with stable ids, names, and duration,
-2. tracks that target specific rig or standard-input channels,
-3. time-based keyframes stored on those tracks,
-4. transport state used to preview authored or imported clips in the authoring app.
-
-This matters because animation authoring is not only a viewer convenience. It becomes part of the authored face behavior that later export and runtime playback surfaces can consume.
-
-### Why This Page Exists Separately
-
-[`Animations`](animations.md) needs its own page because it protects a different concept boundary than [Poses](poses.md).
-
-[Rigging](rigging.md) explains what the face can be driven by.
-
-[Poses](poses.md) explains named authored states over that controllable structure.
-
-[`Animations`](animations.md) explains how those controllable values change over time.
-
-If those ideas collapse together, readers make three common mistakes:
-
-1. treating a pose like a whole timeline,
-2. treating animation like a collection of unnamed slider changes,
-3. treating playback buttons as if they were the animation itself.
-
-### What This Page Does Not Teach
-
-This page does not teach:
-
-1. how to build the rig structure from scratch,
-2. how to model poses and pose groups,
-3. how procedural programs differ from timeline animation,
-4. how exported bundles serialize the finished animation payload,
-5. how an embedded app chooses which animation to play at runtime.
-
-Those belong to neighboring modules because they answer different questions.
-
-This page teaches the customization-side mental model for authored motion over time.
+- Read this after [Rigging](rigging.md) and [Poses](poses.md) when you need authored motion instead of named static states.
+- The page stays on the animation layer inside `vizij-authoring`: clips, tracks, keyframes, and transport preview, so readers can keep animation separate from poses, procedural logic, and runtime playback controls.
+- Export packaging and runtime selection belong later in the route.
 
 ## What You Need
 
@@ -136,7 +91,15 @@ This page does not treat poses as obsolete. In current Vizij authoring, poses an
 
 ## Clips, Tracks, and Keyframes
 
-> TODO(content-model): Add a timeline diagram here to show how clips, tracks, and keyframes relate over time and where transport acts on them. Best fit because this section introduces temporal structure and a time-based visual would clarify the hierarchy better than description alone.
+```mermaid
+flowchart TD
+    clip["Clip\n(id, name, duration)"] --> trackA["Track A\n(one targeted control path)"]
+    clip --> trackB["Track B\n(one targeted control path)"]
+    trackA --> keyA1["Keyframe\n(time + value)"]
+    trackA --> keyA2["Keyframe\n(time + value)"]
+    trackB --> keyB1["Keyframe\n(time + value)"]
+    clip --> transport["Transport\n(play / pause / stop / seek / loop)"]
+```
 
 The authoring UI and store separate animation into a few learner-friendly parts.
 
@@ -274,6 +237,19 @@ Use this stack when you need to reason clearly:
 3. animations define how targeted values change over time,
 4. transport lets you preview and inspect that motion,
 5. export later packages the authored result for downstream use.
+
+## Choose Animation When...
+
+Use animation first when:
+
+1. the behavior has a deliberate duration or beat,
+2. the same motion should replay predictably,
+3. the author needs clip, track, and transport control.
+
+Do not use animation first when:
+
+1. you only need a reusable named expression state; start with [Poses](poses.md),
+2. the behavior should be computed continuously from live input; start with [Procedural Programs](procedural-programs.md).
 
 If you keep that order clear, the Customize route stays teachable.
 

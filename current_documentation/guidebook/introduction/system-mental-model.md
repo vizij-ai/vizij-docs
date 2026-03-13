@@ -22,61 +22,9 @@ After this page, you should be able to explain the major parts of Vizij, how aut
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already know what Vizij is for, but do not yet have a reliable internal map of the system.
-
-It is especially useful before going deeper into `Control`, `Customize`, `Integrate`, or `Deploy`.
-
-### Why This Page Exists
-
-Readers can reach a working face quickly in Vizij.
-
-That is useful, but it also creates a common misunderstanding: the first visible surface can look like the whole system.
-
-It is not.
-
-Vizij is easier to reason about if you keep five layers distinct:
-
-1. the face artifact,
-2. the authored behavior bundled with it,
-3. the runtime coordination layer,
-4. the application surface that exposes it,
-5. the deployment surface where it is actually operated.
-
-This page exists to keep those layers separate before later buckets teach them in more detail.
-
-### Artifact Being Touched
-
-The artifact here is the Vizij system model itself:
-
-1. a face asset and its authored metadata,
-2. a runtime shell that loads and coordinates that asset,
-3. control contracts that let values move predictably through the system,
-4. application and deployment surfaces that expose the face to real users or operators.
-
-This page explains how those parts relate.
-
-It does not teach detailed control semantics, authoring steps, or a repo-by-repo implementation audit.
-
-### What This Page Teaches And What It Does Not
-
-This page teaches:
-
-1. the major system parts a learner should keep separate,
-2. how authored assets, runtime coordination, app integration, and deployment relate,
-3. which conceptual contracts remain stable across those layers,
-4. how to interpret the public builder route without mistaking it for the internal package map.
-
-This page does not teach:
-
-1. detailed path semantics,
-2. rigging or pose-authoring workflow steps,
-3. package-by-package ownership,
-4. deployment topology or operator procedures,
-5. low-level ABI or file-format details.
-
-Those belong to later bucket pages and deeper implementation docs.
+- Read this after [What Is Vizij?](what-is-vizij.md) if you need the system layers separated before going deeper.
+- The page keeps five concepts distinct: the face artifact, authored behavior, runtime coordination, application surface, and deployment surface.
+- Detailed path semantics, authoring workflows, package ownership, and deployment procedures stay in later modules.
 
 ## What You Need
 

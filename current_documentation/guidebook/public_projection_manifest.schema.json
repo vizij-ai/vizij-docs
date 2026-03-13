@@ -1,0 +1,411 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vizij.ai/schemas/guidebook/public_projection_manifest.schema.json",
+  "title": "Vizij Guidebook Public Projection Manifest",
+  "description": "Machine-readable contract for projecting canonical guidebook modules into downstream public docs and tutorial routes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedBy",
+    "description",
+    "publicAssetBase",
+    "hubs",
+    "pages"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "publicAssetBase": {
+      "type": "string",
+      "pattern": "^/[a-z0-9/_-]+$"
+    },
+    "hubs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "docs",
+        "tutorials"
+      ],
+      "properties": {
+        "docs": {
+          "$ref": "#/$defs/hub"
+        },
+        "tutorials": {
+          "$ref": "#/$defs/hub"
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/page"
+      }
+    }
+  },
+  "$defs": {
+    "surface": {
+      "type": "string",
+      "enum": [
+        "docs",
+        "tutorials"
+      ]
+    },
+    "presentationStyle": {
+      "type": "string",
+      "enum": [
+        "atlas",
+        "spine"
+      ]
+    },
+    "variant": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "secondary",
+        "tertiary"
+      ]
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "pathLikeId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9/_-]*$"
+    },
+    "linkLike": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "href"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "href": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "heroFigure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "src",
+        "alt",
+        "title",
+        "caption"
+      ],
+      "properties": {
+        "src": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caption": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "href",
+        "variant"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "href": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "variant": {
+          "$ref": "#/$defs/variant"
+        }
+      }
+    },
+    "decisionPanel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "description",
+        "label",
+        "href"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "href": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      }
+    },
+    "hubSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "subtitle",
+        "items"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subtitle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        }
+      }
+    },
+    "hub": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "description",
+        "presentationStyle",
+        "heroFigure",
+        "actions",
+        "decisionPanels",
+        "progressSteps",
+        "routeStages",
+        "sections"
+      ],
+      "properties": {
+        "eyebrow": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "presentationStyle": {
+          "$ref": "#/$defs/presentationStyle"
+        },
+        "heroFigure": {
+          "$ref": "#/$defs/heroFigure"
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/action"
+          }
+        },
+        "decisionPanels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/decisionPanel"
+          }
+        },
+        "progressSteps": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "routeStages": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/hubSection"
+          }
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pageId",
+        "moduleId",
+        "sourceModuleId",
+        "sourcePath",
+        "surface",
+        "publish",
+        "canonical",
+        "slug",
+        "hubGroup",
+        "order",
+        "routeRole",
+        "redirects",
+        "prev",
+        "next",
+        "implementationAnchors",
+        "labId",
+        "demoLinks"
+      ],
+      "properties": {
+        "pageId": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "moduleId": {
+          "$ref": "#/$defs/pathLikeId"
+        },
+        "sourceModuleId": {
+          "$ref": "#/$defs/pathLikeId"
+        },
+        "sourcePath": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9/_-]*\\.md$"
+        },
+        "surface": {
+          "$ref": "#/$defs/surface"
+        },
+        "publish": {
+          "type": "boolean"
+        },
+        "canonical": {
+          "type": "boolean"
+        },
+        "slug": {
+          "$ref": "#/$defs/slug"
+        },
+        "hubGroup": {
+          "$ref": "#/$defs/slug"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "routeRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "routeRoleLabel": {
+          "type": "string"
+        },
+        "titleOverride": {
+          "type": "string"
+        },
+        "summaryOverride": {
+          "type": "string"
+        },
+        "redirects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slug"
+          }
+        },
+        "prev": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/linkLike"
+            }
+          ]
+        },
+        "next": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/linkLike"
+            }
+          ]
+        },
+        "implementationAnchors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/linkLike"
+          }
+        },
+        "labId": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/slug"
+            }
+          ]
+        },
+        "demoLinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/linkLike"
+          }
+        }
+      }
+    }
+  }
+}

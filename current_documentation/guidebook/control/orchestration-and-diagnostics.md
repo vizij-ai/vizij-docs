@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,orchestration,diagnostics -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** teach how Vizij runtime control actually executes frame to frame and how to diagnose control failures without drifting into deployment or authoring runbooks
 
 # Orchestration and Diagnostics
@@ -31,63 +31,9 @@ You should also be able to recognize where that chain is breaking when control d
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand:
-
-1. path vocabulary from [Paths and Standard Controls](paths-and-standard-controls.md),
-2. runtime meaning from [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md),
-3. the difference between runtime-facing control and deployment-facing surfaces from [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md).
-
-It is an advanced control page, not a getting-started page.
-
-### Why This Page Exists
-
-This page needs to exist separately because readers often understand paths and input semantics but still cannot explain why a real runtime control succeeds, lags, conflicts, or appears to do nothing.
-
-The main misunderstanding it prevents is treating runtime control as a direct UI-to-renderer mutation.
-
-Vizij does not work that way. A control action usually succeeds only if the full runtime chain is healthy:
-
-1. the runtime is actually ready,
-2. the write is staged to the expected path,
-3. the orchestrator steps and merges controllers,
-4. the blackboard ends up with the intended values,
-5. the renderer receives outputs that correspond to animatables on the loaded face.
-
-If you skip that model, debugging becomes guesswork.
-
-### Artifact Being Touched
-
-The artifact here is the runtime execution chain itself:
-
-1. `VizijRuntimeProvider` lifecycle and status,
-2. staged input writes from hooks, drivers, or external clients,
-3. orchestrator scheduling and merge behavior,
-4. shared blackboard state,
-5. renderer-facing output application,
-6. observability surfaces that reveal which stage failed.
-
-### What This Page Covers and Does Not Cover
-
-This page covers:
-
-1. how runtime control executes in practice,
-2. how `@vizij/runtime-react` stages writes before a step,
-3. how orchestrator schedule and merge affect results,
-4. how to inspect likely failure points,
-5. how to use standalone and WebSocket material as adjacent diagnostic evidence.
-
-This page does not cover:
-
-1. full path grammar,
-2. core semantic categories in depth,
-3. authoring graph construction,
-4. packaging or CLI walkthroughs,
-5. network hardening,
-6. deployment support runbooks.
-
-For those, branch later into `Integrate` or `Support`.
+- Read this after [Paths and Standard Controls](paths-and-standard-controls.md), [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md), and [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md).
+- The page focuses on the runtime execution chain: readiness, staged writes, orchestrator merge, blackboard state, renderer output, and the diagnostic surfaces that reveal where that chain breaks.
+- Use `Integrate` or `Support` for path grammar refreshers, packaging steps, or deployment runbooks.
 
 ## What You Need
 
@@ -101,7 +47,24 @@ You do not need to know authoring internals or deployment packaging details to u
 
 ## The Runtime Control Chain
 
-> TODO(content-model): Add a timeline diagram here to show the runtime chain from readiness through staged inputs, orchestrator merge, blackboard updates, renderer outputs, and visible face behavior. Best fit because this module's central teaching goal is sequence-sensitive reasoning and a timeline would make the failure order easier to retain.
+```mermaid
+sequenceDiagram
+    participant Host as Host / Hook / Client
+    participant Runtime as Runtime Status
+    participant Orch as Orchestrator
+    participant Board as Blackboard
+    participant Renderer as Renderer
+    participant Face as Visible Face
+
+    Runtime->>Host: ready
+    Host->>Orch: stage input write (path, value)
+    Orch->>Orch: schedule controllers
+    Orch->>Board: merge controller writes
+    Board->>Renderer: publish resolved outputs
+    Renderer->>Face: visible face change
+```
+
+Read this left to right as a diagnostic sequence, not as a UI flow.
 
 The practical execution model is:
 
@@ -222,7 +185,16 @@ Those are the surfaces that let you distinguish:
 
 ## A Reliable Diagnostic Order
 
-> TODO(content-model): Add a checklist here to summarize the six-step diagnostic order into a compact reusable operator flow. Best fit because this advanced operational guide is teaching a repeatable procedure that readers should be able to scan under pressure.
+Keep this compact checklist beside the longer explanations:
+
+| Step | Question | Healthy evidence | If not |
+| --- | --- | --- | --- |
+| 1. readiness | is the runtime actually ready | `ready` is true and load/registration errors are absent | stop here and inspect lifecycle or load failure first |
+| 2. exact path | am I writing the exact path I think I am | the full path string matches the expected face and control family | fix the path before inspecting merge or render behavior |
+| 3. face and namespace | am I writing into the right runtime identity | `faceId`, namespace, and any slot-normalization boundary all agree | correct identity before testing further |
+| 4. constraints and defaults | does this path exist and what should reset/default behavior do | `inputConstraints` exposes the path and its defaults | stop guessing and use discovered constraints |
+| 5. orchestrator evidence | did the runtime actually step and merge a write | frames advance and the path appears in `merged_writes` or target snapshots | inspect controller output and merge policy |
+| 6. renderer target | does the loaded face have a matching renderable target | output paths and visible animatables line up with the loaded bundle | inspect bundle mismatch or renderer mapping next |
 
 When control fails, inspect in this order.
 
@@ -346,7 +318,27 @@ That is why the architecture primer warns that face identity must stay consisten
 
 ## Common Failure Patterns
 
-> TODO(content-model): Add a failure-state example here to show one concrete symptom-to-breakpoint trace, such as inputs staging successfully while renderer-visible change still fails. Best fit because this section is about diagnosis and a worked failure example would turn the abstract chain into a believable debugging pattern.
+### Worked Example: Slot Write Succeeds But Nothing Visible Changes
+
+Use this trace when an external client reports success but the face still looks static.
+
+1. the deployment client sends `set_slot_values` and receives `{ "success": true }`,
+2. the standalone bridge normalizes the discovered slot name and writes `rig/{faceId}/{slot}` with `setInput(...)`,
+3. `getPathSnapshot` or `useOrchTarget(...)` confirms the path value changed,
+4. but `outputPaths` or the visible face still does not show the expected motion.
+
+At that point, the failure is no longer "socket is broken."
+
+The higher-value next checks are:
+
+1. whether the discovered slot mapped to the control family you intended,
+2. whether the loaded bundle actually exported a matching animatable target,
+3. whether merge or reset/default behavior immediately diluted the visible result,
+4. whether the face or namespace identity was different from the one the client assumed.
+
+This is the concrete reason the guidebook keeps the chain ordered:
+
+successful transport does not prove successful rendering.
 
 ### Runtime never becomes ready
 

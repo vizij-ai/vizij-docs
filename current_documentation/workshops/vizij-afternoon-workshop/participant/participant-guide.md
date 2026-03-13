@@ -1,8 +1,16 @@
 # Participant Guide
 
-Last updated: 2026-03-09
+Last updated: 2026-03-13
 
 Welcome to the Vizij afternoon workshop. This guide is the participant-facing companion to the live session.
+
+## How To Work In The Room
+
+Use this room model for the afternoon:
+
+1. Work in pairs or trios when possible.
+2. Keep the facilitator demo as the canonical reference path.
+3. If your local setup fails, continue with the worksheet, partner observation, and support windows instead of dropping out of the activity.
 
 ## What You Will Learn
 
@@ -40,7 +48,7 @@ pnpm run dev:tutorial-fullscreen-face
 pnpm run dev:demo-vizij-player
 ```
 
-The live-conversation demo is optional for most participants and requires a facilitator-provided or locally configured `VITE_GEMINI_API_KEY`.
+For this workshop run, treat `tutorial-agent-face` as a facilitator-led live segment. You do not need participant credentials or a local `VITE_GEMINI_API_KEY` to stay on the main path.
 
 ## Core Concepts
 
@@ -66,8 +74,8 @@ You are done with Activity 1 when:
 You are done with Activity 2 when:
 
 1. You can explain how a stored animation differs from live input control.
-2. You can identify how `tutorial-agent-face` drives visemes and emotion.
-3. You can explain how `vizij-standalone` exposes a WebSocket control surface for deployment.
+2. You can identify how `tutorial-agent-face` drives visemes and emotion even if you observed it from the facilitator path.
+3. You can explain how `vizij-standalone` exposes a WebSocket control surface for deployment without needing to ship a binary yourself during the session.
 
 ## If You Get Stuck
 
@@ -81,6 +89,10 @@ You are done with Activity 2 when:
 1. `handouts/vizij-runtime-quickstart.md`
 2. `handouts/renderer-rigging-reference.md`
 3. `handouts/animation-integration-deployment-reference.md`
+
+## After The Session
+
+Use the guidebook after the tutorial if you want the broader self-study route across control, customization, integration, and deployment.
 
 ## Breakout Preparation
 

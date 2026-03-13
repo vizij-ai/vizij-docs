@@ -28,58 +28,9 @@ After this page, you should be able to carry one believable face package through
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who have already gone through the `Customize` fundamentals and now need the whole route in one view.
-
-It is especially for readers who might otherwise think advanced customization means:
-
-1. doing more of the same UI work,
-2. making many changes without staged validation,
-3. treating export as an afterthought.
-
-### Why This Page Exists
-
-The fundamentals pages teach each stage separately because they need their own conceptual boundaries.
-
-This page exists because advanced readers eventually need to see how those stages fit together as one route.
-
-Without this synthesis page, the common failure mode is:
-
-`I changed many things in authoring, so I must be near the finish line.`
-
-That is not reliable enough.
-
-The deep pipeline only works when each stage produces the right kind of artifact for the next one.
-
-### Artifact Being Touched
-
-The artifact here is the full authored face package as it moves through authoring:
-
-1. imported or chosen face data,
-2. authored control structure,
-3. pose and motion behavior,
-4. export validation state,
-5. bundled output ready for later runtime use.
-
-This is not one edit. It is a staged pipeline.
-
-### What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. the sequence of the full customization route,
-2. the staged checkpoints between import and export,
-3. the handoff from advanced customization into `Integrate`.
-
-This page does not cover:
-
-1. robot or ROS integration,
-2. deployment topology,
-3. low-level runtime namespacing work,
-4. deep compile or IR internals beyond export-readiness signals.
-
-Those belong in later buckets or deeper implementation docs.
+- Use this page after the `Customize` fundamentals if you need the full import-to-export route in one place.
+- The teaching job here is sequencing and checkpoints across the authored face package, not deeper runtime or deployment detail.
+- Stop at the handoff into `Integrate`; topology, ROS, and runtime internals belong later.
 
 ## What You Need
 

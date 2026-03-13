@@ -1,6 +1,6 @@
 # Demo Command Sheet
 
-Last updated: 2026-03-09
+Last updated: 2026-03-13
 
 Run all commands from the `vizij-web` repo root unless noted otherwise.
 
@@ -67,6 +67,7 @@ Use for:
 1. Live conversation integration
 2. Viseme lead and blend tuning
 3. Emotion and gaze function-calling demo
+4. Facilitator-led teaser and guided explanation, not a required participant app run
 
 ### Vizij Standalone
 
@@ -79,6 +80,7 @@ Use for:
 1. Deployment narrative
 2. WebSocket control walkthrough
 3. Robot-facing runtime packaging
+4. Guided deployment explanation rather than participant shipping
 
 ## Recommended Demo Order
 
@@ -102,3 +104,5 @@ Use for:
 1. Keep one terminal per app so restarts are fast.
 2. Open the participant guide on a second monitor.
 3. If the room is slow to install, bias toward facilitator-led demos plus partner discussions instead of dead time.
+4. Treat `tutorial-agent-face` as facilitator-led and keep participants focused on observation plus worksheet notes.
+5. Treat `vizij-standalone` as control-path understanding first, not full build-and-ship work.

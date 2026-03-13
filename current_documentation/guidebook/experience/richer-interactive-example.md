@@ -22,47 +22,9 @@ After this page, you should be able to explain what a richer first-contact Vizij
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who want one richer example of what Vizij can feel like before they decide whether to stay on the smallest route or go deeper.
-
-It is especially useful for readers who have already seen [Hello Face Quickstart](hello-face-quickstart.md) and now want to compare that smallest first-contact surface with a more product-shaped example.
-
-### Why This Page Exists
-
-`Hello Face` is still the right main route because it gives the fastest believable proof with the least setup.
-
-Some readers still want to see what Vizij feels like when the face sits inside a larger, more expressive shell before they learn how that shell is assembled.
-
-This page exists to satisfy that need without distorting the main route.
-
-### Artifact Being Touched
-
-The artifact here is a maintained richer sample experience:
-
-1. a face inside a larger app shell,
-2. more visible panels, toggles, and status surfaces around that face,
-3. a stronger sense of product shape than `Hello Face`,
-4. optional live behavior layered on top of the same underlying runtime.
-
-This is still an `Experience` page because the reader is primarily observing what the system can feel like, not yet learning how the controls or integration layers are implemented.
-
-### What This Page Does And Does Not Cover
-
-This page does cover:
-
-1. what makes the richer sample feel different from `Hello Face`,
-2. what the sample proves,
-3. where the sample stops and deeper integration teaching begins.
-
-This page does not cover:
-
-1. how the controls are wired,
-2. provider or session setup,
-3. detailed API-backed architecture,
-4. deployment semantics.
-
-Those belong in later buckets.
+- Use this optional page after [Hello Face Quickstart](hello-face-quickstart.md) if you want a more product-shaped example before choosing your route.
+- The page is still an `Experience` stop: it compares what the richer sample proves without teaching provider setup, control wiring, or deployment semantics.
+- Treat it as an observation page, not the main learning spine.
 
 ## What You Need
 

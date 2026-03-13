@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,configuration,control-surfaces -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain the main control and configuration surfaces readers encounter and what each one is for
 
 # Control Surfaces and Configuration Layers
@@ -50,7 +50,19 @@ It helps if you have already read:
 
 ## The Main Surfaces
 
-> TODO(content-model): Add a diagram here to show the six control and configuration layers as one stacked model from reusable rig channels through deployment-facing slots. Best fit because this module is teaching layer separation and readers need a visual map to keep adjacent surfaces from collapsing together.
+```mermaid
+flowchart TD
+    std["1. Standard Controls<br/>Reusable rig-facing channels"]
+    poses["2. Pose Configuration<br/>Named authored facial states"]
+    anim["3. Animation Configuration<br/>Timed authored motion"]
+    proc["4. Procedural Programs / Graphs<br/>Computed behavior"]
+    bundle["5. Runtime Bundle Configuration<br/>What the runtime loads and registers"]
+    slots["6. Deployment Slots / Operator Surfaces<br/>What a client can actually discover and drive"]
+
+    std --> poses --> anim --> proc --> bundle --> slots
+```
+
+Read this stack from bottom to top when authoring capability and from top to bottom when diagnosing an operator-facing endpoint.
 
 ### Standard Controls
 
@@ -112,9 +124,28 @@ Without this distinction, a reader can confuse:
 
 Those are different surfaces with different responsibilities.
 
+## Control Family, Controller, Driver, And Slot Are Not The Same Thing
+
+Use these distinctions when a page starts to blur authored capability with live execution:
+
+| Term | Use it for | Do not collapse it into |
+| --- | --- | --- |
+| control family | the reusable target being addressed, such as gaze, jaw, or brows | a widget, service loop, or deployment slot |
+| pose, animation, or procedural layer | the authored structure that defines what can happen | the live runtime write happening now |
+| controller or driver | the thing producing writes over time inside the runtime | the authored rig definition alone |
+| runtime bundle/configuration layer | the package that carries authored truth into the runtime | the operator surface |
+| deployment slot | the operator-facing entry exposed by an endpoint | the full runtime path, the authored graph, or the whole rig model |
+
 ## Where Readers Encounter These Layers
 
-> TODO(content-model): Add a comparison table here to map each maintained app or package to the control/configuration layers it exposes directly. Best fit because this section is already cross-referencing concrete surfaces and a scan-friendly matrix would turn the prose into a reusable reference bridge.
+| Surface | Standard controls | Poses | Animations | Procedural programs | Runtime bundle/config | Deployment slots |
+| --- | --- | --- | --- | --- | --- | --- |
+| `tutorial-fullscreen-face` | direct | direct trigger path | no | no | implicit through one bundle | no |
+| `tutorial-agent-face` | indirect through app logic | indirect | indirect | indirect or service-triggered | direct runtime shell | no |
+| `demo-vizij-player` | direct | direct | direct | direct | direct | no |
+| `vizij-authoring` | inspect and organize | author | author | author | export and bundle authoring | no |
+| `@vizij/runtime-react` | API surface | API surface | API surface | API surface | direct | no |
+| `vizij-standalone` | direct through discovered slots | direct through discovered slots when exported by the bundle | transport or invoke surface | transport or invoke surface | loaded runtime status | direct |
 
 Current maintained anchors illustrate different parts of this stack:
 

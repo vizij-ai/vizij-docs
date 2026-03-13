@@ -24,45 +24,9 @@ After this page, you should be able to explain what reference-face transfer does
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand how a face enters authoring and now want to reuse knowledge from a second, known-good face without confusing that process with runtime playback or deployment.
-
-### Artifact Being Touched
-
-The artifact in this page is the main face authoring session plus a separate reference face context.
-
-That distinction matters.
-
-Reference-face transfer is not about replacing the main face with another file. It is about opening a second face as a guide, comparing the two contexts, and copying selected authored information into the main face with explicit review.
-
-In the current workflow, the reference face is a helper context, not a second full authoring target.
-
-### Why This Page Exists Separately
-
-Transfer needs its own page because it prevents a very specific misunderstanding:
-
-1. import gets a face and its metadata into authoring,
-2. transfer uses a second face to help author the first one,
-3. integration and deployment consume the result later, but do not define this workflow.
-
-If those boundaries blur, readers start using the word `transfer` for too many different things.
-
-This page keeps transfer inside `Customize`, where it belongs.
-
-### What Reference-Face Transfer Does Not Teach
-
-This page does not teach:
-
-1. how a new face asset enters the tool,
-2. how rigging is defined for the main face,
-3. how pose groups and animations work in depth,
-4. how authored output is exported,
-5. how a runtime app consumes the result.
-
-Those belong to neighboring modules.
-
-Reference-face transfer is narrower: it is the guided reuse of authored knowledge from one face to another.
+- Read this after [Import](import.md) if a second, known-good face will help you author the main one.
+- The transfer workflow uses a helper context and explicit copy decisions; it is not another import flow and it is not runtime playback.
+- Rigging, pose authoring, export, and runtime consumption stay in the neighboring modules.
 
 ## What You Need
 

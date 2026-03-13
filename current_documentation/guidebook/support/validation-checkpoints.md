@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,validation,checkpoints -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** define reusable success checks across the maintained guidebook route
 
 # Validation Checkpoints
@@ -20,28 +20,9 @@ After this page, you should be able to validate whether a reader has actually su
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for guidebook authors, workshop facilitators, and builders who want a stable definition of success for the current maintained path.
-
-### Why This Page Exists
-
-Vizij pages should not stop at explanation. They should help a reader confirm that the system is actually doing what the page claims.
-
-Validation checkpoints keep the guidebook honest in three ways:
-
-1. they reduce false positives where a reader thinks they succeeded but did not,
-2. they make workshop facilitation easier,
-3. they expose when a page needs stronger recovery guidance.
-
-### Artifact Being Touched
-
-The artifact here is the validation layer itself:
-
-1. success criteria,
-2. observable runtime states,
-3. small practical checks,
-4. stage-by-stage confidence that the route is working.
+- This page is for guidebook authors, facilitators, and builders who need a stable definition of success for the maintained route.
+- Validation checkpoints are here to reduce false positives, support facilitation, and expose where a page still needs stronger recovery guidance.
+- The artifact is the validation layer itself: success criteria, observable runtime states, practical checks, and stage-by-stage confidence.
 
 ## What You Need
 
@@ -49,9 +30,10 @@ This page is most useful alongside:
 
 1. [Hello Face Quickstart](../experience/hello-face-quickstart.md),
 2. [First Control Interactions](../control/first-control-interactions.md),
-3. [Minimal Web Player](../integrate/minimal-web-player.md),
-4. [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md),
-5. [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+3. [Tweak an Existing Face](../customize/tweak-an-existing-face.md),
+4. [Minimal Web Player](../integrate/minimal-web-player.md),
+5. [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md),
+6. [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
 
 ## Interactive Lifecycle
 
@@ -77,8 +59,21 @@ state_diagram
 | :--- | :--- | :--- | :--- |
 | **Experience** | Gaze follows mouse | Face is static or invisible | Troubleshooting Matrix |
 | **Control** | Mouse gaze and pose hotkeys both work | Controls have no effect or feel inconsistent | Troubleshooting Matrix |
+| **Customize** | one authored change can be described clearly and survives into export or preview | reader cannot tell whether they changed rig structure, an expression, or runtime behavior | Troubleshooting Matrix |
 | **Integrate** | Runtime reports health | "Provider not found" | Minimal Web Player |
 | **Deploy** | Client can connect | "Connection refused" | Standalone Deployment |
+
+## Proof Before You Advance
+
+Use these "not enough yet" checks to avoid false confidence:
+
+| Stage | Not enough to claim success | Better proof |
+| --- | --- | --- |
+| Experience | the face is merely on screen once | gaze follows mouse and hotkeys cause visible pose changes more than once |
+| Control | the reader can repeat path words from memory | the reader can say why a standard path and a pose-weight path mean different things |
+| Customize | one panel changed but the reader cannot name which layer changed | the reader can say whether they changed import, rigging, pose, animation, or procedural behavior and why |
+| Integrate | the component tree compiles | the app shows honest loading, ready, and error states and one maintained control path still reaches the face |
+| Deploy | the socket responds once | slot discovery works, one visible write lands, and reset returns the face toward defaults |
 
 ### Experience: Hello Face
 
@@ -96,6 +91,14 @@ Treat the first `Control` stage as successful when:
 1. the reader can read a standard control path,
 2. the reader can distinguish pose weights from standard controls,
 3. the reader can explain that visible behavior is driven through path-based writes rather than one-off UI state.
+
+### Customize: One Chosen Authoring Layer
+
+Treat the first `Customize` stage as successful when:
+
+1. the reader can say which authoring layer they are in,
+2. they can explain why that layer fits their immediate goal,
+3. one authored change has a believable preview, export, or route into runtime use.
 
 ### Integrate: Minimal Player
 
@@ -116,6 +119,12 @@ Treat the first `Deploy` stage as successful when:
 3. the WebSocket endpoint is running,
 4. a control client or the built-in web control panel can connect,
 5. the face responds to control input.
+
+The strongest first proof is still:
+
+1. slot discovery returns a real slot name,
+2. one small write succeeds against that exact discovered slot,
+3. reset returns the face toward defaults.
 
 ## Observable Signals That Matter
 

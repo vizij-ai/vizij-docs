@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,paths,standard-controls -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain the core path and standard-control vocabulary behind visible runtime behavior
 
 # Paths and Standard Controls
@@ -71,6 +71,24 @@ Before you read the path grammar, keep these definitions nearby:
 | `viseme` | a speech-shaped mouth state exposed as a named weight | speech and live-agent surfaces |
 | `slot` | a deployment-facing exposed control entry, not a synonym for every path | standalone operator control surfaces |
 
+If you need the broader distinction between `runtime path`, `deployment slot name`, `controller`, `driver`, `layer`, `mode`, and `stage`, use [Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md).
+
+## Runtime Path Versus Deployment Slot
+
+This page teaches the runtime-facing path grammar.
+
+Keep that separate from the deployment-facing short slot names that the standalone endpoint exposes to clients:
+
+| Surface | What you read or write | Example | Why it differs |
+| --- | --- | --- | --- |
+| runtime input path | full runtime path inside the face runtime | `rig/{face}/standard/left_eye/pos/x` | includes face identity because the runtime is writing into one specific face's control tree |
+| deployment slot name | short operator-facing slot discovered from the endpoint | `standard/vizij/left_eye/pos/x` | the standalone bridge normalizes this external slot name into the runtime path it writes internally |
+| namespaced observer key | runtime snapshot key in a shared orchestrator | `{namespace}/rig/{face}/standard/left_eye/pos/x` | shared orchestrator inspection can prefix the runtime path with namespace for observation and diagnostics |
+
+If you are debugging the runtime itself, think in full runtime paths.
+
+If you are driving `vizij-standalone`, copy the discovered slot name from the endpoint and let the bridge map it back into the internal runtime path.
+
 ## Standard Control Path Shape
 
 The common standard-control shape is:
@@ -91,7 +109,7 @@ In practice, these paths are useful when you want reusable, face-legible control
 The common pose-weight shape is:
 
 ```text
-rig/{face}/poses/{pose_name}.weight
+rig/{face}/poses/{pose_slug}.weight
 ```
 
 Examples:
@@ -103,14 +121,6 @@ These are useful when you want named facial states or authored expressions that 
 
 ## Viseme Weight Path Shape
 
-### Control Category Comparison
-
-| Category | Path Component | Use Case | Implementation |
-| :--- | :--- | :--- | :--- |
-| **Standard** | `/standard/` | Reusable gaze, jaw, brows | Consistent across rigs |
-| **Poses** | `/poses/` | Named facial expressions | Authored in Customize |
-| **Visemes** | `/visemes/` | Speech shaping / Lip sync | Mapped to phonemes |
-
 Another common category is visemes:
 
 ```text
@@ -118,6 +128,22 @@ rig/{face}/visemes/{viseme_id}.weight
 ```
 
 This matters later when speech or live conversation is involved, but the path idea is the same: named behavior mapped to a stable runtime address.
+
+## Current Control-Family Inventory
+
+At the route level, expect three face-facing runtime path families plus one external deployment alias:
+
+| Family | Runtime shape or external alias | Best used for | Common write sources | Do not collapse it into |
+| --- | --- | --- | --- | --- |
+| `standard control path` | `rig/{face}/standard/{channel}/{track}/{attribute}` | reusable rig-facing channels such as gaze, jaw, and brows | hooks, sliders, operator clients, procedural outputs | a pose-weight path |
+| `pose-weight path` | `rig/{face}/poses/{pose_slug}.weight` | authored named expression blending | hotkeys, pose panels, animation tracks, procedural outputs | a lower-level standard channel |
+| `viseme weight path` | `rig/{face}/visemes/{viseme_id}.weight` | speech-shaped mouth behavior | speech controllers, live-agent surfaces, animation tracks | a generic pose-weight path |
+| `deployment slot name` | `standard/vizij/...` | external operator-facing writes through `vizij-standalone` | standalone clients and web control panels | the full internal runtime path |
+
+Two rules keep this inventory readable:
+
+1. animation tracks and procedural programs are common write sources, not separate face-facing path families by themselves,
+2. deployment slot names are external aliases that the bridge maps back into internal runtime paths.
 
 ## Visible Interaction vs Runtime Meaning
 
@@ -173,7 +199,7 @@ The best wave-1 visual is still the existing `tutorial-fullscreen-face` screensh
 1. `apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
 2. `apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
 
-Wave 2 can add a dedicated path-anatomy diagram.
+Those anchors remain the clearest current proof surface for this path vocabulary.
 
 ## Success Check
 
@@ -196,4 +222,6 @@ Use these when you need the current implementation truth:
 ## Recommended Next Steps
 
 1. If you want the smallest runtime shell after understanding the path model, read [Minimal Web Player](../integrate/minimal-web-player.md).
-2. If you want to make the face your own instead, branch later into the `Customize` bucket.
+2. If you want to understand how runtime meaning changes by control family, continue to [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md).
+3. If you want to make the face your own instead, branch later into the `Customize` bucket.
+4. If you are already thinking about operator-facing slots, jump to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).

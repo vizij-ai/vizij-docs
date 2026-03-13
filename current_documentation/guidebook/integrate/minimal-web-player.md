@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,player,runtime-shell -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** establish the smallest believable player-stage runtime surface in the guidebook route
 
 # Minimal Web Player
@@ -9,7 +9,7 @@
 
 | Axis | Position |
 | --- | --- |
-| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
+| Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current bucket: [Integrate](README.md)<br>Next bucket after this one: [Deploy](../deploy/README.md) |
 | Depth ladder in this bucket | Above: none, this is the entry depth in this bucket<br>Current: `Surface`<br>Below: [Loading, Playback, and Embedding](loading-playback-and-embedding.md), [Application Integration Patterns](application-integration-patterns.md), [API-Backed Interactive Application](api-backed-interactive-application.md), [Rich Interactive Applications](rich-interactive-applications.md) |
 | Module position in this bucket | Previous in bucket: start at [Integrate](README.md)<br>Current module: `Minimal Web Player`<br>Next in bucket: [Loading, Playback, and Embedding](loading-playback-and-embedding.md) |
 | Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
@@ -33,6 +33,25 @@ Open the local URL shown by Vite.
 
 This walkthrough uses `demo-vizij-player` because it is the strongest maintained example of a bundle-first player surface in the workspace.
 
+## Scope note
+
+This walkthrough assumes a React app built on `@vizij/runtime-react`.
+
+Keep the distinction clear:
+
+1. the lifecycle and validation lessons here are the portable part,
+2. the concrete code examples are React-specific,
+3. this page is about integration, not deployment.
+
+## Route Handoff From This Page
+
+Use this page as the last stop before you branch, not as proof that every next step must stay inside `Integrate`.
+
+| If this describes you... | Treat this page as successful when... | Open this next |
+| --- | --- | --- |
+| you are not building in React | you can explain the `VizijAssetBundle`, provider-owned readiness states, and one working control path | [Loading, Playback, and Embedding](loading-playback-and-embedding.md), then repo-local implementation docs for your framework |
+| your next real question is operator control or deployment topology | you have one healthy player shell and one visible control path reaching the face | [Deploy](../deploy/README.md), then [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md) or [Hardware, ROS, and Multi-Screen Topologies](../deploy/hardware-ros-and-multi-screen-topologies.md) |
+
 ## What A Minimal Player Must Prove
 
 For this route, a player is only believable if it makes four things obvious:
@@ -41,6 +60,15 @@ For this route, a player is only believable if it makes four things obvious:
 2. whether the runtime is healthy
 3. what the viewer is currently showing
 4. whether at least one control path reaches the face successfully
+
+## What This Page Does Not Solve Yet
+
+This page does not yet solve:
+
+1. service-backed or session-backed behavior loops,
+2. non-React implementation details,
+3. operator-facing endpoint exposure,
+4. deployment topology choices.
 
 That is the standard you are checking as you walk through the app.
 
@@ -195,7 +223,8 @@ Use these branch points once the player shell feels trustworthy:
 1. If you still need the runtime vocabulary behind loading, playback, and embedding, continue to [Loading, Playback, and Embedding](loading-playback-and-embedding.md).
 2. If your own app needs local hooks, diagnostics panels, or sample-selection behavior, continue to [Application Integration Patterns](application-integration-patterns.md).
 3. If your product depends on an external session or live service loop, branch to [API-Backed Interactive Application](api-backed-interactive-application.md).
-4. If your next question is operator control, exposed endpoints, or same-host clients, jump to [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md).
+4. If you are not building in React, stop here once the runtime shell model is clear, then switch to repo-local implementation docs for framework-specific assembly.
+5. If your next question is operator control, exposed endpoints, or deployment topology, jump to [Deploy](../deploy/README.md) and continue from the deployment route there.
 
 ## Implementation Anchors
 
@@ -213,3 +242,5 @@ Use these when you need the current implementation truth:
 Continue to [Loading, Playback, and Embedding](loading-playback-and-embedding.md) if you want the fundamentals behind the player shell.
 
 If your goal is a richer application pattern, continue later to [API-Backed Interactive Application](api-backed-interactive-application.md).
+
+If your goal is operator-facing deployment instead of more integration depth, jump next to [Deploy](../deploy/README.md).

@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,orientation -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** explain what Vizij is, what it enables, and how a new reader should choose the next step
 
 # What Is Vizij?
@@ -22,40 +22,9 @@ After this page, you should understand what Vizij is for, what kinds of work it 
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for:
-
-1. readers encountering Vizij for the first time,
-2. builders deciding whether Vizij matches their needs,
-3. contributors who need a quick public-facing orientation before reading deeper pages.
-
-### Artifact Being Touched
-
-The artifact here is the Vizij system as a maintained learning and builder path.
-
-At the public route level, that path is:
-
-`Hello Face -> Authoring -> Player -> Deployment`
-
-This page explains that path at a high level. It does not try to teach the implementation details of each stage.
-
-### What This Page Does And Does Not Teach
-
-This page teaches:
-
-1. the broad purpose of Vizij,
-2. the maintained public route through the system,
-3. the difference between first contact, customization, integration, and deployment at a high level.
-
-This page does not teach:
-
-1. the runtime architecture in depth,
-2. path semantics or control vocabulary,
-3. authoring internals such as rigging and pose structure,
-4. deployment topology or protocol detail.
-
-Those belong to later guidebook modules.
+- This page is the first-stop orientation for readers deciding whether Vizij matches their needs.
+- It explains the maintained public route at a high level: first contact, customization, integration, and deployment.
+- Runtime architecture, control vocabulary, authoring internals, and topology detail are intentionally left for later modules.
 
 ## What You Need
 
@@ -103,7 +72,7 @@ The current public framing for Vizij is one maintained builder spine:
 | Hello Face | [fullscreen-demo.png](../assets/screenshots/fullscreen-demo.png) | the smallest maintained runtime can render a face and respond visibly |
 | Authoring | [vizij-authoring.png](../assets/screenshots/vizij-authoring.png) | the face can become an editable artifact instead of only a runtime demo |
 | Player | [player-demo.png](../assets/screenshots/player-demo.png) | the same runtime can live inside a bundle-first shell with visible diagnostics and controls |
-| Deployment | no canonical guidebook screenshot has been promoted yet | deployment is still taught through operator checks, runtime health, and connection proof rather than a single screenshot |
+| Deployment | operator-ready runtime status, endpoint identity, and connection proof | deployment is validated through runtime health, slot/control discovery, and recovery checks rather than a single hero screenshot |
 
 Each stage answers a different question.
 
