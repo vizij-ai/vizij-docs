@@ -226,10 +226,10 @@ Use these when you need the current implementation truth:
 1. `vizij-web/apps/vizij-authoring/README.md`
 2. `vizij-web/apps/vizij-authoring/docs/Authoring_Blueprint.md`
 3. `vizij-web/apps/vizij-authoring/docs/ARCHITECTURE.md`
-4. `vizij-web/apps/vizij-authoring/src/hooks/useVizijAssetLoader.ts`
-5. `vizij-web/apps/vizij-authoring/src/hooks/useRigGraphImport.ts`
-6. `vizij-web/apps/vizij-authoring/src/hooks/usePoseGraphImport.ts`
-7. `vizij-web/apps/vizij-authoring/AGENTS.md`
+4. `vizij-web/apps/vizij-authoring/src/App.tsx`
+5. `vizij-web/apps/vizij-authoring/src/hooks/useVizijAssetLoader.ts`
+6. `vizij-web/apps/vizij-authoring/src/hooks/useRigGraphImport.ts`
+7. `vizij-web/apps/vizij-authoring/src/hooks/usePoseGraphImport.ts`
 
 ## Recommended Next Steps
 

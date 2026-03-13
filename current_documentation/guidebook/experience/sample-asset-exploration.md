@@ -85,7 +85,7 @@ The current sample inventory is best grounded by:
 1. `vizij-assets`,
 2. `demo-vizij-player`,
 3. `tutorial-fullscreen-face`,
-4. the workshop source audit in `vizij-docs`.
+4. the curated sample registry in `demo-vizij-player`.
 
 ## Not Every Sample Serves The Same Teaching Job
 
@@ -184,13 +184,12 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. `vizij-assets`
-2. `vizij-web/apps/demo-vizij-player/src/App.tsx`
-3. `vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx`
-4. `current_documentation/guidebook/experience/existing-asset-sandbox.md`
-5. `current_documentation/guidebook/customize/tweak-an-existing-face.md`
-6. `current_documentation/ROADMAP.md`
-7. `current_documentation/workshops/vizij-afternoon-workshop/planning/source-audit.md`
+1. `vizij-web/apps/demo-vizij-player/README.md`
+2. `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
+3. `vizij-web/apps/demo-vizij-player/src/data/samples.ts`
+4. `vizij-web/apps/demo-vizij-player/src/App.tsx`
+5. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
+6. `vizij-web/apps/vizij-authoring/README.md`
 
 ## Recommended Next Steps
 

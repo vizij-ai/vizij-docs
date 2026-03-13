@@ -188,6 +188,15 @@ You are done with this page when:
 3. at least one maintained control path visibly reaches the face
 4. you can explain why this app is a player-stage shell rather than just another runtime demo
 
+## When To Move On
+
+Use these branch points once the player shell feels trustworthy:
+
+1. If you still need the runtime vocabulary behind loading, playback, and embedding, continue to [Loading, Playback, and Embedding](loading-playback-and-embedding.md).
+2. If your own app needs local hooks, diagnostics panels, or sample-selection behavior, continue to [Application Integration Patterns](application-integration-patterns.md).
+3. If your product depends on an external session or live service loop, branch to [API-Backed Interactive Application](api-backed-interactive-application.md).
+4. If your next question is operator control, exposed endpoints, or same-host clients, jump to [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md).
+
 ## Implementation Anchors
 
 Use these when you need the current implementation truth:

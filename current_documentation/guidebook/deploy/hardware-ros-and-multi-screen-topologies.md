@@ -96,18 +96,27 @@ It helps if you can inspect:
 2. `vizij-web/apps/vizij-standalone/src/App.tsx`,
 3. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`,
 4. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`,
-5. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`,
-6. `vizij-docs/active_projects/runtime/multi_screen/multi_screen-plan.md`.
+5. `vizij-web/apps/vizij-standalone/src-tauri/src/ws_server.rs`,
+6. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`,
+7. `vizij-docs/current_documentation/ARCHITECTURE.md` for broader system context.
 
 You do not need full ROS integration knowledge to use this page well.
 
 ## The Three Topology Directions
 
-> TODO(content-model): Add a comparison diagram here to show single-host multi-monitor, split control-surface planning, and ROS or hardware-oriented topologies side by side. Best fit because this module is comparing advanced deployment directions and readers need a visual topology map before they choose among them.
+Use this text-first comparison before reading the longer sections:
+
+| Topology direction | Current readiness label | What is strongest today | What is still bounded or future-facing |
+| --- | --- | --- | --- |
+| single-host multi-monitor | maintained advanced path | display selection, fullscreen, and kiosk-style launch options in `vizij-standalone` | remote-device or multi-client assumptions |
+| split control-surface planning | prototype | same-host control panel plus typed slot/control flow | broader device separation while the server still binds `127.0.0.1` and enforces one active client |
+| robot or ROS-adjacent deployment | prototype branch | strategic topology framing around typed control endpoints | packaged middleware, robotics workflow, and maintained ROS walkthroughs |
 
 The current advanced deployment space is best understood as three directions rather than one ladder.
 
 ### 1. Single-host multi-monitor deployment
+
+Readiness label: `maintained advanced path`
 
 This is the most concrete advanced step in the current implementation.
 
@@ -128,6 +137,8 @@ This is advanced, but it is still close to the simple deployment story.
 
 ### 2. Split control-surface and display workflows
 
+Readiness label: `prototype`
+
 This is the next topology direction.
 
 The current standalone stack clearly aims toward operator-control workflows:
@@ -145,6 +156,8 @@ At the same time, the current implementation has boundaries that matter:
 That means split control-surface workflows are real as a topology direction, but readers should treat broader device separation as planned and partially normalized rather than fully assumed.
 
 ### 3. Robot or ROS-adjacent deployment
+
+Readiness label: `prototype in progress`
 
 This is the farthest-reaching topology direction discussed in current roadmap language.
 
@@ -196,7 +209,13 @@ This is a topology constraint, not just an implementation footnote.
 
 ## How To Choose Among These Topologies
 
-> TODO(content-model): Add a decision guide here to map common deployment constraints to the topology direction they favor. Best fit because this section is already structured as a choice surface and a compact chooser would make the tradeoffs easier to reuse later.
+Use this chooser when a deployment discussion starts turning into architecture drift:
+
+| If your immediate constraint is... | Choose this direction first | Because | Keep in mind |
+| --- | --- | --- | --- |
+| kiosk or presentation deployment on one machine | single-host multi-monitor | it changes the physical shape without changing the current same-host control model | validate the simple standalone path first |
+| operator control needs to feel separate from the rendered face | split control-surface planning | the current control stack already exposes typed slots and a built-in browser control path | same-host and exclusive-client rules still define the strongest current truth |
+| robotics system planning or future ROS integration | robot or ROS-adjacent comparison | it helps frame the future system boundary honestly | this is strategy and topology framing, not a maintained deployment walkthrough |
 
 Use this decision framing:
 
@@ -233,14 +252,14 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. `vizij-docs/current_documentation/ROADMAP.md`
-2. `vizij-docs/current_documentation/ARCHITECTURE.md`
-3. `vizij-docs/active_projects/runtime/multi_screen/multi_screen-plan.md`
-4. `vizij-web/apps/vizij-standalone/README.md`
-5. `vizij-web/apps/vizij-standalone/src/App.tsx`
-6. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
-7. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`
-8. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
+1. `vizij-web/apps/vizij-standalone/README.md`
+2. `vizij-web/apps/vizij-standalone/src/App.tsx`
+3. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
+4. `vizij-web/apps/vizij-standalone/src-tauri/src/ws_server.rs`
+5. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`
+6. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
+7. `vizij-docs/current_documentation/ARCHITECTURE.md` for broader platform boundaries
+8. `vizij-docs/current_documentation/ROADMAP.md` for forward-looking direction, not current operator truth
 
 ## Recommended Next Steps
 

@@ -148,9 +148,9 @@ Use these when you need the current implementation truth:
 
 1. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
 2. `vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx`
-3. `vizij-web/packages/@vizij/runtime-react/README.md`
-4. `current_documentation/workshops/vizij-afternoon-workshop/planning/source-audit.md`
-5. `current_documentation/guidebook/reference/runtime-quickstart-reference.md`
+3. `vizij-web/apps/tutorial-agent-face/README.md`
+4. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
+5. `vizij-web/packages/@vizij/runtime-react/README.md`
 
 ## Recommended Next Steps
 

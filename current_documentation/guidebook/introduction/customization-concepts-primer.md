@@ -109,7 +109,15 @@ In Vizij, that usually means some combination of:
 
 That is why [Export](../customize/export.md) belongs in `Customize` even though it also affects `Integrate` and `Deploy`.
 
-> TODO(content-model): Add a comparison here to distinguish rig, pose, animation, procedural program, and exportable artifact in one compact teaching block. Best fit because this section introduces a cluster of adjacent terms that readers will otherwise blur together before they reach the Customize bucket.
+## Compact Comparison
+
+| Concept | Reader-level meaning | Current implementation surface | Best used for |
+| --- | --- | --- | --- |
+| Rig | the controllable structure of the face | `vizij-authoring` separates authored abstract-rig controls from low-level `/propsrig/...` channels that actually write to scene targets | defining what can be driven in a stable, reusable way |
+| Pose | a named facial state over those controls | pose config and pose graph data target canonical rig inputs and compile into pose-control paths | recalling a reusable expression such as `blink` or `smile` by weight |
+| Animation | authored motion over time | authored timeline clips and imported animation payloads can be bundled into the exported artifact | replaying a specific timed motion sequence |
+| Procedural program | computed behavior from selected inputs, graph logic, and selected outputs | the `Program` workspace stores nodes, edges, enabled inputs, enabled outputs, and any custom input paths | reacting continuously to live values instead of replaying a fixed clip |
+| Exported artifact | the packaged result that leaves authoring | bundled GLB is the primary target, with supporting graph, pose-config, and pose-IR JSON exports | handing authored work to later runtime, integration, or debugging surfaces |
 
 ## How These Concepts Relate
 
@@ -123,7 +131,15 @@ A useful mental model is:
 
 This is not yet the authoring workflow. It is the conceptual stack underneath it.
 
-> TODO(content-model): Add a diagram here to show the conceptual stack from controllable structure through exported artifact. Best fit because this section is already phrased as a layered mental model and would benefit from a visual ordering cue.
+### Text-First Stack
+
+| Layer | What it contributes | Current implementation truth |
+| --- | --- | --- |
+| Scene targets | the leaves that are actually rendered | the loaded face exposes animatable scene targets, but they are not meant to be the main authored control surface |
+| PropsRig layer | low-level writeable channels for those scene targets | generated paths live under `/propsrig/...` and mediate scene writes |
+| Abstract rig layer | the stable controls authors actually think in | authored controls can drive other abstract-rig nodes or propsrig nodes, but not animatable leaves directly |
+| Pose / animation / procedural layers | the higher-level behavior tools | poses define named states, animations define timed clips, and procedural programs compute outputs from enabled inputs plus graph logic |
+| Export boundary | the handoff into runtime use | export packages the authored result into a bundled GLB or supporting JSON/IR artifacts that later surfaces can load |
 
 ## Success Check
 
@@ -138,10 +154,10 @@ You are done with this page when:
 Use these when you need the current implementation truth:
 
 1. `vizij-web/apps/vizij-authoring/README.md`
-2. `vizij-web/apps/vizij-authoring/docs/Authoring_Blueprint.md`
-3. `vizij-web/apps/vizij-authoring/docs/pose_grouping_explainer.md`
-4. `current_documentation/concepts/ARCHITECTURE_PRIMER.md`
-5. `current_documentation/guidebook/customize/README.md`
+2. `vizij-web/apps/vizij-authoring/docs/ARCHITECTURE.md`
+3. `vizij-web/apps/vizij-authoring/docs/Authoring_Blueprint.md`
+4. `vizij-web/apps/vizij-authoring/src/motiongraph/MotionGraphPanel.tsx`
+5. `vizij-web/apps/vizij-authoring/src/hooks/useVizijExport.ts`
 
 ## Recommended Next Steps
 

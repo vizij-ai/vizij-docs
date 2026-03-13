@@ -142,6 +142,18 @@ Call the deployment healthy only when all of these are true:
 
 If any one of those is missing, keep treating the setup as unfinished.
 
+## Pre-Flight And Post-Flight Checklist
+
+Use this checklist when you want one compact pass/fail loop instead of rereading the whole walkthrough.
+
+| Phase | Check | Pass signal | Fail clue |
+| --- | --- | --- | --- |
+| pre-flight | start the app with `pnpm run dev:vizij-standalone` or `pnpm --filter vizij-standalone dev -- -- --glb /path/to/avatar.glb --fullscreen` | desktop window opens and stays up | process fails early or the port is already in use |
+| pre-flight | load one face | the face becomes visible or the app leaves `No model loaded` | file picker returns but the app stays empty or enters an error state |
+| pre-flight | confirm endpoint identity | the app reports the local control port and the default route is still `ws://127.0.0.1:9000` unless you changed `--port` | you are guessing the port or the app still looks like it is starting |
+| post-flight | prove one same-host control path | built-in web control or another same-host client connects and the face changes visibly | the client connects but no visible change reaches the face |
+| post-flight | prove recoverability | reset returns the face toward its defaults and the endpoint stays healthy | the face stays stuck or recovery leaves the endpoint in an unclear state |
+
 ## Fast Recovery If It Fails
 
 Use these shortcuts:

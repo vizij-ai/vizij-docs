@@ -184,11 +184,11 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. `current_documentation/workshops/vizij-afternoon-workshop/planning/validation.md`
-2. `current_documentation/workshops/vizij-afternoon-workshop/checklists/troubleshooting-playbook.md`
-3. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
-4. `vizij-web/apps/demo-vizij-player/src/App.tsx`
-5. `vizij-web/apps/vizij-standalone/README.md`
+1. `vizij-web/packages/@vizij/runtime-react/README.md`
+2. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
+3. `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
+4. `vizij-web/apps/vizij-standalone/README.md`
+5. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
 
 ## Next Step
 

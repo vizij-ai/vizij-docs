@@ -84,7 +84,15 @@ That definition is intentionally modest. It does not require advanced networking
 
 ## The Readiness Loop
 
-> TODO(content-model): Add a checklist here to compress the readiness loop into a stage-by-stage deployment gate a facilitator or operator could reuse. Best fit because this module is operational by design and the core value is a repeatable readiness procedure.
+Keep this compact gate beside the longer walkthrough:
+
+| Stage | What to check | Healthy signal | First recovery move |
+| --- | --- | --- | --- |
+| 1. face loaded | app is not in `No model loaded`, `Loading...`, or explicit error state | face is visible | reload the asset or choose another known-good GLB |
+| 2. runtime ready | the runtime panel reaches `ready` and shows useful fields such as `Face ID`, `Constraints`, or path hints | runtime state is settled and controllable | stop and compare runtime state before testing the socket |
+| 3. control service up | the app keeps the local port running and the reported endpoint matches your client target | `ws://127.0.0.1:<port>` is the live endpoint | reconnect to the exact port the app reports |
+| 4. slot discovery works | the built-in panel populates or slot listing returns concrete entries | real slot names are discoverable | stop guessing paths and copy a returned slot |
+| 5. one write and reset succeed | a visible write lands and `reset` returns the face toward defaults | one successful control round trip plus recoverability | retry with discovered slots, then escalate if visible behavior still fails |
 
 Run the checks in this order.
 
@@ -219,81 +227,130 @@ That is enough recoverability for this page. Deeper recovery chains belong in Su
 
 ## First-Line Recovery
 
-When the readiness loop fails, use this sequence before escalating.
+Do not treat recovery as one blind checklist.
 
-> TODO(content-model): Add a failure-state example here to trace one believable broken endpoint, such as a visible face with a non-ready runtime or a reachable socket with unusable slot discovery, through the first recovery moves. Best fit because this page is teaching operational recovery and a worked failure trace would help readers recognize when each branch of the loop applies.
+Start at the **first condition that is failing**, perform the matching action, and only continue when that condition has become healthy.
 
-### Asset reload
+### Recovery Decision Table
 
-Use this when:
+| If this is the first failing condition... | Take this action now | Continue only when... |
+| --- | --- | --- |
+| the app is in `No model loaded`, stuck on `Loading...`, or in an explicit error state | reload the asset or choose another known-good GLB/GLTF | the face is visible and the app is no longer in a load or error state |
+| the face is visible but the runtime panel is not `ready` | stop testing socket or control writes and check runtime readiness first | `Runtime: ready` is visible and the panel shows useful fields such as `Face ID`, `Constraints`, or path hints |
+| the runtime is ready but the control client is not clearly connected to the live endpoint | reconnect to the exact port the app reports | the server status is running and your client is pointed at that exact local endpoint |
+| the socket is reachable but you do not yet have a trusted path to write to | run slot discovery or use the built-in panel to discover slots | you have copied one real returned slot or path instead of guessing |
+| you have a discovered slot but do not know whether control is actually working | send one small write to that exact discovered slot | the response reports success and the face changes visibly |
+| the write worked but the face is now left in a driven or uncertain state | invoke `reset` and confirm recoverability | the face returns toward defaults and one small retry still works |
+
+### Ordered Recovery Flow
+
+Use this order only after you identify the first failed condition above.
+
+### 1. Recover asset load state first
+
+Enter here when:
 
 1. the app is in `No model loaded`,
 2. the face never appears,
 3. the app enters its explicit error state after load.
 
-Fast action:
+Action:
 
 1. return to the file picker with **Back** if needed,
 2. open the GLB/GLTF again or choose another known-good asset,
 3. wait for the runtime state to settle before checking anything else.
 
-### Runtime readiness check
+Continue only when:
 
-Use this when the face appears but the endpoint still does not feel operational.
+1. the face is visible,
+2. the app is no longer in the explicit load or error state,
+3. you are back at a believable runtime surface rather than a broken load state.
 
-Fast action:
+### 2. Recover runtime readiness before testing control
+
+Enter here when the face appears but the endpoint still does not feel operational.
+
+Action:
 
 1. verify the top-right panel reaches `Runtime: ready`,
 2. confirm `Constraints` is not effectively empty for the face you expect to control,
 3. confirm the `Face ID` and `rig/{faceId}/<path>` hint are present.
 
+Continue only when:
+
+1. the runtime panel reports `ready`,
+2. the runtime is exposing real control-related fields,
+3. you are no longer guessing whether the face is actually controllable.
+
 If the runtime never becomes ready, stop here and route to [Troubleshooting Matrix](../support/troubleshooting-matrix.md).
 
-### WebSocket status and port check
+### 3. Recover endpoint connection clarity
 
-Use this when runtime looks healthy but control does not work.
+Enter here when runtime looks healthy but control still does not work.
 
-Fast action:
+Action:
 
 1. read the port from the app UI,
 2. confirm the server status is running rather than still starting,
 3. connect your client to that exact local endpoint.
 
+Continue only when:
+
+1. the reported port and the client target match,
+2. the socket server is staying up,
+3. you can stop asking whether the failure is just the wrong endpoint.
+
 If the control client is pointed at the wrong port, fix that before doing anything else.
 
-### Slot discovery and path check
+### 4. Recover path certainty through slot discovery
 
-Use this when the socket is reachable but writes fail.
+Enter here when the socket is reachable but writes fail or you are about to guess a path from memory.
 
-Fast action:
+Action:
 
 1. list slots or use the built-in control panel to discover them,
-2. copy a real returned path,
-3. retry with that exact path.
+2. copy a real returned slot or path,
+3. retry with that exact discovered value.
 
-Do not infer path names from memory if the endpoint can tell you the current ones.
+Continue only when:
 
-### One control write
+1. you have one concrete slot or path from the endpoint itself,
+2. you are no longer inventing control paths,
+3. the next write test is grounded in discovered runtime truth.
 
-Use this when you need to separate connection problems from runtime problems.
+### 5. Recover confidence with one small write
 
-Fast action:
+Enter here when you have a discovered slot but still need to separate connection problems from runtime problems.
+
+Action:
 
 1. send one known numeric write to a discovered slot,
 2. confirm the response reports success,
 3. confirm the face changes visibly.
 
+Continue only when:
+
+1. the write returns success,
+2. the face changes in a way you can actually observe,
+3. you have proved that the control path is real rather than merely reachable.
+
 If the response is successful but nothing changes visually, treat that as a runtime or asset-level problem and escalate to Support.
 
-### Reset behavior
+### 6. Recover a known-good state with reset
 
-Use this after a successful write or when the face has been driven into an unwanted state.
+Enter here after a successful write or whenever the face has been driven into an unwanted state.
 
-Fast action:
+Action:
 
 1. invoke `reset` from the panel or socket client,
 2. confirm the face returns toward defaults,
 3. rerun one small write to prove the loop still works.
+
+Continue only when:
+
+1. reset returns the face toward defaults,
+2. the face is back in a state you trust,
+3. a small retry confirms that recoverability still holds.
 
 ## When To Escalate To Support
 
@@ -329,10 +386,9 @@ Use these when you need the current implementation truth:
 1. `vizij-web/apps/vizij-standalone/README.md`
 2. `vizij-web/apps/vizij-standalone/src/App.tsx`
 3. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
-4. `vizij-docs/current_documentation/guidebook/deploy/easiest-standalone-deployment.md`
-5. `vizij-docs/current_documentation/guidebook/deploy/operator-and-deployment-model.md`
-6. `vizij-docs/current_documentation/guidebook/support/validation-checkpoints.md`
-7. `vizij-docs/current_documentation/guidebook/support/troubleshooting-matrix.md`
+4. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
+5. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`
+6. `vizij-web/packages/@vizij/arora-types`
 
 ## Recommended Next Steps
 

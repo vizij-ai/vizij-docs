@@ -266,7 +266,29 @@ Another short version:
 
 ## What Readers Actually Do In The Current App
 
-> TODO(content-model): Add a code snippet or payload example here to show one small authored rule translating an input into a visible behavior change. Best fit because this section is where abstract graph logic becomes concrete and a tiny example would demystify what “procedural” means in practice.
+### One Small Authored Rule
+
+The simplest current-app example is not “build a giant behavior tree.” It is:
+
+1. choose one visible control the program should write,
+2. mark that row `PAP Out +`,
+3. open the `Program` canvas and `Node Palette`,
+4. add a `Time` node,
+5. add a `cos` node,
+6. connect `Time` into `cos`, then connect `cos` into the output target node,
+7. use `Play` to see the output move over time without providing any other live input.
+
+That walkthrough is implementation-backed, not hypothetical:
+
+1. the node palette exposes a `Time` node,
+2. motion-graph connection validation includes `cos` as a supported transform node,
+3. the variables panel exposes `PAP Out +` so a selected control becomes a visible output target node,
+4. the `Program` panel and `Node Palette` stay separate so you can keep graph editing and transport controls readable,
+5. the panel exposes `Play`, `Pause`, and `Stop`, so this example can be previewed just by pressing `Play`.
+
+So the smallest useful procedural rule in Vizij is not “write code.”
+
+It is “pick an output you can see, feed it from a simple graph such as `Time -> cos`, and watch the behavior run.”
 
 In the current authoring surface, procedural work usually looks like this:
 
@@ -300,9 +322,9 @@ Use these when you need the current implementation truth:
 5. `vizij-web/apps/vizij-authoring/src/hooks/useBindingManager.ts`
 6. `vizij-web/apps/vizij-authoring/src/components/panels/VariablesPanel.tsx`
 7. `vizij-web/apps/vizij-authoring/src/motiongraph/MotionGraphPanel.tsx`
-8. `vizij-web/apps/vizij-authoring/src/motiongraph/store/useEditorStore.ts`
-9. `vizij-web/apps/vizij-authoring/src/motiongraph/utils/specToEditorState.ts`
-10. `vizij-docs/current_documentation/concepts/ARCHITECTURE_PRIMER.md`
+8. `vizij-web/apps/vizij-authoring/src/motiongraph/components/EditorCanvas.tsx`
+9. `vizij-web/apps/vizij-authoring/src/motiongraph/store/useEditorStore.ts`
+10. `vizij-web/apps/vizij-authoring/src/motiongraph/utils/specToEditorState.ts`
 
 ## Recommended Next Steps
 

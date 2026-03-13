@@ -106,7 +106,16 @@ One sentence to keep in mind:
 
 ## The Core Bridge Terms
 
-> TODO(content-model): Add a quick-reference comparison block here to map guidebook-facing terms to the neighboring implementation-facing terms readers are most likely to encounter. Best fit because this module is a terminology bridge and a compact term-translation surface would make it more reusable across buckets.
+Use this quick-reference block when a guidebook term and an implementation term seem close but are not interchangeable.
+
+| Guidebook-facing term | Common implementation-facing label | What it means in practice | Strongest owning surface |
+| --- | --- | --- | --- |
+| `face artifact` | GLB, bundled GLB, loaded asset | the face asset and authored data that later surfaces can load | `vizij-authoring` export flow |
+| `authored artifact bundle` | export bundle, bundled GLB, GraphSpec + IR + assets | the package authoring produces for runtime consumers | `vizij-authoring` |
+| `runtime bundle` | `VizijAssetBundle`, `assetBundle`, resolved bundle | the app-facing runtime payload handed to `VizijRuntimeProvider` | `@vizij/runtime-react` |
+| `runtime control` | `setInput(...)`, `animateValue(...)`, clip/program transport | live writes and playback happening right now | runtime-react apps |
+| `application integration surface` | provider tree, face component, diagnostics shell | the app shell that hosts the face as part of a broader UI | `tutorial-fullscreen-face`, `demo-vizij-player`, `tutorial-agent-face` |
+| `deployment surface` | WebSocket endpoint, web control panel, slots | an operator-facing endpoint with exposed control and recoverable health | `vizij-standalone` |
 
 The terms below are the ones most likely to save you from crossing buckets incorrectly.
 
@@ -354,14 +363,19 @@ Use it when the system has crossed into operator-facing use, exposed control, an
 
 ## How To Use This Bridge In The Main Route
 
-> TODO(content-model): Add related guidebook links here to route each common term confusion back to the single best bucket page for deeper explanation. Best fit because this section is about re-entering the main route after vocabulary confusion and would be stronger with explicit handoff links by term family.
-
 Use this page as a seam, not as a destination.
 
-1. If you are confused about what values mean, return to [Paths and Standard Controls](../control/paths-and-standard-controls.md) and [Runtime Inputs and Semantics](../control/runtime-inputs-and-semantics.md).
-2. If you are confused about what the app is doing, return to [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
-3. If you are confused about what counts as an operator-facing endpoint, return to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
-4. If you are confused about whether the system is actually healthy, return to [Validation Checkpoints](validation-checkpoints.md) and [Troubleshooting Matrix](troubleshooting-matrix.md).
+Route back into the guidebook with this table instead of reopening the whole bucket blindly.
+
+| If the confusing term is really about... | Re-enter here first | Why this is the best next page |
+| --- | --- | --- |
+| authored structure, bundle contents, or exportable artifacts | [Customization Concepts Primer](../introduction/customization-concepts-primer.md) | re-establishes rig, pose, animation, procedural, and export as separate layers |
+| path syntax, pose weights, visemes, or runtime values | [Paths and Standard Controls](../control/paths-and-standard-controls.md) | names the runtime address grammar behind visible control behavior |
+| runtime readiness, loading, playback, or embedding boundaries | [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md) | separates asset loading, runtime state, and app ownership clearly |
+| advanced app-state versus session-state confusion | [API-Backed Interactive Application](../integrate/api-backed-interactive-application.md) | distinguishes runtime health from external-session health |
+| operator endpoints, slots, and exposed control surfaces | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) | grounds deployment terms in the current standalone endpoint |
+| whether the system is healthy enough to trust | [Validation Checkpoints](validation-checkpoints.md) | turns vague status language into explicit pass/fail signals |
+| failure symptoms and next recovery moves | [Troubleshooting Matrix](troubleshooting-matrix.md) | maps symptom language back to the maintained recovery route |
 
 ## Success Check
 
@@ -377,13 +391,13 @@ You are done with this page when:
 
 Use these when you need the current implementation truth behind this bridge:
 
-1. `vizij-docs/current_documentation/guidebook/introduction/system-mental-model.md`
-2. `vizij-docs/current_documentation/guidebook/control/paths-and-standard-controls.md`
-3. `vizij-docs/current_documentation/guidebook/control/runtime-inputs-and-semantics.md`
-4. `vizij-docs/current_documentation/guidebook/control/control-surfaces-and-configuration-layers.md`
-5. `vizij-docs/current_documentation/guidebook/integrate/loading-playback-and-embedding.md`
-6. `vizij-docs/current_documentation/guidebook/deploy/operator-and-deployment-model.md`
-7. `vizij-docs/current_documentation/guidebook/support/validation-checkpoints.md`
+1. `vizij-web/apps/vizij-authoring/README.md`
+2. `vizij-web/apps/vizij-authoring/docs/ARCHITECTURE.md`
+3. `vizij-web/packages/@vizij/runtime-react/README.md`
+4. `vizij-web/packages/@vizij/runtime-react/src/utils/posePaths.ts`
+5. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
+6. `vizij-web/apps/vizij-standalone/README.md`
+7. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
 8. `vizij-docs/current_documentation/ARCHITECTURE.md`
 
 ## Next Step

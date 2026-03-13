@@ -142,6 +142,25 @@ The app owns only the hooks and UI that serve the page's purpose.
 3. application hooks,
 4. an additional session and tool layer.
 
+## Responsibility Difference At A Glance
+
+Use this table when you are trying to decide whether a page is still teaching a simple player, a richer local app, or a service-backed application.
+
+| Question | Minimal player shell | Richer local app shell | Service-backed app shell |
+| --- | --- | --- | --- |
+| Who still owns runtime startup? | `VizijRuntimeProvider` | `VizijRuntimeProvider` | `VizijRuntimeProvider` |
+| What new thing does the app own? | readiness UI and a small control surface | local hooks, behaviors, or panels around the face | external-session state plus a bridge from service events into runtime actions |
+| What should stay visibly separate? | loading, ready, and error states | runtime readiness versus app-only UI state | runtime readiness versus session readiness |
+| Strongest maintained anchor | `demo-vizij-player` | `tutorial-fullscreen-face` plus local hooks | `tutorial-agent-face` |
+| What this does not become yet | deployment endpoint | deployment endpoint | deployment endpoint |
+
+That is the practical boundary:
+
+1. loading means the asset and runtime are becoming usable,
+2. playback means the runtime is driving values over time,
+3. embedding means the face now lives inside a broader application shell,
+4. service-backed behavior adds a second readiness layer, not a second runtime model.
+
 ## A Small Integration Anatomy
 
 ```mermaid
@@ -190,10 +209,10 @@ The second teaches extensibility without implying a different runtime model.
 Use these when you need the current implementation truth:
 
 1. `vizij-web/packages/@vizij/runtime-react/README.md`
-2. `vizij-web/apps/demo-vizij-player/README.md`
-3. `vizij-web/apps/tutorial-agent-face/README.md`
-4. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
-5. `current_documentation/guidebook/reference/runtime-quickstart-reference.md`
+2. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
+3. `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
+4. `vizij-web/apps/tutorial-agent-face/tutorial.md`
+5. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
 
 ## Recommended Next Steps
 

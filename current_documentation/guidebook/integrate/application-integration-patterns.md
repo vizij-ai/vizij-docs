@@ -64,12 +64,12 @@ What changes is what your app chooses to own directly around that shell.
 
 ## Integration Decision Matrix
 
-| Your Goal | Recommended Pattern | Control Ownership | Complexity |
-| :--- | :--- | :--- | :--- |
-| **Simple Embed** | Minimal Provider Shell | Provider (Automatic) | Low |
-| **Local Interactivity** | Provider + Runtime Hooks | App (Hooks/writes) | Medium |
-| **Service-Backed AI** | Service-Backed Face App | External Session / Tool calls | High |
-| **Deep Diagnostics** | Manual Orchestrator Shell | App (Total ownership) | High |
+| If you mainly need... | Start with this pattern | Runtime lifecycle owner | New ownership your app takes on | First example to inspect |
+| :--- | :--- | :--- | :--- | :--- |
+| one face in a small app shell with honest loading, ready, and error states | **Minimal Provider Shell** | `VizijRuntimeProvider` | page-level UI only | `tutorial-fullscreen-face` |
+| local face behavior such as gaze, hotkeys, or lightweight HUD controls | **Provider + Runtime Hooks** | `VizijRuntimeProvider` | hook-level input writes and local timing | `tutorial-fullscreen-face` hooks |
+| bundle selection, diagnostics, and transport panels around the same runtime shell | **Provider + Diagnostics Shell** | `VizijRuntimeProvider` | sample/library state, diagnostics panels, transport UI | `demo-vizij-player` |
+| external session, tool calls, or service-driven face behavior | **Service-Backed Face App** | `VizijRuntimeProvider` plus a separate session layer | session state and the translation bridge into runtime actions | `tutorial-agent-face` |
 
 If you are unsure, start with the left-most pattern that solves the problem.
 Move toward higher complexity only when a real requirement forces you to own more of the runtime lifecycle.
@@ -127,24 +127,23 @@ Current anchor:
 
 1. `tutorial-agent-face`
 
-## Pattern 4: Manual Orchestrator / Diagnostics Shell
+## Pattern 4: Provider + Diagnostics Shell
 
-This pattern moves more ownership into the application shell itself.
+This pattern still keeps the provider-owned runtime shell, but the application owns more of the surrounding inspection surface.
 
 In the current repo, `demo-vizij-player` is the main anchor. It explicitly owns:
 
-1. orchestrator bootstrap,
-2. autostep behavior,
-3. GLB loading state,
-4. graph merging and controller visibility,
-5. diagnostic panels,
-6. the bridge between orchestrator outputs and rendered face state.
+1. sample selection and uploaded-GLB selection,
+2. bundle metadata displayed around the face,
+3. diagnostic panels and controller visibility,
+4. transport controls for bundled animations and programs,
+5. metadata-driven face-control panels built from runtime state.
 
 Choose this when:
 
-1. orchestration visibility is the main requirement,
-2. you need explicit control over runtime setup,
-3. diagnostic clarity matters more than minimal surface area.
+1. diagnostic visibility is a primary requirement,
+2. you need bundle or sample selection in the same app shell,
+3. you want clip/program transport and controller inspection without dropping below the provider layer.
 
 Current anchor:
 
@@ -172,9 +171,9 @@ You are done with this page when:
 Use these when you need the current implementation truth:
 
 1. `vizij-web/packages/@vizij/runtime-react/README.md`
-2. `vizij-web/apps/tutorial-fullscreen-face/README.md`
-3. `vizij-web/apps/tutorial-agent-face/README.md`
-4. `vizij-web/apps/demo-vizij-player/README.md`
+2. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
+3. `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
+4. `vizij-web/apps/tutorial-agent-face/tutorial.md`
 
 ## Recommended Next Steps
 

@@ -42,6 +42,12 @@ This app teaches two useful control ideas immediately:
 
 Both are real runtime writes. They just write into different parts of the runtime model.
 
+Quick term bridge before you continue:
+
+1. `standard control` means a reusable runtime channel such as eye position.
+2. `pose weight` means the current strength of a named authored state such as `happy` or `surprise`.
+3. `path` means the runtime address the hook writes, not the visible UI widget itself.
+
 ## Walkthrough
 
 ### 1. Confirm runtime readiness before testing control

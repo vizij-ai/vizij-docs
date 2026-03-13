@@ -59,6 +59,18 @@ The visible UI or runtime surface may differ, but the underlying question stays 
 2. what path is being written,
 3. what kind of control that path represents.
 
+## Quick Term Bridge
+
+Before you read the path grammar, keep these definitions nearby:
+
+| Term | Read it as | Where it usually shows up first |
+| --- | --- | --- |
+| `path` | the runtime address a value is written to | hooks, diagnostics panels, transport clients |
+| `standard control` | a reusable control family such as gaze, jaw, or brows | mouse gaze, resolved face controls, player UIs |
+| `pose weight` | the current strength of an authored facial state | hotkeys, pose panels, authored expression blending |
+| `viseme` | a speech-shaped mouth state exposed as a named weight | speech and live-agent surfaces |
+| `slot` | a deployment-facing exposed control entry, not a synonym for every path | standalone operator control surfaces |
+
 ## Standard Control Path Shape
 
 The common standard-control shape is:
@@ -126,7 +138,7 @@ You will see these ideas repeated across Vizij:
 1. in `tutorial-fullscreen-face` runtime hooks,
 2. in `vizij-authoring` when inspecting or organizing controls,
 3. in player and deployment surfaces that send or receive typed values,
-4. in workshop and operator discussions where the face must be controlled predictably.
+4. in operator and deployment surfaces where the face must be controlled predictably.
 
 ## Good Questions To Ask When Reading a Path
 
@@ -175,11 +187,11 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. `current_documentation/guidebook/reference/renderer-and-rigging-reference.md`
-2. `current_documentation/guidebook/reference/runtime-quickstart-reference.md`
+1. `vizij-web/packages/@vizij/runtime-react/src/utils/posePaths.ts`
+2. `vizij-web/packages/@vizij/runtime-react/src/utils/faceControls.ts`
 3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
 4. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
-5. `vizij-web/packages/@vizij/runtime-react/src/VizijRuntimeProvider.tsx`
+5. `vizij-web/packages/@vizij/runtime-react/README.md`
 
 ## Recommended Next Steps
 

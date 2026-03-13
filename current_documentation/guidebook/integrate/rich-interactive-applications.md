@@ -140,7 +140,13 @@ That means:
 
 ## The Main Rich-App Shapes
 
-> TODO(content-model): Add a comparison table here to distinguish local interactive surfaces, service-backed app shells, and orchestration-heavy shells by ownership, complexity, and teaching goal. Best fit because this section introduces multiple advanced shapes and readers need a compact contrast before the prose branches further.
+Use this table before reading the detailed shape descriptions:
+
+| Rich-app shape | Runtime owner | New app-owned layer | Teaching goal | Strongest maintained anchor |
+| --- | --- | --- | --- | --- |
+| local interactive face surface | `VizijRuntimeProvider` | local hooks, timers, and small behavior rules | show how a face becomes interactive without changing the runtime model | `tutorial-fullscreen-face` |
+| service-backed interactive surface | `VizijRuntimeProvider` plus a separate session layer | connection state, tool bridge, and service-facing UI | show how external events become runtime actions without bypassing the runtime | `tutorial-agent-face` |
+| diagnostics or workflow-heavy app shell | `VizijRuntimeProvider` | panels, sample/library state, diagnostics, transport controls, and broader product UI | show how a face stays understandable inside a larger app surface | `demo-vizij-player` |
 
 Richer Vizij applications usually grow along three axes.
 
@@ -197,7 +203,14 @@ you are crossing into `Deploy`.
 
 ## The Four Ownership Boundaries That Matter
 
-> TODO(content-model): Add a diagram here to show runtime readiness, session readiness, app UI ownership, and control-path ownership as separate boundaries. Best fit because this section is about keeping layers disentangled and a boundary map would reinforce that separation better than text alone.
+Keep these four boundaries visible in status language and recovery guidance:
+
+| Boundary | Owned by | Healthy signal | Failure should be named as |
+| --- | --- | --- | --- |
+| runtime readiness | Vizij runtime shell | face loaded, controllers registered, ready state is true | load/initialization/runtime error |
+| session readiness | external client or service layer | disconnected, connecting, connected, or error shown separately | session/auth/provider error |
+| translation boundary | app-owned bridge logic | requested behavior resolves into valid runtime writes or transports | missing binding, unsupported tool action, bridge failure |
+| product-surface ownership | surrounding app shell | the right UI, controls, and recovery affordances are visible | app-state or feature-shell issue |
 
 Richer apps stay understandable when four ownership boundaries stay explicit.
 
@@ -249,7 +262,15 @@ These are the most common sources of conceptual drift.
 
 ## A Practical Growth Sequence
 
-> TODO(content-model): Add a workflow map here to show the safest progression from minimal provider shell through local interaction, service-backed behavior, and larger app-shell ownership. Best fit because this section is explicitly sequencing growth and readers need a visual of the layering logic, not just the numbered list.
+Use this sequence when you are growing a working integration surface instead of starting from a blank architecture diagram:
+
+| Step | Add this | Keep stable while you add it | Validate before moving on |
+| --- | --- | --- | --- |
+| 1 | minimal provider shell | one `VizijAssetBundle`, one `VizijRuntimeProvider`, honest loading/ready/error states | face loads and one control path visibly works |
+| 2 | local interaction layer | the same provider-owned runtime shell | local hooks still respect runtime readiness and path discipline |
+| 3 | service-backed behavior | the same runtime shell plus explicit session status | runtime health and session health still read as different truths |
+| 4 | larger app-shell UI and diagnostics | the same face/runtime contract | user-facing panels explain the right layer when something fails |
+| 5 | deployment branch | only after the app surface is stable enough to expose an endpoint | operator, endpoint, and topology questions now belong in `Deploy` |
 
 The safest way to grow into a richer application is usually:
 
@@ -274,13 +295,13 @@ You are done with this page when:
 Use these when you need the current implementation truth:
 
 1. `vizij-web/packages/@vizij/runtime-react/README.md`
-2. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
-3. `vizij-web/apps/tutorial-agent-face/src/hooks/useGeminiLive.ts`
-4. `vizij-web/apps/tutorial-agent-face/src/hooks/useAgentFaceTools.ts`
-5. `current_documentation/guidebook/integrate/loading-playback-and-embedding.md`
-6. `current_documentation/guidebook/integrate/application-integration-patterns.md`
-7. `current_documentation/guidebook/integrate/api-backed-interactive-application.md`
-8. `current_documentation/guidebook/control/orchestration-and-diagnostics.md`
+2. `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
+3. `vizij-web/apps/tutorial-agent-face/tutorial.md`
+4. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
+5. `vizij-web/apps/tutorial-agent-face/src/hooks/useGeminiLive.ts`
+6. `vizij-web/apps/tutorial-agent-face/src/hooks/useAgentFaceTools.ts`
+7. `vizij-web/apps/demo-vizij-player/src/App.tsx`
+8. `vizij-web/apps/demo-vizij-player/src/data/samples.ts`
 
 ## Recommended Next Steps
 

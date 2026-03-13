@@ -142,7 +142,16 @@ They exist so the tool can support debugging, review, comparison, and selective 
 
 ## What Validation And Guardrails Protect
 
-> TODO(content-model): Add a checklist here to summarize the export guardrails a reader should verify before trusting the bundle. Best fit because this section is about operational readiness and a compact validation list would support repeated use better than prose alone.
+### Pre-Export Guardrail Checklist
+
+| Check | What the current exporter verifies | What happens if it fails |
+| --- | --- | --- |
+| Real exportable face is mounted | bundled export prefers mounted runtime refs and blocks fallback scenes that have no `RobotData` nodes | export stops instead of writing a misleading bundle |
+| Rig graph can be built and normalized | the rig graph must compile cleanly and pass `normalizeGraphSpec()` | bundled GLB export is blocked |
+| Rig graph has no fatal issues | fatal graph issues in bundle metadata are treated as blocking | bundled GLB export is blocked until the rig graph is fixed |
+| Pose payload is actually valid | pose export is included only when authored pose data exists, a pose graph can be built, and pose validation passes | pose payload is omitted or export is blocked with a pose-graph error |
+| Bundle contract still matches runtime truth | `auditBundleGraphs()` checks compiled IR against bundle graph specs and verifies output paths against valid runtime targets | export is blocked on diff, missing IR, validation error, or missing output target |
+| Imported animation inheritance is safe | inherited imported animations cannot collide with the canonical authored timeline clip contract | export is blocked until the conflict is renamed or imported-animation inheritance is disabled |
 
 The important teaching truth is that export is guarded.
 
@@ -183,7 +192,18 @@ That conditional behavior is part of the teaching model. It prevents readers fro
 
 ## What Readers Actually Do In The Current App
 
-> TODO(content-model): Add a config fragment or output inventory example here to show the main bundle artifact and one supporting export variant side by side. Best fit because this section bridges authoring into integration and readers need to see what actually leaves the tool.
+### Default Output Inventory
+
+Most of time you will want to export just the bundled GLB, if you want to export individual parts, these are the current default filenames when the operator does not override them in the export flow:
+
+| Export surface | Default filename | What it carries | Typical use |
+| --- | --- | --- | --- |
+| Bundled GLB | `${slug}_vizij.glb` | the primary runtime bundle: scene asset plus bundled graph, pose, animation, and metadata payloads when valid | the main handoff into runtime/integration |
+| Rig graph spec | `${slug}_rig.json` | the exported rig graph spec | inspection, debugging, or round-trip graph work |
+| Rig graph IR | `${slug}_rig.ir.json` | the rig IR payload when present | IR-level inspection and runtime-truth verification |
+| Pose graph | `${slug}_pose_graph.json` | compiled pose graph spec | pose graph review and round-trip support |
+| Pose config | `${slug}_pose_config.json` | authored pose configuration | pose editing and import/export workflows |
+| Pose IR | `${slug}_pose_ir.json` | pose IR payload when the hooks or draft are available | deeper pose diagnostics and IR-level round-tripping |
 
 In the current authoring surface, export work usually looks like this:
 

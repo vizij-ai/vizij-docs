@@ -120,6 +120,17 @@ Important operational facts from the current standalone app:
 
 This is why deployment is not just about rendering. The runtime has to expose a believable control surface for an operator.
 
+## Recommended First Deployment Choice
+
+Use this before you jump into deeper topology pages:
+
+| If your real constraint is... | Best current route | Readiness label | Why |
+| --- | --- | --- | --- |
+| one machine, one rendered face, one same-host operator path | standalone endpoint plus built-in web control | maintained now | matches the current localhost-first server and control-panel story directly |
+| one machine with the face on one screen and supporting UI on another | single-host multi-monitor deployment | maintained advanced path | display selection, fullscreen, and kiosk-style window options are implemented now |
+| separate operator and face surfaces beyond the same host | split control-surface planning | prototype direction | control separation is real, but the current bind and exclusive-client rules still shape the topology tightly |
+| ROS or robot middleware as the main system boundary | ROS and hardware comparison route | roadmap direction | the guidebook can frame the topology, but it is not a packaged maintained walkthrough today |
+
 ## Healthy Deployment Versus Nearby States
 
 | State | What is true | What is still missing |
@@ -187,7 +198,8 @@ Use these when you need the current implementation truth:
 2. `vizij-web/apps/vizij-standalone/src/App.tsx`
 3. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
 4. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
-5. `current_documentation/workshops/vizij-afternoon-workshop/handouts/animation-integration-deployment-reference.md`
+5. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`
+6. `vizij-web/packages/@vizij/arora-types`
 
 ## Recommended Next Steps
 

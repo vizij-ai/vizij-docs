@@ -5,6 +5,8 @@
 
 # Reference-Face Transfer
 
+> **Roadmap Callout:** currently the authoring app uses a modal for reference copy editing - in the future this will be a sidebar to make it easier to see the result of the edits you make in real time. 
+
 ## Guidebook Context
 
 | Axis | Position |
@@ -149,7 +151,13 @@ The workflow is designed to preserve author judgment.
 
 ## What Is Preserved, Mapped, or Not Preserved
 
-> TODO(content-model): Add a comparison table here to separate what transfer copies directly, what it maps through review, and what it intentionally leaves unresolved. Best fit because this module turns on careful boundary reasoning and a three-way comparison would make those preservation rules easier to scan and remember.
+| Transfer area | Preserved directly from the reference side | Mapped or edited before commit | What blocks or stays unresolved |
+| --- | --- | --- | --- |
+| Source context | the source variable or pose identity stays visible in the modal so the operator can tell what they are copying | the destination side is proposed as a main-face target, not assumed blindly | ambiguous rows stay visible instead of being silently collapsed |
+| Variable copy | source variable details, relationship rows, and source-vs-destination config values stay reviewable | destination variable choice, per-link transforms, and merge behavior are review-gated in the mapping modal | critical unresolved mapping rows block `Confirm Copy`; `Cancel` performs zero writes |
+| Pose copy | source pose identity and source target rows remain visible | destination pose name and per-target mappings are editable before commit | unresolved critical rows block commit and the tool does not write a partial pose |
+| Main face state | the main face remains the only editable destination | writes apply only when the operator confirms the proposed mapping set | the reference face is not promoted into a second peer authoring target |
+| Unmatched or uncertain rows | the tool keeps them visible so the operator can inspect the mismatch | the operator may resolve them row by row where the workflow allows | rows that cannot be safely resolved do not silently apply |
 
 Transfer is valuable precisely because not everything lines up automatically.
 
@@ -192,10 +200,11 @@ Use these when you need the current implementation truth:
 
 1. `vizij-web/apps/vizij-authoring/docs/references/authoring-reference-face-requirements.md`
 2. `vizij-web/apps/vizij-authoring/docs/references/authoring-reference-face-workflow-sop.md`
-3. `vizij-web/apps/vizij-authoring/docs/plans/authoring-reference-face-implementation-plan.md`
+3. `vizij-web/apps/vizij-authoring/src/referenceFace/mapping.ts`
 4. `vizij-web/apps/vizij-authoring/src/hooks/useReferenceFaceState.ts`
-5. `vizij-web/apps/vizij-authoring/e2e/reference-face.smoke.pw.ts`
-6. `vizij-web/apps/vizij-authoring/src/App.tsx`
+5. `vizij-web/apps/vizij-authoring/src/components/panels/VariablesPanel.tsx`
+6. `vizij-web/apps/vizij-authoring/src/components/panels/VariablesPanel.test.tsx`
+7. `vizij-web/apps/vizij-authoring/e2e/reference-face.smoke.pw.ts`
 
 ## Recommended Next Steps
 

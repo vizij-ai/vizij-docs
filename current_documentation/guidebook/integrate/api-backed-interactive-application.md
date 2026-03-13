@@ -57,6 +57,19 @@ Two valid ways to use this page:
 1. without `VITE_GEMINI_API_KEY`, inspect the runtime shell and local interaction layers
 2. with `VITE_GEMINI_API_KEY`, complete the full runtime-plus-session walkthrough
 
+## What You Can Validate Without The API Key
+
+The missing API key only blocks the live session layer. It does not erase the rest of the maintained app.
+
+| If `VITE_GEMINI_API_KEY` is missing | You can still validate | You cannot validate yet |
+| --- | --- | --- |
+| session connection is intentionally unavailable | runtime loading, ready, and error states | live Gemini session connection |
+| the face shell should still render | the provider/bootstrap shape in `FaceApp.tsx` | transcript or model-audio flow |
+| the UI should still distinguish runtime status from session status | the boundary between `useGeminiLive` and `useAgentFaceTools` | tool-call round trips from the external service |
+| the disconnected state is expected | local interaction layers and runtime-owned behavior | service-driven gaze, emotion, or mouth behavior |
+
+If the page loads, the face becomes ready, and the UI reports a missing key or disconnected session separately from runtime readiness, the app is still teaching the right advanced-integration boundary.
+
 ## The Pattern You Are Learning
 
 This page teaches one reusable application shape:
