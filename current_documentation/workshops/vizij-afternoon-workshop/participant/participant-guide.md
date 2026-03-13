@@ -58,8 +58,10 @@ Remember these path patterns:
    `rig/{face}/standard/{channel}/{track}/{attribute}`
 2. Pose weight:
    `rig/{face}/poses/{pose_name}.weight`
-3. Viseme weight:
-   `rig/{face}/visemes/{viseme_id}.weight`
+3. Speech-driven viseme or emotion behavior:
+   still stages `rig/{face}/poses/{poseId}.weight`
+
+Pose groups exist to control how subsets of poses blend. They are not part of the input path.
 
 ## Activity 1 Success Checks
 

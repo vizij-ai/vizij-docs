@@ -225,7 +225,6 @@
         "title",
         "description",
         "presentationStyle",
-        "heroFigure",
         "actions",
         "decisionPanels",
         "progressSteps",

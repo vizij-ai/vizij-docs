@@ -1,13 +1,13 @@
 <!-- tags: type=guidebook-bucket; status=written; topics=guidebook,introduction -->
 
 > **Last updated:** 2026-03-12
-> **Purpose:** orient readers to Vizij and help them choose a route through the guidebook
+> **Purpose:** orient readers to Vizij and help them choose the right learning path through the docs
 
 # Introduction
 
 `Introduction` is the first documentation bucket.
 
-Its job is not to teach every subsystem. Its job is to help a new reader understand what Vizij is, why it exists, what the major pieces are, how the guidebook works, and where they should go next.
+Its job is not to teach every subsystem. Its job is to help a new reader understand what Vizij is, why it exists, what the major pieces are, how the docs are organized, and where they should go next.
 
 ## Process Position
 
@@ -25,7 +25,7 @@ This bucket should establish:
 1. that the guidebook is a teaching structure rather than the system architecture,
 2. the broad relationship between assets, runtime, control, customization, integration, and deployment,
 3. the core customization concepts readers will meet later, such as rigs, poses, animations, and procedural programs,
-4. the main reader routes through the guidebook,
+4. the main learning paths through the docs,
 5. where implementation truth lives when a reader is ready to go deeper.
 
 ## Depth Ladder
@@ -44,9 +44,9 @@ This bucket should establish:
 
 1. framing notes,
 2. concept explainers,
-3. route or decision guides,
+3. starting-point guides,
 4. simple diagrams,
-5. related guidebook links.
+5. related docs links.
 
 ### Fundamentals
 
@@ -83,14 +83,14 @@ This bucket should establish:
 2. repo links,
 3. comparisons,
 4. architecture diagrams,
-5. guidebook cross-links back into practical modules.
+5. cross-links back into practical modules.
 
 ## Bucket Modules
 
 | Module | Depth | Module type | Teaching focus |
 | --- | --- | --- | --- |
 | [What Is Vizij?](what-is-vizij.md) | Surface | concept page | explain what Vizij is and what it enables |
-| [How To Use This Guidebook](how-to-use-this-guidebook.md) | Surface | decision guide | route readers into the right bucket and depth |
+| [Choose a Learning Path](how-to-use-this-guidebook.md) | Surface | decision guide | help readers choose the right starting path and level of detail |
 | [System Mental Model](system-mental-model.md) | Fundamentals | concept page | explain how the major parts relate |
 | [Customization Concepts Primer](customization-concepts-primer.md) | Fundamentals | concept page | explain the core customization vocabulary before the authoring branch |
 | [Architecture Bridge](architecture-bridge.md) | Advanced | reference bridge | connect the guidebook model to real implementation surfaces |

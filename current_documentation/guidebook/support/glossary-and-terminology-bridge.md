@@ -238,8 +238,9 @@ The current guidebook-level families are:
 
 1. `standard control paths` for reusable rig-facing channels such as gaze, jaw, or brows,
 2. `pose-weight paths` for named authored facial states,
-3. `viseme paths` for speech-shaped mouth behavior,
-4. `deployment slot names` for external operator-facing aliases that map back into one of the internal runtime families above.
+3. `speech-timed pose driving` for speech systems that still stage canonical pose weights,
+4. `internal pose-control paths` for pose-graph routing inside the runtime,
+5. `deployment slot names` for external operator-facing aliases that map back into one of the internal runtime families above.
 
 Animation tracks, procedural programs, runtime hooks, and operator clients are common write sources. They usually target one of the internal control families rather than introducing a separate fourth runtime-path grammar.
 
@@ -263,16 +264,27 @@ Use this term when the question is "how much of this authored facial state is ac
 
 This distinction matters because a slider that changes a reusable rig channel and a slider that blends `smile.weight` may look similar in a UI while meaning different things in the runtime.
 
-### Viseme Path
+### Viseme Label
 
-A `viseme path` is the speech-related version of the same runtime idea: a stable path for mouth-shape behavior tied to speech or conversation flows.
+A `viseme` is a speech-facing label people often use for mouth-oriented poses, not a separate runtime path family.
 
-It belongs in the same path-and-value family, but it is not equivalent to either:
+In the current runtime-react contract:
 
-1. a reusable standard control channel,
-2. a named facial pose used for general expression.
+1. pose groups exist so subsets of poses can blend with group-specific behavior,
+2. the runtime still writes any driven pose on the canonical pose-weight path,
+3. the group name is not part of the input path itself.
 
-Use this term when the face behavior is speech-shaped rather than generic expression control.
+Use this term when the face behavior is speech-shaped rather than generic expression control, but keep the path model clear: the write still lands on `rig/{face}/poses/{poseId}.weight`, and the group still exists to define blend behavior rather than path syntax.
+
+### Internal Pose-Control Path
+
+An `internal pose-control path` is the runtime-internal path family used by compiled pose graphs:
+
+`rig/{face}/pose/control/{inputId}`
+
+Use this term when you are explaining how pose-graph outputs are routed inside the runtime.
+
+Do not use it as the default learner-facing path for authored expressions. Runtime-react auto-detects the matching rig input and bridges these internal outputs onto the actual rig input path when possible.
 
 ### Loading
 
@@ -406,7 +418,7 @@ Route back into the guidebook with this table instead of reopening the whole buc
 | If the confusing term is really about... | Re-enter here first | Why this is the best next page |
 | --- | --- | --- |
 | authored structure, bundle contents, or exportable artifacts | [Customization Concepts Primer](../introduction/customization-concepts-primer.md) | re-establishes rig, pose, animation, procedural, and export as separate layers |
-| path syntax, pose weights, visemes, or runtime values | [Paths and Standard Controls](../control/paths-and-standard-controls.md) | names the runtime address grammar behind visible control behavior |
+| path syntax, pose weights, speech-driven pose writes, or runtime values | [Paths and Standard Controls](../control/paths-and-standard-controls.md) | names the runtime address grammar behind visible control behavior |
 | runtime readiness, loading, playback, or embedding boundaries | [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md) | separates asset loading, runtime state, and app ownership clearly |
 | advanced app-state versus session-state confusion | [API-Backed Interactive Application](../integrate/api-backed-interactive-application.md) | distinguishes runtime health from external-session health |
 | operator endpoints, slots, and exposed control surfaces | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) | grounds deployment terms in the current standalone endpoint |
@@ -418,7 +430,7 @@ Route back into the guidebook with this table instead of reopening the whole buc
 You are done with this page when:
 
 1. you can explain the same face as artifact, runtime-controlled surface, application surface, and deployment surface without collapsing those layers,
-2. you can distinguish standard control paths, pose-weight paths, and viseme paths,
+2. you can distinguish standard control paths, pose-weight paths, and speech-driven pose writes without inventing an extra viseme path family,
 3. you can explain the difference between loading, playback, and embedding,
 4. you can say what `slot` means in the deployment route without overgeneralizing it,
 5. you know which deeper guidebook page to open next when a term still needs bucket-specific detail.

@@ -110,6 +110,12 @@ Current architecture docs call out canonical per-pose weight paths:
 
 That gives each pose one stable runtime-facing control regardless of how the pose is grouped in authoring.
 
+That last point is important for current runtime-react behavior:
+
+1. pose groups define which subsets of poses blend together and which blend strategies apply,
+2. group labels can help people organize those subsets, but they do not add extra segments to the runtime input path,
+3. the input path still keys off the pose id itself.
+
 ### Pose groups
 
 Poses can belong to one or more pose groups.
@@ -118,9 +124,11 @@ In the current model, group membership is identity-driven and normalized for com
 
 Groups matter because they let authoring express semantic collections such as:
 
-1. related facial expressions,
-2. shared composition contexts,
-3. blend behavior that should apply inside a meaningful set of poses.
+1. a subset of poses that should blend together locally,
+2. a local blend mode or composition behavior for that subset,
+3. a clear boundary before wider cross-group composition happens.
+
+Group names such as `viseme` or `emotion` can still be useful labels in a bundle, but functionally the group exists to control blend behavior. The group remains separate from the write path either way.
 
 ### Pose weights
 

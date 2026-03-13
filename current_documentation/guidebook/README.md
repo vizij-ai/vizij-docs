@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook; status=written; topics=guidebook,documentation,website,tutorials,workshops,matrix -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-13
 > **Purpose:** canonical markdown source of truth for reusable Vizij teaching content
 
 # Vizij Guidebook
@@ -56,6 +56,24 @@ The guidebook defines the ideal teaching system first.
 Website docs, tutorials, demos, workshops, and event pages are downstream projections of that system.
 
 If a downstream publishing surface lacks support for a needed teaching primitive, that surface should eventually be extended rather than forcing the guidebook to become less expressive.
+
+## Public Site Projection Workflow
+
+The public docs/tutorial pages in `vizij-ai.github.io` are generated from this guidebook.
+
+Maintained workflow:
+
+1. edit the canonical guidebook markdown under `vizij-docs/current_documentation/guidebook/`
+2. update `public_projection_manifest.json` when public route metadata, hub grouping, redirects, or route adjacency need to change
+3. from `vizij-ai.github.io`, run `npm run content:sync:guidebook`
+4. review the generated outputs in:
+   - `src/generated/guidebook/pages/`
+   - `src/generated/guidebook/hubs.json`
+   - `src/generated/guidebook/redirects.json`
+   - `public/guidebook-assets/`
+5. commit the guidebook source change together with the regenerated public output when the public site should pick up that update
+
+Do not treat `vizij-ai.github.io/src/generated/guidebook/` as the canonical editing surface. Those files are generated output and can be overwritten by the sync step.
 
 ## Guidebook Teaching Standard
 

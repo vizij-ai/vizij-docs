@@ -55,8 +55,10 @@ From `useVizijRuntime()`:
    `rig/{face}/standard/left_eye/pos/x`
 2. Pose weight:
    `rig/{face}/poses/{pose_name}.weight`
-3. Viseme weight:
-   `rig/{face}/visemes/{viseme_id}.weight`
+3. Speech-driven viseme or emotion behavior:
+   still stages canonical pose weights such as `rig/{face}/poses/{poseId}.weight`
+
+Pose groups exist to control how subsets of poses blend. They are not part of the input path.
 
 ## Best Demo Source
 

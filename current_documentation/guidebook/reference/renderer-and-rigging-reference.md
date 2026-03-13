@@ -32,7 +32,7 @@ Vizij’s authoring and runtime surfaces stay aligned when you can answer these 
 
 1. What face or namespace is being controlled?
 2. What path is the control writing to?
-3. Is the path a standard input, a pose weight, a viseme, or another custom route?
+3. Is the path a standard input, a pose weight, an internal pose-control route, or another custom route?
 
 ## Standard Path Shape
 
@@ -62,7 +62,9 @@ Examples:
 | --- | --- | --- |
 | standard control | `rig/{face}/standard/...` | reusable rig-facing channels such as gaze or jaw |
 | pose weight | `rig/{face}/poses/{pose}.weight` | named authored facial states |
-| viseme weight | `rig/{face}/visemes/{viseme}.weight` | speech-shaped mouth motion |
+| internal pose-control route | `rig/{face}/pose/control/{inputId}` | compiled pose-graph output before runtime-react bridges it onto the actual rig input |
+
+Speech-facing viseme and emotion behavior still resolves onto the same canonical pose-weight paths. Pose groups exist to define how subsets of poses blend. They do not add extra path segments.
 
 ## Rigging Workflow
 
@@ -86,7 +88,7 @@ Names used in hotkey- and path-driven flows are typically:
 
 1. Which controls should be standard and reusable?
 2. Which controls are face-specific or experimental?
-3. Which poses belong under a simple `poses` path versus another grouping concept?
+3. Which poses belong under the shared `poses` path, and which blend groups should organize them without changing that path?
 4. Which controls are important enough to surface in a participant workshop?
 
 ## Best Next Pages

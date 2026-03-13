@@ -20,6 +20,32 @@ The manifest exists so downstream surfaces can answer questions the guidebook bo
 5. which adjacent routes should be promoted in shared page chrome,
 6. which site-only enhancements may attach to the route.
 
+## Maintainer Sync Workflow
+
+The manifest is only one part of the public projection flow.
+
+End-to-end workflow:
+
+1. edit the canonical guidebook markdown in `vizij-docs/current_documentation/guidebook/`
+2. update `public_projection_manifest.json` if route placement, slugging, hub grouping, redirects, or route adjacency need to change
+3. from `vizij-ai.github.io`, run:
+
+```bash
+npm run content:sync:guidebook
+```
+
+4. that sync script reads:
+   - `vizij-docs/current_documentation/guidebook/public_projection_manifest.json`
+   - the guidebook markdown source files referenced by `sourcePath`
+   - `vizij-docs/current_documentation/guidebook/assets/`
+5. it writes generated public output into:
+   - `vizij-ai.github.io/src/generated/guidebook/pages/`
+   - `vizij-ai.github.io/src/generated/guidebook/hubs.json`
+   - `vizij-ai.github.io/src/generated/guidebook/redirects.json`
+   - `vizij-ai.github.io/public/guidebook-assets/`
+
+Do not hand-edit the generated output as the primary workflow. If the public page content is wrong, fix the guidebook source or manifest and rerun the sync.
+
 ## Top-Level Shape
 
 The manifest has four top-level responsibilities:

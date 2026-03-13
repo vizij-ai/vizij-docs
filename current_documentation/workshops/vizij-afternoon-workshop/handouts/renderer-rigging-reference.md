@@ -8,7 +8,7 @@ Vizij’s authoring and runtime surfaces stay aligned when you can answer these 
 
 1. What face or namespace is being controlled?
 2. What path is the control writing to?
-3. Is the path a standard input, a pose weight, a viseme, or another custom route?
+3. Is the path a standard input, a pose weight, an internal pose-control route, or another custom route?
 
 ## Standard Path Shape
 
@@ -31,6 +31,8 @@ Examples:
 
 1. `rig/{face}/poses/smile.weight`
 2. `rig/{face}/poses/surprised.weight`
+
+Speech-facing viseme and emotion behavior still writes these canonical pose-weight paths. Pose groups define blend behavior for subsets of poses; they do not change the path shape.
 
 ## Rigging Workflow
 
