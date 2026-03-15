@@ -34,12 +34,6 @@ It helps if you have already read:
 2. [Animations](animations.md),
 3. [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md) only at a high level.
 
-From `vizij-web`:
-
-```bash
-pnpm run dev:vizij-authoring
-```
-
 You do not need to build an embedded app yet.
 
 ## What Export Means In Vizij
@@ -181,6 +175,8 @@ The correct mental sequence is:
 2. export the authored artifact,
 3. load that exported artifact into a player or application shell,
 4. then reason about playback, embedding, and deployment from the runtime side.
+
+If you are following the public route, that usually means validating the exported artifact in a player surface before you treat deployment as a separate question.
 
 That means `Export` should point forward to `Integrate`, but it should not try to teach the whole integration story itself.
 

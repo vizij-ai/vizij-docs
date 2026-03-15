@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,rigging,propsrig -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** define what rigging means in Vizij and explain the controllable structure that later poses, animations, and exports depend on
 
 # Rigging
@@ -30,9 +30,8 @@ After this page, you should be able to explain what rigging means in Vizij speci
 
 It helps if you have already read:
 
-1. [Import](import.md)
-2. [Reference-Face Transfer](reference-face-transfer.md)
-3. [Customization Concepts Primer](../introduction/customization-concepts-primer.md)
+1. [Customization Concepts Primer](../introduction/customization-concepts-primer.md)
+2. [Runtime Inputs and Semantics](../control/runtime-inputs-and-semantics.md)
 
 You do not need to master pose groups or animation clips yet.
 
@@ -70,10 +69,23 @@ It tells the authoring tool and runtime which controls are low-level, which are 
 
 ```mermaid
 flowchart LR
-    scene["Imported Scene Structure\n(animatable leaves)"] --> props["PropsRig Channels\n(/propsrig/...)"]
-    props --> abstract["Abstract Rig Inputs\n(authored controls)"]
-    abstract --> pose["Poses / Animations /\nProcedural Programs"]
-    pose --> export["Exported Artifact"]
+    classDef scene fill:#f4f5f7,stroke:#6b7280,stroke-width:1.2px
+    classDef rig fill:#fff4e5,stroke:#c97a00,stroke-width:1.5px
+    classDef authored fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+    classDef package fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+
+    authoredPrograms["Poses, animations,\nand procedural programs"] --> abstract["Abstract rig inputs\nauthored controls"]
+    abstract -->|"binds to"| props["/propsrig/... channels\nrequired low-level bridge"]
+    props -->|"writes to"| scene["Animatable scene leaves\nrender-facing sinks"]
+    abstract --> export["Exported artifact / bundle"]
+    props --> export
+
+    abstract -. boundary violation:\nabstract rig must not write leaves directly .-> scene
+
+    class scene scene
+    class props rig
+    class authoredPrograms,abstract authored
+    class export package
 ```
 
 Two rigging layers are especially important in current Vizij authoring.
@@ -103,6 +115,21 @@ These are the higher-level inputs and bindings that may drive:
 They must not directly target animatable leaves.
 
 That rule is what keeps the authored control model stable and reusable.
+
+## One Concrete Example
+
+If an eyelid or brow value is ultimately what the renderer moves, rigging is the layer that stops every later tool from talking to that leaf directly.
+
+The practical stack looks like this:
+
+1. a scene leaf might hold the raw transform or morph value the renderer applies,
+2. a generated `/propsrig/...` channel becomes the low-level writeable bridge to that leaf,
+3. an authored abstract-rig control gives the face a meaningful handle such as `blink` or `brow_raise`,
+4. a pose, animation, or procedural program later drives that authored control instead of bypassing the rig layer.
+
+This is the public-facing reason rigging matters.
+
+It is what makes a face portable across authoring, runtime playback, and later deployment surfaces without forcing every tool to know scene internals.
 
 ## Why Rigging Comes Before Poses and Animations
 

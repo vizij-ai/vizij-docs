@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,routing -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** help readers get oriented in the docs, choose the right learning path, and know when to switch to implementation docs
 
 # Choose a Learning Path
@@ -22,19 +22,9 @@ After this page, you should be able to choose the right learning path for your g
 
 ## Module Notes
 
-### Intended Audience
+This page is for newcomers who want the shortest path to a working Vizij face, builders who want to know where customization fits, and contributors who need the docs map before going deeper.
 
-This page is for:
-
-1. newcomers who want the shortest path to a working Vizij face,
-2. builders who want to know where customization fits,
-3. contributors who need to understand the docs map before going deeper.
-
-### Artifact Being Touched
-
-The artifact here is the reader-facing docs map.
-
-Use it to decide what to learn next. It is not the same thing as the internal architecture of the platform.
+The artifact here is the reader-facing docs map. Use it to decide what to learn next, not as a substitute for the internal architecture of the platform.
 
 ## What You Need
 
@@ -62,18 +52,37 @@ Each bucket supports three depth levels:
 3. `Advanced`
    - go deeper into ownership, extension, or more complex implementation patterns
 
+### Route Choice
+
 ```mermaid
 flowchart LR
-    intro["Introduction"] --> exp["Experience"]
-    exp --> control["Control"]
-    control --> customize["Customize"]
-    control --> integrate["Integrate"]
-    customize --> integrate
-    integrate --> deploy["Deploy"]
+    classDef choice fill:#fff4cc,stroke:#b7791f,stroke-width:1.5px
+    classDef bucket fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+    classDef note fill:#f4f5f7,stroke:#6b7280,stroke-width:1.2px
 
-    surface["Surface\nfirst success"] --- intro
-    fundamentals["Fundamentals\nmental model + stable contracts"] --- control
-    advanced["Advanced\nownership + implementation bridges"] --- deploy
+    goal{"What do you need first?"}
+    fast["Fast deployment route\nIntroduction -> Experience -> Control -> Integrate -> Deploy"]
+    custom["Customization route\nIntroduction -> Experience -> Control -> Customize -> Integrate -> Deploy"]
+    jump["Single-bucket jump-in\nOpen the bucket that matches the immediate problem"]
+
+    goal -->|"prove it, control it, embed it, deploy it"| fast
+    goal -->|"change the face before integrating it"| custom
+    goal -->|"I only need one concept right now"| jump
+
+    class goal choice
+    class fast,custom bucket
+    class jump note
+```
+
+### Depth Ladder
+
+```mermaid
+flowchart LR
+    classDef depth fill:#f4f5f7,stroke:#6b7280,stroke-width:1.2px
+
+    surface["Surface\nfirst success"] --> fundamentals["Fundamentals\nstable mental model + practical basics"] --> advanced["Advanced\nownership + implementation bridge"]
+
+    class surface,fundamentals,advanced depth
 ```
 
 Use the path to choose *where to learn next*.

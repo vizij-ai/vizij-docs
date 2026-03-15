@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,architecture,mental-model -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-15
 > **Purpose:** give readers the stable system mental model that makes later guidebook buckets easier to interpret correctly
 
 # System Mental Model
@@ -33,7 +33,7 @@ You do not need package-level or crate-level knowledge to use this page.
 It helps if you have already:
 
 1. read [What Is Vizij?](what-is-vizij.md),
-2. seen the main public route as `Hello Face -> Authoring -> Player -> Deployment`.
+2. seen a running face in the public demos or the `Hello Face` tutorial.
 
 ## The Stable System Map
 
@@ -46,38 +46,60 @@ At the most useful learner level, Vizij is a relationship between four things:
 
 Those are connected by a small set of stable contracts rather than by one single app.
 
-### System Architecture Relationship
+### Asset To Runtime Relationship
 
 ```mermaid
-flowchart TD
-    subgraph Assets ["1. Authored Assets"]
-        model["GLB/GLTF + Vizij Metadata\n(Rigs, Poses, Animations)"]
-    end
+flowchart LR
+    classDef asset fill:#fff4e5,stroke:#c97a00,stroke-width:1.5px
+    classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef app fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
 
-    subgraph Runtime ["2. Runtime Control"]
-        orch["Orchestrator\n(Scheduling / Merging)"]
-        bb["Blackboard\n(Shared Typed State)"]
-        render["Renderer\n(Face Outputs)"]
-        orch <--> bb
-        bb --> render
-    end
+    asset["1. Face asset\nGLB / loaded world"]
+    bundle["2. Vizij bundle metadata\nrig, poses, animations, programs"]
+    provider["3. VizijRuntimeProvider\nloads and owns runtime startup"]
+    inputs["4. Typed inputs\npaths + values"]
+    orch["5. Orchestrator + controllers"]
+    board["6. Blackboard and output paths"]
+    render["7. Renderer applies resolved values"]
+    face["8. VizijRuntimeFace"]
 
-    subgraph Integration ["3. Integration Surfaces"]
-        shell["Application Shell\n(React Provider / Face)"]
-        shell -- "Loads" --> model
-        shell -- "Boots" --> orch
-    end
+    asset --- bundle
+    asset -->|"loaded as bundle input"| provider
+    bundle -->|"registers authored runtime layers"| provider
+    provider -->|"stages runtime inputs"| inputs
+    inputs --> orch --> board --> render --> face
 
-    subgraph Deployment ["4. Deployment Surfaces"]
-        endpoint["Maintainable Endpoint\n(Standalone / Browser)"]
-        endpoint -- "Hosts" --> shell
-    end
-
-    style Assets fill:#161a33,stroke:#2d3356
-    style Runtime fill:#0b0d18,stroke:#7c4dff,stroke-width:2px
-    style Integration fill:#161a33,stroke:#2d3356
-    style Deployment fill:#161a33,stroke:#2d3356
+    class asset,bundle asset
+    class inputs,orch,board,render runtime
+    class provider,face app
 ```
+
+### App And Deployment Boundary
+
+```mermaid
+flowchart LR
+    classDef app fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+    classDef deploy fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+
+    provider["Runtime provider\nowns lifecycle"]
+    face["Runtime face surface"]
+    ui["App-owned hooks,\npanels, and session state"]
+    shell["Browser app or standalone shell"]
+    operator["Operator or end-user context"]
+
+    provider --> face
+    provider --> ui
+    face -->|"embedded inside"| shell
+    ui -->|"belongs to"| shell
+    shell --> operator
+
+    class provider,face,ui app
+    class shell,operator deploy
+```
+
+The first diagram explains where the stable runtime contracts live.
+
+The second explains where application ownership starts and where deployment becomes operational rather than architectural.
 
 ### 1. Authored assets
 
@@ -220,7 +242,7 @@ This page intentionally does not teach the detailed control taxonomy. It only es
 
 ## Where The Public Route Fits
 
-The public builder spine is still the best outward-facing route:
+One helpful public builder spine is:
 
 `Hello Face -> Authoring -> Player -> Deployment`
 

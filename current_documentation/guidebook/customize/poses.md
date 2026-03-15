@@ -28,18 +28,12 @@ After this page, you should be able to explain what a pose is in Vizij, how pose
 
 ## What You Need
 
-From `vizij-web`:
-
-```bash
-pnpm run dev:vizij-authoring
-```
-
 It also helps if you have already read:
 
 1. [Rigging](rigging.md),
 2. [Customization Concepts Primer](../introduction/customization-concepts-primer.md).
 
-You do not need to understand animation playback transport yet.
+You do not need to understand animation playback transport yet, and you do not need to run local code just to understand the concept page.
 
 ## Quick reference
 

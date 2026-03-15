@@ -22,23 +22,9 @@ After this page, you should be able to explain what the existing-asset sandbox g
 
 ## Module Notes
 
-### Intended Audience
-
 This page is for readers who have already completed [Hello Face Quickstart](hello-face-quickstart.md) and now want a more accurate mental model of what they just touched.
 
-### Artifact Being Touched
-
-The existing-asset sandbox is not a blank project.
-
-It is a prebuilt runtime experience composed of:
-
-1. a sample face asset,
-2. a prepared asset bundle,
-3. a runtime provider that loads and wires the asset,
-4. a small set of interaction hooks or controls,
-5. a UI surface that makes the result immediately visible.
-
-The maintained first sandbox anchor is `tutorial-fullscreen-face`.
+The existing-asset sandbox is not a blank project. It is a prebuilt runtime experience made of a sample face asset, a prepared bundle, a provider that loads and wires the asset, a small interaction layer, and a UI that makes the result immediately visible. The maintained first sandbox anchor is `tutorial-fullscreen-face`.
 
 ## What You Need
 

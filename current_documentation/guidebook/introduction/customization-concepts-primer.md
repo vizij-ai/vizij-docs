@@ -33,7 +33,7 @@ You do not need to have used `vizij-authoring` yet.
 It helps if you have already:
 
 1. read [How To Use This Guidebook](how-to-use-this-guidebook.md),
-2. seen at least one working Vizij face in the `Experience` bucket.
+2. seen a running Vizij face in the demos or the `Hello Face` tutorial.
 
 ## The Core Concepts
 

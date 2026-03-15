@@ -34,13 +34,7 @@ It helps if you have already read:
 2. [Poses](poses.md),
 3. [Animations](animations.md).
 
-From `vizij-web`:
-
-```bash
-pnpm run dev:vizij-authoring
-```
-
-You do not need to understand GraphSpec, GraphRuntime, scheduler order, or export internals yet.
+You do not need to understand GraphSpec, GraphRuntime, scheduler order, or export internals yet, and you do not need to run local code just to follow the concept page.
 
 ## Quick chooser
 

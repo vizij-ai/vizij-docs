@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,loading,embedding,playback -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-15
 > **Purpose:** explain the basic mechanics of getting a Vizij face loaded into a usable application surface and keeping that surface honest
 
 # Loading, Playback, and Embedding
@@ -130,13 +130,49 @@ That is the practical boundary:
 
 ## A Small Integration Anatomy
 
+### Loading And Playback
+
 ```mermaid
 flowchart LR
-    bundle["VizijAssetBundle"] --> provider["VizijRuntimeProvider"]
-    provider --> face["VizijRuntimeFace"]
-    provider --> hooks["app-owned hooks"]
-    hooks --> ui["app panels / controls / status"]
-    face --> ui
+    classDef loading fill:#fff4e5,stroke:#c97a00,stroke-width:1.5px
+    classDef playback fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+
+    asset["GLB or asset source"]
+    bundle["Resolved VizijAssetBundle"]
+    provider["VizijRuntimeProvider\nowns runtime startup"]
+    state["Loading, ready, and error state"]
+    face["VizijRuntimeFace\nruntime-driven face surface"]
+
+    asset --> bundle --> provider
+    provider --> state
+    provider --> face
+
+    class asset,bundle,provider loading
+    class state,face playback
+```
+
+### Embedding Boundary
+
+```mermaid
+flowchart LR
+    classDef playback fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef embed fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+
+    provider["VizijRuntimeProvider"]
+    state["Runtime readiness state"]
+    face["VizijRuntimeFace"]
+    hooks["App-owned hooks,\npanels, or session layer"]
+    shell["Page or feature shell"]
+
+    provider --> hooks
+    provider --> state
+    provider --> face
+    state --> shell
+    face --> shell
+    hooks --> shell
+
+    class provider,state,face playback
+    class hooks,shell embed
 ```
 
 The smallest recurring anatomy in the current repo is:

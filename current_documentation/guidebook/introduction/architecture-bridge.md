@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,architecture,repo-map,documentation-authority -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-15
 > **Purpose:** connect the guidebook’s learner-facing route model to the real cross-repo architecture and documentation authority model without confusing either one for the other
 
 # Architecture Bridge
@@ -46,37 +46,52 @@ You do not need crate-by-crate or package-by-package detail to use this page wel
 
 Vizij is easiest to navigate when you keep two views in mind at the same time:
 
+### Teaching View
+
 ```mermaid
-flowchart TD
-    subgraph TeachingView ["Guidebook / Teaching View"]
-        t1["Experience\n(Proof of Life)"] --> t2["Control\n(Runtime Specs)"]
-        t2 --> t3["Customize\n(Authoring)"]
-        t3 --> t4["Integrate\n(App Shells)"]
-        t4 --> t5["Deploy\n(Endpoints)"]
-    end
+flowchart TB
+    classDef guide fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
 
-    subgraph PlatformView ["Platform / Implementation View"]
-        p1["vizij-rs\n(Rust Cores / WASM)"]
-        p2["vizij-web\n(TS Packages / Apps)"]
-        p3["vizij-assets\n(Binary Sources)"]
-        p4["vizij-docs\n(Architecture / Roadmap)"]
-    end
+    tIntro["Introduction\nroute map + vocabulary"] --> tExp["Experience\nproof of life"] --> tControl["Control\npaths + runtime meaning"]
 
-    t1 -.-> p2
-    t2 -.-> p1
-    t3 -.-> p2
-    t4 -.-> p2
-    t5 -.-> p2
-    p1 -.-> p2
-    p3 -.-> p2
-    p4 -.-> TeachingView
+    class tIntro,tExp,tControl guide
+```
 
-    style TeachingView fill:#161a33,stroke:#2d3356
-    style PlatformView fill:#0b0d18,stroke:#7c4dff,stroke-width:2px
+### Teaching View After Control
+
+```mermaid
+flowchart TB
+    classDef guide fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+
+    tControl["Control\npaths + runtime meaning"] --> tCustomize["Customize\nauthoring layers"]
+    tControl --> tIntegrate["Integrate\napp shells"]
+    tCustomize --> tIntegrate --> tDeploy["Deploy\noperator endpoints"]
+
+    class tIntro,tExp,tControl,tCustomize,tIntegrate,tDeploy guide
+```
+
+### Implementation Authority View
+
+```mermaid
+flowchart TB
+    classDef impl fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef docs fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+
+    pDocs["vizij-docs\ncross-repo architecture + roadmap"]
+    pWeb["vizij-web\napps, packages, player, standalone, authoring"]
+    pRs["vizij-rs\nRust and WASM runtime cores"]
+    pAssets["vizij-assets\nsource meshes, rigs, and bundles"]
+
+    pRs -->|"WASM/runtime primitives"| pWeb
+    pAssets -->|"bundles and reusable assets"| pWeb
+    pDocs -->|"authority and framing"| pWeb
+
+    class pWeb,pRs,pAssets impl
+    class pDocs docs
 ```
 
 The teaching view organizes concepts in the order that helps readers learn.
-The platform view organizes implementation truth by repo, app, package, and asset ownership.
+The implementation authority view organizes implementation truth by repo, app, package, and asset ownership.
 
 Both views are real. The bridge ensures you can transition from "learning a concept" to "finding the code" without losing the narrative thread.
 

@@ -60,14 +60,15 @@ The guidebook should not force readers to infer their exit path from the final p
 
 `Intended Audience`, `Why This Page Exists`, `Artifact Being Touched`, `What This Page Does And Does Not Teach`, and similar page-scope or teaching-scope meta notes should be treated as optional reader-orientation notes, not mandatory top-level page structure.
 
-When those notes genuinely help the reader, prefer grouping them under a single `Module Notes` H2 with short H3 subsections.
+When those notes genuinely help the reader, prefer grouping them under a single `Module Notes` H2 as one short paragraph or a few brief sentences. Add H3 subsections only when the separation materially helps the reader choose or orient.
 
 Default guidance:
 
 1. keep each note to one or two short sentences unless the reader truly needs more,
 2. omit the note entirely if it mainly helps the writer rather than the reader,
 3. keep the main learning flow visible above the fold,
-4. keep `What You Need` separate only when the page has real prerequisites or setup requirements.
+4. keep `What You Need` separate only when the page has real prerequisites or setup requirements,
+5. do not turn `Module Notes` into a miniature page outline unless that structure carries real teaching value.
 
 Common examples of notes that usually belong under `Module Notes`:
 

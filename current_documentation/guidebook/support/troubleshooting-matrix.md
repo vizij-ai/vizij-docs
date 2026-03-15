@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,troubleshooting,matrix -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** collect the common route-level failure patterns and the fastest guidebook-aligned recovery paths
 
 # Troubleshooting Matrix
@@ -20,19 +20,9 @@ After this page, you should be able to recognize common failure patterns across 
 
 ## Module Notes
 
-### Intended Audience
-
 This page is for guidebook authors, facilitators, and builders who need a practical recovery layer behind the main route.
 
-### Artifact Being Touched
-
-The artifact here is the route-level recovery model:
-
-1. symptom recognition,
-2. likely causes,
-3. where to inspect next,
-4. the fastest recovery path,
-5. when to keep going and when to branch around a broken segment.
+The artifact here is the route-level recovery model: symptom recognition, likely causes, where to inspect next, the fastest recovery path, and when to keep going versus branch around a broken segment.
 
 ## What You Need
 
@@ -58,17 +48,26 @@ This page works best after [Validation Checkpoints](validation-checkpoints.md), 
 When something goes wrong, the Vizij runtime usually gives explicit visual clues.
 
 ```mermaid
-flowchart TD
-    subgraph StandaloneStates ["Standalone Failure Clues"]
-        nomodel["'No model loaded' center-screen"] -- "Likely" --> pick["User must pick a file or provide --glb"]
-        error["'Asset load failure' text"] -- "Likely" --> corrupt["Corrupt GLB or invalid URL"]
-        ws_off["'WebSocket: Disconnected' tag"] -- "Likely" --> net["Network blocked or port collision"]
+flowchart LR
+    classDef symptom fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+    classDef inspect fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+
+    subgraph StandaloneStates ["Standalone clues"]
+        direction TB
+        nomodel["No model loaded"] --> pick["Check GLB path\nor file picker state"]
+        error["Asset load failure"] --> corrupt["Check asset URL,\nfile integrity, or bundle"]
+        wsOff["WebSocket disconnected"] --> net["Check port, active client,\nor trusted-network reachability"]
     end
 
-    subgraph PlayerStates ["Player / Authoring Clues"]
-        provider["'Provider not found' in checklist"] -- "Likely" --> context["Missing VizijProvider wrapper"]
-        stuck["Infinite loader / Spinner"] -- "Likely" --> bundle["WASM bundle not found or hung"]
+    subgraph AppStates ["Player / authoring clues"]
+        direction TB
+        provider["Provider not found"] --> context["Check provider wrapper\nor app tree placement"]
+        stuck["Loader never clears"] --> bundle["Check WASM, bundle load,\nor runtime startup"]
+        inert["Face visible but inert"] --> control["Check focus, path, pose data,\nand bundle/runtime alignment"]
     end
+
+    class nomodel,error,wsOff,provider,stuck,inert symptom
+    class pick,corrupt,net,context,bundle,control inspect
 ```
 
 | Symptom | Likely cause | Where to inspect | Fast recovery |
@@ -96,20 +95,25 @@ flowchart TD
 Use this flow to decide whether to keep technical debugging or move to a conceptual fallback.
 
 ```mermaid
-flowchart TD
-    Start["Symptom Detected"] --> SimpleCheck["Try smallest fix (Reload / Restart)"]
-    SimpleCheck --> IsFixed{Fixed?}
-    IsFixed -- Yes --> Continue["Continue with Route"]
-    IsFixed -- No --> TimeCheck{Learning Goal Check}
-    
-    TimeCheck -- "Deep fix needed" --> Conceptual["Switch to Conceptual Recovery\n(Reference code/screenshots)"]
-    TimeCheck -- "Fix is fast" --> DeeperFix["Check Implementation Anchors"]
-    
-    DeeperFix --> StillBroken{Still Broken?}
-    StillBroken -- Yes --> Escalated["Escalate to Repo Debugging\n(Archive/Reset repo root)"]
-    StillBroken -- No --> Continue
-    
-    Conceptual --> NextModule["Move to Next Module"]
+flowchart TB
+    classDef action fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+    classDef fallback fill:#fff4cc,stroke:#b7791f,stroke-width:1.5px
+    classDef escalate fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+
+    start["Symptom blocks the route"] --> small["Try the smallest recovery\nreload, reconnect, refocus,\none known-good asset"]
+    small --> fixed{Route confidence restored?}
+    fixed -- Yes --> continue["Continue with the module"]
+    fixed -- No --> goal{Does the learning goal require a live fix?}
+    goal -- No --> conceptual["Switch to conceptual recovery\nscreenshots, code anchors,\nsimpler maintained surface"]
+    goal -- Yes --> anchors["Inspect the named\nimplementation anchors"]
+    anchors --> solved{Concrete cause found quickly?}
+    solved -- Yes --> continue
+    solved -- No --> repo["Escalate to repo-level debugging\noutside the guidebook route"]
+    conceptual --> next["Move forward without\nlosing the concept"]
+
+    class start,small,continue,anchors,next action
+    class conceptual fallback
+    class repo escalate
 ```
 
 Use the matrix in this order:

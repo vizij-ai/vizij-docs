@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,paths,standard-controls -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** explain the core path and standard-control vocabulary behind visible runtime behavior
 
 # Paths and Standard Controls
@@ -22,22 +22,9 @@ After this page, you should be able to read common Vizij control paths, distingu
 
 ## Module Notes
 
-### Intended Audience
+This page is for readers who have already seen a face working and now need the mental model underneath it. It is especially useful after [Hello Face Quickstart](../experience/hello-face-quickstart.md).
 
-This page is for readers who have already seen a face working and now need the mental model underneath it.
-
-It is especially useful after [Hello Face Quickstart](../experience/hello-face-quickstart.md).
-
-### Artifact Being Touched
-
-The artifact here is the control vocabulary itself:
-
-1. runtime input paths,
-2. standard control paths,
-3. pose-weight paths,
-4. speech-facing pose labels and blend groups that still write through the same pose path family.
-
-These are the stable handles that let different Vizij surfaces stay aligned.
+The artifact here is the control vocabulary itself: runtime input paths, standard control paths, pose-weight paths, and speech-facing pose labels that still write through the same pose path family. These are the stable handles that let different Vizij surfaces stay aligned.
 
 ## What You Need
 
@@ -196,23 +183,39 @@ You will see these ideas repeated across Vizij:
 
 ## Current Useful Visual
 
-### Path Anatomy
+### Runtime Path Families
 
-Understanding the segments of a path helps you navigate any Vizij face:
+Understanding the two main runtime path families is more useful than trying to memorize every concrete path string first.
 
 ```mermaid
 flowchart LR
-    p["rig / {face} / {category} / {channel} / {track} / {attribute}"]
-    
-    subgraph Anatomy ["Path Segments"]
-        direction LR
-        cat["Category\n(standard/poses)"]
-        chan["Channel\n(left_eye/smile)"]
-        track["Track\n(pos/weight)"]
-        attr["Attribute\n(x/y/z)"]
-    end
-    
-    p --- Anatomy
+    classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef note fill:#f4f5f7,stroke:#6b7280,stroke-width:1.2px
+
+    std["Standard control runtime path\nrig/{faceId}/standard/{channel}/{track}/{attribute}"]
+    pose["Pose-weight runtime path\nrig/{faceId}/poses/{poseSlug}.weight"]
+    speech["Hotkeys, speech systems, and pose UIs\nstill write canonical pose-weight paths"]
+    note["Read the semantic family first:\nstandard = reusable rig channel\nposes = named authored state"]
+
+    speech --> pose
+    std -. compare with .-> pose
+    note -. use this question when reading any path .-> std
+
+    class std,pose runtime
+    class note,speech note
+```
+
+### Deployment Slot Mapping
+
+```mermaid
+flowchart LR
+    classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef deploy fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+
+    slot["Deployment slot name\nstandard/{channel}/{track}/{attribute}"] --> bridge["Standalone bridge\nrestores rig/{faceId}/... internally"] --> std["Standard control runtime path\nrig/{faceId}/standard/{channel}/{track}/{attribute}"]
+
+    class slot,bridge deploy
+    class std runtime
 ```
 
 The best wave-1 visual is still the existing `tutorial-fullscreen-face` screenshot plus the code in:

@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,orchestration,diagnostics -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** teach how Vizij runtime control actually executes frame to frame and how to diagnose control failures without drifting into deployment or authoring runbooks
 
 # Orchestration and Diagnostics
@@ -48,20 +48,32 @@ You do not need to know authoring internals or deployment packaging details to u
 ## The Runtime Control Chain
 
 ```mermaid
-sequenceDiagram
-    participant Host as Host / Hook / Client
-    participant Runtime as Runtime Status
-    participant Orch as Orchestrator
-    participant Board as Blackboard
-    participant Renderer as Renderer
-    participant Face as Visible Face
+flowchart LR
+    classDef stage fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef evidence fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
 
-    Runtime->>Host: ready
-    Host->>Orch: stage input write (path, value)
-    Orch->>Orch: schedule controllers
-    Orch->>Board: merge controller writes
-    Board->>Renderer: publish resolved outputs
-    Renderer->>Face: visible face change
+    ready["1. Runtime ready?\nloading=false, ready=true"] --> stage["2. Host stages exact path write"]
+    stage --> step["3. Orchestrator steps\ncontrollers run in schedule order"]
+    step --> merge["4. Frame exposes merged_writes\nand any conflicts"]
+    merge --> render["5. Renderer/output target matches\nwhat the loaded bundle can move"]
+    render --> face["6. Visible face change"]
+
+    readyEvidence["Check status phase\nbefore reasoning about control"]
+    pathEvidence["Confirm full path,\nfaceId, namespace, and control family"]
+    orchEvidence["useOrchFrame() or equivalent\nshows frames advancing"]
+    mergeEvidence["Inspect merged_writes,\nconflicts, and target snapshots"]
+    renderEvidence["Check outputPaths or renderer mapping\nbefore blaming the UI"]
+    faceEvidence["Visible motion is late evidence,\nnot the first proof"]
+
+    readyEvidence -. inspect here first .-> ready
+    pathEvidence -. inspect here first .-> stage
+    orchEvidence -. inspect here first .-> step
+    mergeEvidence -. inspect here first .-> merge
+    renderEvidence -. inspect here first .-> render
+    faceEvidence -. interpret last .-> face
+
+    class ready,stage,step,merge,render,face stage
+    class readyEvidence,pathEvidence,orchEvidence,mergeEvidence,renderEvidence,faceEvidence evidence
 ```
 
 Read this left to right as a diagnostic sequence, not as a UI flow.

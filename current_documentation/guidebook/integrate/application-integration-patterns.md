@@ -29,13 +29,7 @@ After this page, you should be able to choose a simple Vizij application integra
 
 ## Module Notes
 
-### Intended Audience
-
-This page is for readers who already understand the basic ideas from:
-
-1. [Minimal Web Player](minimal-web-player.md),
-2. [Loading, Playback, and Embedding](loading-playback-and-embedding.md),
-3. [Orchestration and Diagnostics](../control/orchestration-and-diagnostics.md) if they want the most control-heavy pattern.
+This page is for readers who already understand the basic ideas from [Minimal Web Player](minimal-web-player.md), [Loading, Playback, and Embedding](loading-playback-and-embedding.md), and optionally [Orchestration and Diagnostics](../control/orchestration-and-diagnostics.md) if they want the most control-heavy pattern.
 
 It is a comparison-and-selection page, not a build tutorial.
 

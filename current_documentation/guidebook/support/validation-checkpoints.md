@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,support,validation,checkpoints -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** define reusable success checks across the maintained guidebook route
 
 # Validation Checkpoints
@@ -35,22 +35,31 @@ This page is most useful alongside:
 5. [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md),
 6. [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
 
-## Interactive Lifecycle
+## Route Validation Ladder
 
-A healthy Vizij implementation follows a predictable lifecycle. Use this state machine to validate whether your current stage is behaving correctly.
+Use this ladder to validate the maintained route stage by stage. Each stage needs stronger proof than the one before it.
 
 ```mermaid
-state_diagram
-    [*] --> Initializing: Bundle loaded
-    Initializing --> NoModel: Runtime ready
-    Initializing --> Error: Bundle/Provider failure
-    NoModel --> LoadingModel: GLB/GLTF requested
-    LoadingModel --> Ready: Face active & published
-    LoadingModel --> Error: Asset load failure
-    Ready --> Degraded: Network/WebGL hitch
-    Degraded --> Ready: Auto-recovery
-    Ready --> [*]: Shutdown
-    Error --> NoModel: Reset/Recovery
+flowchart LR
+    classDef stage fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef proof fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+
+    exp["Experience"] --> control["Control"] --> customize["Customize"] --> integrate["Integrate"] --> deploy["Deploy"]
+
+    expProof["Face renders,\ngaze or hotkeys prove life"]
+    controlProof["Reader can explain why\nstandard and pose paths differ"]
+    customProof["One chosen authoring layer\nhas believable preview or export proof"]
+    integrateProof["Loading, ready, and error states\nstay visible and one control path still reaches the face"]
+    deployProof["Endpoint is live,\nslot discovery works,\none visible write lands,\nreset returns toward defaults"]
+
+    expProof -. minimum proof .-> exp
+    controlProof -. minimum proof .-> control
+    customProof -. minimum proof .-> customize
+    integrateProof -. minimum proof .-> integrate
+    deployProof -. minimum proof .-> deploy
+
+    class exp,control,customize,integrate,deploy stage
+    class expProof,controlProof,customProof,integrateProof,deployProof proof
 ```
 
 ### Route-Level Checkpoints

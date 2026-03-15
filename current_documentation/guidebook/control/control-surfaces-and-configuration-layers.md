@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,control,configuration,control-surfaces -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** explain the main control and configuration surfaces readers encounter and what each one is for
 
 # Control Surfaces and Configuration Layers
@@ -22,24 +22,9 @@ After this page, you should be able to explain the main control and configuratio
 
 ## Module Notes
 
-### Intended Audience
+This page is for readers who already understand paths and runtime semantics and now need to see where those controls and configurations actually show up across the system.
 
-This page is for readers who already understand paths and runtime semantics, and now need to understand where those controls and configurations actually show up across the system.
-
-### Why This Page Exists
-
-Vizij does not have only one control surface.
-
-Readers encounter several different layers that all affect behavior, and those layers can blur together if they are not named clearly:
-
-1. standard controls,
-2. pose configuration,
-3. animation configuration,
-4. procedural program or graph configuration,
-5. runtime bundle configuration,
-6. deployment-facing slot or operator control surfaces.
-
-This page explains those layers without collapsing them into one generic idea of “controls.”
+Vizij does not have only one control surface. Readers encounter standard controls, pose and animation configuration, procedural logic, bundle configuration, and deployment-facing operator surfaces, and this page keeps those layers distinct instead of collapsing them into one generic idea of "controls."
 
 ## What You Need
 
@@ -50,17 +35,50 @@ It helps if you have already read:
 
 ## The Main Surfaces
 
-```mermaid
-flowchart TD
-    std["1. Standard Controls<br/>Reusable rig-facing channels"]
-    poses["2. Pose Configuration<br/>Named authored facial states"]
-    anim["3. Animation Configuration<br/>Timed authored motion"]
-    proc["4. Procedural Programs / Graphs<br/>Computed behavior"]
-    bundle["5. Runtime Bundle Configuration<br/>What the runtime loads and registers"]
-    slots["6. Deployment Slots / Operator Surfaces<br/>What a client can actually discover and drive"]
+### Authored Layers Into Runtime Packaging
 
-    std --> poses --> anim --> proc --> bundle --> slots
+```mermaid
+flowchart LR
+    classDef authored fill:#fff4e5,stroke:#c97a00,stroke-width:1.5px
+    classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+
+    std["Standard controls\nreusable rig-facing channels"]
+    poses["Poses\nnamed authored states"]
+    anim["Animations\ntimed authored motion"]
+    proc["Procedural programs\ncomputed behavior"]
+    bundle["Runtime bundle\nwhat the runtime loads and registers"]
+    provider["Runtime provider or player shell"]
+
+    std --> bundle
+    poses --> bundle
+    anim --> bundle
+    proc --> bundle
+    bundle --> provider
+
+    class std,poses,anim,proc authored
+    class bundle,provider runtime
 ```
+
+### Runtime Surface To Deployment Surface
+
+```mermaid
+flowchart LR
+    classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+    classDef deploy fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+
+    provider["Runtime provider or player shell\nwhere authored layers become live"]
+    slots["Discovered slots and operator controls"]
+    client["Deployment client or operator UI"]
+
+    provider --> slots --> client
+
+    class provider runtime
+    class slots,client deploy
+```
+
+The first diagram explains where authored control layers become loadable runtime capability.
+
+The second explains what part of that capability becomes visible to an operator-facing deployment surface.
 
 Read this stack from bottom to top when authoring capability and from top to bottom when diagnosing an operator-facing endpoint.
 

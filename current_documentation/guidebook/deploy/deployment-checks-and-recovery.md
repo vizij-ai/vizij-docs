@@ -35,7 +35,7 @@ This page assumes:
 3. you already know the deployment surface from [Easiest Standalone Deployment](easiest-standalone-deployment.md),
 4. you already understand the runtime-plus-operator model from [Operator and Deployment Model](operator-and-deployment-model.md).
 
-This page does not repeat the standalone setup walkthrough, packaging steps, or deeper topology choices.
+This page does not repeat the standalone setup walkthrough, packaging steps, or deeper topology choices. It is the public-facing readiness and first-recovery layer once the standalone app is already in front of you.
 
 ## What “Deployed” Means For This First Endpoint
 

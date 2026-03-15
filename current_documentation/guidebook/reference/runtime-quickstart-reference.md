@@ -26,6 +26,8 @@ Open this page when you already know you are building or inspecting a React runt
 2. the main helper methods from `useVizijRuntime()`,
 3. the first runtime path forms you are likely to write or inspect.
 
+If you are still choosing your first path, start with the public tutorial route and come back here when you need the compact reminder.
+
 ## The Core Mental Model
 
 The smallest useful Vizij runtime app has three pieces:
@@ -34,7 +36,7 @@ The smallest useful Vizij runtime app has three pieces:
 2. a `VizijRuntimeProvider`
 3. a `VizijRuntimeFace`
 
-## Fastest Maintained Entry
+## Fastest Maintained Local Entry
 
 ```bash
 pnpm run dev:tutorial-fullscreen-face
@@ -95,7 +97,7 @@ This reference is about runtime paths, not deployment slot names:
 | runtime path | `rig/{face}/standard/left_eye/pos/x` | `setInput(...)`, `animateValue(...)`, runtime reasoning |
 | deployment slot name | `standard/vizij/left_eye/pos/x` | endpoint-driven writes in `vizij-standalone` |
 
-## Best Demo Source
+## Best Maintained Source
 
 Read and run:
 

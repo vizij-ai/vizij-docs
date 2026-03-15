@@ -1,6 +1,6 @@
 <!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,operator,standalone -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-15
 > **Purpose:** explain what a deployed Vizij runtime consists of and how an operator actually interacts with it
 
 # Operator and Deployment Model
@@ -22,21 +22,9 @@ After this page, you should be able to explain the operational shape of the firs
 
 ## Module Notes
 
-### Intended Audience
-
 This page is for readers who already understand the first standalone deployment walkthrough and now need the operating model behind it.
 
-### Artifact Being Touched
-
-The first operator-facing deployment consists of:
-
-1. a standalone runtime app,
-2. a loaded face asset,
-3. a running WebSocket control service,
-4. a built-in or external same-host control client,
-5. a person operating the endpoint.
-
-The maintained implementation anchor is `vizij-standalone`.
+The first operator-facing deployment consists of a standalone runtime app, a loaded face asset, a running WebSocket control service, a built-in or external trusted-local-network control client, and a person operating the endpoint. The maintained implementation anchor is `vizij-standalone`.
 
 ## What You Need
 
@@ -59,45 +47,51 @@ This keeps deployment concrete without immediately pulling the reader into ROS, 
 
 Current deployable floor:
 
-`vizij-standalone` on one host with one same-host operator path.
+`vizij-standalone` on one host with one clearly exposed operator path, with the built-in panel or another trusted client connecting to the same local control endpoint.
 
 Treat that as the credible baseline before you reason about split surfaces, robot middleware, or broader topology planning.
 
 ## Control Topology
 
+### Operator Access Paths
+
 ```mermaid
-flowchart TD
-    subgraph OperatorSurface ["Operator Surface (Built-in or External)"]
-        operator["Operator (Person)"] --> panel["Web Control Panel\n(localhost:9000)"]
-        operator --> custom["Custom Client\n(SDK / WS)"]
-    end
+flowchart LR
+    classDef operator fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
+    classDef deploy fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
 
-    subgraph RuntimeSurface ["Runtime Surface (Standalone App)"]
-        panel -- "ws://localhost:9000" --> ws["WebSocket Server"]
-        custom -- "ws://localhost:9000" --> ws
-        ws <--> conn["Connection Manager"]
-        conn <--> app["Vizij Runtime"]
-        app <--> face["Face Artifact\n(Quori / Hugo)"]
-    end
+    operator["Operator"] --> browser["Built-in web panel\nhttp://HOST:9000/"]
+    operator --> client["Custom client\nWS / SDK"]
+    browser --> endpoint["Arora control endpoint\nws://HOST:9000"]
+    client --> endpoint
 
-    style OperatorSurface fill:#161a33,stroke:#2d3356
-    style RuntimeSurface fill:#0b0d18,stroke:#7c4dff,stroke-width:2px
+    lan["Trusted same-host or LAN client"] -. can open the same panel or endpoint .-> browser
+    lan -. can connect directly .-> client
+
+    class operator,browser,client,lan operator
+    class endpoint deploy
+```
+
+### Host Runtime Chain
+
+```mermaid
+flowchart TB
+    classDef deploy fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+    classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
+
+    endpoint["Arora control endpoint\nws://HOST:9000"] --> app["Tauri + runtime-react app shell"]
+    app --> runtime["Vizij runtime"]
+    runtime --> face["Loaded face artifact"]
+
+    class endpoint,app deploy
+    class runtime,face runtime
 ```
 
 ## Runtime vs. Provider
 
-It is important to distinguish between the **Face Artifact** (the rig and visuals) and the **Provider** (the logic driving the face).
+It is important to distinguish between the **Face Artifact** (the rig and visuals), the **Vizij runtime** (the thing resolving typed inputs into visible motion), and any upstream logic that happens to drive that runtime.
 
-```mermaid
-flowchart LR
-    provider["AI Provider\n(Gemini / OpenAI)"] -- "Typed Values" --> runtime["Vizij Runtime"]
-    runtime -- "Bone/Morph Weights" --> face["Face Artifact"]
-    
-    subgraph ControlLoop ["Control Loop"]
-        runtime
-        face
-    end
-```
+For the first deployment model, the main operational question is not which upstream provider produced a command. The question is whether the endpoint, runtime, and loaded face all agree on one healthy control path.
 
 ## What The Operator Actually Needs
 
@@ -118,8 +112,8 @@ That is the practical deployment model.
 
 Important operational facts from the current standalone app:
 
-1. the default endpoint is `ws://localhost:9000`,
-2. the server currently binds to `127.0.0.1`,
+1. the default endpoint is `ws://127.0.0.1:9000`,
+2. the server currently binds to `0.0.0.0`,
 3. the built-in web control panel is served on the same port,
 4. the control panel behaves like a regular WebSocket client,
 5. the connection manager enforces one active client at a time.
@@ -148,7 +142,7 @@ Use this before you jump into deeper topology pages:
 
 | If your real constraint is... | Best current route | Readiness label | Why |
 | --- | --- | --- | --- |
-| one machine, one rendered face, one same-host operator path | standalone endpoint plus built-in web control | maintained now | matches the current localhost-first server and control-panel story directly |
+| one host, one rendered face, one clear operator path | standalone endpoint plus built-in web control | maintained now | matches the current built-in panel plus trusted-network endpoint story directly |
 | one machine with the face on one screen and supporting UI on another | single-host multi-monitor deployment | maintained advanced path | display selection, fullscreen, and kiosk-style window options are implemented now |
 | separate operator and face surfaces beyond the same host | split control-surface planning | prototype direction | control separation is real, but the current bind and exclusive-client rules still shape the topology tightly |
 | ROS or robot middleware as the main system boundary | ROS and hardware comparison route | roadmap direction | the guidebook can frame the topology, but it is not a packaged maintained walkthrough today |
@@ -189,7 +183,7 @@ Treat this as part of the first deployment story, not as a side note.
 
 | Feature | What the operator gets |
 | :--- | :--- |
-| **Control UI** | a same-host browser surface for driving the loaded face without building a separate client first |
+| **Control UI** | a browser surface on the host or trusted local network for driving the loaded face without building a separate client first |
 | **Discovery** | dynamic slots populate from the loaded model schema |
 
 ## Boundary To Advanced Deployment
@@ -197,7 +191,7 @@ Treat this as part of the first deployment story, not as a side note.
 This page deliberately stops before:
 
 1. ROS integration,
-2. LAN-first or remote-device control claims,
+2. internet-exposed or broader multi-operator network claims,
 3. multi-screen control setups,
 4. hardware-specific transport decisions.
 
@@ -210,7 +204,7 @@ You are done with this page when:
 1. you can explain the first operator-facing deployment model in plain language,
 2. you understand the role of the WebSocket service and the built-in control panel,
 3. you can name the minimum conditions for a healthy deployed endpoint,
-4. you understand the current localhost-only boundary.
+4. you understand the current trusted-network boundary.
 
 ## Implementation Anchors
 

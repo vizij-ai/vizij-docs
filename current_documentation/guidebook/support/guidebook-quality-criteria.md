@@ -175,8 +175,9 @@ Default expectation:
 
 1. they are optional,
 2. when used, they are usually grouped under `Module Notes`,
-3. they should usually be one or two short sentences each,
-4. they should not push the main instructional or conceptual flow too far down the page.
+3. they should usually read as one short grouped note or a few brief sentences rather than a miniature subsection tree,
+4. add H3s only when the separation materially helps the reader orient,
+5. they should not push the main instructional or conceptual flow too far down the page.
 
 Typical scope notes that usually belong there:
 

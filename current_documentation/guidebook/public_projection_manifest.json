@@ -11,7 +11,7 @@
       "presentationStyle": "atlas",
       "actions": [
         {
-          "label": "Open Getting Started",
+          "label": "Open Guide",
           "href": "/docs/getting-started/",
           "variant": "primary"
         },
@@ -47,7 +47,7 @@
         }
       ],
       "progressSteps": [
-        "Start with Getting Started if you need help choosing a learning path or deciding what to open next.",
+        "Start with Guide if you need help choosing a learning path or deciding what to open next.",
         "Use architecture and control-model pages when you need the mental model behind the demos and tutorials.",
         "Move to animation and deployment pages when the question shifts from concepts to motion, runtime ownership, and delivery."
       ],
@@ -199,16 +199,16 @@
       "order": 10,
       "routeRole": "orientation",
       "routeRoleLabel": "Path chooser",
-      "titleOverride": "Getting Started",
+      "titleOverride": "Guide",
       "summaryOverride": "Get oriented, choose a learning path, and know when to switch from overview pages to implementation references.",
       "redirects": [
         "how-to-use-this-guidebook"
       ],
       "prev": null,
       "next": {
-        "label": "Architecture",
+        "label": "System Mental Model",
         "href": "/docs/architecture/",
-        "description": "Map the public route back to the real cross-repo implementation surfaces."
+        "description": "Separate the stable Vizij system layers before you move into runtime path and value semantics."
       },
       "implementationAnchors": [
         {
@@ -234,8 +234,8 @@
     {
       "pageId": "docs-architecture",
       "moduleId": "docs/architecture",
-      "sourceModuleId": "introduction/architecture-bridge",
-      "sourcePath": "introduction/architecture-bridge.md",
+      "sourceModuleId": "introduction/system-mental-model",
+      "sourcePath": "introduction/system-mental-model.md",
       "surface": "docs",
       "publish": true,
       "canonical": true,
@@ -243,32 +243,33 @@
       "hubGroup": "orientation",
       "order": 20,
       "routeRole": "system-map",
-      "routeRoleLabel": "Architecture bridge",
-      "titleOverride": "Architecture",
-      "summaryOverride": "Connect the docs overview to the real Vizij repos, packages, apps, assets, and deployment surfaces.",
+      "routeRoleLabel": "System mental model",
+      "titleOverride": "System Mental Model",
+      "summaryOverride": "Understand the stable Vizij layers: authored assets, runtime control, integration surfaces, and deployment surfaces.",
       "redirects": [
-        "architecture-bridge"
+        "architecture-bridge",
+        "system-mental-model"
       ],
       "prev": {
-        "label": "Getting Started",
+        "label": "Guide",
         "href": "/docs/getting-started/",
-        "description": "Choose the right public route before you dive into the repo map."
+        "description": "Choose the right public route before you separate the stable Vizij system layers."
       },
       "next": {
         "label": "Renderer Data Model",
         "href": "/docs/renderer-data-model/",
-        "description": "Move from the repo map into the runtime path/value contract."
+        "description": "Move from the system layers into the runtime path and value contract."
       },
       "implementationAnchors": [
         {
-          "label": "Cross-repo architecture",
-          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/ARCHITECTURE.md",
-          "description": "Canonical internal repo-boundary reference."
+          "label": "Guidebook introduction bucket",
+          "href": "https://github.com/vizij-ai/vizij-docs/tree/main/current_documentation/guidebook/introduction/README.md",
+          "description": "Canonical conceptual bucket framing behind the system mental model."
         },
         {
           "label": "Runtime provider",
           "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/runtime-react/src/VizijRuntimeProvider.tsx",
-          "description": "The public route’s runtime boundary in code."
+          "description": "A concrete code anchor behind the runtime layer described on this page."
         }
       ],
       "labId": null,
@@ -299,9 +300,9 @@
         "runtime-inputs-and-semantics"
       ],
       "prev": {
-        "label": "Architecture",
+        "label": "System Mental Model",
         "href": "/docs/architecture/",
-        "description": "Return to the repo map and bundle lifecycle."
+        "description": "Return to the stable Vizij layer model before you go back into runtime path semantics."
       },
       "next": {
         "label": "Rigging and Control Model",
@@ -467,7 +468,7 @@
         "hello-face-quickstart"
       ],
       "prev": {
-        "label": "Getting Started",
+        "label": "Guide",
         "href": "/docs/getting-started/",
         "description": "Choose the route before you run the first app."
       },

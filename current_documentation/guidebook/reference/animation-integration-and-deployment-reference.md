@@ -26,6 +26,8 @@ Open this page when you already know you are working in one of these three areas
 2. the maintained live-integration anchor,
 3. the deployment-facing slot-writing contract.
 
+If you are still learning the main public route, use this page as a lookup reference rather than as the first teaching page.
+
 ## Animation
 
 Use `demo-vizij-player` to discuss:
@@ -74,7 +76,7 @@ Keep the operator-facing slot name separate from the internal runtime path:
 | discovered slot name | `standard/vizij/left_eye/pos/x` | WebSocket client writes and operator control |
 | internal runtime path | `rig/{faceId}/standard/vizij/left_eye/pos/x` | runtime and diagnostics reasoning |
 
-## Handy Commands
+## Handy Local Entry Points
 
 ```bash
 pnpm run dev:demo-vizij-player
