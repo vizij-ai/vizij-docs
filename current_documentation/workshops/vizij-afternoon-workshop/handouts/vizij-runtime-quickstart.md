@@ -19,11 +19,16 @@ pnpm run dev:tutorial-fullscreen-face
 ## Minimal Shape
 
 ```tsx
+const faceAssetUrl = new URL(
+  "../../vizij-authoring/public/assets/Quori_Current_Extended.glb",
+  import.meta.url,
+).href;
+
 const assetBundle = {
   namespace: "fullscreen-face",
   glb: {
     kind: "url",
-    src: "/assets/hugo_rigged.glb",
+    src: faceAssetUrl,
     aggressiveImport: true,
   },
   pose: {

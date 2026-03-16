@@ -185,7 +185,7 @@ The near-term deployment story is intentionally broader than a single app:
 
 `vizij-assets` is the binary source of truth for shareable sample meshes and rig/graph assets.
 
-Current visible inventory includes raw and rigged assets such as Hugo, Quori, and Tiago. The near-term roadmap, however, treats **Quori / Hugo / Toasty** as the intended canonical sample set for the maintained creator path. That mismatch is real and should be resolved explicitly rather than hand-waved in docs.
+Current visible inventory includes raw and rigged assets such as Quori, Tiago, and other maintained samples. The near-term roadmap, however, treats **Quori / Toasty** as the intended canonical sample set for the maintained creator path. That mismatch is real and should be resolved explicitly rather than hand-waved in docs.
 
 ### `vizij-ai.github.io`
 

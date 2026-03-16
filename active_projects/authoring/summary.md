@@ -39,7 +39,7 @@ Detailed execution tracking, stage gates, and feature-level backlog detail live 
   - sample-asset standardization `V9.*` is part of the blocking creator spine
   - speech/viseme `P10.*` remains a supporting runtime line rather than a creator blocker
 - The current creator-phase success gate is `import -> author/export -> runtime`.
-- The intended canonical sample set is `Quori / Hugo / Toasty`, even though the currently visible asset inventory still needs reconciliation to fully match that intent.
+- The intended canonical sample set is `Quori / Toasty`, even though the currently visible asset inventory still needs reconciliation to fully match that intent.
 
 ## Near-Term Focus
 

@@ -33,7 +33,7 @@ Create a standalone Vite demo app that showcases driving a Vizij face directly t
 
 [Face Catalog]
 
-- Introduce app-level `faces.ts` config enumerating existing GLB assets from `apps/website/src/assets` with bounds lifted from website components (Quori, Hugo, Abi, Baxter, Jibo, Tiago).
+- Introduce app-level `faces.ts` config enumerating existing GLB assets from `apps/website/src/assets` with bounds lifted from website components (Quori, Abi, Baxter, Jibo, Tiago).
 - Normalize config shape: `{ id, name, asset: string, bounds, namespace?, initialValues? }`.
 - Move duplicated bounds constants (e.g., `QuoriBounds`) out of website components into this config (optionally export re-used constants for website to adopt later; in this task we keep website untouched but mark TODOs).
 - Provide helper for loading initial slider defaults (e.g., pass optional `initialValues` to loader so UI displays non-zero defaults when needed).

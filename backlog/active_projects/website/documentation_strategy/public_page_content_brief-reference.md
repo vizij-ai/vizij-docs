@@ -104,7 +104,6 @@ These are the first files to reopen when drafting or validating page rewrites.
    - `vizij-docs/current_documentation/workshops/vizij-afternoon-workshop/handouts/vizij-runtime-quickstart.md`
    - `vizij-docs/current_documentation/workshops/vizij-afternoon-workshop/handouts/renderer-rigging-reference.md`
    - `vizij-docs/current_documentation/workshops/vizij-afternoon-workshop/handouts/animation-integration-deployment-reference.md`
-   - `vizij-assets/hugo-rigged/*`
    - `vizij-assets/quori-rigged/*`
    - `vizij-assets/tiago-rigged/*`
 
@@ -120,8 +119,7 @@ Understand what Vizij can do live and know where each behavior comes from.
 
 1. Each demo section is a runtime slice built on `VizijRuntimeProvider` via the site-local `ShowcaseRuntime`.
 2. Face assets come from site bundles that point to:
-   - `vizij-ai.github.io/public/demos/assets/Hugo_Latest_Rigged.glb`
-   - `vizij-ai.github.io/public/demos/assets/Quori_Latest_Rigged.glb`
+   - `vizij-ai.github.io/public/demos/assets/Quori_Current_Extended.glb`
 3. Rig Controls stage exact path/value writes through `setInput()`.
 4. Expressions map buttons to pose weight paths.
 5. Gaze maps pointer movement to standard eye position paths.
@@ -209,7 +207,7 @@ Set up the toolchain and understand the maintained learning path.
    - live behavior -> `tutorial-agent-face`
    - deployment -> `vizij-standalone`
 3. Fastest starter asset path:
-   - use Hugo or Quori sample assets first
+   - use Quori sample assets first
 
 **Concrete examples to embed**
 
@@ -330,7 +328,7 @@ rig/<face>/poses/blink.weight
 
 ```json
 {
-  "path": "rig/hugo/poses/viseme_p.weight",
+  "path": "rig/quori/poses/viseme_p.weight",
   "value": { "float": 1 }
 }
 ```
@@ -619,7 +617,7 @@ Portable:
 /standard/semio/left_eye/pos/x
 
 Runtime pose control:
-rig/hugo/poses/viseme_p.weight
+rig/quori/poses/viseme_p.weight
 ```
 
 ```md

@@ -29,7 +29,7 @@
 - Timings in `perf_baselines.md` are medians; compare like-for-like scenarios across runs.
 
 ## Fixture improvements queued (to-do)
-- **Face rig + orchestrator loop**: add a real rigged-face preset (e.g., Hugo/Quori) plus orchestrator blend to exercise vec/quaternion outputs, sparse hot inputs, and feedback into controllers.
+- **Face rig + orchestrator loop**: add a real rigged-face preset (e.g., Quori) plus orchestrator blend to exercise vec/quaternion outputs, sparse hot inputs, and feedback into controllers.
 - **Authoring/edit patch flow**: scenario that repeatedly loads/normalizes a larger authored graph and runs defaults-only frames to stress init + staging without explicit inputs.
 - **Sparse hot updates, wide outputs**: large graph with many outputs but only 5–10% inputs updated per tick; tracks smart-staging and cache invalidation behavior.
 - **Animation ⇄ graph feedback**: animation outputs driving graph params (time-scale/weights) to cover bidirectional flows.

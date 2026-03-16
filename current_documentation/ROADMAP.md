@@ -72,7 +72,7 @@ Only these items should block creator-phase completion:
 
 ### Canonical sample set
 
-- The intended near-term sample set is **Quori / Hugo / Toasty**.
+- The intended near-term sample set is **Quori / Toasty**.
 - The currently visible asset inventory does not yet cleanly match that intent, so the roadmap must treat this as a real reconciliation task rather than a documentation typo.
 
 ### Supporting but non-blocking creator work

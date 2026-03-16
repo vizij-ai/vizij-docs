@@ -93,11 +93,10 @@ Use for:
 
 ## Sample Assets
 
-1. `apps/tutorial-fullscreen-face/public/assets/hugo_rigged.glb`
-2. `apps/tutorial-agent-face/public/assets/Quori_Live.glb`
-3. `apps/vizij-authoring/public/assets/Hugo_Current.glb`
-4. `apps/vizij-authoring/public/assets/Quori_Current.glb`
-5. `apps/vizij-authoring/public/assets/Toasty_Current.glb`
+1. `apps/tutorial-agent-face/public/assets/Quori_Live.glb`
+2. `apps/vizij-authoring/public/assets/Quori_Current.glb`
+3. `apps/vizij-authoring/public/assets/Quori_Current_Extended.glb`
+4. `apps/vizij-authoring/public/assets/Toasty_Current.glb`
 
 ## Presenter Notes
 

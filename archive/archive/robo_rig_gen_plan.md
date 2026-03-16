@@ -10,7 +10,7 @@ Note: This plan is left was work todo, and is subject to change based on integra
 ### Low-level rig definitions (`@vizij/config`)
 
 - **Files:** `packages/@vizij/config/src/rigs.ts`, `low_rig.ts`, `models.ts`, `expression.ts`, `viseme.ts`.
-- **Low-level rigs** (e.g. `HugoLowLevelRig`, `QuoriLowLevelRig`) are hand-written `LowLevelRigDefinition` objects. Each channel lists tracks (`pos`, `rot`, `scale`, `morph`, etc.), optional axis filters, and optional `mapFunc` helpers. The `shapeKey` and track name determine an implicit search key (e.g. `"Mouth translation"`, `"Plane Key 1"`).
+- **Low-level rigs** (e.g. `QuoriLowLevelRig`) are hand-written `LowLevelRigDefinition` objects. Each channel lists tracks (`pos`, `rot`, `scale`, `morph`, etc.), optional axis filters, and optional `mapFunc` helpers. The `shapeKey` and track name determine an implicit search key (e.g. `"Mouth translation"`, `"Plane Key 1"`).
 - **`VizijLowRig`** consumes the definition and a set of renderer animatables. During construction it walks every `(channel, track)` pair, builds the search key, and scans `loadedAnimatables` for a matching `anim.name`. If found, it stores a `VizijLowRigTrackMap` entry pointing at that animatable’s ID and default value.
 - **Application step:** `VizijLowRig.apply(pose)` receives a `Pose` created against the stable `VizijStandardControlVector`. For every mapped track it:
   - Extracts the current rig channel values from the pose.
@@ -33,7 +33,7 @@ Note: This plan is left was work todo, and is subject to change based on integra
   - `buildRigGraph` (apps/demo-render-no-rig/src/rig/rigGraphGenerator.ts) mirrors the `VizijLowRig` matching logic: it flattens the `AnimatableList`, builds the same search keys, and constructs a node graph that connects rig inputs (`rig/<face>/<channel>/<track>/<axis>`) to renderer animatables.
   - The generated graph is rendered in the UI and can be exported, but the canonical data still lives in TypeScript definitions – edits in the UI are not persisted back to config.
 - **Website demos (`VizijVisemeDemo`, `VizijExpressionsDemo`):**
-  - Call `useRiggedModelLoader(Hugo, HugoLowLevelRig)` to load the model and instantiate a `VizijLowRig`.
+  - Call `useRiggedModelLoader(Quori, QuoriLowLevelRig)` to load the model and instantiate a `VizijLowRig`.
   - Build poses from the standard control vector (expressions + visemes) and feed them through `useBlendTree`, which eventually calls `rig.apply(pose)` for each active rig.
   - Entire flow depends on the low-level rig having successfully auto-bound to renderer animatables by the name heuristics.
 
@@ -95,7 +95,7 @@ Note: This plan is left was work todo, and is subject to change based on integra
 
 1. **Archive current behaviour**
    - Document existing low-level rig behaviour (this report) and keep definitions as reference fixtures for regression tests.
-   - Extract automated tests that verify the heuristic mapping still works (use Hugo/Quori as baselines).
+   - Extract automated tests that verify the heuristic mapping still works (use Quori as the baseline).
 
 2. **Design the `RobotRigGraph` schema**
    - Finalise JSON schema (inputs, nodes, outputs, metadata).
@@ -106,7 +106,7 @@ Note: This plan is left was work todo, and is subject to change based on integra
    - Refactor `buildRigGraph` to emit the new schema (without serialising to runtime structures).
    - Add save/load support in demo-render-no-rig for the graph files.
    - Implement validation (missing animatables, mismatched value kinds).
-   - Optionally create a conversion script that generates initial graphs from `HugoLowLevelRig`/`QuoriLowLevelRig`.
+   - Optionally create a conversion script that generates initial graphs from `QuoriLowLevelRig`.
 
 4. **Runtime integration**
    - Implement `RobotRigRunner` capable of executing the graph, including support for map functions (scale/add) currently expressed in code.
@@ -114,7 +114,7 @@ Note: This plan is left was work todo, and is subject to change based on integra
    - Adapt website demos and any downstream consumers to prefer the graph-backed runner, keeping the public API stable.
 
 5. **Migration**
-   - Generate graphs for Hugo and Quori; ensure both the demo and website continue to function.
+   - Generate graphs for Quori; ensure both the demo and website continue to function.
    - Deprecate the TypeScript low-level definitions once confidence is high (retain them for test fixtures or as fallbacks during transition).
    - Provide guidance for partners on how to author graphs for new robots (update README / docs).
 

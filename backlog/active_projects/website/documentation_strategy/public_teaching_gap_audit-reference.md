@@ -543,8 +543,7 @@ The missing educational content should be extracted from these verified sources 
 10. `vizij-web/apps/vizij-standalone/README.md`
 11. `vizij-docs/current_documentation/ARCHITECTURE.md`
 12. `vizij-docs/current_documentation/concepts/*`
-13. `vizij-assets/hugo-rigged/*`
-14. `vizij-assets/quori-rigged/*`
+13. `vizij-assets/quori-rigged/*`
 
 ## 8. Output Of This Audit
 

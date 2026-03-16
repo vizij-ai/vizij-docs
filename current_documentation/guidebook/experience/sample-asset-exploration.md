@@ -46,7 +46,7 @@ The current sample inventory is best grounded by:
 In the current workspace, the visible sample inventory spans several kinds of assets:
 
 1. raw faces in `vizij-assets/raw_faces`,
-2. rigged or partially rigged faces such as Quori, Hugo, and Tiago variants,
+2. rigged or partially rigged faces such as Quori and Tiago variants,
 3. faces already attached to maintained tutorial or player examples.
 
 Those are not interchangeable.

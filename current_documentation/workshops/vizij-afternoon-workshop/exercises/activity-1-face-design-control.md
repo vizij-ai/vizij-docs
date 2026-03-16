@@ -17,7 +17,6 @@ pnpm run dev:vizij-authoring
 ```
 
 2. Load one sample asset:
-   - `Hugo_Current.glb`
    - `Quori_Current.glb`
    - `Toasty_Current.glb`
 3. Identify at least three features you can describe to a partner:
