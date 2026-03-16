@@ -31,7 +31,7 @@ Use these two handoffs to avoid lingering in the wrong part of the bucket:
 | Axis | Position |
 | --- | --- |
 | Bucket chain | Previous: [Control](../control/README.md) on the fast route or [Customize](../customize/README.md) on the customization route<br>Current: [Integrate](README.md)<br>Next: [Deploy](../deploy/README.md) |
-| Depth ladder in this bucket | Surface: [Minimal Web Player](minimal-web-player.md)<br>Fundamentals: [Loading, Playback, and Embedding](loading-playback-and-embedding.md), [Application Integration Patterns](application-integration-patterns.md)<br>Advanced: [API-Backed Interactive Application](api-backed-interactive-application.md), [Rich Interactive Applications](rich-interactive-applications.md) |
+| Depth ladder in this bucket | Surface: [Minimal Web Player](minimal-web-player.md)<br>Fundamentals: [Loading, Playback, and Embedding](loading-playback-and-embedding.md), [Application Integration Patterns](application-integration-patterns.md)<br>Advanced: [API-Backed Interactive Application](api-backed-interactive-application.md), [Behind the Face](behind-the-face.md), [Rich Interactive Applications](rich-interactive-applications.md) |
 | Reference bridges | [Runtime Quickstart Reference](../reference/runtime-quickstart-reference.md)<br>[Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md) |
 | Route relationship | Converging bucket where both the fast route and the customization route meet before [Deploy](../deploy/README.md). |
 
@@ -55,6 +55,7 @@ Use this when you know you are in `Integrate` but are not sure which page fits:
 | understand lifecycle, loading, playback, and embedding terms | [Loading, Playback, and Embedding](loading-playback-and-embedding.md) | definitions before pattern choice |
 | choose among simple app shapes | [Application Integration Patterns](application-integration-patterns.md) | compare ownership boundaries |
 | build a service-backed or session-backed face app | [API-Backed Interactive Application](api-backed-interactive-application.md) | advanced pattern with explicit session boundary |
+| explain the whole maintained face stack from rendered leaves to deployment surfaces | [Behind the Face](behind-the-face.md) | self-contained stack walkthrough anchored in the agent demo and authoring tool |
 | think about broader product shells before deployment | [Rich Interactive Applications](rich-interactive-applications.md) | advanced ownership and status model |
 | you already know deployment is the next real branch | [Minimal Web Player](minimal-web-player.md), then [Deploy](../deploy/README.md) | use one player-stage proof before moving into operator endpoints or topology choices |
 
@@ -124,6 +125,7 @@ Use this when you know you are in `Integrate` but are not sure which page fits:
 | [Loading, Playback, and Embedding](loading-playback-and-embedding.md) | Fundamentals | concept page | explain the core mechanics of simple integration |
 | [Application Integration Patterns](application-integration-patterns.md) | Fundamentals | comparison | compare common simple embedding patterns |
 | [API-Backed Interactive Application](api-backed-interactive-application.md) | Advanced | walkthrough | teach a richer API-backed application pattern |
+| [Behind the Face](behind-the-face.md) | Advanced | walkthrough | teach the maintained face stack from animatables through orchestration and deployment surfaces |
 | [Rich Interactive Applications](rich-interactive-applications.md) | Advanced | operational guide | teach broader advanced application patterns |
 
 ## Recommended Teaching Approaches

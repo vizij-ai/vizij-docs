@@ -150,6 +150,7 @@
         "tutorials-minimal-player",
         "tutorials-animations",
         "tutorials-agent-face",
+        "tutorials-behind-the-face",
         "tutorials-deployment"
       ],
       "sections": [
@@ -179,6 +180,7 @@
             "tutorials-minimal-player",
             "tutorials-animations",
             "tutorials-agent-face",
+            "tutorials-behind-the-face",
             "tutorials-deployment"
           ]
         }
@@ -717,9 +719,9 @@
         "description": "Return to authored motion and runtime playback."
       },
       "next": {
-        "label": "Deployment",
-        "href": "/tutorials/deployment/",
-        "description": "Finish in an operator-facing delivery surface."
+        "label": "Behind the Face",
+        "href": "/tutorials/behind-the-face/",
+        "description": "Unpack the maintained face stack from authoring leaves to deployment surfaces."
       },
       "implementationAnchors": [
         {
@@ -736,6 +738,57 @@
           "description": "Compare the public speech/viseme behavior slice with the fuller agent integration path."
         }
       ]
+    },
+    {
+      "pageId": "tutorials-behind-the-face",
+      "moduleId": "tutorials/behind-the-face",
+      "sourceModuleId": "integrate/behind-the-face",
+      "sourcePath": "integrate/behind-the-face.md",
+      "surface": "tutorials",
+      "publish": true,
+      "canonical": true,
+      "slug": "behind-the-face",
+      "hubGroup": "runtime-and-deployment",
+      "order": 75,
+      "routeRole": "walkthrough",
+      "routeRoleLabel": "Stack breakdown",
+      "titleOverride": "Behind the Face",
+      "summaryOverride": "Start from the live agent demo and unpack the maintained face stack from Blender-exported animatables through orchestration and deployment.",
+      "redirects": [],
+      "prev": {
+        "label": "Agent Face",
+        "href": "/tutorials/agent-face/",
+        "description": "Return to the richer live integration branch."
+      },
+      "next": {
+        "label": "Deployment",
+        "href": "/tutorials/deployment/",
+        "description": "Continue into the operator-facing delivery surface."
+      },
+      "implementationAnchors": [
+        {
+          "label": "tutorial-agent-face",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/tutorial-agent-face",
+          "description": "Live maintained agent demo used as the top anchor for the walkthrough."
+        },
+        {
+          "label": "vizij-authoring",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/vizij-authoring",
+          "description": "Maintained authoring surface for animatables, rigs, poses, animations, and programs."
+        },
+        {
+          "label": "@vizij/runtime-react",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/runtime-react",
+          "description": "Runtime layer that resolves authored controls into visible motion."
+        },
+        {
+          "label": "vizij-standalone",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/vizij-standalone",
+          "description": "Operator-facing standalone surface used in the deployment section."
+        }
+      ],
+      "labId": null,
+      "demoLinks": []
     },
     {
       "pageId": "tutorials-deployment",
@@ -756,9 +809,9 @@
         "easiest-standalone-deployment"
       ],
       "prev": {
-        "label": "Agent Face",
-        "href": "/tutorials/agent-face/",
-        "description": "Return to the richer live integration branch."
+        "label": "Behind the Face",
+        "href": "/tutorials/behind-the-face/",
+        "description": "Return to the stack breakdown between authoring and deployment."
       },
       "next": {
         "label": "Deployment Model",
