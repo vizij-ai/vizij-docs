@@ -5,6 +5,8 @@ Last updated: 2026-03-13
 
 This folder is the committed, facilitator-ready package for the Vizij afternoon workshop running from 2:30 pm to 6:00 pm. It is built against the current `vizij-web`, `vizij-docs`, and related runtime surfaces so the workshop materials stay tied to the code that exists today.
 
+The output of this workshop is the feedback that will inform the roadmap, saved in [`feedback_for_roadmap.md`](feedback_for_roadmap.md).
+
 ## Operating Defaults
 
 This kit currently assumes:
