@@ -30,9 +30,17 @@ For the shared governance model, source-of-truth boundaries, and metadata family
 - `workshops/` — live workshop creation instructions and templates
 - `archive/` — historical or superseded material
 
-## For Human Contributors
+## For Contributors
 
 - Start with the governance, architecture, and roadmap docs before editing summaries or strategy pages.
 - Update the relevant `summary.md` when project state changes in a meaningful way.
 - Prefer short cross-repo summaries here and link down to repo-local implementation docs when they are the detailed source of truth.
 - Treat delivered workshop packages as archive material, not live canonical docs.
+
+## Pre-Edit Checklist
+
+- Identify the audience and document family before editing.
+- Confirm the canonical source before adding a new explanation, quick-reference list, or example set.
+- Prefer link-and-summarize over copy-and-adapt when a maintained source already exists.
+- If you change canonical wording, example forms, or support-status language, sweep the maintained docs that depend on it in the same pass.
+- Treat workshop/event material and archive material as derivative or historical, not canonical.

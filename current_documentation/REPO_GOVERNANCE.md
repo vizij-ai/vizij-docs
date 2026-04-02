@@ -87,3 +87,25 @@ Detailed project-doc workflow lives in [project_documenting_guide.md](../project
 ## Working Rule
 
 When repo-local docs own the detailed implementation truth for an area, `vizij-docs` should summarize that state and link down to the local detail instead of duplicating the whole tracker.
+
+## Author Before You Write
+
+Use these rules before adding or reshaping maintained docs:
+
+1. Every maintained concept, terminology set, quick-reference list, and example family should have one canonical owner.
+2. Secondary docs should summarize and link instead of restating canonical lists, definitions, or policies in full.
+3. If you change a canonical terminology rule, policy statement, or example form, sweep maintained docs that reuse it in the same pass.
+4. Visible repo inventory is not the same thing as official supported or current-path status.
+5. `current_documentation/`, `active_projects/`, `backlog/`, `workshops/`, and `archive/` are different surfaces with different jobs and should not be treated as interchangeable.
+
+## Canonical Authority Examples
+
+Use this table when a change touches one of the drift-prone areas that has already caused confusion:
+
+| Concern | Canonical owner | Rule for other docs |
+| --- | --- | --- |
+| Supported sample set policy | `current_documentation/ROADMAP.md` with cross-repo summary support in `active_projects/authoring/summary.md` | Reuse the maintained policy wording; do not infer support status from visible asset inventory alone |
+| Standard-path taxonomy and example forms | `current_documentation/concepts/deeper_exploration/STANDARD_INPUTS.md` and the deployment/reference guidebook pages that apply it | Reuse the canonical path forms; do not introduce alternate teaching examples casually |
+| `bucket` terminology | `current_documentation/guidebook/` for the teaching model only | Use other terms such as `topic area` or `lane` outside the guidebook model |
+| File-format quick reference | `current_documentation/concepts/REFERENCE_GUIDE.md` | Link to the canonical list instead of copying it into FAQ or overview docs |
+| Roadmap vs summary ownership split | `current_documentation/ROADMAP.md` for strategy, `active_projects/*/summary.md` for current execution view | Keep summaries focused on verified state, dependencies, and tracker pointers rather than restating roadmap framing |

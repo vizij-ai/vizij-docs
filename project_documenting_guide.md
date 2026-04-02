@@ -92,6 +92,10 @@ Each active or deferred topic should have a `summary.md` that does three jobs:
 
 Summaries should stay brief. If a repo-local tracker is the detailed source of truth, summarize it here and link down instead of copying the full tracker.
 
+Roadmap and summary roles are not interchangeable:
+
+- `current_documentation/ROADMAP.md` owns strategic framing and cross-program ordering.
+- `summary.md` owns verified state, current execution view, dependencies, and where detailed tracking lives.
 
 ## 5. Working With Non-Project Families
 
@@ -103,6 +107,7 @@ The only project-facing rule you usually need is:
 
 For the broader family model and placement rules, use [current_documentation/REPO_GOVERNANCE.md](current_documentation/REPO_GOVERNANCE.md).
 
+Project docs should normally link to canonical current references when they need stable platform concepts, policies, or terminology. Do not re-explain those concepts locally unless the project doc genuinely needs a short scoped summary for comprehension.
 
 ## 6. Minimal Templates
 
@@ -146,3 +151,5 @@ For the broader family model and placement rules, use [current_documentation/REP
 2. Update the relevant `summary.md` whenever project state changes.
 3. Fix broken related-doc blocks or stale maintained-doc links in any file you touch.
 4. Prefer concise cross-repo summaries and authority notes over duplicated local trackers.
+5. Do not imply missing sibling proposal/plan/reference docs; say `not yet written` when they do not exist.
+6. When a project moves between backlog, active, workshop-derived, or archive status, update the owning `summary.md` and related-doc pointers in the same pass.
