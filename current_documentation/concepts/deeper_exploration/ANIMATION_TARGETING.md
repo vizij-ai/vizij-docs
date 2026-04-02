@@ -1,6 +1,7 @@
 # Animation Targeting
 
-<!-- tags: status=reference; topics=animation,targeting,typed-paths -->
+<!-- tags: family=reference; type=reference; topics=animation,targeting,typed-paths -->
+> **Last updated:** 2026-03-31
 
 ## Purpose
 

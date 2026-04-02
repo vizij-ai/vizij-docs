@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,interactive-applications,advanced,runtime-react -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,integrate,interactive-applications,advanced,runtime-react -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** explain how richer Vizij applications grow beyond the minimal player while preserving the same runtime contract and honest ownership boundaries
 
 # Rich Interactive Applications

@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,control,paths,inputs -->
+<!-- tags: family=guidebook; type=guidebook-bucket; editorial_status=completed; publication_status=planned; topics=guidebook,control,paths,inputs -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** help readers see and control a face before they try to customize it
 
 # Control

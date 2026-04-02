@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,runtime,interactions -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,control,runtime,interactions -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** teach the smallest believable runtime control win through obvious maintained interactions
 
 # First Control Interactions

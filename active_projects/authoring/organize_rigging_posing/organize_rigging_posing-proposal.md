@@ -1,7 +1,8 @@
 # Organize Rigging & Posing Proposal
-<!-- tags: status=proposal; topics=authoring,workflow,rigging,posing,face -->
+<!-- tags: family=project; type=proposal; project_status=proposal; topics=authoring,workflow,rigging,posing,face -->
+> **Last updated:** 2026-03-31
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Authoring Summary](../summary.md)
+> **Related documents:** [Plan](organize_rigging_posing-plan.md) · Reference (not yet written) · [Authoring Summary](../summary.md)
 
 ## 1. Summary
 

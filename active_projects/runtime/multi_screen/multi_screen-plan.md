@@ -1,5 +1,6 @@
 # Multi-Screen Operator Control Plan
-<!-- tags: type=plan; status=planned; topics=runtime,puppeteering,display -->
+<!-- tags: family=project; type=plan; project_status=planning; topics=runtime,puppeteering,display -->
+> **Last updated:** 2026-03-31
 
 > **Related documents:** [Proposal](multi_screen-proposal.md) · [Runtime Summary](../summary.md)
 

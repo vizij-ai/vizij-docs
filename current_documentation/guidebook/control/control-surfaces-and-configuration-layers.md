@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,configuration,control-surfaces -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,control,configuration,control-surfaces -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** explain the main control and configuration surfaces readers encounter and what each one is for
 
 # Control Surfaces and Configuration Layers
@@ -185,7 +185,7 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. `current_documentation/concepts/ARCHITECTURE_PRIMER.md`
+1. `current_documentation/concepts/REFERENCE_GUIDE.md`
 2. `vizij-web/packages/@vizij/runtime-react/README.md`
 3. `vizij-web/packages/@vizij/runtime-react/src/updatePolicy.ts`
 4. `vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx`

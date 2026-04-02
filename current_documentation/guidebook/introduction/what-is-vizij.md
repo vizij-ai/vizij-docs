@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,orientation -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,introduction,orientation -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** explain what Vizij is, what it enables, and how a new reader should choose the next step
 
 # What Is Vizij?
@@ -23,7 +23,7 @@ After this page, you should understand what Vizij is for, what kinds of work it 
 ## Module Notes
 
 - This page is the first-stop orientation for readers deciding whether Vizij matches their needs.
-- It explains the maintained public route at a high level: first contact, customization, integration, and deployment.
+- It explains the maintained public route at a high level through the guidebook buckets: entry, first proof, control, customization, integration, and deployment.
 - Runtime architecture, control vocabulary, authoring internals, and topology detail are intentionally left for later modules.
 
 ## What You Need
@@ -44,7 +44,7 @@ In practice, Vizij lets you:
 4. load that result into a player or application,
 5. carry it into a deployment surface that an operator or end user can actually use.
 
-That is why Vizij is best understood as a path, not just as a renderer, a demo, or an authoring tool by itself.
+That is why Vizij is best understood as a maintained route through those buckets, not just as a renderer, a demo, or an authoring tool by itself.
 
 ## Why A New Reader Should Care
 
@@ -59,46 +59,24 @@ It is useful when you want a face that can:
 
 The important promise is not that every surface is equally simple. The important promise is that there is a maintained route from first visible success to something you can actually build on.
 
-## The Maintained Builder Path
+## The Maintained Public Route
 
-The current public framing for Vizij is one maintained builder spine:
+The current public framing for Vizij is the guidebook bucket chain:
 
-`Hello Face -> Authoring -> Player -> Deployment`
+`Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`
 
-### The Builder Spine
+`Introduction` is the entry bucket. The main build progression starts after it and runs through `Experience`, `Control`, optional `Customize`, then `Integrate` and `Deploy`.
 
-| Stage | Current visual anchor | What it proves |
+| Bucket | Current anchor | What it proves |
 | --- | --- | --- |
-| Hello Face | [fullscreen-demo.png](../assets/screenshots/fullscreen-demo.png) | the smallest maintained runtime can render a face and respond visibly |
-| Authoring | [vizij-authoring.png](../assets/screenshots/vizij-authoring.png) | the face can become an editable artifact instead of only a runtime demo |
-| Player | [player-demo.png](../assets/screenshots/player-demo.png) | the same runtime can live inside a bundle-first shell with visible diagnostics and controls |
-| Deployment | operator-ready runtime status, endpoint identity, and connection proof | deployment is validated through runtime health, slot/control discovery, and recovery checks rather than a single hero screenshot |
+| `Introduction` | [How To Use This Guidebook](how-to-use-this-guidebook.md) | the reader can choose a maintained route before touching implementation details |
+| `Experience` | [fullscreen-demo.png](../assets/screenshots/fullscreen-demo.png) and [Hello Face Quickstart](../experience/hello-face-quickstart.md) | the smallest maintained runtime can render a face and respond visibly |
+| `Control` | [First Control Interactions](../control/first-control-interactions.md) | the runtime is being driven through stable control semantics rather than a one-off demo |
+| `Customize` | [vizij-authoring.png](../assets/screenshots/vizij-authoring.png) and [Tweak an Existing Face](../customize/tweak-an-existing-face.md) | the face can become an editable artifact instead of only a runtime demo |
+| `Integrate` | [player-demo.png](../assets/screenshots/player-demo.png) and [Minimal Web Player](../integrate/minimal-web-player.md) | the same face can live inside a reusable runtime shell or application context |
+| `Deploy` | [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md) | runtime health, control discovery, and recovery checks can be carried into a real endpoint |
 
-Each stage answers a different question.
-
-### Hello Face
-
-This is the first proof that Vizij is real.
-
-You run a working face, trigger visible changes, and build trust that the runtime is doing something live rather than showing a static asset.
-
-### Authoring
-
-This is where customization becomes concrete.
-
-You work with the face as an editable artifact so you can adjust, transfer, rig, pose, animate, and export what you need without treating the runtime demo as the only product surface.
-
-### Player
-
-This is where the authored or selected face becomes part of a reusable runtime shell.
-
-The player stage matters because it turns a face into something that can be loaded, validated, and embedded in a more deliberate application context.
-
-### Deployment
-
-This is where Vizij stops being only a local experiment.
-
-Deployment covers the practical end surfaces where the face is actually run, operated, and checked as a usable system.
+Each bucket answers a different public question. App and demo names remain anchors inside those buckets, not separate route stages.
 
 ## How To Choose Your Next Page
 
@@ -117,7 +95,7 @@ Most new readers should still start by seeing something work.
 You are done with this page when:
 
 1. you can explain Vizij as a maintained path for working with expressive digital faces,
-2. you can name the current builder spine as `Hello Face -> Authoring -> Player -> Deployment`,
+2. you can name the current public bucket route as `Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`,
 3. you know whether your next step is first contact, route selection, or a deeper mental model.
 
 ## Implementation Anchors

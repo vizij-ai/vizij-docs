@@ -1,6 +1,7 @@
 # Merge Strategies
 
-<!-- tags: status=reference; topics=orchestrator,merge,conflicts -->
+<!-- tags: family=reference; type=reference; topics=orchestrator,merge,conflicts -->
+> **Last updated:** 2026-03-31
 
 ## Purpose
 

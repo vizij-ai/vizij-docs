@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,architecture,mental-model -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,introduction,architecture,mental-model -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** give readers the stable system mental model that makes later guidebook buckets easier to interpret correctly
 
 # System Mental Model
@@ -242,18 +242,20 @@ This page intentionally does not teach the detailed control taxonomy. It only es
 
 ## Where The Public Route Fits
 
-One helpful public builder spine is:
+The maintained public route uses the guidebook bucket chain:
 
-`Hello Face -> Authoring -> Player -> Deployment`
+`Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`
 
 This page should help you interpret that route correctly:
 
-1. `Hello Face` proves the runtime is real,
-2. `Authoring` changes the artifact and its behavior definitions,
-3. `Player` shows the runtime inside an application shell,
-4. `Deployment` makes that application usable in a real operating context.
+1. `Introduction` gets the reader oriented before they start building,
+2. `Experience` proves the runtime is real,
+3. `Control` explains what is being driven and why it is stable,
+4. `Customize` changes the artifact and its behavior definitions when needed,
+5. `Integrate` shows the runtime inside an application shell,
+6. `Deploy` makes that application usable in a real operating context.
 
-The route is a teaching sequence, not the literal architecture diagram.
+App names such as `Hello Face`, `vizij-authoring`, `demo-vizij-player`, and `vizij-standalone` are anchors inside that route. The route itself is a teaching sequence, not the literal architecture diagram.
 
 ## Misunderstandings This Page Should Prevent
 
@@ -270,13 +272,13 @@ You are done with this page when:
 1. you can describe Vizij as authored assets plus runtime coordination plus application and deployment surfaces,
 2. you can explain the distinct roles of the renderer, orchestrator, controllers, and blackboard at a high level,
 3. you can explain why typed paths, values, and shapes matter even before learning their detailed syntax,
-4. you can place `Hello Face`, `Authoring`, `Player`, and `Deployment` in the overall system without confusing them for one another.
+4. you can place the public buckets and their current app anchors in the overall system without confusing them for one another.
 
 ## Implementation Anchors
 
 Use these when you need the current implementation truth behind this page:
 
-1. `vizij-docs/current_documentation/concepts/ARCHITECTURE_PRIMER.md`
+1. `vizij-docs/current_documentation/concepts/REFERENCE_GUIDE.md`
 2. `vizij-docs/current_documentation/ARCHITECTURE.md`
 3. `vizij-docs/current_documentation/ROADMAP.md`
 4. `vizij-web/apps/vizij-authoring/README.md`

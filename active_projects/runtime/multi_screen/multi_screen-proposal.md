@@ -1,5 +1,6 @@
 # Proposal: Distributed Face + Control Screen Control
-<!-- tags: type=proposal; status=planned; topics=runtime,puppeteering,display -->
+<!-- tags: family=project; type=proposal; project_status=planning; topics=runtime,puppeteering,display -->
+> **Last updated:** 2026-03-31
 
 > **Related documents:** [Plan](multi_screen-plan.md) · [Runtime Summary](../summary.md)
 

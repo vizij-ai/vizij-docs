@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,topologies,hardware,ros,multi-screen -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,deploy,topologies,hardware,ros,multi-screen -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** compare deeper deployment topologies without overstating what the current standalone and operator surfaces already guarantee
 
 # Hardware, ROS, and Multi-Screen Topologies

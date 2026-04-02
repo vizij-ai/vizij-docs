@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,introduction,architecture,repo-map,documentation-authority -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,introduction,architecture,repo-map,documentation-authority -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** connect the guidebook’s learner-facing route model to the real cross-repo architecture and documentation authority model without confusing either one for the other
 
 # Architecture Bridge
@@ -36,9 +36,10 @@ After this page, you should be able to explain:
 It helps if you can inspect these internal anchors:
 
 1. `vizij-docs/current_documentation/ARCHITECTURE.md`,
-2. `vizij-docs/current_documentation/concepts/ARCHITECTURE_PRIMER.md`,
-3. `vizij-docs/current_documentation/ROADMAP.md`,
-4. `guidebook/reference/README.md`.
+2. `vizij-docs/current_documentation/concepts/README.md`,
+3. `vizij-docs/current_documentation/concepts/REFERENCE_GUIDE.md`,
+4. `vizij-docs/current_documentation/ROADMAP.md`,
+5. `guidebook/reference/README.md`.
 
 You do not need crate-by-crate or package-by-package detail to use this page well.
 
@@ -199,12 +200,13 @@ You are done with this page when:
 Use these when you need the current implementation truth:
 
 1. `vizij-docs/current_documentation/ARCHITECTURE.md`
-2. `vizij-docs/current_documentation/concepts/ARCHITECTURE_PRIMER.md`
-3. `vizij-docs/current_documentation/ROADMAP.md`
-4. `current_documentation/guidebook/introduction/system-mental-model.md`
-5. `current_documentation/guidebook/learning-model.md`
-6. `current_documentation/guidebook/content-model-reference.md`
-7. `current_documentation/guidebook/reference/README.md`
+2. `vizij-docs/current_documentation/concepts/README.md`
+3. `vizij-docs/current_documentation/concepts/REFERENCE_GUIDE.md`
+4. `vizij-docs/current_documentation/ROADMAP.md`
+5. `current_documentation/guidebook/introduction/system-mental-model.md`
+6. `current_documentation/guidebook/learning-model.md`
+7. `current_documentation/guidebook/content-model-reference.md`
+8. `current_documentation/guidebook/reference/README.md`
 
 ## Recommended Next Steps
 

@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,animations,authoring -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,customize,animations,authoring -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** explain authored motion over time in Vizij and how animation authoring differs from poses before export
 
 # Animations

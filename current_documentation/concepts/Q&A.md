@@ -1,3 +1,6 @@
+<!-- tags: family=reference; type=faq; topics=documentation,concepts,q-a -->
+> **Last updated:** 2026-04-02
+
 # Vizij Q&A
 
 1. **In 3–5 sentences, what is Vizij and what problem does it solve?**
@@ -19,7 +22,7 @@ The orchestrator coordinates runtime execution by staging inputs, scheduling gra
 At runtime, inputs from UI or application drivers are staged onto the blackboard. The orchestrator schedules graph controllers and animation controllers, which read from and write to that shared state rather than talking to each other directly. Their writes are merged deterministically, then applied to the renderer, which updates animatables each frame. Namespaces isolate each face’s typed paths so multiple faces can share a single orchestrator without collisions.
 
 7. **What are standard inputs and why are they important?**
-Standard inputs are shared, portable control channels (for example `/standard/left_eye/pos/x`) used across rigs and poses. They make rigs reusable and allow tools, poses, and animations to target multiple faces consistently. Without standard inputs, portability and cross‑face reuse break down.
+Standard inputs are shared, portable control channels (for example `/standard/vizij/left_eye/pos/x`) used across rigs and poses. They make rigs reusable and allow tools, poses, and animations to target multiple faces consistently. Without standard inputs, portability and cross‑face reuse break down.
 
 8. **How do animations target values in Vizij?**
 Animations are composed of tracks, and each track targets a single typed path. Those targets can point directly to animatables or to graph inputs that shape final outputs. The animation engine emits per‑frame value changes on those typed paths, which the orchestrator merges with other controllers before the renderer applies them.
@@ -28,10 +31,4 @@ Animations are composed of tracks, and each track targets a single typed path. T
 Namespaces isolate each face’s runtime state by prefixing typed paths on the blackboard. This keeps controllers for different faces from writing to the same paths, allowing a single orchestrator to coordinate multiple faces safely.
 
 10. **List the main file formats and what each is for.**
-- Face GLB (`.glb`) — visual asset with hierarchy and animatables; may include embedded Vizij bundle metadata.
-- Rig graph (`rig.graph.json`) — graph spec that maps inputs to typed‑path outputs and ultimately animatables.
-- Pose rig config (`pose-rig.config.json`) — neutral inputs plus named pose definitions and target values.
-- Pose graph (`pose-rig.graph.json`) — graph that blends pose weights into rig inputs.
-- Animation clip (`*.json` stored animation) — tracks, keyframes, and easing data for time‑based value changes.
-- Orchestration descriptor (`*.json`) — wiring of graphs + animations into a runtime schedule (fixtures/tests).
-- Graph spec (`*.graph.json`) — general graph definition used beyond rigs and poses.
+See [REFERENCE_GUIDE.md](REFERENCE_GUIDE.md#11-file-formats-quick-reference) for the canonical maintained file-format list and the short purpose note for each core Vizij artifact.

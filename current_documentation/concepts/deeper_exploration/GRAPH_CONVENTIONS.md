@@ -1,6 +1,7 @@
 # Graph Conventions (Rig + Pose)
 
-<!-- tags: status=reference; topics=graphs,rigs,poses,conventions -->
+<!-- tags: family=reference; type=reference; topics=graphs,rigs,poses,conventions -->
+> **Last updated:** 2026-03-31
 
 ## Purpose
 

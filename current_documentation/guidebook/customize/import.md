@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,import,authoring -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,customize,import,authoring -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** explain what import brings into vizij-authoring, what the tool validates during import, and where import stops
 
 # Import

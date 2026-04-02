@@ -1,6 +1,7 @@
 # File Format Schemas (Minimum Fields)
 
-<!-- tags: status=reference; topics=formats,schemas,assets -->
+<!-- tags: family=reference; type=reference; topics=formats,schemas,assets -->
+> **Last updated:** 2026-03-31
 
 This appendix lists the minimum fields required for common Vizij file formats.
 It is intentionally lightweight and focuses on structural requirements, not

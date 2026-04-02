@@ -1,6 +1,7 @@
 # Binding Expressions — Canonical Guide
 
-<!-- tags: type=concept; status=living; topics=authoring,bindings,expressions,rigs,graphs -->
+<!-- tags: family=reference; type=concept; topics=authoring,bindings,expressions,rigs,graphs -->
+> **Last updated:** 2026-03-31
 
 This guide explains how Vizij binding expressions work today (schema, parsing, normalization, compilation) and how they should integrate with the authoring UI and runtime-backed execution.
 

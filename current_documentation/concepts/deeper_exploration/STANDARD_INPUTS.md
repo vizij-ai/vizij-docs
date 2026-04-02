@@ -1,6 +1,7 @@
 # Standard Inputs
 
-<!-- tags: status=reference; topics=standards,inputs,rigging -->
+<!-- tags: family=reference; type=reference; topics=standards,inputs,rigging -->
+> **Last updated:** 2026-03-31
 
 ## Purpose
 
@@ -10,21 +11,34 @@ poses, drivers, and tools by agreeing on a stable set of control paths. A rig
 
 ## Path Shape
 
-Standard inputs are expressed as typed paths under `/standard/...`. The common
-shape is:
+The canonical standard input path is the authoring/operator slot form:
 
 ```
-/standard/<namespace>/<channel>/<track>/<attribute>
+/standard/{standard_namespace}/{channel}/{track}/{attribute}
 ```
 
 Examples:
 
-- `/standard/left_eye/pos/x`
-- `/standard/right_eye/pos/y`
-- `/standard/mouth/scale/x`
+- `/standard/vizij/left_eye/pos/x`
+- `/standard/vizij/right_eye/pos/y`
+- `/standard/vizij/mouth/scale/x`
 
-A namespace segment may be omitted in some tooling workflows; the important
-property is that paths normalize to `/standard/...` and are consistent.
+Use `standard namespace` for the inner namespace segment. In maintained Vizij
+examples, the canonical standard namespace is `vizij`.
+
+Legacy unnamespaced `/standard/...` examples may still appear in older material
+or compatibility notes, but they are no longer the canonical teaching form.
+
+## Related Surfaces
+
+The same control can appear in multiple surfaces:
+
+| Surface | Canonical shape | Example | Use it for |
+| --- | --- | --- | --- |
+| standard input path | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `/standard/vizij/left_eye/pos/x` | authoring/operator slot form |
+| runtime path | `rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `rig/{face}/standard/vizij/left_eye/pos/x` | runtime writes and diagnostics |
+| deployment slot | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | `standard/vizij/left_eye/pos/x` | external client writes at deployment boundaries |
+| observer key | `{runtime_namespace}/rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `vizij-standalone/rig/{face}/standard/vizij/left_eye/pos/x` | advanced shared-runtime inspection |
 
 ## Scope and Required Set
 
@@ -44,7 +58,7 @@ and runtime validation against it.
 
 When adding new standard inputs:
 
-1. **Define the path** under `/standard/...` and document its intent.
+1. **Define the path** under `/standard/{standard_namespace}/...` and document its intent.
 2. **Map it in the rig** so the path produces a predictable effect.
 3. **Update pose libraries** or tools that assume a stable set of channels.
 4. **Communicate changes** to downstream teams to avoid drift.
@@ -55,8 +69,8 @@ When adding new standard inputs:
   identifiers.
 - Keep attributes small and consistent (`pos/x`, `rot/z`, `scale/y`) so they are
   composable.
-- Normalize paths early (authoring tools should output canonical `/standard/...`
-  paths).
+- Normalize paths early (authoring tools should output canonical
+  `/standard/{standard_namespace}/...` paths).
 
 ## Relationship to Rigs and Poses
 

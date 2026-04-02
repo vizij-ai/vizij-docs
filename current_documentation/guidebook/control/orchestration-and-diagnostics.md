@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,orchestration,diagnostics -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,control,orchestration,diagnostics -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** teach how Vizij runtime control actually executes frame to frame and how to diagnose control failures without drifting into deployment or authoring runbooks
 
 # Orchestration and Diagnostics
@@ -112,8 +112,8 @@ If the runtime is not ready, do not reason about hotkeys, pointer control, or ex
 
 In `useMouseGaze.ts`, pointer movement is converted into normalized values and written through `setInput(...)` to paths like:
 
-1. `rig/{faceId}/standard/left_eye/pos/x`
-2. `rig/{faceId}/standard/right_eye/pos/y`
+1. `rig/{faceId}/standard/vizij/left_eye/pos/x`
+2. `rig/{faceId}/standard/vizij/right_eye/pos/y`
 
 In `usePoseHotkeys.ts`, key presses call `animateValue(...)` against pose-derived paths such as:
 
@@ -130,7 +130,8 @@ That means a hook can look correct in UI code and still fail later because:
 
 ### 3. The orchestrator is the execution coordinator
 
-The architecture primer defines the orchestrator as the coordinator between controllers and the renderer.
+The architecture and concepts references define the orchestrator as the
+coordinator between controllers and the renderer.
 
 Its responsibilities are:
 
@@ -326,7 +327,8 @@ This is where face mismatch and bundle mismatch often show up:
 2. the runtime appears healthy,
 3. but the loaded GLB or bundle metadata does not line up with the control paths you are producing.
 
-That is why the architecture primer warns that face identity must stay consistent across rig graphs, pose configs, and bundles.
+That is why the architecture docs warn that face identity must stay consistent
+across rig graphs, pose configs, and bundles.
 
 ## Common Failure Patterns
 
@@ -432,7 +434,7 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. [ARCHITECTURE_PRIMER.md](/home/chris/Code/Semio/vizij_ws/vizij-docs/current_documentation/concepts/ARCHITECTURE_PRIMER.md)
+1. [REFERENCE_GUIDE.md](/home/chris/Code/Semio/vizij_ws/vizij-docs/current_documentation/concepts/REFERENCE_GUIDE.md)
 2. [runtime-react README.md](/home/chris/Code/Semio/vizij_ws/vizij-web/packages/@vizij/runtime-react/README.md)
 3. [FaceApp.tsx](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx)
 4. [useMouseGaze.ts](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts)

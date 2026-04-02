@@ -1,6 +1,7 @@
 # Vizij Glossary
 
-<!-- tags: type=glossary; status=living; topics=glossary,concepts -->
+<!-- tags: family=reference; type=glossary; topics=glossary,concepts -->
+> **Last updated:** 2026-03-31
 
 ## A–F
 
@@ -101,7 +102,7 @@ steps the orchestrator, and bridges outputs to the renderer.
 ## S–Z
 
 **Standard Inputs**: Shared, portable control channels (e.g.,
-`/standard/left_eye/pos/x`) that make rigs and poses reusable across faces.
+`/standard/vizij/left_eye/pos/x`) that make rigs and poses reusable across faces.
 
 **Track**: An animation timeline targeting a single typed path.
 

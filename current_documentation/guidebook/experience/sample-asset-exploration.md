@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,sample-assets,comparison -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,experience,sample-assets,comparison -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-04-02
 > **Purpose:** help readers compare sample face assets without confusing exploratory asset browsing with the maintained build route
 
 # Sample Asset Exploration
@@ -46,7 +46,7 @@ The current sample inventory is best grounded by:
 In the current workspace, the visible sample inventory spans several kinds of assets:
 
 1. raw faces in `vizij-assets/raw_faces`,
-2. rigged or partially rigged faces such as Quori and Tiago variants,
+2. the officially supported maintained creator-path samples, currently Quori and Toasty,
 3. faces already attached to maintained tutorial or player examples.
 
 Those are not interchangeable.
@@ -54,6 +54,8 @@ Those are not interchangeable.
 The safest rule is:
 
 prefer the sample that is already tied to the teaching job you actually want next.
+
+For the maintained creator path, treat `Quori` and `Toasty` as the supported sample set. Other visible assets may still be useful for exploration, but they are not current-path teaching anchors by default.
 
 ## Walkthrough
 

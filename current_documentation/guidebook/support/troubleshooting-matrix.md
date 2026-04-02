@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,support,troubleshooting,matrix -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,support,troubleshooting,matrix -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** collect the common route-level failure patterns and the fastest guidebook-aligned recovery paths
 
 # Troubleshooting Matrix

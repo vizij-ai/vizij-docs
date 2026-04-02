@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,deploy,standalone,hardware -->
+<!-- tags: family=guidebook; type=guidebook-bucket; editorial_status=completed; publication_status=planned; topics=guidebook,deploy,standalone,hardware -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** frame deployment as the real destination of the guidebook journey
 
 # Deploy

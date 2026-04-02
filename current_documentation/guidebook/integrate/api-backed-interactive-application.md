@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,api-backed,interactive-application,runtime-react -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,integrate,api-backed,interactive-application,runtime-react -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** teach how a richer API-backed Vizij application is assembled without confusing external service behavior with a different runtime model
 
 # API-Backed Interactive Application

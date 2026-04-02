@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,advanced,pipeline,export -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,customize,advanced,pipeline,export -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** synthesize the full advanced customization route from supported input through export-ready artifact without collapsing the stages into one vague authoring task
 
 # Deep Custom Pipeline

@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,integrate,player,embedding -->
+<!-- tags: family=guidebook; type=guidebook-bucket; editorial_status=completed; publication_status=planned; topics=guidebook,integrate,player,embedding -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** explain how a face gets loaded, played back, embedded, and turned into a usable runtime surface
 
 # Integrate

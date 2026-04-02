@@ -1,6 +1,6 @@
-<!-- tags: type=reference; status=written; topics=guidebook,runtime,quickstart -->
+<!-- tags: family=guidebook; type=reference; editorial_status=completed; publication_status=planned; topics=guidebook,runtime,quickstart -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** provide the fastest canonical reminder of the maintained React runtime shell and the first runtime helpers most readers actually need
 
 # Runtime Quickstart
@@ -83,7 +83,7 @@ From `useVizijRuntime()`:
 ## Paths To Remember
 
 1. Eye gaze:
-   `rig/{face}/standard/left_eye/pos/x`
+   `rig/{face}/standard/vizij/left_eye/pos/x`
 2. Pose weight:
    `rig/{face}/poses/{pose_name}.weight`
 3. Speech-driven viseme or emotion behavior:
@@ -95,12 +95,12 @@ Pose groups still exist to control how subsets of poses blend. They are not part
 
 ## Runtime Path Reminder
 
-This reference is about runtime paths, not deployment slot names:
+This reference is about runtime paths, not deployment slots:
 
 | Surface | Example | Use it for |
 | --- | --- | --- |
-| runtime path | `rig/{face}/standard/left_eye/pos/x` | `setInput(...)`, `animateValue(...)`, runtime reasoning |
-| deployment slot name | `standard/vizij/left_eye/pos/x` | endpoint-driven writes in `vizij-standalone` |
+| runtime path | `rig/{face}/standard/vizij/left_eye/pos/x` | `setInput(...)`, `animateValue(...)`, runtime reasoning |
+| deployment slot | `standard/vizij/left_eye/pos/x` | endpoint-driven writes in `vizij-standalone` |
 
 ## Best Maintained Source
 

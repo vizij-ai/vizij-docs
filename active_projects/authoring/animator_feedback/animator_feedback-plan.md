@@ -1,7 +1,8 @@
 # Animator Feedback Implementation Plan
-<!-- tags: status=tracking; topics=authoring,ux,workflow -->
+<!-- tags: family=project; type=plan; project_status=tracking; topics=authoring,ux,workflow -->
+> **Last updated:** 2026-03-31
 
-> **Related documents:** [Proposal](animator_feedback-proposal.md) · [Reference](animator_feedback-reference.md) · [Pillar summary](../summary.md)
+> **Related documents:** Proposal (not yet written) · Reference (not yet written) · [Pillar summary](../summary.md)
 
 ## Objective
 

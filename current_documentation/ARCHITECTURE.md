@@ -1,9 +1,9 @@
 # Vizij Architecture & Documentation Guide
-<!-- tags: type=architecture; status=living; topics=architecture,repo-map,documentation -->
+<!-- tags: family=reference; type=architecture; topics=architecture,repo-map,documentation -->
 
 > **Status**: Living document
 > **Audience**: Contributors who need the current cross-repo map
-> **Last updated**: 2026-03-10
+> **Last updated:** 2026-04-02
 
 ## 1. Purpose
 
@@ -20,9 +20,10 @@ Vizij now needs to be documented through two views at once:
 This is the near-term outward-facing story for external builders:
 
 1. website as the landing and routing layer
-2. one mandatory builder spine:
-   `Hello Face -> Authoring -> Player -> Deployment`
-3. optional richer examples may branch after `Player`, but they remain secondary to the main route.
+2. one maintained public bucket route:
+   `Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`
+3. `Introduction` is the public entry bucket before the main build progression.
+4. app surfaces such as `Hello Face`, `vizij-authoring`, `demo-vizij-player`, and `vizij-standalone` should appear only as anchors inside the bucket route, not as competing public route stages.
 
 This is the view that should dominate public guides, onboarding, and roadmap framing.
 
@@ -51,7 +52,7 @@ Internal docs must preserve both views. Public docs should lead with view A and 
 | Repo / Surface | Current role | Best entry points |
 | --- | --- | --- |
 | `vizij-rs` | Engine-agnostic Rust runtime cores, wasm bindings, npm wrappers, fixtures | `vizij-rs/README.md`, `vizij-rs/Cargo.toml`, crate READMEs under `crates/**`, `npm/@vizij/*` |
-| `vizij-web` | TypeScript/React packages, demos, authoring surfaces, tutorial apps, standalone app, and protocol-related packages | `vizij-web/README.md`, `vizij-web/package.json`, `vizij-web/pnpm-workspace.yaml`, package/app READMEs |
+| `vizij-web` | TypeScript/React packages, authoring/player tooling, example apps, standalone app, and protocol-related packages | `vizij-web/README.md`, `vizij-web/package.json`, `vizij-web/pnpm-workspace.yaml`, package/app READMEs |
 | `vizij-docs` | Canonical internal documentation and project/program layer | `current_documentation/*`, `active_projects/*/summary.md`, `backlog/*` |
 | `vizij-ai.github.io` | Active Semio Community / Vizij public site built with Astro and React | `vizij-ai.github.io/README.md`, `src/pages`, `src/content`, `docs/` |
 | `vizij-assets` | Shared sample/source assets used by demos and render/runtime flows | asset folders under `vizij-assets/*` |
@@ -63,7 +64,7 @@ Internal docs must preserve both views. Public docs should lead with view A and 
 Vizij is currently organized around three core technical layers and two documentation layers:
 
 1. **Rust runtime layer (`vizij-rs`)** — canonical runtime semantics, wasm bindings, shared fixtures, and support packages.
-2. **Web tooling and app layer (`vizij-web`)** — React/runtime packages, authoring app, tutorials, demos, showcase, and standalone application work.
+2. **Web tooling and app layer (`vizij-web`)** — React/runtime packages, creator/operator tooling, example apps, showcase surfaces, and standalone application work.
 3. **Assets layer (`vizij-assets`)** — binary meshes, rigs, and graph artifacts reused across demos and tutorials.
 4. **Internal documentation layer (`vizij-docs`)** — cross-repo architecture, priorities, status, and operating rules.
 5. **Curated public documentation layer (`vizij-ai.github.io`)** — outward-facing tutorials, docs, and examples.
@@ -119,7 +120,7 @@ These are not equal-weight demos. Together they define the maintained outward-fa
 
 ## 8. `vizij-web` Current Architecture
 
-`vizij-web` is broader than the older repo summary docs implied. The current workspace includes published libraries, local-only helper packages, demo infrastructure, tutorials, and standalone-related surfaces.
+`vizij-web` is broader than the older repo summary docs implied. The current workspace includes published libraries, local-only helper packages, tooling surfaces, example apps, and standalone-related surfaces.
 
 ### Packages
 
@@ -159,9 +160,14 @@ These are real current implementation surfaces even though they are not TypeScri
 | `vizij-showcase` | Shareable fullscreen showcase with runtime and voice features |
 | `vizij-standalone` | Tauri-based standalone application surface |
 
-### Transitional runtime surface
+Current taxonomy note:
 
-An additional `apps/vizij-ws-app` directory exists in the repo, but it is not part of the primary current pnpm app map or root app command set. Treat it as a still-normalizing implementation surface tied to the standalone/protocol work rather than as a first-class current app entry point.
+- The `tutorial-*` names in `vizij-web` predate the current public taxonomy. Treat them as implementation-backed example apps that support guidebook and website routes, not as the canonical public tutorial ownership layer.
+- The public-facing `demos` / `tutorials` / `docs` taxonomy now belongs to the website plus projected guidebook content rather than to `vizij-web` app names.
+
+### Legacy runtime references
+
+Older docs may still mention a former `apps/vizij-ws-app` surface. Treat those references as historical. The current deployment/control implementation surfaces are `vizij-standalone`, `@vizij/arora-types`, and the Rust crates under `vizij-web/packages/arora-*`.
 
 ## 9. Deployment and Operator View
 
@@ -185,7 +191,7 @@ The near-term deployment story is intentionally broader than a single app:
 
 `vizij-assets` is the binary source of truth for shareable sample meshes and rig/graph assets.
 
-Current visible inventory includes raw and rigged assets such as Quori, Tiago, and other maintained samples. The near-term roadmap, however, treats **Quori / Toasty** as the intended canonical sample set for the maintained creator path. That mismatch is real and should be resolved explicitly rather than hand-waved in docs.
+Current visible inventory includes raw and rigged assets beyond the maintained creator path. The near-term roadmap now treats **Quori / Toasty** as the official supported sample set for that path. Other assets may still exist in the repo, but they should not be treated as canonical creator-path anchors unless the maintained docs explicitly promote them.
 
 ### `vizij-ai.github.io`
 

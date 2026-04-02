@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-index; status=written; topics=guidebook,reference -->
+<!-- tags: family=guidebook; type=guidebook-index; editorial_status=completed; publication_status=planned; topics=guidebook,reference -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** provide the compact reference layer behind the maintained route without forcing readers to reopen the longer teaching pages every time
 
 # Guidebook Reference

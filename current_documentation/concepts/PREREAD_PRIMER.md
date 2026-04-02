@@ -1,6 +1,7 @@
 # Vizij Pre‑Read Primer
 
-<!-- tags: status=reference; topics=primer,basics -->
+<!-- tags: family=reference; type=primer; topics=primer,basics -->
+> **Last updated:** 2026-03-31
 
 This primer covers the baseline concepts assumed by the Vizij docs. It is not a
 Vizij‑specific tutorial; it is a quick orientation to the underlying ideas.

@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,reference-face,transfer -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,customize,reference-face,transfer -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** explain reference-face transfer as a deliberate authoring workflow rather than a generic import or runtime feature
 
 # Reference-Face Transfer

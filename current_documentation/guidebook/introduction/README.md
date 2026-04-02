@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,introduction -->
+<!-- tags: family=guidebook; type=guidebook-bucket; editorial_status=completed; publication_status=planned; topics=guidebook,introduction -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** orient readers to Vizij and help them choose the right learning path through the docs
 
 # Introduction

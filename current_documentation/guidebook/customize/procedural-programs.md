@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,procedural-programs,authoring -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,customize,procedural-programs,authoring -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** explain graph-driven authored behavior in Vizij without collapsing it into poses, timeline animation, or runtime internals
 
 # Procedural Programs

@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,support,media,screenshots,video,operations -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,support,media,screenshots,video,operations -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** define how screenshots and videos should be classified, selected, and reused so the guidebook and its downstream projections stay route-faithful and current
 
 # Media Intake and Usage Guide

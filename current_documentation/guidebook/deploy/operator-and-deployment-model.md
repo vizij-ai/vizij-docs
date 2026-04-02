@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,operator,standalone -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,deploy,operator,standalone -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** explain what a deployed Vizij runtime consists of and how an operator actually interacts with it
 
 # Operator and Deployment Model
@@ -126,15 +126,15 @@ Keep these three strings separate when you validate or debug the standalone endp
 
 | What you are looking at | Example | Trust it for |
 | --- | --- | --- |
-| runtime hint | `rig/{faceId}/standard/vizij/left_eye/pos/x` | internal runtime reasoning and bundle-to-renderer diagnostics |
-| discovered slot name | `standard/vizij/left_eye/pos/x` | external client writes and operator-facing control |
-| namespaced snapshot key | `{namespace}/rig/{faceId}/standard/vizij/left_eye/pos/x` | shared-runtime or orchestrator-level inspection |
+| runtime path | `rig/{faceId}/standard/vizij/left_eye/pos/x` | internal runtime reasoning and bundle-to-renderer diagnostics |
+| deployment slot | `standard/vizij/left_eye/pos/x` | external client writes and operator-facing control |
+| observer key | `{runtime_namespace}/rig/{faceId}/standard/vizij/left_eye/pos/x` | shared-runtime or orchestrator-level inspection |
 
 The practical rule is simple:
 
-1. copy discovered slot names from the endpoint when writing through WebSocket or the built-in panel,
+1. copy deployment slots from the endpoint when writing through WebSocket or the built-in panel,
 2. use the full runtime path when you are inspecting runtime internals,
-3. use the namespaced form only when a shared runtime or diagnostics surface actually shows it.
+3. use the observer-key form only when a shared runtime or diagnostics surface actually shows it.
 
 ## Recommended First Deployment Choice
 
@@ -157,7 +157,7 @@ Use this before you jump into deeper topology pages:
 
 ## Slot-Centric Thinking
 
-In the standalone deployment model, think in discovered slot names at the operator boundary:
+In the standalone deployment model, think in deployment slots at the operator boundary:
 
 1. the deployment surface exposes controllable paths,
 2. those paths are synchronized into the backend,

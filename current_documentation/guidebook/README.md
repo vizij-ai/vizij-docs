@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook; status=written; topics=guidebook,documentation,website,tutorials,workshops,matrix -->
+<!-- tags: family=guidebook; type=guidebook; editorial_status=completed; publication_status=planned; topics=guidebook,documentation,website,tutorials,workshops,matrix -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** canonical markdown source of truth for reusable Vizij teaching content
 
 # Vizij Guidebook
@@ -28,26 +28,16 @@ Those remain in their owning locations.
 
 ## Organizing Rule
 
-The documentation of Vizij is organized around six conceptual buckets:
+The guidebook is organized around a bucket-and-depth teaching model.
 
-1. `Introduction`
-2. `Experience`
-3. `Control`
-4. `Customize`
-5. `Integrate`
-6. `Deploy`
+Its canonical structure lives in [learning-model.md](learning-model.md), which defines:
 
-Vizij itself is not organized around those buckets. Vizij remains organized around its actual architecture, runtime model, assets, tooling, and deployment surfaces.
+1. the six guidebook buckets,
+2. the three depth levels,
+3. the common reader routes,
+4. the navigation contract for learner-facing pages.
 
-Each documentation bucket is taught at three depth levels:
-
-1. `Surface`
-2. `Fundamentals`
-3. `Advanced`
-
-The difference between `Surface`, `Fundamentals`, and `Advanced` is primarily about teaching goal and conceptual depth, not about a fixed media template. Any depth level may use prose, diagrams, screenshots, videos, code, demos, walkthroughs, links, or references in whatever quantity is required to teach the concept accurately.
-
-See [learning-model.md](learning-model.md) for the full guidebook model and [content-model-reference.md](content-model-reference.md) for the canonical teaching primitives.
+Use this README as the practical entry page for the guidebook itself, and use [content-model-reference.md](content-model-reference.md) for the canonical teaching primitives.
 
 ## Downstream Publishing Rule
 
@@ -88,29 +78,22 @@ In practice, that means:
 
 The writing bar for tutorial-class pages is the best current `vizij-web` walkthroughs: clear setup, small relevant code excerpts, visible checkpoints, honest scope boundaries, and an obvious next move.
 
-## Common Routes
+## Public Route Mapping
 
-1. Fast existing-face deployment route:
-   `Introduction -> Experience -> Control -> Integrate -> Deploy`
-2. Customization route:
-   `Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy`
+The guidebook bucket chain is the only public route framing.
 
-## Five Navigation Directions
+`Introduction` is the public entry bucket. The main build progression starts after it and runs through `Experience -> Control -> Customize -> Integrate -> Deploy`.
 
-Every learner-facing guidebook module should make five movements easy:
+App and demo names remain useful, but only as anchors inside the bucket model:
 
-1. process movement across buckets:
-   readers should be able to see the previous bucket, current bucket, and next bucket immediately
-2. depth movement inside the current bucket:
-   readers should be able to see whether they are at `Surface`, `Fundamentals`, or `Advanced`, plus what sits above or below that depth
-3. local module movement inside the current bucket:
-   readers should be able to move to the previous or next module in the bucket sequence without guessing
-4. recommendation movement:
-   readers should be able to follow linked recommended next steps or optional next steps at the bottom of the page
-5. reference movement:
-   readers should be able to follow linked guidebook references or implementation anchors when they need verification or deeper detail
-
-If a page does not make those five movements legible, it is under-contextualized for the guidebook.
+| Guidebook bucket | Public meaning | Strongest current app/doc anchor |
+| --- | --- | --- |
+| `Introduction` | orientation, route choice, and entry into the system before building | `introduction/what-is-vizij.md` and `introduction/how-to-use-this-guidebook.md` |
+| `Experience` | first proof that a maintained face runs and responds visibly | `Hello Face Quickstart` |
+| `Control` | understanding runtime interactions and stable control semantics | `First Control Interactions` |
+| `Customize` | changing the face, rig, poses, animations, or exportable artifact | `vizij-authoring` and `Tweak an Existing Face` |
+| `Integrate` | embedding the face inside an app or runtime shell | `Minimal Web Player` / `demo-vizij-player` |
+| `Deploy` | reaching an operator-facing or same-host endpoint | `Easiest Standalone Deployment` / `vizij-standalone` |
 
 ## Core Guidebook Docs
 

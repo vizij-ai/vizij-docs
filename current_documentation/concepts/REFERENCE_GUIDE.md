@@ -1,6 +1,7 @@
 # Vizij Reference Guide
 
-<!-- tags: type=reference-guide; status=living; topics=reference,rigs,poses,graphs,animation -->
+<!-- tags: family=reference; type=reference-guide; topics=reference,rigs,poses,graphs,animation -->
+> **Last updated:** 2026-04-02
 
 ## 1. Rigs
 
@@ -41,7 +42,7 @@ live drivers without hard‑coding behavior into the renderer.
   reduces portability.  
 
 **Quick Example**  
-Layer 1: A rig maps `/standard/left_eye/pos/x` and `/standard/left_eye/pos/y`
+Layer 1: A rig maps `/standard/vizij/left_eye/pos/x` and `/standard/vizij/left_eye/pos/y`
 into typed‑path outputs that drive eye translation (gaze position).  
 Layer 2: A second rig blends those eye translations with pose‑driven eyelid
 offsets, then writes the final combined values to the eye animatables.
@@ -191,7 +192,7 @@ mesh transforms, materials, blendshapes, or other renderable properties.
 **Quick Example**  
 An animatable might be `left_eye_rotation` (type `euler`) with component channels
 `x`, `y`, `z`. A rig graph can drive `left_eye_rotation:y` from a standard input
-like `/standard/left_eye/pos/y`, combine that with the other components, and
+like `/standard/vizij/left_eye/pos/y`, combine that with the other components, and
 write the full `euler` value to the renderer each frame.
 
 ## 5. Graphs
@@ -235,7 +236,8 @@ core graph model.
   outputs that the orchestrator applies to the blackboard or renderer.  
 - IR tooling provides inspection, validation, and metadata without changing the
   runtime execution model.
-  See the Architecture Primer’s graph runtime section for how GraphSpec executes.
+  See [ARCHITECTURE.md](../ARCHITECTURE.md) for the current cross-repo runtime
+  execution view.
 
 **Common Pitfalls**  
 - Treating rig and pose graphs as special runtimes; they are conventions over
@@ -244,7 +246,7 @@ core graph model.
   deterministic program executed by the graph runtime/orchestrator.
 
 **Quick Example**  
-A rig graph might take `/standard/left_eye/pos/x` as an input, remap it, blend it
+A rig graph might take `/standard/vizij/left_eye/pos/x` as an input, remap it, blend it
 with a pose weight, and output a value that drives the eye’s animatable.
 
 ## 6. Animations

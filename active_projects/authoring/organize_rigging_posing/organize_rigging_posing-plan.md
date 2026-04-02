@@ -1,5 +1,6 @@
 # Organize Rigging & Posing – Plan & Tracking
-<!-- tags: status=tracking; topics=authoring,workflow,rigging,posing,face -->
+<!-- tags: family=project; type=plan; project_status=tracking; topics=authoring,workflow,rigging,posing,face -->
+> **Last updated:** 2026-03-31
 
 > **Related documents:** [Proposal](organize_rigging_posing-proposal.md) · [Authoring Summary](../summary.md)
 

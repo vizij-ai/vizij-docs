@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,inputs,semantics -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,control,inputs,semantics -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** explain what runtime inputs mean, where they are written, and how visible face behavior maps to runtime semantics
 
 # Runtime Inputs and Semantics
@@ -56,7 +56,8 @@ The important parts are:
 2. the value, which says what data is being written,
 3. the shape or expected kind of data, which keeps the runtime deterministic.
 
-In the architecture primer, this is the `TypedPath` plus `Value` plus `Shape` contract.
+In the architecture and concepts references, this is the `TypedPath` plus
+`Value` plus `Shape` contract.
 
 That contract matters because Vizij does not want a control system that only works inside one UI. Inputs have to survive movement across apps, bundles, runtime controllers, and deployment surfaces.
 
@@ -107,7 +108,7 @@ Use this chooser before you start wiring a control or debugging a write:
 | play or inspect motion over time | animation control | the main question is clip transport, timing, or playback | [Animations](../customize/animations.md) |
 | drive speech-shaped mouth motion | speech-timed pose weight | the speech layer still writes a canonical pose-weight path, while pose groups continue to define how subsets of poses blend | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md) |
 | inspect what the runtime resolved after evaluation | output path | you are validating the result of orchestration, not only the staged input | [Orchestration and Diagnostics](orchestration-and-diagnostics.md) |
-| expose operator control through a deployment endpoint | deployment slot over runtime input | the client sees a deployment slot name, but the runtime still resolves it into the same typed input semantics underneath | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) |
+| expose operator control through a deployment endpoint | deployment slot over runtime input | the client sees a deployment slot, but the runtime still resolves it into the same typed input semantics underneath | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) |
 
 ## Why Semantics Matter More Than UI Labels
 
@@ -115,7 +116,7 @@ Two controls can look similar in a UI and still represent different semantics.
 
 For example:
 
-1. a slider that writes `rig/{face}/standard/left_eye/pos/x` is steering a reusable rig channel,
+1. a slider that writes `rig/{face}/standard/vizij/left_eye/pos/x` is steering a reusable rig channel,
 2. a slider that writes `rig/{face}/poses/smile.weight` is blending a named authored state,
 3. a speech-driven system may still write `rig/{face}/poses/{poseId}.weight` without the user touching a control at all.
 
@@ -208,7 +209,8 @@ flowchart TB
 
 The screenshot shows the "ready" state where the face is active and responding to standard control writes.
 
-Until then, the architecture primer is the best current textual diagram.
+Until then, the cross-repo architecture doc and the concepts reference guide
+are the best current textual bridges.
 
 ## Success Check
 
@@ -222,7 +224,7 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. `current_documentation/concepts/ARCHITECTURE_PRIMER.md`
+1. `current_documentation/concepts/REFERENCE_GUIDE.md`
 2. `vizij-web/packages/@vizij/runtime-react/README.md`
 3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
 4. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`

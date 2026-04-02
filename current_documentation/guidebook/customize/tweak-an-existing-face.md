@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,customize,authoring,presets -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,customize,authoring,presets -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-04-02
 > **Purpose:** deliver the smallest believable authoring win by changing an existing face without requiring the full customization pipeline
 
 # Tweak an Existing Face
@@ -52,6 +52,8 @@ Expected result before you continue:
 ## Walkthrough
 
 ### 1. Load a maintained preset face
+
+The supported sample set for the maintained creator path is `Quori / Toasty`. This walkthrough uses `Quori Latest` because it is the current lowest-friction preset anchor in the app.
 
 Click `Quori Latest`.
 

@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,agent-face,authoring,orchestration -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,integrate,agent-face,authoring,orchestration -->
 
-> **Last updated:** 2026-03-16
+> **Last updated:** 2026-03-31
 > **Purpose:** unpack the maintained face stack from rendered shape properties up through runtime orchestration and deployment
 
 # Behind the face

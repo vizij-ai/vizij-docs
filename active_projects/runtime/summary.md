@@ -1,7 +1,7 @@
 # Vizij Runtime Program Summary
-<!-- tags: type=summary; status=in_progress; topics=runtime,wasm,standalone,protocol -->
+<!-- tags: family=project; type=summary; project_status=tracking; topics=runtime,wasm,standalone,protocol -->
 
-Last updated: 2026-03-10
+> **Last updated:** 2026-03-31
 
 ## Goals
 
@@ -36,15 +36,25 @@ Detailed implementation truth still lives in:
   - `@vizij/arora-types`
   - Rust crates `packages/arora-connection` and `packages/arora-websocket`
   - `vizij-standalone`
-  - the still-transitional `apps/vizij-ws-app` directory
+- Older docs may still mention a former `vizij-ws-app` surface; treat that as historical rather than current runtime inventory.
+- The main remaining runtime/deployment problem is now coherence and operator trust rather than absence of real deployment surfaces.
 - Namespacing remains important, but it is a later follow-on for runtime expressiveness rather than a near-term deployment gate.
 
 ## Near-Term Focus
 
 - Keep the deployment branch parallel to the creator/build branch instead of deferring it.
+- Keep the maintained endpoint story explicit:
+  - browser/runtime deployments
+  - `vizij-standalone`
+- Clarify the operator model:
+  - local control
+  - remote control
+  - split-screen and multi-screen workflows
+  - control discovery from runtime metadata rather than hard-coded assumptions
 - Normalize the standalone/protocol story enough that contributors and public readers can understand what is current.
-- Keep multi-screen/operator work active as part of the core deployment story.
-- Frame the AV line around speech playback, viseme driving, conversation demos, and provider-based runtime integration rather than a generic broad AV platform.
+- Strengthen deployment validation, runbooks, and recovery guidance so success/failure is legible to operators and contributors.
+- Frame ROS2 as an advanced optional deployment surface.
+- Keep the AV line around speech playback, viseme driving, conversation demos, and provider-based runtime integration rather than a generic broad AV platform, and treat that line as the highest-priority supporting program adjacent to the current deployment branch.
 - Maintain a clean contract between Rust runtime truth and the higher-level web runtime surfaces used by tutorials, demos, showcase, and standalone applications.
 
 ## Cross-Repo Relevance
@@ -54,4 +64,9 @@ Detailed implementation truth still lives in:
 
 ## Deferred Follow-Up
 
-The later comprehensive roadmap review should decide how namespacing, graph-node expansion, behavior logic, and deeper runtime expressiveness work should be promoted after the current onboarding/build/deploy phase.
+The later comprehensive roadmap review should decide how the next-wave runtime lines should be promoted after the current onboarding/build/deploy phase, with likely order:
+
+- shared runtime identity and namespacing
+- richer blackboard / orchestration capabilities
+- graph-node expansion and broader graph expressiveness
+- behavior logic / behavior-tree exploration

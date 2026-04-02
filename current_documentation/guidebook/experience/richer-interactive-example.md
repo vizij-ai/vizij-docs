@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,experience,richer-example,tutorial-agent-face -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,experience,richer-example,tutorial-agent-face -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** show one maintained richer first-contact example without replacing the main beginner route
 
 # Richer Interactive Example

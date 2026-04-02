@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,application-patterns,runtime-react,orchestrator -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,integrate,application-patterns,runtime-react,orchestrator -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** help readers choose the right simple Vizij application integration pattern without confusing pattern choice with a different runtime model
 
 # Application Integration Patterns

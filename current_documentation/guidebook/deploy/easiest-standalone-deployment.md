@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,deploy,standalone,operator -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,deploy,standalone,operator -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** deliver the cleanest first deployment endpoint in the guidebook route
 
 # Easiest Standalone Deployment
@@ -94,7 +94,7 @@ Example CLI form from the app README:
 pnpm --filter vizij-standalone dev -- -- --glb /path/to/avatar.glb --fullscreen
 ```
 
-For the full list of CLI options — display selection, port override, web control panel toggle, speech flags, and ROS2 surface options — see the [vizij-standalone README](vizij-web/apps/vizij-standalone/README.md#cli).
+For the full list of CLI options — display selection, port override, web control panel toggle, speech flags, and ROS2 surface options — see the [vizij-standalone README](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/vizij-standalone/README.md#cli).
 
 Expected result:
 

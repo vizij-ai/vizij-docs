@@ -1,6 +1,7 @@
 # Pose Graph Creation — Canonical Guide
 
-<!-- tags: type=concept; status=living; topics=poses,pose-graph,authoring,graphs,runtime -->
+<!-- tags: family=reference; type=concept; topics=poses,pose-graph,authoring,graphs,runtime -->
+> **Last updated:** 2026-03-31
 
 This guide explains how pose graphs are created in Vizij today, how they map to pose configs, and which current authoring surfaces own that workflow.
 

@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,control,paths,standard-controls -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,control,paths,standard-controls -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** explain the core path and standard-control vocabulary behind visible runtime behavior
 
 # Paths and Standard Controls
@@ -58,36 +58,53 @@ Before you read the path grammar, keep these definitions nearby:
 | `viseme` | a speech-facing label for mouth-oriented poses, not a separate runtime path family | speech and live-agent surfaces |
 | `slot` | a deployment-facing exposed control entry, not a synonym for every path | standalone operator control surfaces |
 
-If you need the broader distinction between `runtime path`, `deployment slot name`, `controller`, `driver`, `layer`, `mode`, and `stage`, use [Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md).
+If you need the broader distinction between `runtime path`, `deployment slot`, `controller`, `driver`, `layer`, `mode`, and `stage`, use [Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md).
 
 ## Runtime Path Versus Deployment Slot
 
-This page teaches the runtime-facing path grammar.
+This page teaches how the same standard control appears across four distinct
+surfaces: standard input path, runtime path, deployment slot, and observer key.
 
-Keep that separate from the deployment-facing short slot names that the standalone endpoint exposes to clients:
+Keep those surfaces separate:
 
 | Surface | What you read or write | Example | Why it differs |
 | --- | --- | --- | --- |
-| runtime input path | full runtime path inside the face runtime | `rig/{face}/standard/left_eye/pos/x` | includes face identity because the runtime is writing into one specific face's control tree |
-| deployment slot name | short operator-facing slot discovered from the endpoint | `standard/vizij/left_eye/pos/x` | the standalone bridge normalizes this external slot name into the runtime path it writes internally |
-| namespaced observer key | runtime snapshot key in a shared orchestrator | `{namespace}/rig/{face}/standard/left_eye/pos/x` | shared orchestrator inspection can prefix the runtime path with namespace for observation and diagnostics |
+| standard input path | authoring/operator slot form | `/standard/vizij/left_eye/pos/x` | canonical inner `standard namespace` form for teaching reusable rig channels |
+| runtime path | full runtime path inside the face runtime | `rig/{face}/standard/vizij/left_eye/pos/x` | includes face identity because the runtime is writing into one specific face's control tree |
+| deployment slot | short operator-facing slot discovered from the endpoint | `standard/vizij/left_eye/pos/x` | the standalone bridge resolves this external slot into the runtime path it writes internally |
+| observer key | runtime snapshot key in a shared orchestrator | `{runtime_namespace}/rig/{face}/standard/vizij/left_eye/pos/x` | advanced diagnostics can prefix the runtime path with a runtime namespace for observation |
 
-If you are debugging the runtime itself, think in full runtime paths.
+Use `standard namespace` for the inner `/standard/{standard_namespace}/...` segment.
+Use `runtime namespace` only for the outer observer/snapshot prefix.
 
-If you are driving `vizij-standalone`, copy the discovered slot name from the endpoint and let the bridge map it back into the internal runtime path.
+If you are debugging the runtime itself, think in runtime paths.
+
+If you are driving `vizij-standalone`, copy the deployment slot from the
+endpoint and let the bridge map it back into the internal runtime path.
+
+## Canonical Mapping Table
+
+Use this one control across all four surfaces:
+
+| Surface | Canonical shape | Example |
+| --- | --- | --- |
+| standard input path | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `/standard/vizij/left_eye/pos/x` |
+| runtime path | `rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `rig/{face}/standard/vizij/left_eye/pos/x` |
+| deployment slot | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | `standard/vizij/left_eye/pos/x` |
+| observer key | `{runtime_namespace}/rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `vizij-standalone/rig/{face}/standard/vizij/left_eye/pos/x` |
 
 ## Standard Control Path Shape
 
-The common standard-control shape is:
+The runtime-path shape for a standard control is:
 
 ```text
-rig/{face}/standard/{channel}/{track}/{attribute}
+rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}
 ```
 
 Examples:
 
-1. `rig/{face}/standard/left_eye/pos/x`
-2. `rig/{face}/standard/right_eye/pos/y`
+1. `rig/{face}/standard/vizij/left_eye/pos/x`
+2. `rig/{face}/standard/vizij/right_eye/pos/y`
 
 In practice, these paths are useful when you want reusable, face-legible controls such as gaze and other common rig channels.
 
@@ -141,16 +158,19 @@ At the route level, expect two face-facing runtime path families, one internal r
 
 | Family | Runtime shape or external alias | Best used for | Common write sources | Do not collapse it into |
 | --- | --- | --- | --- | --- |
-| `standard control path` | `rig/{face}/standard/{channel}/{track}/{attribute}` | reusable rig-facing channels such as gaze, jaw, and brows | hooks, sliders, operator clients, procedural outputs | a pose-weight path |
+| `standard input path` | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | authoring/operator slot form for reusable standard controls | authoring docs, operator slot reasoning, mapping tables | a full runtime path |
+| `runtime path` | `rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | reusable rig-facing channels such as gaze, jaw, and brows at runtime | hooks, sliders, runtime diagnostics, procedural outputs | a pose-weight path |
 | `pose-weight path` | `rig/{face}/poses/{pose_slug}.weight` | authored named expression blending | hotkeys, pose panels, animation tracks, procedural outputs | a lower-level standard channel |
 | `internal pose-control path` | `rig/{face}/pose/control/{inputId}` | pose-graph outputs that runtime-react bridges back onto the correct rig input | compiled pose graphs, runtime bridging | a face-facing authored pose path |
-| `deployment slot name` | `standard/vizij/...` | external operator-facing writes through `vizij-standalone` | standalone clients and web control panels | the full internal runtime path |
+| `deployment slot` | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | external operator-facing writes through `vizij-standalone` | standalone clients and web control panels | the full internal runtime path |
+| `observer key` | `{runtime_namespace}/rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | shared-runtime or orchestrator inspection only | advanced diagnostics surfaces | the string an operator client should write directly |
 
 Two rules keep this inventory readable:
 
 1. animation tracks and procedural programs are common write sources, not separate face-facing path families by themselves,
 2. pose groups define how subsets of poses blend, not separate path families or path segments,
-3. deployment slot names are external aliases that the bridge maps back into internal runtime paths.
+3. deployment slots are external aliases that the bridge maps back into internal runtime paths,
+4. observer keys belong mostly to advanced diagnostics, not broad introductory teaching.
 
 ## Visible Interaction vs Runtime Meaning
 
@@ -192,7 +212,7 @@ flowchart LR
     classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
     classDef note fill:#f4f5f7,stroke:#6b7280,stroke-width:1.2px
 
-    std["Standard control runtime path\nrig/{faceId}/standard/{channel}/{track}/{attribute}"]
+    std["Runtime path\nrig/{faceId}/standard/{standard_namespace}/{channel}/{track}/{attribute}"]
     pose["Pose-weight runtime path\nrig/{faceId}/poses/{poseSlug}.weight"]
     speech["Hotkeys, speech systems, and pose UIs\nstill write canonical pose-weight paths"]
     note["Read the semantic family first:\nstandard = reusable rig channel\nposes = named authored state"]
@@ -212,7 +232,7 @@ flowchart LR
     classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
     classDef deploy fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
 
-    slot["Deployment slot name\nstandard/{channel}/{track}/{attribute}"] --> bridge["Standalone bridge\nrestores rig/{faceId}/... internally"] --> std["Standard control runtime path\nrig/{faceId}/standard/{channel}/{track}/{attribute}"]
+    slot["Deployment slot\nstandard/{standard_namespace}/{channel}/{track}/{attribute}"] --> bridge["Standalone bridge\nrestores rig/{faceId}/... internally"] --> std["Runtime path\nrig/{faceId}/standard/{standard_namespace}/{channel}/{track}/{attribute}"]
 
     class slot,bridge deploy
     class std runtime

@@ -1,5 +1,6 @@
 # Architectural Decisions & Trade-offs
-<!-- tags: type=decisions; status=living; topics=decisions,architecture,roadmap -->
+<!-- tags: family=reference; type=decisions; topics=decisions,architecture,roadmap -->
+> **Last updated:** 2026-03-31
 
 ## Core-Centric Runtime (vs ECS-first)
 - **Decision**: Keep all deterministic logic inside engine-agnostic Rust crates (`vizij-*-core`) with thin Bevy and wasm adapters, instead of building directly on Bevy ECS.
@@ -31,10 +32,11 @@
 - **Rationale**: Simplicity, zero build overhead, and effective use of existing `pnpm` tooling. Windows support is not a current priority.
 - **Trade-offs**: Less robust error handling, harder to unit test, and requires WSL for Windows contributors.
 
-## 2026-02-04: HRI March Focus and Roadmap Re-prioritization
-- **Decision**: Shift near-term focus to HRI March deliverables: authoring tooling, multi-screen puppeteering, and audio processing for visemes.
-- **Rationale**: Concentrate effort on conference-driven outcomes and demos; defer other initiatives to medium-term or backlog to reduce context switching.
-- **Trade-offs**: Short-term delays for testing/perf automation and website work; backlog items will require reactivation and re-scoping after HRI.
+## 2026-02-04: Historical HRI March Focus and Roadmap Re-prioritization
+- **Decision**: Shift the then-current near-term focus to HRI March deliverables: authoring tooling, multi-screen puppeteering, and audio processing for visemes.
+- **Rationale**: At that time, concentrating effort on conference-driven outcomes and demos reduced context switching.
+- **Trade-offs**: Short-term delays for testing/perf automation and website work; backlog items required later reactivation and re-scoping.
+- **Status note**: This is historical context, not the current active roadmap. The March 30, 2026 roadmap rewrite supersedes it as the primary phase framing.
 
 ## 2026-03-10: Documentation Authority Model
 - **Decision**: Treat `vizij-docs` as the canonical internal cross-repo documentation layer for architecture, roadmap framing, lifecycle status, decisions, known issues, and release-note policy.
@@ -60,3 +62,13 @@
 - **Decision**: Treat top-level `/docs` and `vizij-afternoon-workshop` as transitional or historical surfaces unless later reactivated with clear ownership.
 - **Rationale**: They currently overlap with `vizij-docs`, repo-local tutorials, and the public site, which creates ambiguity about what is current.
 - **Trade-offs**: Some useful material remains outside the canonical flow for now; later consolidation work must decide what is promoted, archived, or redirected.
+
+## 2026-03-30: One Maintained Public Learning System
+- **Decision**: Organize the active roadmap around one maintained public learning system with the website as the landing layer and the guidebook bucket chain `Introduction -> Experience -> Control -> Customize -> Integrate -> Deploy` as the core outward-facing route. Treat app names such as `Hello Face`, `vizij-authoring`, `demo-vizij-player`, and `vizij-standalone` as anchors inside that route rather than as route stages.
+- **Rationale**: The older mix of public site work, workshop material, repo-local examples, and internal docs made it too easy for contributors to treat every surface as equally primary. The roadmap now needs a clear center of gravity.
+- **Trade-offs**: Supporting programs, later-horizon runtime work, and broad hardening efforts remain important, but they are intentionally subordinated to the current onboarding / creator / deployment phase.
+
+## 2026-03-30: Public Taxonomy and Hardening Role
+- **Decision**: Treat `vizij-web` apps as implementation `tools` and `examples`, while the website and projected guidebook own the public `demos` / `tutorials` / `docs` taxonomy. Treat hardening as a cross-cutting trust lane rather than a competing product pillar.
+- **Rationale**: This separation keeps the public learning system legible and prevents internal app naming or generic cleanup work from dictating the roadmap.
+- **Trade-offs**: Some existing app names and backlog docs now read awkwardly against the new model and must be interpreted or rewritten with explicit authority notes.

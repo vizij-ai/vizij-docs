@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-bucket; status=written; topics=guidebook,customize,authoring -->
+<!-- tags: family=guidebook; type=guidebook-bucket; editorial_status=completed; publication_status=planned; topics=guidebook,customize,authoring -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** organize the customization and ownership work that lets readers make a face their own
 
 # Customize

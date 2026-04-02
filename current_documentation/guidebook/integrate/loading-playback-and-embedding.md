@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,integrate,loading,embedding,playback -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,integrate,loading,embedding,playback -->
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-31
 > **Purpose:** explain the basic mechanics of getting a Vizij face loaded into a usable application surface and keeping that surface honest
 
 # Loading, Playback, and Embedding

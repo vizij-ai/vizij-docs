@@ -1,6 +1,6 @@
-<!-- tags: type=reference; status=written; topics=guidebook,renderer,rigging,paths -->
+<!-- tags: family=guidebook; type=reference; editorial_status=completed; publication_status=planned; topics=guidebook,renderer,rigging,paths -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** provide the compact reference bridge between rig structure, path families, and the naming rules that keep authored and runtime surfaces aligned
 
 # Renderer and Rigging Reference
@@ -34,16 +34,29 @@ Vizij’s authoring and runtime surfaces stay aligned when you can answer these 
 2. What path is the control writing to?
 3. Is the path a standard input, a pose weight, an internal pose-control route, or another custom route?
 
-## Standard Path Shape
+## Standard Input Path Shape
+
+The authoring and operator-slot form for a standard control is:
 
 ```text
-rig/{face}/standard/{channel}/{track}/{attribute}
+/standard/{standard_namespace}/{channel}/{track}/{attribute}
 ```
 
 Examples:
 
-1. `rig/{face}/standard/left_eye/pos/x`
-2. `rig/{face}/standard/right_eye/pos/y`
+1. `/standard/vizij/left_eye/pos/x`
+2. `/standard/vizij/right_eye/pos/y`
+
+## Runtime Path Shape
+
+```text
+rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}
+```
+
+Examples:
+
+1. `rig/{face}/standard/vizij/left_eye/pos/x`
+2. `rig/{face}/standard/vizij/right_eye/pos/y`
 
 ## Pose Path Shape
 
@@ -58,9 +71,9 @@ Examples:
 
 ## Control Family Reminder
 
-| Family | Runtime shape | Best use |
+| Family | Canonical shape | Best use |
 | --- | --- | --- |
-| standard control | `rig/{face}/standard/...` | reusable rig-facing channels such as gaze or jaw |
+| standard input path | `/standard/{standard_namespace}/...` in authoring and operator-slot teaching, `rig/{face}/standard/{standard_namespace}/...` at runtime | reusable rig-facing channels such as gaze or jaw |
 | pose weight | `rig/{face}/poses/{pose}.weight` | named authored facial states |
 | internal pose-control route | `rig/{face}/pose/control/{inputId}` | compiled pose-graph output before runtime-react bridges it onto the actual rig input |
 

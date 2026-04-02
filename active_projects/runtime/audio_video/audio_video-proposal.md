@@ -1,7 +1,8 @@
 # Proposal: Speech + Viseme + Conversation Enablement
-<!-- tags: status=draft; topics=runtime,speech,viseme,conversation,audio -->
+<!-- tags: family=project; type=proposal; project_status=proposal; topics=runtime,speech,viseme,conversation,audio -->
+> **Last updated:** 2026-03-31
 
-> **Related documents:** Plan (pending) · Reference (pending) · [Runtime Summary](../summary.md)
+> **Related documents:** Plan (not yet written) · Reference (not yet written) · [Runtime Summary](../summary.md)
 
 ## Context
 

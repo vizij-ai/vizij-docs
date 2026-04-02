@@ -1,6 +1,7 @@
 # Pose Blending
 
-<!-- tags: status=reference; topics=poses,blending,math -->
+<!-- tags: family=reference; type=reference; topics=poses,blending,math -->
+> **Last updated:** 2026-03-31
 
 ## Purpose
 

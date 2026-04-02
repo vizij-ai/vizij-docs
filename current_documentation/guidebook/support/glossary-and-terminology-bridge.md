@@ -1,6 +1,6 @@
-<!-- tags: type=guidebook-module; status=written; topics=guidebook,support,glossary,terminology -->
+<!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,support,glossary,terminology -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** give readers a route-level terminology seam so the same Vizij artifact can be described correctly across authoring, runtime, integration, and deployment pages
 
 # Glossary and Terminology Bridge
@@ -62,15 +62,15 @@ These three strings often point at the same control target, but they are not int
 
 | If you are looking at... | Example | Trust it for | Do not collapse it into |
 | --- | --- | --- | --- |
-| runtime path | `rig/{face}/standard/left_eye/pos/x` | runtime writes, helper calls, and control reasoning | an operator-facing slot string |
-| deployment slot name | `standard/vizij/left_eye/pos/x` | discovered external control writes in `vizij-standalone` | the full internal runtime path |
-| namespaced observer key | `{namespace}/rig/{face}/standard/left_eye/pos/x` | shared-runtime or orchestrator inspection | the string an operator client should write directly |
+| runtime path | `rig/{face}/standard/vizij/left_eye/pos/x` | runtime writes, helper calls, and control reasoning | an operator-facing slot string |
+| deployment slot | `standard/vizij/left_eye/pos/x` | discovered external control writes in `vizij-standalone` | the full internal runtime path |
+| observer key | `{runtime_namespace}/rig/{face}/standard/vizij/left_eye/pos/x` | shared-runtime or orchestrator inspection | the string an operator client should write directly |
 
 Read them in this order:
 
 1. `runtime path` when you are reasoning about the live face runtime itself,
-2. `deployment slot name` when you are writing through an operator-facing endpoint,
-3. `namespaced observer key` when you are inspecting a shared runtime or orchestrator snapshot.
+2. `deployment slot` when you are writing through an operator-facing endpoint,
+3. `observer key` when you are inspecting a shared runtime or orchestrator snapshot.
 
 ## The Core Bridge Terms
 
@@ -160,7 +160,7 @@ These three words are easy to blur, so keep them separate:
 
 1. `layer` = a stable structural level in the system, such as rigging, poses, runtime control, or deployment
 2. `mode` = the current operating state of a tool or UI, such as selection mode, playback mode, or procedural-program editing mode
-3. `stage` = the current route milestone in the guidebook, such as `Hello Face`, `Player`, or `Deployment`
+3. `stage` = the current route milestone in the guidebook bucket chain, such as `Introduction`, `Experience`, `Control`, `Customize`, `Integrate`, or `Deploy`
 
 Use them differently:
 
@@ -240,7 +240,7 @@ The current guidebook-level families are:
 2. `pose-weight paths` for named authored facial states,
 3. `speech-timed pose driving` for speech systems that still stage canonical pose weights,
 4. `internal pose-control paths` for pose-graph routing inside the runtime,
-5. `deployment slot names` for external operator-facing aliases that map back into one of the internal runtime families above.
+5. `deployment slots` for external operator-facing aliases that map back into one of the internal runtime families above.
 
 Animation tracks, procedural programs, runtime hooks, and operator clients are common write sources. They usually target one of the internal control families rather than introducing a separate fourth runtime-path grammar.
 
@@ -332,9 +332,9 @@ That is the meaning this bridge page cares about.
 
 This page does not try to unify every other implementation-specific use of `slot`, especially deeper authoring internals. If you are reading deployment guidance, think `exposed controllable path/value entry`, not "every slot concept in the repo."
 
-### Namespaced Observer Key
+### Observer Key
 
-Use this term when a shared runtime or orchestrator snapshot prefixes a runtime path with namespace, such as `{namespace}/rig/{face}/...`.
+Use this term when a shared runtime or orchestrator snapshot prefixes a runtime path with a runtime namespace, such as `{runtime_namespace}/rig/{face}/...`.
 
 This is a diagnostics form, not the string an operator client should memorize or write.
 

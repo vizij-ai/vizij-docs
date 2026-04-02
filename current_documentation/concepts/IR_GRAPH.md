@@ -1,6 +1,7 @@
 # Graph IR (Authoring IR) — Canonical Guide
 
-<!-- tags: type=concept; status=living; topics=ir,graphs,authoring,validation,serialization -->
+<!-- tags: family=reference; type=concept; topics=ir,graphs,authoring,validation,serialization -->
+> **Last updated:** 2026-03-31
 
 This guide explains Vizij’s **Graph IR** (“authoring IR”) at the same level of clarity as our runtime/React docs.
 
