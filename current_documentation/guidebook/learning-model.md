@@ -1,6 +1,6 @@
-<!-- tags: type=reference; status=written; topics=guidebook,learning-model,matrix -->
+<!-- tags: family=guidebook; type=reference; editorial_status=completed; publication_status=planned; topics=guidebook,learning-model,matrix -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** define how readers move through the Vizij guidebook and how bucket plus depth combine into a teaching system
 
 # Guidebook Learning Model

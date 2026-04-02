@@ -1,6 +1,6 @@
-<!-- tags: type=reference; status=living; topics=guidebook,website,projection,public-docs -->
+<!-- tags: family=guidebook; type=reference; editorial_status=completed; publication_status=planned; topics=guidebook,website,projection,public-docs -->
 
-> **Last updated:** 2026-03-13
+> **Last updated:** 2026-03-31
 > **Purpose:** define the machine-readable manifest that projects guidebook modules into public docs and tutorial routes
 
 # Public Projection Manifest

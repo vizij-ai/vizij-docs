@@ -1,6 +1,6 @@
-<!-- tags: type=reference; status=written; topics=guidebook,content-model,teaching-primitives -->
+<!-- tags: family=guidebook; type=reference; editorial_status=completed; publication_status=planned; topics=guidebook,content-model,teaching-primitives -->
 
-> **Last updated:** 2026-03-12
+> **Last updated:** 2026-03-31
 > **Purpose:** define the canonical teaching primitives for the Vizij guidebook independent of any one publishing surface
 
 # Guidebook Content Model Reference

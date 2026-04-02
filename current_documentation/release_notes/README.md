@@ -1,5 +1,6 @@
 # Release Notes
-<!-- tags: type=release-notes-index; status=living; topics=release-notes,documentation -->
+<!-- tags: family=reference; type=release-notes-index; topics=release-notes,documentation -->
+> **Last updated:** 2026-03-31
 
 This directory is the canonical internal home for Vizij release notes and outward-facing change summaries.
 
