@@ -14,7 +14,7 @@ else is the stock Arora runtime.
 
 ```mermaid
 graph LR
-    studio["Semio Studio / operator\n(over the arora protocol)"]
+    studio["Semio Studio / operator\n(driving the bridge)"]
 
     subgraph runtime["Arora runtime — unchanged"]
         bridge["Bridge"]
@@ -45,8 +45,9 @@ The remaining seam, behavior, is where the node graph plugs in: Arora's
 `GraphRuntime` against the shared store is the planned adapter. The websocket
 control path (`@vizij/arora-types`, `arora-connection`/`arora-websocket` in
 vizij-web) is the same convergence on the bridge seam: Vizij already speaks
-"the arora protocol", and the target is a `WsBridge` implementing
-`arora_bridge::Bridge` rather than a bespoke connection type.
+the Arora API over websocket (writing and reading values at keys), and the
+target is a `WsBridge` implementing `arora_bridge::Bridge` rather than a
+bespoke connection type.
 
 ## Where the full design lives
 
