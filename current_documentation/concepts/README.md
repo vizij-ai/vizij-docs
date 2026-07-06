@@ -34,6 +34,7 @@ learner-facing introduction and narrative progression.
 | binding-expression behavior and vocabulary | [BINDING_EXPRESSIONS.md](BINDING_EXPRESSIONS.md) |
 | graph IR authoring/runtime boundaries | [IR_GRAPH.md](IR_GRAPH.md) |
 | pose-graph creation ownership and current implementation | [POSE_GRAPH_CREATION.md](POSE_GRAPH_CREATION.md) |
+| how Vizij runs on the Arora device runtime (rig-as-HAL, interop crates) | [VIZIJ_ON_ARORA.md](VIZIJ_ON_ARORA.md) |
 | narrower appendices on standards, blending, targeting, merge rules, or schemas | [`deeper_exploration/`](deeper_exploration/) |
 
 ## Relationship To The Guidebook
