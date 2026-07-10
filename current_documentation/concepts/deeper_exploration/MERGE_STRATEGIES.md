@@ -1,47 +1,49 @@
-# Merge Strategies
+# Multi-Writer Paths and Graph Composition
 
-<!-- tags: family=reference; type=reference; topics=orchestrator,merge,conflicts -->
-> **Last updated:** 2026-03-31
+<!-- tags: family=reference; type=reference; topics=composition,merge,conflicts -->
+
+> **Last updated:** 2026-07-10
 
 ## Purpose
 
-Merge strategies define what happens when multiple controllers write to the same
-typed path in a single orchestrator step. The goal is deterministic, explainable
-conflict resolution.
+Several producers can target the same typed path: a rig graph and a pose
+graph, two program graphs, or a graph and a live input writer. This page
+describes how the runtime resolves that today and how multi-writer paths
+should be designed.
 
-## Common Strategies (Conceptual)
+## How Writes Compose
 
-The orchestrator can be configured to resolve collisions in different ways. The
-exact configuration surface depends on the runtime harness, but the behaviors
-are consistent:
+The runtime composes every registered graph (rig, pose, playing programs)
+into the **one behavior graph** of its Arora device. Within that composed
+graph:
 
-- **Error / Reject**: Conflicting outputs are treated as invalid. The merge
-  fails, and the conflict is surfaced to the host.
-- **Namespace**: Conflicting outputs are preserved by rewriting paths to include
-  a producer label, keeping both values available downstream.
-- **Additive**: Conflicting numeric values are summed, producing a single merged
-  result.
-- **Blend (Equal Weights)**: Conflicting values are averaged (useful for smooth
-  blending when sources are equivalent).
-- **Blend (Weighted)**: Each producer is assigned a weight; the merge uses a
-  weighted average.
+- **Routing is path identity.** A producer writes a store path; any consumer
+  with an `input` node on the same path reads it on the next tick. Nothing
+  else routes values between sub-graphs.
+- **Output collisions are last-writer-wins.** When two `output` nodes target
+  the same path, evaluation order decides, and the runtime logs a warning
+  naming both producers. Collisions are treated as a rig-design smell rather
+  than a configuration to tune.
+- **Intentional mixing is a graph node.** When two sources should genuinely
+  combine (sum, average, weighted blend), that combination is expressed as an
+  explicit node in the graph — an add/blend node whose inputs are the two
+  producers — so the mixing rule is visible in the authored graph rather than
+  hidden in runtime configuration. Automatic insertion of a combiner during
+  composition is planned for bundles that need it (VIZ-58).
 
-## When to Use Which
+## Designing Multi-Writer Paths
 
-- **Error** when collisions indicate a logic bug.
-- **Namespace** when you want to preserve all contributors for later selection.
-- **Additive** when sources are intended to accumulate (e.g., layered offsets).
-- **Blend** when sources are intended to be mixed into a single motion.
+- Prefer **one owner per path**; give intermediate producers their own paths
+  and mix them explicitly downstream.
+- When layering is intended (e.g., offsets on a base pose), author the
+  layering node in the graph. The blend rule is part of the rig design, not a
+  runtime setting.
+- Watch the collision warnings in the console; they indicate either a missing
+  combiner node or an unintended overlap.
 
-## Operational Guidance
+## Live Inputs
 
-- Choose a default strategy at the orchestrator level.
-- Override strategy per output path when you know a path is multi‑writer.
-- Always monitor conflict logs; they indicate either intended layering or a
-  design mistake.
-
-## Practical Consequences
-
-Merge strategy choice shapes runtime behavior. The same graph/animation stack
-can feel stable or chaotic depending on whether overlaps are blended, added, or
-rejected. Strategy is part of the rig design, not just a runtime setting.
+Writes from outside the graph (UI controls, animation clip playback, network
+sync) go through the same store. They compose with graph outputs by the same
+rule: the store holds one value per path, and the last write before a tick is
+what the graph reads.
