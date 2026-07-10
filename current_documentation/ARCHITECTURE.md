@@ -31,7 +31,7 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 
 | Repo or surface | Architectural role | Key contracts or outputs |
 | --- | --- | --- |
-| `vizij-rs` | Engine-agnostic runtime core | `Value`, `Shape`, `TypedPath`, graph evaluation, animation sampling, orchestrator scheduling, wasm wrappers, fixtures |
+| `vizij-rs` | Engine-agnostic runtime core | `Value`, `Shape`, `TypedPath`, graph evaluation, animation sampling, the Arora device interop, wasm wrappers, fixtures |
 | `vizij-web` | Application and integration layer | React runtime bindings, authoring flows, demos, standalone deployment shell, protocol integration surfaces |
 | `vizij-docs` | Cross-repo reference and coordination layer | maintained architecture summaries, roadmap/program framing, decisions, known issues, release-note policy |
 | `vizij-ai.github.io` | Public delivery layer | curated docs, guides, showcase content, public routing into examples |
@@ -57,7 +57,14 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
   - `vizij-graph-wasm`
   - `bevy_vizij_graph`
   - `vizij-graph-registry-export`
-- **Orchestrator stack**
+- **Arora interop stack** (`crates/interop/`)
+  - `vizij-arora` — Vizij↔Arora value identity (`vizij_api_core::Value` **is** `arora_types::value::Value`)
+  - `vizij-arora-store` — a Vizij `Blackboard` as an Arora `DataStore`
+  - `vizij-arora-hal` — a Vizij rig as an Arora HAL
+  - `vizij-arora-behavior` — `ProcessingGraph`: a Vizij node graph as an Arora `BehaviorInterpreter`
+  - `vizij-arora-web` — the browser device: a wasm cdylib assembling `arora-web`'s `BrowserRuntime` over the pieces above
+  - `vizij-animation-module` — the animation engine packaged as an Arora wasm module
+- **Orchestrator stack** (superseded in the web runtime by the Arora device; scheduled for removal — VIZ-62)
   - `vizij-orchestrator-core`
   - `vizij-orchestrator-wasm`
 - **Shared fixtures**
@@ -65,8 +72,10 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 
 ### Current architecture notes
 
-- Rust remains the runtime source of truth for `Value`, `Shape`, `TypedPath`, graph evaluation, animation sampling, and orchestrator scheduling.
-- Bevy adapters currently exist for API, animation, and node graph. There is no orchestrator Bevy crate in the current workspace.
+- Rust remains the runtime source of truth for `Value`, `Shape`, `TypedPath`, graph evaluation, and animation sampling.
+- In the browser, Vizij runs **as an Arora device**: `@vizij/arora-web-wasm` (built from `vizij-arora-web`) boots an Arora runtime whose behavior is a composed Vizij node graph on a shared key/value store. Scheduling is the Arora step loop; cross-graph data flows through store paths.
+- Vizij and Arora share one runtime value type, so values cross the store boundary without translation; JS sees them as `ValueJSON`.
+- Bevy adapters currently exist for API, animation, and node graph.
 - The npm wrappers under `vizij-rs/npm/@vizij/*` expose the wasm layer to the web stack.
 - Shared helper packages such as `@vizij/value-json`, `@vizij/wasm-loader`, and `@vizij/test-fixtures` keep JSON, loader, and fixture behavior aligned across repos.
 
@@ -80,9 +89,9 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 | --- | --- |
 | `@vizij/animation-react` | React bindings for animation wasm |
 | `@vizij/node-graph-react` | React bindings for graph wasm |
-| `@vizij/orchestrator-react` | React orchestration provider and hooks |
+| `@vizij/orchestrator-react` | React orchestration provider and hooks (used by the authoring motiongraph tooling; scheduled for removal — VIZ-62) |
 | `@vizij/render` | Three.js renderer and related controllers |
-| `@vizij/runtime-react` | Higher-level runtime provider that wires renderer and orchestration |
+| `@vizij/runtime-react` | Runtime provider wiring the renderer to an Arora device engine (`@vizij/arora-web-wasm`) |
 | `@vizij/utils` | Shared utility layer |
 | `@vizij/node-graph-authoring` | Authoring and compiler helpers plus IR inspection tooling |
 | `@vizij/minimal-demo-ui` | Shared UI and chrome for minimal demo apps |
@@ -100,7 +109,7 @@ These are current implementation surfaces even though they are not TypeScript wo
 | App | Role |
 | --- | --- |
 | `vizij-authoring` | Runtime-truthful authoring surface for rigs, bindings, pose workflows, and export |
-| `demo-vizij-player` | Runtime-facing demo for orchestrated playback |
+| `demo-vizij-player` | Runtime-facing demo for runtime-driven playback |
 | `demo-animation-studio` | Animation-focused playground |
 | `demo-graph-studio` | Graph authoring and editor demo |
 | `minimal-demo-animation` | Minimal animation smoke surface |

@@ -23,13 +23,15 @@ keyframes and interpolation rules for that target.
 and poses are created or edited.
 
 **Blackboard**: The shared state store of typed paths and values that graphs and
-animations read from and write to under the orchestrator’s coordination.
+animations read from and write to. In the browser it is the Arora device's
+store: graph inputs read store paths each tick and outputs write back.
 
 **Bundle**: An asset‑carried package of rig, pose, and animation metadata
 embedded alongside a face so runtimes can auto‑register controllers.
 
-**Controller**: A runtime unit that produces writes (e.g., a graph controller or
-animation controller) coordinated by the orchestrator.
+**Controller**: A runtime unit that produces writes. Graph controllers compose
+into the Arora device's single behavior graph; animation clips play through the
+runtime's clip pipeline, writing inputs like any other caller.
 
 **Dataflow Graph**: A deterministic program defined by nodes and edges that
 computes outputs from inputs; the core abstraction behind rigs and poses.
@@ -63,7 +65,8 @@ parsed/validated in tooling and compiled into graph logic. See
 graph layers before final animatable writes.
 
 **Namespace**: A path prefix that isolates one face’s runtime state from
-another, enabling multiple faces to share a single orchestrator safely.
+another; each face runs on its own Arora device, and namespaces keep their
+store keys apart.
 
 ## M–R
 
@@ -96,8 +99,9 @@ ultimately writing to animatables.
 **Rig Graph**: The graph implementation of a rig; consumes inputs and emits
 typed‑path outputs.
 
-**Runtime Harness**: The environment that loads assets, registers controllers,
-steps the orchestrator, and bridges outputs to the renderer.
+**Runtime Harness**: The environment that loads assets, composes the graphs
+into the Arora device's behavior, steps the device, and bridges outputs to the
+renderer.
 
 ## S–Z
 
