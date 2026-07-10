@@ -33,7 +33,8 @@ live drivers without hard‑coding behavior into the renderer.
 - Standard inputs and pose weights flow into the rig.  
 - The rig graph computes outputs and writes them to typed paths.  
 - Downstream rigs (if any) refine those values before they hit animatables.  
-- The orchestrator merges rig outputs with animations and other controllers.
+- Rig outputs land on the device's store alongside animation and other input
+  writes; the store holds one value per path.
 
 **Common Pitfalls**  
 - Treating a rig as a direct animatable mapping and ignoring intermediate
@@ -233,7 +234,7 @@ core graph model.
 **How It Interacts**  
 - Rigs and poses are implemented as graphs with standardized conventions.  
 - Graphs read inputs (standard inputs, pose weights, driver values) and emit
-  outputs that the orchestrator applies to the blackboard or renderer.  
+  outputs onto the device's store, from which the renderer reads.  
 - IR tooling provides inspection, validation, and metadata without changing the
   runtime execution model.
   See [ARCHITECTURE.md](../ARCHITECTURE.md) for the current cross-repo runtime
@@ -243,7 +244,7 @@ core graph model.
 - Treating rig and pose graphs as special runtimes; they are conventions over
   the same graph system.  
 - Assuming graphs are like distributed ROS nodes; in Vizij a graph is a single
-  deterministic program executed by the graph runtime/orchestrator.
+  deterministic program executed by the device's step loop.
 
 **Quick Example**  
 A rig graph might take `/standard/vizij/left_eye/pos/x` as an input, remap it, blend it
@@ -280,8 +281,8 @@ scheduled without re‑authoring live control logic.
   animatables when you need direct control.  
 - The animation engine manages playback time and emits value changes each
   frame.  
-- Those changes are merged with other runtime signals (inputs, graphs,
-  orchestrator writes) before reaching the renderer.
+- Those changes land on the device's store alongside other runtime writes
+  (inputs, graph outputs) before reaching the renderer.
 
 **Common Pitfalls**  
 - Confusing an animation clip with a runtime instance (a clip is data; an
@@ -296,48 +297,56 @@ ramps from `0 → 1` over 0.4s, holds, then returns to `0` over 0.3s. The same
 approach can target an animatable like `mouth_rotation` or a graph input that
 blends multiple mouth controls.
 
-## 7. Orchestrator
+## 7. The Runtime Device
 
 **Definition**  
-The orchestrator is the execution coordinator for Vizij runtime control. It
-schedules graphs and animations, maintains a shared blackboard of typed paths,
-and merges their writes into a coherent frame before values reach the renderer.
+The Vizij web runtime is an Arora device: an Arora runtime compiled to
+WebAssembly whose behavior is the composed Vizij graph (rig, pose, and playing
+programs united into one), running on a shared store of typed paths.
 
-**Why It Exists**  
-Without coordination, multiple controllers would fight over the same targets.
-The orchestrator provides deterministic ordering, conflict handling, and a
-single place to reason about runtime state.
+**Why It Is This Way**  
+The device that runs on a robot and the runtime in a browser tab are the same
+engine, so behaviors, values, and tooling transfer between them. Coordination
+needs no dedicated component: scheduling is the Arora step loop, routing is
+store-path identity, and deterministic ordering falls out of dataflow order in
+the composed graph.
 
 **Key Properties**  
-- **Blackboard**: the shared state store of TypedPath → Value (+ shape/provenance).  
-- **Controllers**: registered graphs and animations.  
-- **Scheduling**: pass order (e.g., SinglePass or TwoPass).  
-- **Merge strategies**: how conflicts are resolved when outputs collide.  
-- **Frame output**: merged writes, conflicts, and timing metadata.
+- **Store (blackboard)**: the shared state of TypedPath → Value all producers
+  and consumers go through.  
+- **Composed graph**: registered graphs become one behavior; sub-graphs
+  exchange values through store paths (one tick of latency across sub-graphs).  
+- **Step loop**: each tick reads inputs, evaluates the graph, writes outputs,
+  then hands the changed values to the renderer.  
+- **Collisions**: two outputs on one path resolve last-writer-wins with a
+  logged warning; intentional mixing is an explicit combiner node (see
+  [Multi-Writer Paths](deeper_exploration/MERGE_STRATEGIES.md)).
 
 **Where It Lives**  
-- In the runtime layer, coordinating all face controllers.
+- `@vizij/arora-web-wasm` (the device) under `@vizij/runtime-react` (the
+  provider that composes graphs, owns the loop, and bridges to the renderer).
 
 **How It Interacts**  
-- Inputs are staged onto the blackboard before each step.  
-- Graphs and animations read from and write to the blackboard.  
-- Namespacing isolates multiple faces by prefixing their typed paths, so they
-  can share a single orchestrator without collisions.  
-- The orchestrator applies merged outputs to the renderer and exposes a frame
-  for inspection or debugging. Merge strategy choice determines the concrete
-  outcome when multiple controllers write the same path.
+- Inputs from UI, drivers, or clip playback are written onto the store.  
+- The graph reads its input paths each tick and writes outputs back.  
+- Namespacing prefixes each face's typed paths; each face runs on its own
+  device.  
+- After each tick the runtime drains the changed values and applies them to
+  the renderer.
 
 **Common Pitfalls**  
 - Forgetting to namespace multi‑face setups, causing collisions in typed paths.  
-- Assuming controller order is implicit; if feedback loops exist, the schedule
-  must be configured deliberately.  
-- Overlooking merge conflicts in complex rigs (the orchestrator will log them,
-  but you still need to resolve them by design).
+- Relying on same-tick feedback between sub-graphs; a value written to a store
+  path is read by other sub-graphs on the next tick.  
+- Overlooking collision warnings in complex rigs (the runtime logs them, but
+  you still need to resolve them by design — usually with an explicit
+  combiner node).
 
 **Quick Example**  
-A TwoPass schedule might let a graph compute animation weights in pass one, run
-the animation controller in pass two, then re‑evaluate a graph using the updated
-values. The orchestrator ensures each pass is deterministic and conflict‑aware.
+A graph can compute animation weights that clip playback consumes on the next
+tick, whose sampled values the graph then reads back through the store —
+each tick is deterministic, and cross-stage feedback carries one tick of
+latency.
 
 ## 8. Authoring Surface
 
@@ -374,13 +383,13 @@ registration.
 ## 9. Runtime Harness
 
 **Definition**  
-The runtime harness is the environment that loads assets, registers
-controllers, coordinates the orchestrator, and bridges outputs into the
-renderer.
+The runtime harness is the environment that loads assets, composes the
+graphs into the device's behavior, steps the device, and bridges outputs into
+the renderer.
 
 **Why It Exists**  
 It provides a stable execution envelope so applications can drive faces without
-re-implementing orchestration logic.
+re-implementing runtime coordination.
 
 **Key Properties**  
 - Asset loading and bundle extraction.  
@@ -392,8 +401,8 @@ re-implementing orchestration logic.
 - In the application/runtime layer that hosts the face experience.
 
 **How It Interacts**  
-- Consumes authoring exports, runs the orchestrator, and streams merged outputs
-  to the renderer.
+- Consumes authoring exports, steps the device, and streams the changed
+  values to the renderer.
 
 **Common Pitfalls**  
 - Bypassing the harness and writing directly to renderer values, which breaks
@@ -401,8 +410,9 @@ re-implementing orchestration logic.
 - Forgetting to namespace multi-face setups.
 
 **Quick Example**  
-The runtime harness loads a face bundle, registers controllers, steps the
-orchestrator, and forwards merged writes each frame.
+The runtime harness loads a face bundle, composes its graphs into the
+device's behavior, steps the device, and forwards the changed values each
+frame.
 
 ## 10. Renderer Surface
 
@@ -423,13 +433,13 @@ surface dedicated to application of values keeps the pipeline predictable.
 - In the rendering layer of the runtime.
 
 **How It Interacts**  
-- Receives merged outputs from the orchestrator via the runtime harness and
-  applies them to animatables each frame.
+- Receives the changed store values via the runtime harness and applies them
+  to animatables each frame.
 
 **Common Pitfalls**  
 - Treating renderer values as authoritative state instead of a projection of
   the runtime blackboard.  
-- Applying ad-hoc mutations that bypass orchestration.
+- Applying ad-hoc mutations that bypass the device's store.
 
 **Quick Example**  
 The renderer applies an updated eye translation and eyelid scale on each frame,
