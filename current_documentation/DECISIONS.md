@@ -72,3 +72,13 @@
 - **Decision**: Treat `vizij-web` apps as implementation `tools` and `examples`, while the website and projected guidebook own the public `demos` / `tutorials` / `docs` taxonomy. Treat hardening as a cross-cutting trust lane rather than a competing product pillar.
 - **Rationale**: This separation keeps the public learning system legible and prevents internal app naming or generic cleanup work from dictating the roadmap.
 - **Trade-offs**: Some existing app names and backlog docs now read awkwardly against the new model and must be interpreted or rewritten with explicit authority notes.
+
+## 2026-07-10: One Runtime Value Type Across Vizij and Arora
+- **Decision**: `vizij_api_core::Value` is `arora_types::value::Value` — one runtime value type shared by the Vizij kernels, the Arora runtime, and the store, with `@vizij/value-json` as its single JSON vocabulary on the web side.
+- **Rationale**: Vizij runs on Arora rather than reimplementing it, and a shared value type lets graph outputs, animation samples, and store entries cross every boundary (Rust↔Rust, Rust↔wasm↔JS) without translation layers or drift between two value vocabularies.
+- **Trade-offs**: Vizij's value evolution is coupled to `arora-types` releases, breaking value changes ripple through both ecosystems in lockstep, and composite Vizij values ride through Arora as structured values whose type identities live in Vizij-namespaced UUIDs.
+
+## 2026-07-10: The Web Runtime Is an Arora Device
+- **Decision**: In the browser, a Vizij runtime is an Arora device: `@vizij/runtime-react` boots one device per provider from `@vizij/arora-web-wasm` (an Arora runtime compiled to WebAssembly), with the composed rig/pose/program graph as the device's behavior. The former orchestrator decomposes into existing primitives — routing is store-path identity, scheduling is the Arora step loop, controller merge is graph composition (last-writer-wins today; an explicit combiner node when a real bundle collides), and animation clips play through the runtime's clip pipeline as ordinary input writes.
+- **Rationale**: The device that runs in a robot and the runtime that runs in a browser tab are the same engine, so behaviors, values, and tooling transfer between them; the orchestrator duplicated scheduling and state that Arora already owns.
+- **Trade-offs**: Cross-graph feedback through the store carries one tick of latency; behavior replacement currently restarts the device (an in-place behavior load is the planned replacement); engine-side animation waits on the browser runtime accepting wasm modules; the orchestrator crates remain in `vizij-rs` only until their last consumer (the authoring motiongraph tooling) migrates.
