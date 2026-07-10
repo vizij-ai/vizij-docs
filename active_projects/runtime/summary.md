@@ -21,6 +21,7 @@ Detailed implementation truth still lives in:
 
 | Project | Status | Proposal | Plan | Reference |
 | --- | --- | --- | --- | --- |
+| Vizij on Arora (web runtime = Arora device) | `shipped, hardening` | — | — | [`summary.md`](vizij_on_arora/summary.md) |
 | Speech + Viseme + Conversation Enablement | `planned` | [`audio_video-proposal.md`](audio_video/audio_video-proposal.md) | — | — |
 | Multi-Screen and Operator Control | `planned` | [`multi_screen-proposal.md`](multi_screen/multi_screen-proposal.md) | [`multi_screen-plan.md`](multi_screen/multi_screen-plan.md) | — |
 | Standalone / Arora Deployment Branch | `in_progress` | — | [`standalone_ws-plan.md`](standalone_ws/standalone_ws-plan.md) | — |
