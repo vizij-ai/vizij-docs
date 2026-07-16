@@ -35,8 +35,8 @@ Detailed implementation truth still lives in:
 - Split-screen and operator-control work are part of the core deployment branch, not a side experiment.
 - Standalone/protocol work is currently spread across:
   - `@vizij/arora-types`
-  - Rust crates `packages/arora-connection` and `packages/arora-websocket`
-  - `vizij-standalone`
+  - the published arora-sdk bridge crates (`arora-bridge-ws`, `arora-bridge-ros2`); the former in-repo `arora-connection` / `arora-websocket` crates were retired in the multi-bridge migration
+  - `vizij-standalone` (now a multi-bridge host)
 - Older docs may still mention a former `vizij-ws-app` surface; treat that as historical rather than current runtime inventory.
 - The main remaining runtime/deployment problem is now coherence and operator trust rather than absence of real deployment surfaces.
 - Namespacing remains important, but it is a later follow-on for runtime expressiveness rather than a near-term deployment gate.
