@@ -64,7 +64,7 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
   - `vizij-arora-behavior` — `ProcessingGraph`: a Vizij node graph as an Arora `BehaviorInterpreter`
   - `vizij-arora-web` — the browser device: a wasm cdylib assembling `arora-web`'s `BrowserRuntime` over the pieces above
   - `vizij-animation-module` — the animation engine packaged as an Arora wasm module
-- **Orchestrator stack** (superseded in the web runtime by the Arora device; scheduled for removal — VIZ-62)
+- **Orchestrator stack** (superseded in the web runtime by the Arora device; the vizij-web packages are retired and the authoring tooling has migrated, but `vizij-orchestrator-core` still has an internal consumer in `vizij-arora-behavior`, so the crates remain pending removal — VIZ-62)
   - `vizij-orchestrator-core`
   - `vizij-orchestrator-wasm`
 - **Shared fixtures**
@@ -87,22 +87,17 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 
 | Package | Role |
 | --- | --- |
-| `@vizij/animation-react` | React bindings for animation wasm |
-| `@vizij/node-graph-react` | React bindings for graph wasm |
-| `@vizij/orchestrator-react` | React orchestration provider and hooks (used by the authoring motiongraph tooling; scheduled for removal — VIZ-62) |
+| `@vizij/animation-react` | React bindings for `@vizij/animation` |
+| `@vizij/node-graph-react` | React bindings for `@vizij/node-graph` |
 | `@vizij/render` | Three.js renderer and related controllers |
 | `@vizij/runtime-react` | Runtime provider wiring the renderer to an Arora device engine (`@vizij/runtime`) |
 | `@vizij/utils` | Shared utility layer |
 | `@vizij/node-graph-authoring` | Authoring and compiler helpers plus IR inspection tooling |
 | `@vizij/minimal-demo-ui` | Shared UI and chrome for minimal demo apps |
-| `@vizij/arora-types` | TypeScript protocol contract surface for standalone and control work |
 
-### Local protocol crates inside `vizij-web/packages`
+### Protocol and bridge surfaces
 
-- `packages/arora-connection`
-- `packages/arora-websocket`
-
-These are current implementation surfaces even though they are not TypeScript workspace packages.
+The former in-repo `arora-connection` / `arora-websocket` crates and the `@vizij/arora-types` package were retired in the multi-bridge migration (VIZ-54). The bridge is now the published arora-sdk crates (`arora-bridge-ws`, `arora-bridge-ros2`) on the Rust side; `vizij-standalone` carries its remaining WebSocket/slot protocol types app-locally, and value serde crosses the boundary through `@vizij/value-json`.
 
 ### Apps
 
@@ -127,7 +122,7 @@ The current deployment architecture is intentionally broader than a single app s
 
 - **Browser deployments** use the Rust wasm packages, npm wrappers, React runtime bindings, and renderer stack inside `vizij-web`.
 - **`vizij-standalone`** packages the same runtime and operator-control architecture inside a Tauri shell for desktop-oriented deployment.
-- **Operator/control architecture** currently spans `@vizij/arora-types` and the protocol-related crates under `vizij-web/packages/arora-*`.
+- **Operator/control architecture** spans `vizij-standalone` (Tauri), the app-local WebSocket/slot protocol types, `@vizij/value-json` for value serde, and the published arora-sdk bridge crates (`arora-bridge-ws`, `arora-bridge-ros2`).
 - **Authoring-to-runtime export flows** connect `vizij-authoring` outputs to runtime/player/deployment surfaces rather than stopping at an isolated editor boundary.
 - **Shared namespaces and multi-face runtime patterns** remain relevant architectural extension points for larger deployments, even though they are not required in every current surface.
 

@@ -34,7 +34,7 @@ Detailed implementation truth still lives in:
 - Browser/runtime deployments and `vizij-standalone` are both first-class references in the current phase.
 - Split-screen and operator-control work are part of the core deployment branch, not a side experiment.
 - Standalone/protocol work is currently spread across:
-  - `@vizij/arora-types`
+  - `@vizij/value-json` for value serde, plus app-local WebSocket/slot protocol types in `vizij-standalone` (the retired `@vizij/arora-types` package split into these)
   - the published arora-sdk bridge crates (`arora-bridge-ws`, `arora-bridge-ros2`); the former in-repo `arora-connection` / `arora-websocket` crates were retired in the multi-bridge migration
   - `vizij-standalone` (now a multi-bridge host)
 - Older docs may still mention a former `vizij-ws-app` surface; treat that as historical rather than current runtime inventory.

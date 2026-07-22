@@ -215,7 +215,7 @@ Use these when you need the current implementation truth:
 3. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
 4. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
 5. `vizij-web/apps/vizij-standalone/src-tauri/src/connection_manager.rs`
-6. `vizij-web/packages/@vizij/arora-types`
+6. `vizij-web/apps/vizij-standalone/src/hooks/aroraWsProtocol.ts` (app-local protocol types; formerly `@vizij/arora-types`)
 
 ## Recommended Next Steps
 
