@@ -73,7 +73,7 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 ### Current architecture notes
 
 - Rust remains the runtime source of truth for `Value`, `Shape`, `TypedPath`, graph evaluation, and animation sampling.
-- In the browser, Vizij runs **as an Arora device**: `@vizij/arora-web-wasm` (built from `vizij-arora-web`) boots an Arora runtime whose behavior is a composed Vizij node graph on a shared key/value store. Scheduling is the Arora step loop; cross-graph data flows through store paths.
+- In the browser, Vizij runs **as an Arora device**: `@vizij/runtime` (built from `vizij-arora-web`) boots an Arora runtime whose behavior is a composed Vizij node graph on a shared key/value store. Scheduling is the Arora step loop; cross-graph data flows through store paths.
 - Vizij and Arora share one runtime value type, so values cross the store boundary without translation; JS sees them as `ValueJSON`.
 - Bevy adapters currently exist for API, animation, and node graph.
 - The npm wrappers under `vizij-rs/npm/@vizij/*` expose the wasm layer to the web stack.
@@ -91,7 +91,7 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 | `@vizij/node-graph-react` | React bindings for graph wasm |
 | `@vizij/orchestrator-react` | React orchestration provider and hooks (used by the authoring motiongraph tooling; scheduled for removal — VIZ-62) |
 | `@vizij/render` | Three.js renderer and related controllers |
-| `@vizij/runtime-react` | Runtime provider wiring the renderer to an Arora device engine (`@vizij/arora-web-wasm`) |
+| `@vizij/runtime-react` | Runtime provider wiring the renderer to an Arora device engine (`@vizij/runtime`) |
 | `@vizij/utils` | Shared utility layer |
 | `@vizij/node-graph-authoring` | Authoring and compiler helpers plus IR inspection tooling |
 | `@vizij/minimal-demo-ui` | Shared UI and chrome for minimal demo apps |

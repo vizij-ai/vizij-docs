@@ -9,7 +9,7 @@ them.
 ## What runs today
 
 - `@vizij/runtime-react` boots **one Arora device per provider** from
-  [`@vizij/arora-web-wasm`](https://www.npmjs.com/package/@vizij/arora-web-wasm)
+  [`@vizij/runtime`](https://www.npmjs.com/package/@vizij/runtime)
   — an Arora runtime compiled to WebAssembly (crate `vizij-arora-web` in
   `vizij-rs`, built on the published `arora-web` crate).
 - The device's behavior is the **composed graph**: rig, pose, and playing
@@ -46,5 +46,5 @@ Each of these is deliberate, shipped behavior with a ticket that retires it:
 | Browser device (wasm cdylib) | `vizij-rs/crates/interop/vizij-arora-web` |
 | Store / HAL / behavior adapters | `vizij-rs/crates/interop/vizij-arora-{store,hal,behavior}` |
 | Animation engine as an Arora module | `vizij-rs/crates/interop/vizij-animation-module` |
-| npm wrapper | `vizij-rs/npm/@vizij/arora-web-wasm` |
+| npm wrapper | `vizij-rs/npm/@vizij/runtime` |
 | Runtime provider (device lifecycle, composition, step loop) | `vizij-web/packages/@vizij/runtime-react` (`engine/aroraEngine.ts`, `utils/composeGraph.ts`) |
