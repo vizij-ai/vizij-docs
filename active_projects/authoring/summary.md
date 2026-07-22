@@ -41,7 +41,7 @@ Detailed execution tracking, stage gates, and feature-level backlog detail live 
 ## Current Verified State
 
 - `vizij-authoring` is a real current workspace app in `vizij-web/apps/vizij-authoring`.
-- The app currently depends on real current workspace packages including `@vizij/runtime-react`, `@vizij/node-graph-authoring`, `@vizij/node-graph-react`, `@vizij/orchestrator-react`, `@vizij/render`, and `@vizij/utils`.
+- The app currently depends on real current workspace packages including `@vizij/runtime-react`, `@vizij/node-graph-authoring`, `@vizij/node-graph-react`, `@vizij/render`, and `@vizij/utils`. (The motiongraph tooling has migrated off `@vizij/orchestrator-react`, which is retired.)
 - The local authoring docs remain the authoritative detailed tracker for stage-by-stage execution.
 - The local authoring docs were trimmed on 2026-03-30 so the active set now centers on the tracker trio (`README.md`, `ROADMAP.md`, `BACKLOG.md`, `TRACKER.md`), active local contracts, and a smaller set of living implementation references; several completed goal/implementation plans were archived locally instead of remaining in the active path.
 - The local authoring tracker currently reports:

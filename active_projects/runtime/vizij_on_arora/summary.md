@@ -1,6 +1,6 @@
 # Vizij on Arora
 
-> **Last updated:** 2026-07-10
+> **Last updated:** 2026-07-22
 
 Vizij's web runtime is an Arora device. This page summarizes what runs today,
 the compromises the runtime currently carries, and the tickets that retire
@@ -36,8 +36,7 @@ Each of these is deliberate, shipped behavior with a ticket that retires it:
 | A JS bridge restages pose-driver outputs into rig inputs; store-path feedback makes it redundant once verified equivalent. | [VIZ-59](https://linear.app/semio-ai/issue/VIZ-59) |
 | The runtime's clock keys (`arora/dt`, `arora/time`) ride the change feed and every consumer filters them. | [ARORA-58](https://linear.app/semio-ai/issue/ARORA-58) |
 | Clearing an input writes `{float: 0}` instead of the constraint's neutral value. | [VIZ-60](https://linear.app/semio-ai/issue/VIZ-60) |
-| Animations are engine-external: the browser runtime does not yet accept Arora wasm modules, so the animation-as-module path (and the graph's module-call node) is unreachable in the web runtime. | [VIZ-61](https://linear.app/semio-ai/issue/VIZ-61) |
-| The authoring motiongraph tooling still runs on `@vizij/orchestrator-react` behind its own provider; the orchestrator crates stay in `vizij-rs` until it migrates. | [VIZ-62](https://linear.app/semio-ai/issue/VIZ-62) |
+| The authoring motiongraph tooling has migrated to the node graph and `@vizij/orchestrator-react` is retired, but `vizij-orchestrator-core` still has an internal consumer in `vizij-arora-behavior`, so the orchestrator crates stay in `vizij-rs` pending removal. | [VIZ-62](https://linear.app/semio-ai/issue/VIZ-62) |
 
 ## Where the seams live
 
