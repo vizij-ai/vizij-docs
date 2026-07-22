@@ -25,7 +25,7 @@ After this page, you should be able to open a maintained preset face in `vizij-a
 Use the `vizij-web` workspace root:
 
 ```bash
-cd /home/chris/Code/Semio/vizij_ws/vizij-web
+cd path/to/vizij-web
 pnpm run dev:vizij-authoring
 ```
 

@@ -25,7 +25,7 @@ After this page, you should be able to use the maintained fullscreen tutorial to
 Run this from the `vizij-web` root:
 
 ```bash
-cd /home/chris/Code/Semio/vizij_ws/vizij-web
+cd path/to/vizij-web
 pnpm run dev:tutorial-fullscreen-face
 ```
 
