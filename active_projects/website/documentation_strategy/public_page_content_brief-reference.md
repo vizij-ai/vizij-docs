@@ -479,7 +479,7 @@ Render a face and trigger one deterministic visible change.
 **Concrete examples to embed**
 
 ```bash
-pnpm add @vizij/runtime-react @vizij/render @vizij/orchestrator-react react react-dom
+pnpm add @vizij/runtime-react @vizij/render react react-dom
 ```
 
 ```tsx

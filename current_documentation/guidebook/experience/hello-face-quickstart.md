@@ -25,7 +25,7 @@ After this page, you should be able to launch the maintained Hello Face app, con
 Use the `vizij-web` workspace root:
 
 ```bash
-cd /home/chris/Code/Semio/vizij_ws/vizij-web
+cd path/to/vizij-web
 ```
 
 This walkthrough uses `apps/tutorial-fullscreen-face`, which is the smallest maintained Vizij runtime app in the workspace.

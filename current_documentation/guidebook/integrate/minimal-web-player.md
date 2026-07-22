@@ -25,7 +25,7 @@ After this page, you should be able to launch the maintained player-stage app, e
 Use the `vizij-web` workspace root:
 
 ```bash
-cd /home/chris/Code/Semio/vizij_ws/vizij-web
+cd path/to/vizij-web
 pnpm run dev:demo-vizij-player
 ```
 

@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,control,orchestration,diagnostics -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-07-23
 > **Purpose:** teach how Vizij runtime control actually executes frame to frame and how to diagnose control failures without drifting into deployment or authoring runbooks
 
 # Orchestration and Diagnostics
@@ -22,7 +22,7 @@ After this page, you should be able to trace a control action through the Vizij 
 
 1. readiness,
 2. staged input writes,
-3. orchestrator scheduling and merge,
+3. the runtime step loop and store-path merge,
 4. blackboard updates,
 5. renderer outputs,
 6. visible face behavior.
@@ -32,7 +32,7 @@ You should also be able to recognize where that chain is breaking when control d
 ## Module Notes
 
 - Read this after [Paths and Standard Controls](paths-and-standard-controls.md), [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md), and [Control Surfaces and Configuration Layers](control-surfaces-and-configuration-layers.md).
-- The page focuses on the runtime execution chain: readiness, staged writes, orchestrator merge, blackboard state, renderer output, and the diagnostic surfaces that reveal where that chain breaks.
+- The page focuses on the runtime execution chain: readiness, staged writes, the step loop and store-path merge, blackboard state, renderer output, and the diagnostic surfaces that reveal where that chain breaks.
 - Use `Integrate` or `Support` for path grammar refreshers, packaging steps, or deployment runbooks.
 
 ## What You Need
@@ -53,15 +53,15 @@ flowchart LR
     classDef evidence fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
 
     ready["1. Runtime ready?\nloading=false, ready=true"] --> stage["2. Host stages exact path write"]
-    stage --> step["3. Orchestrator steps\ncontrollers run in schedule order"]
-    step --> merge["4. Frame exposes merged_writes\nand any conflicts"]
+    stage --> step["3. Runtime steps\nthe composed graph evaluates"]
+    step --> merge["4. Writes merge on store paths\n(last-writer-wins today)"]
     merge --> render["5. Renderer/output target matches\nwhat the loaded bundle can move"]
     render --> face["6. Visible face change"]
 
     readyEvidence["Check status phase\nbefore reasoning about control"]
     pathEvidence["Confirm full path,\nfaceId, namespace, and control family"]
-    orchEvidence["useOrchFrame() or equivalent\nshows frames advancing"]
-    mergeEvidence["Inspect merged_writes,\nconflicts, and target snapshots"]
+    orchEvidence["getPathSnapshot / useVizijOutputs\nshow store writes advancing"]
+    mergeEvidence["Inspect store snapshots for the\nexpected path and any collisions"]
     renderEvidence["Check outputPaths or renderer mapping\nbefore blaming the UI"]
     faceEvidence["Visible motion is late evidence,\nnot the first proof"]
 
@@ -83,8 +83,8 @@ The practical execution model is:
 ```text
 ready runtime
 -> host stages inputs
--> orchestrator steps controllers
--> controller writes are merged
+-> runtime steps the composed graph
+-> graph writes merge on store paths
 -> blackboard state advances
 -> renderer-facing values are applied
 -> visible face output changes
@@ -96,8 +96,8 @@ That sequence matters. A failure earlier in the chain can make later surfaces lo
 
 In `tutorial-fullscreen-face`, `FaceApp.tsx` distinguishes three learner-visible states before successful control:
 
-1. `Loading face…`
-2. `Initialising orchestrator…`
+1. `Loading Face`
+2. `Initializing`
 3. ready runtime
 
 It also renders an error state when initialization fails.
@@ -128,31 +128,25 @@ That means a hook can look correct in UI code and still fail later because:
 3. the runtime never stepped,
 4. a later controller or merge policy overrode the result.
 
-### 3. The orchestrator is the execution coordinator
+### 3. The runtime step loop is the execution coordinator
 
-The architecture and concepts references define the orchestrator as the
-coordinator between controllers and the renderer.
+In the browser, the Vizij runtime is an Arora device (`@vizij/runtime`) whose behavior is the composed rig/pose/program node graph. There is no separate orchestrator: scheduling is the Arora step loop, and the former orchestrator's job decomposes into the graph itself.
 
-Its responsibilities are:
+Each step:
 
-1. schedule graphs and animations,
-2. apply their writes deterministically,
-3. merge results into a consistent frame,
-4. emit the frame's merged writes and conflicts.
+1. flushes the staged input writes into the store,
+2. evaluates the composed graph in dependency order,
+3. writes the graph's outputs back to store paths,
+4. hands the changed values to the renderer.
 
-The current documented schedules are:
-
-1. `SinglePass`: animations then graphs,
-2. `TwoPass`: graphs then animations then graphs.
-
-That distinction matters when diagnosing behavior that seems one frame late, overridden, or dependent on feedback between controllers.
+Cross-graph data flows through store paths, so a value one sub-graph writes becomes visible to another on the next step. That one-tick latency matters when diagnosing behavior that seems one frame late, overridden, or dependent on feedback between sub-graphs.
 
 ### 4. Merge behavior determines what survives conflicts
 
 Two different layers of merge matter in the current implementation:
 
-1. controller execution inside an orchestrator frame, where conflicts are surfaced in frame diagnostics,
-2. explicit merged-graph registration, where strategies such as `error`, `namespace`, and blend-like policies decide how overlapping outputs are handled.
+1. store-path resolution within a step, where two writers to one path resolve last-writer-wins (with a console warning) today, and an explicit combiner node is the planned alternative,
+2. graph composition, where the rig, pose, and program sub-graphs are united into one graph and their overlapping outputs meet on shared paths.
 
 For guidebook readers, the practical lesson is simple:
 
@@ -177,7 +171,7 @@ The blackboard is also why diagnosis should ask:
 
 then:
 
-`Did the orchestrator produce the expected merged write?`
+`Did the step produce the expected write?`
 
 and only then:
 
@@ -187,7 +181,7 @@ and only then:
 
 The visible face is evidence, but it is late evidence.
 
-`@vizij/runtime-react` exposes `outputPaths`, and `@vizij/orchestrator-react` exposes frame and path subscriptions such as `useOrchFrame()` and `useOrchTarget(path)`.
+`@vizij/runtime-react` exposes `outputPaths`, `getPathSnapshot(path)` for a single store path, and `useVizijOutputs(paths)` to subscribe to resolved output values.
 
 Those are the surfaces that let you distinguish:
 
@@ -206,7 +200,7 @@ Keep this compact checklist beside the longer explanations:
 | 2. exact path | am I writing the exact path I think I am | the full path string matches the expected face and control family | fix the path before inspecting merge or render behavior |
 | 3. face and namespace | am I writing into the right runtime identity | `faceId`, namespace, and any slot-normalization boundary all agree | correct identity before testing further |
 | 4. constraints and defaults | does this path exist and what should reset/default behavior do | `inputConstraints` exposes the path and its defaults | stop guessing and use discovered constraints |
-| 5. orchestrator evidence | did the runtime actually step and merge a write | frames advance and the path appears in `merged_writes` or target snapshots | inspect controller output and merge policy |
+| 5. step evidence | did the runtime actually step and write the path | the path appears in `getPathSnapshot`, `outputPaths`, or `useVizijOutputs` | inspect graph output and store-path collisions |
 | 6. renderer target | does the loaded face have a matching renderable target | output paths and visible animatables line up with the loaded bundle | inspect bundle mismatch or renderer mapping next |
 
 When control fails, inspect in this order.
@@ -227,7 +221,7 @@ In current runtime-react docs and types, the useful fields are:
 For failures, the documented error `phase` values are:
 
 1. `assets`
-2. `orchestrator`
+2. `engine`
 3. `registration`
 4. `animation`
 5. `bridge`
@@ -262,11 +256,11 @@ The control surface looks correct conceptually, but the runtime write is landing
 
 Namespace mismatch and face mismatch are easy to confuse.
 
-The runtime-react docs describe namespacing for shared orchestrators. The standalone WebSocket hook also normalizes incoming slot paths and rebuilds a full runtime path as:
+The runtime-react docs describe namespacing for shared runtimes. The standalone WebSocket hook also normalizes incoming slot paths and rebuilds a full runtime path as:
 
 `rig/${faceId}/${normalizedPath}`
 
-It then uses `${namespace}/${fullPath}` when reading from orchestrator snapshots.
+It then uses `${namespace}/${fullPath}` when reading from the runtime store.
 
 That gives you a concrete diagnostic rule:
 
@@ -294,26 +288,26 @@ Minimal diagnostics:
 
 This is exactly the kind of issue that can feel like a renderer bug when it is actually a slot/default lifecycle issue.
 
-### 5. Check whether the orchestrator is stepping and merging
+### 5. Check whether the runtime is stepping and writing
 
-If paths and status look correct but nothing visible changes, inspect orchestrator evidence.
+If paths and status look correct but nothing visible changes, inspect the store surface.
 
 The current observability anchors are:
 
-1. `useOrchFrame()` for latest frame data,
-2. `useOrchTarget(path)` for a single blackboard path,
-3. frame fields such as `merged_writes` and `conflicts`,
-4. runtime `outputPaths`.
+1. `getPathSnapshot(path)` for a single blackboard path,
+2. `useVizijOutputs(paths)` to subscribe to resolved outputs,
+3. runtime `outputPaths` plus `controllers` (graph and animation counts),
+4. the change feed drained from the runtime store.
 
 Healthy questions to ask:
 
-1. did a new frame step at all,
-2. does the expected path show up in `merged_writes`,
-3. are there conflicts on that path,
+1. did the runtime step at all,
+2. does the expected path show up in `getPathSnapshot` or `outputPaths`,
+3. does another writer collide on that path,
 4. is the write present only under a namespaced key you were not watching,
-5. is the expected output absent because no controller publishes that path.
+5. is the expected output absent because no graph node publishes that path.
 
-If `merged_writes` is empty, the orchestrator-wasm README explicitly points to a useful first check: confirm that a controller actually emits output paths.
+If nothing lands on the path, the useful first check is whether a graph node actually emits that output path.
 
 ### 6. Check whether the renderer side has a matching target
 
@@ -338,7 +332,7 @@ Use this trace when an external client reports success but the face still looks 
 
 1. the deployment client sends `set_slot_values` and receives `{ "success": true }`,
 2. the standalone bridge normalizes the discovered slot name and writes `rig/{faceId}/{slot}` with `setInput(...)`,
-3. `getPathSnapshot` or `useOrchTarget(...)` confirms the path value changed,
+3. `getPathSnapshot(...)` confirms the path value changed,
 4. but `outputPaths` or the visible face still does not show the expected motion.
 
 At that point, the failure is no longer "socket is broken."
@@ -359,14 +353,14 @@ successful transport does not prove successful rendering.
 Likely checks:
 
 1. inspect `error` and `errors` before touching control code,
-2. use `phase` to separate asset load failure from orchestrator creation or registration failure,
+2. use `phase` to separate asset load failure from engine creation or registration failure,
 3. do not trust downstream diagnostics until `ready` is true.
 
 ### Pointer or hotkey control does nothing in the tutorial app
 
 Likely checks:
 
-1. confirm the UI is past `Loading face…` and `Initialising orchestrator…`,
+1. confirm the UI is past `Loading Face` and `Initializing`,
 2. verify the face bundle included pose data if hotkeys are expected,
 3. inspect the full `rig/{faceId}/...` path being written,
 4. confirm no neutral-stage or key-up flow is resetting the same path immediately.
@@ -378,7 +372,7 @@ Likely checks:
 1. inspect how the incoming slot name is normalized,
 2. confirm the short slot path maps to the same face and namespace the runtime uses,
 3. compare against `inputConstraints` to see whether the slot exists and what its default is,
-4. inspect `getPathSnapshot`, `useOrchTarget`, or `merged_writes` before blaming rendering.
+4. inspect `getPathSnapshot` or `useVizijOutputs` before blaming rendering.
 
 ### The wrong control appears to move or nothing obvious changes
 
@@ -407,7 +401,7 @@ For advanced control work, a healthy runtime surface usually gives you at least:
 3. error history with `phase`,
 4. controller registration visibility,
 5. a way to inspect `outputPaths`,
-6. a way to inspect frame-level writes and conflicts,
+6. a way to inspect store writes and path collisions,
 7. a way to compare current values against defaults or constraints.
 
 Without those surfaces, you are forced to debug from the visible face alone, which is the least informative stage in the pipeline.
@@ -434,14 +428,13 @@ You are done with this page when:
 
 Use these when you need the current implementation truth:
 
-1. [REFERENCE_GUIDE.md](/home/chris/Code/Semio/vizij_ws/vizij-docs/current_documentation/concepts/REFERENCE_GUIDE.md)
-2. [runtime-react README.md](/home/chris/Code/Semio/vizij_ws/vizij-web/packages/@vizij/runtime-react/README.md)
-3. [FaceApp.tsx](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx)
-4. [useMouseGaze.ts](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts)
-5. [usePoseHotkeys.ts](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts)
-6. [vizij-standalone README.md](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/vizij-standalone/README.md)
-7. [useWebSocketSync.ts](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts)
-8. [orchestrator-react README.md](/home/chris/Code/Semio/vizij_ws/vizij-web/packages/@vizij/orchestrator-react/README.md)
+1. [REFERENCE_GUIDE.md](vizij-docs/current_documentation/concepts/REFERENCE_GUIDE.md)
+2. [runtime-react README.md](vizij-web/packages/@vizij/runtime-react/README.md)
+3. [FaceApp.tsx](vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx)
+4. [useMouseGaze.ts](vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts)
+5. [usePoseHotkeys.ts](vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts)
+6. [vizij-standalone README.md](vizij-web/apps/vizij-standalone/README.md)
+7. [useWebSocketSync.ts](vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts)
 
 ## Recommended Next Steps
 

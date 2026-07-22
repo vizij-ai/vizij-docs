@@ -25,7 +25,7 @@ After this page, you should be able to launch the maintained standalone runtime 
 Use the `vizij-web` workspace root:
 
 ```bash
-cd /home/chris/Code/Semio/vizij_ws/vizij-web
+cd path/to/vizij-web
 pnpm run dev:vizij-standalone
 ```
 
@@ -40,7 +40,7 @@ Before you run the standalone path, confirm these assumptions:
 3. you have one known-good bundled GLB available if you do not want to rely on the file picker,
 4. if you plan to launch fullscreen on a specific monitor, you can inspect displays first from the app-local README.
 
-If the desktop shell itself does not start, stop here and use [vizij-web/apps/vizij-standalone/README.md](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/vizij-standalone/README.md) as the implementation authority before debugging runtime behavior.
+If the desktop shell itself does not start, stop here and use [vizij-web/apps/vizij-standalone/README.md](vizij-web/apps/vizij-standalone/README.md) as the implementation authority before debugging runtime behavior.
 
 ## What This First Deployment Must Prove
 
@@ -94,7 +94,7 @@ Example CLI form from the app README:
 pnpm --filter vizij-standalone dev -- -- --glb /path/to/avatar.glb --fullscreen
 ```
 
-For the full list of CLI options — display selection, port override, web control panel toggle, speech flags, and ROS2 surface options — see the [vizij-standalone README](/home/chris/Code/Semio/vizij_ws/vizij-web/apps/vizij-standalone/README.md#cli).
+For the full list of CLI options — display selection, port override, web control panel toggle, speech flags, and ROS2 surface options — see the [vizij-standalone README](vizij-web/apps/vizij-standalone/README.md#cli).
 
 Expected result:
 
