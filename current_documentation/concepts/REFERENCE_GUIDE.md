@@ -323,7 +323,7 @@ the composed graph.
   [Multi-Writer Paths](deeper_exploration/MERGE_STRATEGIES.md)).
 
 **Where It Lives**  
-- `@vizij/arora-web-wasm` (the device) under `@vizij/runtime-react` (the
+- `@vizij/runtime` (the device) under `@vizij/runtime-react` (the
   provider that composes graphs, owns the loop, and bridges to the renderer).
 
 **How It Interacts**  
