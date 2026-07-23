@@ -31,10 +31,10 @@ Each of these is deliberate, shipped behavior with a ticket that retires it:
 
 | Compromise | Ticket |
 | --- | --- |
-| Changing the composed graph restarts the device (store carried across, minus the runtime's `arora/*` clock keys). An in-place behavior load through the interpreter module replaces the restart. | [VIZ-57](https://linear.app/semio-ai/issue/VIZ-57) |
+| Changing the composed graph restarts the device (store carried across, minus the runtime's `arora/*` built-in keys). An in-place behavior load through the interpreter module replaces the restart. | [VIZ-57](https://linear.app/semio-ai/issue/VIZ-57) |
 | Output-path collisions resolve last-writer-wins with a console warning; the explicit combiner node and honored merge options are unbuilt because current bundles do not collide. | [VIZ-58](https://linear.app/semio-ai/issue/VIZ-58) |
 | A JS bridge restages pose-driver outputs into rig inputs; store-path feedback makes it redundant once verified equivalent. | [VIZ-59](https://linear.app/semio-ai/issue/VIZ-59) |
-| The runtime's clock keys (`arora/dt`, `arora/time`) ride the change feed and every consumer filters them. | [ARORA-58](https://linear.app/semio-ai/issue/ARORA-58) |
+| The runtime's built-in keys (`arora/dt`, `arora/time` — the frame clock) ride the change feed and every consumer filters them. | [ARORA-58](https://linear.app/semio-ai/issue/ARORA-58) |
 | Clearing an input writes `{float: 0}` instead of the constraint's neutral value. | [VIZ-60](https://linear.app/semio-ai/issue/VIZ-60) |
 | The authoring motiongraph tooling has migrated to the node graph and `@vizij/orchestrator-react` is retired, but `vizij-orchestrator-core` still has an internal consumer in `vizij-arora-behavior`, so the orchestrator crates stay in `vizij-rs` pending removal. | [VIZ-62](https://linear.app/semio-ai/issue/VIZ-62) |
 
