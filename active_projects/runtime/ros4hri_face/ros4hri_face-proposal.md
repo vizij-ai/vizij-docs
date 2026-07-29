@@ -95,8 +95,11 @@ Three tracks; A and B are independent until C.
 - A6. `/skill/look_at` action server: goal → spawn LookAt fragment; `Meta.priority` replace/reject at the endpoint; `EINTR`/`ECANCELED`/`ENOTSUP` mapping.
 
 **Track B — Vizij (vizij-rs, vizij-web)**
-- B1. `vizij-bundle` CLI + sidecar extraction for the reference face (quori); deterministic pack.
-- B2. `standard/ros4hri` schema JSON + adaptation graph for quori (expressions → poses, valence/arousal blend, gaze mapping, blink idle already present); headless golden tests.
+
+> **Status (2026-07-29):** B1 + B2 shipped in [vizij-rs#83](https://github.com/vizij-ai/vizij-rs/pull/83) (Linear VIZ-90 / VIZ-91). The face standard grew a semantic + muscle vocabulary (`standard/vizij/*`); the built-in ROS4HRI profile maps `standard/ros4hri/*` onto it as an editable, bundlable JSON asset; and `vizij-bundle` landed with inspect / pack / validate / add-standard. Topic ingestion (a bridge writing `standard/ros4hri/*` from live `hri_msgs` topics) stays on the arora side (Track A4/A5). See [vizij-rs's face-standard & ROS4HRI docs](https://github.com/vizij-ai/vizij-rs/blob/main/docs/ros4hri.md).
+
+- B1. ✅ `vizij-bundle` CLI + sidecar extraction for the reference face (quori); deterministic pack.
+- B2. ✅ `standard/ros4hri` schema JSON + adaptation graph for quori (expressions → poses, valence/arousal blend, gaze mapping, blink idle already present); headless golden tests.
 - B3. Lipsync: text→viseme module/program (port the incumbent's 7-shape/80 ms-per-char behavior onto viseme poses; better alignment later).
 - B4. Captions rendering (8-word chunks, per-speaker colors) as a Vizij overlay.
 - B5. LookAt behavior fragment (track/reset/glance/random) over the gaze channels.
