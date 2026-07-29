@@ -1,26 +1,30 @@
 # Task Runs & ROS 2 Actions on Arora — proposal
 
-Status: **the A layer (engine execution) is implemented; the C layer (ROS
-bridge) is not yet built.** What has landed:
+Status: **implemented end to end.** The A layer (engine execution) is on
+arora-sdk main; the C layer (the ROS bridge's `actions` module) is built and
+live-validated on [#201]; the node graph hosts runs too ([vizij-rs #84]). What carries it:
 
 - `BehaviorStatus` terminal-fault case ([arora-sdk #189]) — §2.1.
 - `TaskId`/`RunPolicy`/`TaskHandle` as built-in Arora types ([#195]) — §§2.3–2.5.
 - `interpreter_module` `SPAWN`/`HALT` ([#197]) and the runtime wiring ([#199]) —
   §§2.6–2.7.
-- **`BehaviorInterpreter::spawn`/`halt` implemented in the behavior tree**
-  ([#200]) — §2.2, with the state and call diagrams in §2.2.1. This is what
-  makes a run *live*: before it, the trait methods default-rejected.
-
-Still to build: the `actions` module in `arora-bridge-ros2` (§2.9), i.e. the ROS
-mapping itself. See the note in §2.11 — the typed `ActionServer` cannot carry
-the runtime-synthesised message types, so C must stand up the action's endpoints
-**raw** (a correction to the original sketch).
+- **`BehaviorInterpreter::spawn`/`halt` in the behavior tree** ([#200]) — runs
+  as tree structure under a permanent runner root; state and call diagrams in
+  §2.2.1.
+- **The node graph as a run host** — the same contract on Vizij's
+  `ProcessingGraph` (§2.2.2).
+- The `actions` module in `arora-bridge-ros2` ([#201]): discovery over
+  `DescribeMethods`, runtime message synthesis, and a **raw** action server on
+  both backends (§2.11 — the typed `ActionServer` cannot carry
+  runtime-synthesised types), validated by a live DDS LookAt lifecycle.
 
 [arora-sdk #189]: https://github.com/semio-ai/arora-sdk/pull/189
 [#195]: https://github.com/semio-ai/arora-sdk/pull/195
 [#197]: https://github.com/semio-ai/arora-sdk/pull/197
 [#199]: https://github.com/semio-ai/arora-sdk/pull/199
 [#200]: https://github.com/semio-ai/arora-sdk/pull/200
+[#201]: https://github.com/semio-ai/arora-sdk/pull/201
+[vizij-rs #84]: https://github.com/vizij-ai/vizij-rs/pull/84
 
 Companion to [`ros4hri_face-proposal.md`](./ros4hri_face-proposal.md), which is
 the driving use case: the ROS4HRI face needs exactly one action, `LookAt`
@@ -253,42 +257,48 @@ apply) — naming it `apply_task` would leak exactly what `TaskHandle` hides.
 
 ### 2.2.1 How the behavior tree hosts a run (implemented, [#200])
 
-The `BehaviorTreeInterpreter` (`crates/arora-behavior-tree/src/behavior.rs`) is
-the first interpreter to implement `spawn`/`halt`. Its model is deliberately the
-minimal faithful one:
+The `BehaviorTreeInterpreter` (`crates/arora-behavior-tree/src/behavior.rs`)
+hosts runs as **tree structure**. The interpreter permanently owns a parallel
+**runner** root: `load` grafts the main behavior as the runner's child, `spawn`
+grafts a run fragment beside it, `halt` prunes — all through the same
+`apply(GraphDiff)` an editor uses, so the tree an introspector reads
+(`graph()`) *is* the execution state, runs included.
 
-- **A run is a `Call` invoked once per `tick`.** The interpreter keeps a map of
-  live runs beside its one main tree. `spawn` allocates a `TaskId`, namespaces
-  the handle's keys, and registers the run — it does **not** tick it (spawn holds
-  no store). `halt` sets a flag. Both are cheap and store-less, exactly like
-  `load`/`apply`.
-- **The value the call returns is the run's `Status`, redirected to its status
-  key.** This *is* the "status decorator" of §3-Q2: rather than a decorator node
-  in a subtree, the interpreter itself performs the redirection when it advances
-  the run. `Running` keeps the run live; `Success`/`Failure` is terminal.
-- **The run advances in `tick` (which owns the store).** Each tick, for every
-  live run, the interpreter invokes the run's `Call` through the call bridge,
-  converts the result to a `Status`, and writes it to the run's status key. A
-  `halt`ed run is not invoked — it ends `Failure` (the engine has no "canceled"
-  outcome of its own; the ROS layer that issued the cancel is what reports
-  `CANCELED`, §2.9). A terminal run is dropped after its final write; its keys
-  persist in the store for the observer to read.
-- **Liveness.** While any run is live the interpreter reports `Running`, so the
-  runtime keeps it installed to keep ticking the runs. A loaded main tree keeps
-  its run-once semantics — it runs once, then is dropped so it does not re-run
-  each tick while a run holds the interpreter open.
+- **A run is a two-node fragment: a run-status decorator over a run-call
+  leaf.** The leaf carries the whole spawned `Call` as one literal link and
+  invokes it through the call bridge each tick, yielding the call's `Status`;
+  the decorator forwards that status to the run's status key (its output is
+  predetermined to the key — the store-binding convention every output uses)
+  and **latches** at a terminal status, going inert. This is §3-Q2's "status
+  decorator", literally.
+- **`spawn` is a graft, `halt` a deferred prune.** `spawn` allocates the
+  `TaskId`, namespaces the handle's keys, and applies the fragment diff —
+  store-less, exactly like `load`/`apply`. `halt` queues; the next tick (which
+  owns the store) writes `Failure` to the status key and prunes the fragment
+  (the engine has no "canceled" outcome of its own; the ROS layer that issued
+  the cancel is what reports `CANCELED`, §2.9). A terminal run's fragment is
+  pruned before the next re-lowering — lowering resets node state, so a
+  latched fragment must not survive into one. Its keys persist in the store
+  for the observer.
+- **One runtime tick is one tree tick.** The runner ticks main and every run
+  fragment together, reactively; `Running` spans ticks. A terminal main
+  behavior re-evaluates on the next tick — the tree is a standing,
+  continuously re-evaluated policy — while a terminal run latches: run-once is
+  the run's semantics, not the tree's. The interpreter always reports
+  `Running`; it is never dropped.
 
 Actuation (the gaze the LookAt run drives) is written by the run's *function*,
 which a device wires as a host function capturing the store/HAL — not by the
 interpreter, which only owns the status key. That keeps actuation on the shared
 LWW keys (§2.4) and off the per-run handle.
 
-Where this is minimal, on purpose: a run is *one* `Call`, not yet an arbitrary
-mounted subtree. Feedback/result keys are declared on the handle but populated by
-the run's function (or, later, by a mounted subgraph); the **status key is the
-load-bearing signal** the ROS layer maps. Richer hosting (a real parallel
-subtree, compensation on halt, resource-claim policies) is future work behind the
-same unchanged `spawn`/`halt` interface.
+Where this is minimal, on purpose: a run's fragment hosts *one* call leaf, not
+yet an arbitrary mounted subtree. Feedback/result keys are declared on the
+handle but populated by the run's function (or, later, by a mounted subgraph);
+the **status key is the load-bearing signal** the ROS layer maps. Richer
+hosting (mounted subtrees, compensation on halt, `RunPolicy` as visible runner
+structure, resource claims) is future work behind the same unchanged
+`spawn`/`halt` interface.
 
 #### Run lifecycle — state diagram
 
@@ -296,21 +306,22 @@ The status key an observer watches moves through exactly these states:
 
 ```mermaid
 stateDiagram-v2
-  [*] --> Registered: spawn(call, policy) — no write yet
-  Registered --> Running: tick — invoke call → Running
+  [*] --> Grafted: spawn(call, policy) — fragment in graph(), no write yet
+  Grafted --> Running: tick — call leaf → Running
   Running --> Running: tick — still Running (LookAt tracks)
   Running --> Succeeded: tick — call returns Success
   Running --> Failed: tick — call returns Failure
   Running --> Halted: halt(id), then next tick
-  Succeeded --> [*]: status key = Success · run dropped
-  Failed --> [*]: status key = Failure · run dropped
-  Halted --> [*]: status key = Failure · run dropped
+  Succeeded --> [*]: status key = Success · fragment latched, then pruned
+  Failed --> [*]: status key = Failure · fragment latched, then pruned
+  Halted --> [*]: status key = Failure · fragment pruned
 ```
 
-`Registered` is the gap between `spawn` (which returns the handle) and the first
-`tick` (which makes the first write) — a run is observable only from its first
-tick. `Halted` writes `Failure`; C distinguishes it from a spontaneous `Failed`
-because C is the one that issued the halt (it maps its own cancel → `CANCELED`).
+`Grafted` is the gap between `spawn` (which returns the handle, the fragment
+already visible through `graph()`) and the first `tick` (which makes the first
+write) — a run is observable on the store only from its first tick. `Halted`
+writes `Failure`; C distinguishes it from a spontaneous `Failed` because C is
+the one that issued the halt (it maps its own cancel → `CANCELED`).
 
 #### Drive path — call diagram (behavior-tree implementation)
 
@@ -327,24 +338,56 @@ sequenceDiagram
   C->>RT: BridgeOp::Call(SPAWN, call, policy)
   RT->>IM: decode_spawn
   IM->>BT: spawn(call, policy)
-  BT->>BT: register Run{call, handle}, new TaskId
+  BT->>BT: graft fragment under the runner (status decorator over call leaf), new TaskId
   BT-->>IM: TaskHandle
   IM-->>RT: CallResult.ret = TaskHandle (Value)
   RT-->>C: TaskHandle (namespaced keys + stop call)
-  loop each step — phase 4 (tick)
+  loop each step — phase 4 (one tree tick)
     RT->>BT: tick(ctx)
-    BT->>FN: call_bridge.arora_call(run.call)
+    BT->>FN: run-call leaf → call_bridge.arora_call(call)
     FN->>ST: write actuation keys (gaze)
     FN-->>BT: Value → Status
-    BT->>ST: write run.status = Status (namespaced)
-    Note over BT: terminal Status → drop the run
+    BT->>ST: status decorator → run's status key
+    Note over BT: terminal Status → latch; fragment pruned before the next re-lowering
   end
   C->>RT: BridgeOp::Call(handle.stop = HALT, id)
   RT->>IM: decode_halt
-  IM->>BT: halt(id)
-  BT->>BT: run.halt_requested = true
-  Note over BT,ST: next tick → status = Failure, run dropped
+  IM->>BT: halt(id) — queued
+  Note over BT,ST: next tick → status = Failure, fragment pruned
 ```
+
+### 2.2.2 How the node graph hosts a run (implemented, vizij-rs)
+
+Vizij's `ProcessingGraph` (vizij-rs, `crates/interop/vizij-arora-behavior`)
+implements the same contract on the node graph — the "node-graph subgraph"
+hosting §2.2 anticipates. The mapping is near-isomorphic to the tree's:
+
+- **A run is a two-node fragment: a `taskrun` node wired into an `output`
+  node on the run's status key.** The `taskrun` node is self-contained — the
+  spawned call rides its params (module, function, and the args as one literal
+  bundle) — so a graft needs no argument-feeder wiring. Each evaluation it
+  dispatches the call through the graph's function host (honouring the call's
+  own module id, where an `externalfunction` node resolves through the
+  function→module map), coerces the return to a `Status`, and emits it; the
+  ordinary `output` convention writes the status key.
+- **The latch lives in node state.** A terminal status latches in the node's
+  runtime state, which survives re-lowering (the graph runtime is kept warm
+  across edits), so a finished run never re-invokes its function; the
+  interpreter sweeps terminal fragments out of the graph after their final
+  write. `halt` queues, and the next tick writes `Failure` and prunes — the
+  tree's semantics exactly.
+- **Same keys, same handle, same status vocabulary.**
+  `arora/tasks/<module>/<function>/<run_id>/*`, the same `TaskHandle`, and the
+  behavior-tree `Status` enumeration as the one cross-interpreter status
+  vocabulary (§2.1; the graph core takes its ids from
+  `arora-behavior-tree-types`). An observer — the ROS action plane included —
+  cannot tell which interpreter hosts its run. That is §2.2's point: hosting
+  is the interpreter's private business.
+
+A dataflow graph has no tick-gating parent, so there is no runner node: the
+graph itself is the concurrent runner, and a grafted fragment simply evaluates
+with everything else. `RunPolicy` arbitration as visible structure remains
+future work here too.
 
 ### 2.3 `TaskHandle` — the serializable contract (NEW)
 
@@ -605,3 +648,89 @@ decision and its rationale:
 `set_expression` is the deliberate contrast: it stays a topic
 (`ros4hri_face-proposal.md:13`), even though it runs a ~200 ms blend internally
 (`:19`) — internal execution ≠ external interface. It needs none of this.
+
+## 5. Function surfaces — how a call maps to a face's graph (discussion)
+
+Running the LookAt action against the *real* vizij device (rather than a
+scripted runtime) surfaced three gaps between "the mechanism exists" and "it
+works out of the box". They are fixed or fixable — and they point at the one
+piece of architecture still to settle.
+
+### 5.1 What the live device surfaced
+
+1. **Nothing fed the method index.** `DescribeMethods` — the discovery both
+   the service and action planes stand on — serves a per-device function
+   index that no build path populated: every real device answered discovery
+   with an empty list ([#202] fixes it for host modules —
+   `ModuleBuilder::described_function` attaches a frozen signature, and the
+   builder folds every host module's descriptions into the index). Guest
+   module headers remain unindexed: a header's `TypeRef` carries no type
+   versions, so freezing its signatures takes registry resolution — its own
+   change.
+2. **Result and Feedback types are synthesised from observed values.** The
+   bridge types a run's Result message lazily, from the first value seen on
+   the result key — so a typed peer cannot know the Result type before one
+   exists, and a run that never writes its result keys yields a status-only
+   Result. The declared world (§2.10 keeps the *selection* ROS-side) needs
+   declared *candidates*: the outbound keys and their types belong in the
+   spawnable function's signature, not in observation.
+3. **A bare function cannot populate feedback or result keys at all.** A
+   module function returns a value; only graph structure writes the store.
+   The v1 fragment routes the return to the status key and nothing else —
+   feedback/result keys are declared on the handle but nothing can write
+   them. Richer runs need richer *structure*, not richer functions.
+
+### 5.2 The systematic mapping: a function is a parameterized fragment
+
+`ros4hri_face-proposal.md` Decision 3 already names the general form:
+**behavior fragments register as live modules**, their exported functions
+synthesised from the fragment's parameter `Io`s. That is the systematic
+answer to "how does a function call map to a target set of values":
+
+- **Parameters** are the call's args — bound as literals when the fragment is
+  grafted (and rebound through the handle's `update` keys later: the graph
+  edits literals through the same EDIT path).
+- **Target values** are the fragment's outputs, written onto **standard
+  keys** (`standard/…`): the face's adaptation layer — not the fragment —
+  maps standard controls onto this face's rig. That is what makes a `look_at`
+  fragment face-independent.
+- **Status, feedback, result** are fragment outputs too, onto the handle's
+  per-run keys — which closes gap 3 structurally: a fragment that publishes
+  `gaze_error` *is* the feedback declaration, and its type is written in the
+  fragment, resolving gap 2's "declared, not observed".
+
+The scaffold shipped in [#200] and vizij-rs is the degenerate case of exactly
+this: a fragment of one call node plus one status output. Spawning a
+fragment-module export grafts a bigger body through the same `spawn`/`halt`,
+the same handle, the same keys — no interface change.
+
+**GLBs stay content.** The face plan's separation holds: exposure profiles
+are deployment config, semantic controls are asset content, callability is a
+property of registered fragments/modules. A bundle may legitimately *ship*
+fragments (they are content — authored graphs), and loading the face
+registers them as live modules; the asset never declares ROS endpoints. The
+authoring app's role is authoring fragments and their parameter `Io`s — the
+pose-editor precedent — not endpoint tables.
+
+### 5.3 Open to sparring
+
+- **Who owns fragment registration?** An interpreter-module `REGISTER` call
+  (the LOAD/EDIT/SPAWN family grows one member), or host-side composition at
+  face load? The former makes it a runtime capability any bridge can drive;
+  the latter keeps the interpreter module minimal.
+- **Where do declared outbounds live?** The frozen `Function` signature has
+  parameters and one return type; feedback/result/actuation outbounds need a
+  declared home (an extended signature? the fragment's output `Io`s serving
+  as the declaration?) so the bridge types messages without observing values.
+- **`Status` should move down.** The run-status enumeration lives in
+  `arora-behavior-tree-types` but is the cross-interpreter contract — the
+  node graph now depends on a behavior-*tree* types crate for it. It belongs
+  in `arora-behavior` (or a types crate below both interpreters).
+- **Guest-header indexing.** `TypeRef` needs versions (or an index-time
+  registry freeze) before wasm modules join `DescribeMethods` — until then a
+  guest module's functions dispatch but stay undiscoverable.
+- **Live goal updates.** `handle.update` keys exist but nothing rebinds them
+  into the running fragment's parameters; on the node graph a rebind is an
+  EDIT of the fragment's literals — the natural first implementation.
+
+[#202]: https://github.com/semio-ai/arora-sdk/pull/202
