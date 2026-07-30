@@ -100,7 +100,7 @@ Three tracks; A and B are independent until C.
 
 - B1. ✅ `vizij-bundle` CLI + sidecar extraction for the reference face (quori); deterministic pack.
 - B2. ✅ `standard/ros4hri` schema JSON + adaptation graph for quori (expressions → poses, valence/arousal blend, gaze mapping, blink idle already present); headless golden tests.
-- B3. Lipsync: text→viseme module/program (port the incumbent's 7-shape/80 ms-per-char behavior onto viseme poses; better alignment later).
+- B3. Lipsync: the `say` action — a streaming task run whose lipsync cursor emits `standard/ros4hri/viseme/*` for the profile to shape onto the face. Design: [task-runs-and-actions-proposal.md §6](task-runs-and-actions-proposal.md#6-worked-example--say-a-streaming-task-run).
 - B4. Captions rendering (8-word chunks, per-speaker colors) as a Vizij overlay.
 - B5. LookAt behavior fragment (track/reset/glance/random) over the gaze channels.
 - B6. Video-out: frame capture in vizij-standalone (subscriber-gated, ~20 Hz, 800×600, `bgr8` + JPEG) feeding A4's Image publisher.
