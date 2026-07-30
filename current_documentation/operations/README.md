@@ -1,5 +1,5 @@
 <!-- tags: family=reference; type=index; topics=operations,publishing,automation,release -->
-> **Last updated:** 2026-04-02
+> **Last updated:** 2026-07-30
 
 # Operations References
 
@@ -13,4 +13,4 @@ Use this folder for:
 
 Current operations references:
 
-1. [Tag-Based Trigger Publishing Guide for Monorepo Packages](tag_trigger_publishing-reference.md)
+1. [npm Publishing for @vizij/\* Packages](npm_publishing-reference.md)
