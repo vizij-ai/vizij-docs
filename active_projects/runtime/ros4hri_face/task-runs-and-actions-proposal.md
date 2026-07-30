@@ -816,4 +816,101 @@ pose-editor precedent — not endpoint tables.
   into the running fragment's parameters; on the node graph a rebind is an
   EDIT of the fragment's literals — the natural first implementation.
 
+## 6. Worked example — `say` (a streaming task run)
+
+`LookAt` (§4) is the cheap case: its per-tick work — compute gaze from the
+current target — fits in one tick, so the run's `Call` *is* the work. `say` is
+the streaming case, and it is where the poll-on-tick contract earns its keep: the
+producer (text-to-speech) is asynchronous and outpaces the tick, so the run's
+per-tick `Call` cannot *be* the work — it can only *observe* it. This is the
+arora-side async contract (arora-sdk `docs/async-functions.md`, [arora-sdk#85]):
+`Running` = pending, the tick loop is the executor, the slow work runs off the
+step thread. `polly::say` already ships the pattern; this is its face-standard,
+cancellable, lip-synced form.
+
+### 6.1 The run
+
+`say(text, voice)` spawns via `Call(SPAWN, {text, voice})` → `TaskHandle`, and
+polls on tick: `Running` while speaking, `Success` when the utterance ends,
+`Error(reason)` on a synthesis fault; `CancelGoal` → `halt` stops it
+(`ROS_ECANCELED`). Feedback is the current word / playhead; Result is
+spoken-vs-interrupted. It is the §5.2 parameterized fragment at streaming size —
+`text`/`voice` are the parameters, its outputs land on standard keys.
+
+### 6.2 Decomposition — three parts, only one of them in the graph
+
+The slow work is off the step thread, reached as **host capabilities** the run
+polls (per the async contract):
+
+| part | where | what |
+| --- | --- | --- |
+| `synth` | host capability (native thread / browser Worker) | `text` → audio frames **+ a viseme timeline** (TTS speech marks), streamed into a bounded ring |
+| `audio` | host capability / HAL | drains the ring at the sample rate; exposes the **playhead** |
+| `lipsync` | the run's per-tick `Call` | samples `synth`'s timeline at `audio`'s playhead → the current viseme |
+
+Buffers pass `synth` → `audio` **by function call** inside the run — never as a
+graph value — so the produce/consume hand-off between two capabilities stays in
+one piece of code and never becomes a cross-owner handle in the store. (This is
+why polly is a self-contained native cdylib today; in the browser `synth`/`audio`
+become JS host capabilities — fetch-TTS + WebAudio — because the guest cannot
+spawn, per the async study.)
+
+### 6.3 The viseme output, and where dispatch belongs
+
+The lipsync loop splits cleanly, and the seam is a standard key we already own:
+
+- **The run writes `standard/ros4hri/viseme/<shape>`** — the *current viseme
+  target* at the playhead (the 15-shape set, TTS codes mapped to it). It does
+  **not** write the face's viseme weights.
+- **The node graph catches it.** The built-in ROS4HRI profile
+  (`ros4hri_face-proposal.md` B2; vizij-rs `docs/ros4hri.md`) is the face's
+  standard viseme layer: its ~200 ms `Damp` *is* the crossfade, its
+  release-to-neutral *is* the decay, and it maps `standard/ros4hri/viseme/*` →
+  `standard/vizij/viseme/*` → the face's own poses.
+
+So **the cursor is in the action binding; the dynamics and the face mapping are
+in the graph.** The cursor must be in the run — it needs the playhead (the run
+owns `audio`) and the timeline (the run's private product from `synth`), and it
+is stateful, variable-length, imperative work the graph should not host. The
+dynamics must be in the graph — they are per-shape smoothing, the graph's home
+turf, and already the profile's job.
+
+This is the §5.2 rule (*targets land on `standard/…` keys; the face's adaptation
+layer maps them*) applied to speech, and its payoff is convergence: **`say` is,
+for lips, a *local* ROS4HRI viseme source, indistinguishable from a remote one.**
+Any producer — a TTS with speech marks, a live phoneme aligner, a raw amplitude
+fallback, or a future ROS viseme topic — writes the same
+`standard/ros4hri/viseme/*` key, and the profile is the **one** dispatch point
+that shapes and maps all of them to the face. One place tunes the dynamics; every
+source inherits it.
+
+The design is a translation of the shipped browser solution, not a new one:
+vizij-web's `@vizij/speech-react` (`useSpeechPlayback`) already runs this cursor
+— a Polly speech-mark timeline sampled by the audio element's clock, with a
+code → shape mapping — but writes rig pose weights *directly* and crossfades in
+JS, because standalone has no standard viseme layer. Splitting at
+`standard/ros4hri/viseme/*` moves the crossfade into the profile and lets the
+same cursor feed a ROS face. The `tutorial-agent-face` demo supplies the
+no-speech-marks sources (amplitude → jaw; a beam-search phoneme aligner →
+`bestVisemeAt`) — second producers on the same seam, degrading gracefully when
+the TTS ships no timeline.
+
+### 6.4 What `say` needs that `polly::say` lacks
+
+Two additions beyond the polling contract, both consequences of `say` being a
+cancellable stream rather than fire-and-forget:
+
+- **Backpressure.** `synth` runs ahead as fast as the model allows, bounded by
+  the ring's capacity, so it cannot outrun playback unboundedly — the bound is
+  the coupling between the fast producer and the sample-rate consumer.
+- **Cancel-on-`halt`.** `halt` drops the `synth` task (backpressure then tears
+  down the model work) and fades `audio`, rather than letting the utterance run
+  to completion. `polly::say` is uncancellable; the action layer makes stop mean
+  stop.
+
+Everything else is the §4 shape: shared standard-key actuation (here the viseme
+target, LWW), per-run `status`/`feedback`/`result`, and the same `spawn`/`halt`/
+`TaskHandle` — `say` is `LookAt` with a playhead and a producer.
+
 [#202]: https://github.com/semio-ai/arora-sdk/pull/202
+[arora-sdk#85]: https://github.com/semio-ai/arora-sdk/pull/85
