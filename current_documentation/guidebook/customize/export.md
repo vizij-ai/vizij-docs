@@ -11,7 +11,7 @@
 | --- | --- |
 | Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
 | Depth ladder in this bucket | Above: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Current: `Fundamentals`<br>Below: [Deep Custom Pipeline](deep-custom-pipeline.md) |
-| Module position in this bucket | Previous in bucket: [Procedural Programs](procedural-programs.md)<br>Current module: `Export`<br>Next in bucket: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Module position in this bucket | Previous in bucket: [Standard Profiles](standard-profiles.md)<br>Current module: `Export`<br>Next in bucket: [Deep Custom Pipeline](deep-custom-pipeline.md) |
 | Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
 | Module type | operational guide |
 | Bucket overview | [Customize](README.md) |

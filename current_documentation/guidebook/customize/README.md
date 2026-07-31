@@ -14,7 +14,7 @@ This bucket is not mandatory for the fastest deployment of an existing face, but
 | Axis | Position |
 | --- | --- |
 | Bucket chain | Previous: [Control](../control/README.md)<br>Current: [Customize](README.md)<br>Next: [Integrate](../integrate/README.md) |
-| Depth ladder in this bucket | Surface: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Fundamentals: [Import](import.md), [Reference-Face Transfer](reference-face-transfer.md), [Rigging](rigging.md), [Poses](poses.md), [Animations](animations.md), [Procedural Programs](procedural-programs.md), [Export](export.md)<br>Advanced: [Deep Custom Pipeline](deep-custom-pipeline.md) |
+| Depth ladder in this bucket | Surface: [Tweak an Existing Face](tweak-an-existing-face.md)<br>Fundamentals: [Import](import.md), [Reference-Face Transfer](reference-face-transfer.md), [Rigging](rigging.md), [Poses](poses.md), [Animations](animations.md), [Procedural Programs](procedural-programs.md), [Standard Profiles](standard-profiles.md), [Export](export.md)<br>Advanced: [Deep Custom Pipeline](deep-custom-pipeline.md) |
 | Reference bridges | [Renderer and Rigging Reference](../reference/renderer-and-rigging-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
 | Route relationship | Optional middle bucket on the customization route; carries authored artifacts forward into [Integrate](../integrate/README.md). |
 
@@ -39,6 +39,7 @@ Use this table when you know you need `Customize` but are not sure which authori
 | define reusable expression states | [Poses](poses.md) | state-first authoring layer |
 | author timed expressive motion | [Animations](animations.md) | timeline and transport model |
 | author reactive or organic behavior | [Procedural Programs](procedural-programs.md) | computed behavior from inputs plus logic |
+| make the face understand an external command vocabulary (ROS4HRI) | [Standard Profiles](standard-profiles.md) | load, edit, and optionally pin the shipped mapping |
 | package the result for runtime use | [Export](export.md) | artifact boundary into `Integrate` |
 
 ## Which Authoring Mode Should I Use?
