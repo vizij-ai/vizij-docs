@@ -17,6 +17,11 @@ live-validated on [#201]; the node graph hosts runs too ([vizij-rs #84]). What c
   `DescribeMethods`, runtime message synthesis, and a **raw** action server on
   both backends (§2.11 — the typed `ActionServer` cannot carry
   runtime-synthesised types), validated by a live DDS LookAt lifecycle.
+- **Skill endpoints** — profile-bound *standard* actions
+  (`ActionBinding`, [#214]) over the vendored skill packages and their
+  `.action` codegen ([#213]) — §2.12.
+- **Task fragments** — a skill's behavior as graph content, grafted per run
+  ([vizij-rs #91]: the fragment registry and the shipped `look_at`) — §2.2.3.
 
 [arora-sdk #189]: https://github.com/semio-ai/arora-sdk/pull/189
 [#195]: https://github.com/semio-ai/arora-sdk/pull/195
@@ -24,7 +29,10 @@ live-validated on [#201]; the node graph hosts runs too ([vizij-rs #84]). What c
 [#199]: https://github.com/semio-ai/arora-sdk/pull/199
 [#200]: https://github.com/semio-ai/arora-sdk/pull/200
 [#201]: https://github.com/semio-ai/arora-sdk/pull/201
+[#213]: https://github.com/semio-ai/arora-sdk/pull/213
+[#214]: https://github.com/semio-ai/arora-sdk/pull/214
 [vizij-rs #84]: https://github.com/vizij-ai/vizij-rs/pull/84
+[vizij-rs #91]: https://github.com/vizij-ai/vizij-rs/pull/91
 
 Companion to [`ros4hri_face-proposal.md`](./ros4hri_face-proposal.md), which is
 the driving use case: the ROS4HRI face needs exactly one action, `LookAt`
@@ -389,6 +397,38 @@ graph itself is the concurrent runner, and a grafted fragment simply evaluates
 with everything else. `RunPolicy` arbitration as visible structure remains
 future work here too.
 
+### 2.2.3 Task fragments — a skill's behavior as graph content (implemented, vizij-rs)
+
+The `taskrun` wrapper of §2.2.2 calls a module function each tick — fine for
+behaviors that genuinely live in host code, but a **skill** should not be a
+module feature: its behavior belongs in the same editable, introspectable
+substrate as everything else the face runs (decision #8's dynamic tier —
+graphs as data). `ProcessingGraph` therefore carries a **task-fragment
+registry** (`TaskFragment`, `set_task_fragment`): when a spawned call's
+function has a registered fragment, `spawn` grafts *that asset content*
+instead of the wrapper.
+
+The fragment is a plain graph spec speaking a placeholder-path convention,
+rewritten to the run's key prefix at graft time:
+
+- `task/<param>` **inputs** are the function's parameters — the spawn-time
+  arguments become their defaults, and each gets a per-parameter update key
+  on the `TaskHandle`, so a live goal update steers the running fragment
+  through the store (no graph edit per update);
+- the `task/status` **output** (required — a fragment that cannot report its
+  lifecycle is refused at registration) is the run's `Status`;
+- `task/result` / `task/feedback` outputs land on the handle's result and
+  feedback keys — an integer on the result key is the `std_skills` errno the
+  ROS skill endpoint (§2.12) answers verbatim.
+
+Everything else is unchanged: node ids are namespaced per run, the whole
+grafted set prunes together at terminal or halt, and an observer still cannot
+tell how the run is hosted. The first shipped skill is `look_at`
+(vizij-arora-host `skills/look_at.json`, generated and drift-tested like the
+ros4hri profile): track runs until halted, glance/reset hold a store-latched
+fixation clock then succeed, unimplemented policies fail with `ROS_ENOTSUP`
+written by the fragment itself.
+
 ### 2.3 `TaskHandle` — the serializable contract (NEW)
 
 **Location (decided): `crates/arora-behavior`**, beside `BehaviorInterpreter`
@@ -567,6 +607,49 @@ first and defer `feedback` (LookAt's feedback is "near-vestigial",
 `ros4hri_face-proposal.md:14`) — logging that it is not yet published (no silent
 cap). `status` — the load-bearing lifecycle signal — is a typed publish and needs
 neither.
+
+### 2.12 Skill endpoints — profile-bound standard actions (implemented)
+
+§2.9's synthesised plane names actions after the device's own methods
+(`arora/<method>` on `/{ns}/actions/<method>`) — correct for discovery, but a
+**skill** is an exterior contract: a standard `.action` type on a well-known
+name (`interaction_skills/LookAt` on `/skill/look_at`). The exposure profile
+(ARORA-86) therefore gained **`ActionBinding`** — `{action, ros_type,
+function, goal_routes}` — the systematic association of that contract with
+the task-run method that implements it, **with proper checking**: at startup
+the bridge resolves each binding against `DescribeMethods` (the function
+exists, is action-shaped, every goal field routes onto a parameter of a
+compatible type — the x/y/z→vec3 coercion included — and every parameter is
+routed) and refuses it loudly otherwise. Bound actions ride the *same*
+`GoalBook` lifecycle as §2.9, only with registry message types on the wire;
+`coverage()` reports the skill plane next to the key planes.
+
+Two decisions live here rather than deeper in the stack:
+
+- **`Meta.priority` arbitrates at the binding** (decision #11): one active
+  goal per binding; an equal-or-higher replacement preempts the active run
+  (its result reports `ROS_EINTR`), a lower one is rejected at SendGoal. The
+  engine keeps no priority concept.
+- **The errno is lifecycle-derived unless the run speaks**: success →
+  `ROS_ENOERR`, caller cancel → `ROS_ECANCELED`, preemption → `ROS_EINTR`,
+  spontaneous failure → `ROS_EOTHER` — but a run that wrote the Result
+  message itself, or an integer errno (how a fragment says `ROS_ENOTSUP`),
+  is answered verbatim. This is §2.10's "the Result marker is ROS-side"
+  carried to its conclusion.
+
+**Where the `.action` files live — decided.** The vendored skill packages
+(`std_skills`, `interaction_skills`, from github.com/ros4hri) sit in
+`arora-msgs-ros2`, and its `.action` support is *only* codegen of the three
+payload messages (`<pkg>/action/<Name>_{Goal,Result,Feedback}`, the REP-2016
+action namespace kept for type identity). Alternatives considered and
+rejected: synthesising the ROS action *protocol* types (SendGoal wrappers
+etc.) in the msgs crate — protocol assembly is the bridge's business, and the
+CDR-flat equivalence makes wrapper types unnecessary; and expressing actions
+in the module interface — no module-ABI feature is involved anywhere, the
+engine still only knows spawnable methods (§2.10). `set_expression` stays a
+topic: setting a target state is not a task (§0's doctrine); the
+settle-run-as-action shape remains a documented pattern, not a shipped
+endpoint.
 
 ## 3. Consistency review (proof-read)
 
