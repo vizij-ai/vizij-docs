@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-bucket; editorial_status=completed; publication_status=planned; topics=guidebook,deploy,standalone,hardware -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-09-10
 > **Purpose:** frame deployment as the real destination of the guidebook journey
 
 # Deploy
@@ -14,7 +14,7 @@ This bucket treats deployment as the real destination of the guidebook, whether 
 | Axis | Position |
 | --- | --- |
 | Bucket chain | Previous: [Integrate](../integrate/README.md)<br>Current: [Deploy](README.md)<br>Next: End of guidebook route |
-| Depth ladder in this bucket | Surface: [Easiest Standalone Deployment](easiest-standalone-deployment.md)<br>Fundamentals: [Operator and Deployment Model](operator-and-deployment-model.md), [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Advanced: [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md) |
+| Depth ladder in this bucket | Surface: [Easiest Standalone Deployment](easiest-standalone-deployment.md)<br>Fundamentals: [Operator and Deployment Model](operator-and-deployment-model.md), [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Advanced: [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md), [Swap the Speech Provider](swap-the-speech-provider.md), [Bring Your Own Visemes](bring-your-own-visemes.md) |
 | Reference bridges | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
 | Route relationship | Final bucket in both maintained routes; usually closes with validation, operator, or topology follow-up rather than another bucket jump. |
 
@@ -93,6 +93,8 @@ This bucket should help a reader:
 | [Operator and Deployment Model](operator-and-deployment-model.md) | Fundamentals | concept page | explain what the deployed system consists of |
 | [Deployment Checks and Recovery](deployment-checks-and-recovery.md) | Fundamentals | operational guide | explain success criteria and recovery basics |
 | [Hardware, ROS, and Multi-Screen Topologies](hardware-ros-and-multi-screen-topologies.md) | Advanced | comparison | teach deeper deployment patterns and tradeoffs |
+| [Swap the Speech Provider](swap-the-speech-provider.md) | Advanced | operational guide | choose or write the text-to-speech behind a deployed face's `say` |
+| [Bring Your Own Visemes](bring-your-own-visemes.md) | Advanced | comparison | feed the mouth from a lipsync source outside the device |
 
 ## Recommended Teaching Approaches
 

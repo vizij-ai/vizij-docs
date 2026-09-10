@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,deploy,topologies,hardware,ros,multi-screen -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-09-10
 > **Purpose:** compare deeper deployment topologies without overstating what the current standalone and operator surfaces already guarantee
 
 # Hardware, ROS, and Multi-Screen Topologies
@@ -11,7 +11,7 @@
 | --- | --- |
 | Bucket chain | Previous: [Integrate](../integrate/README.md)<br>Current: [Deploy](README.md)<br>Next: End of guidebook route |
 | Depth ladder in this bucket | Above: [Easiest Standalone Deployment](easiest-standalone-deployment.md), [Operator and Deployment Model](operator-and-deployment-model.md), [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Current: `Advanced`<br>Below: none, this is the deepest current depth in this bucket |
-| Module position in this bucket | Previous in bucket: [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Current module: `Hardware, ROS, and Multi-Screen Topologies`<br>Next in bucket: none, this is the last module in the bucket sequence |
+| Module position in this bucket | Previous in bucket: [Deployment Checks and Recovery](deployment-checks-and-recovery.md)<br>Current module: `Hardware, ROS, and Multi-Screen Topologies`<br>Next in bucket: [Swap the Speech Provider](swap-the-speech-provider.md) |
 | Reference bridges | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md)<br>[Validation Checkpoints](../support/validation-checkpoints.md)<br>[Troubleshooting Matrix](../support/troubleshooting-matrix.md) |
 | Module type | comparison |
 | Bucket overview | [Deploy](README.md) |
@@ -223,3 +223,5 @@ If you need to return to the stable deployment model, go back to [Operator and D
 If you need operational recovery and validation after choosing a topology, continue to [Deployment Checks and Recovery](deployment-checks-and-recovery.md).
 
 If topology questions are really failure questions, continue to [Troubleshooting Matrix](../support/troubleshooting-matrix.md).
+
+If the ROS-adjacent direction is yours and the face must speak with your stack's voice or mouth, continue to [Swap the Speech Provider](swap-the-speech-provider.md) and [Bring Your Own Visemes](bring-your-own-visemes.md).
