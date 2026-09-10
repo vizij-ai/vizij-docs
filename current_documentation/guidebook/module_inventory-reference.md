@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=reference; editorial_status=completed; publication_status=planned; topics=guidebook,inventory,documentation,matrix -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-09-10
 > **Purpose:** map guidebook modules to bucket, depth, teaching objective, likely content forms, implementation anchors, and downstream outputs
 
 # Guidebook Module Inventory
@@ -61,6 +61,8 @@
 | Deploy | Fundamentals | [Operator and Deployment Model](deploy/operator-and-deployment-model.md) | concept page | explain what the deployed system consists of and how operators interact with it | concept explainers, diagrams, screenshots, FAQ, implementation bridges | runtime summary, standalone docs, operator notes | deployment docs, facilitator bridge | `completed` |
 | Deploy | Fundamentals | [Deployment Checks and Recovery](deploy/deployment-checks-and-recovery.md) | operational guide | explain what must be validated before calling a deployment successful and how to recover common failures | checklists, troubleshooting, failure-state examples, recovery guidance | support docs, standalone troubleshooting | deployment support docs, operator handoff | `completed` |
 | Deploy | Advanced | [Hardware, ROS, and Multi-Screen Topologies](deploy/hardware-ros-and-multi-screen-topologies.md) | comparison | teach deeper deployment paths and their tradeoffs | comparisons, diagrams, timelines, troubleshooting, implementation anchors | runtime deployment plans, ROS docs, multi-screen docs | advanced deployment docs | `completed` |
+| Deploy | Advanced | [Swap the Speech Provider](deploy/swap-the-speech-provider.md) | operational guide | choose a shipped text-to-speech, point it at your own deployment, or write a provider to the `say` contract | options table, build commands, contract steps, ROS check, troubleshooting | vizij-rs speech and skills docs | advanced deployment docs | `completed` |
+| Deploy | Advanced | [Bring Your Own Visemes](deploy/bring-your-own-visemes.md) | comparison | feed the face's mouth from a lipsync source outside the device and choose the entry point by responsibility | comparison table, ROS commands, boundaries, links | vizij-rs ROS4HRI, skills and face-standard docs | advanced deployment docs | `completed` |
 
 ## 4. Cross-Cutting Reusable Modules
 

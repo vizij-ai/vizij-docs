@@ -83,3 +83,4 @@ Nothing extra to do: an embedded (and possibly edited) profile is part of the bu
 - [Export](export.md) — the artifact boundary this rides through.
 - [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md) — the profile at work in an integrated runtime.
 - [vizij-rs ROS4HRI support](https://github.com/vizij-ai/vizij-rs/blob/main/docs/ros4hri.md) — the key contract, per-channel behavior, and the deployed bridge's topic/action exposure.
+- [Swap the Speech Provider](../deploy/swap-the-speech-provider.md) and [Bring Your Own Visemes](../deploy/bring-your-own-visemes.md) — the deployed face's speech and lipsync, which the profile leaves to the viseme players.
