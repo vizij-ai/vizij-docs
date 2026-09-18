@@ -188,8 +188,9 @@ Sources: [plan §3.5](bevy_everywhere-plan.md#35-desktop),
 
 ## 9. How it feels: a tablet, and Semio Studio
 
-Android: install the APK; open a GLB from the file picker or from any app's
-"open with"; the face fills the screen; a panel asks once who owns the device
+Android (the face draws on the API 34/35 emulator under Vulkan): install the
+APK; open a GLB from the file picker or from any app's "open with"; the face
+fills the screen; a panel asks once who owns the device
 and shows where it is reachable; the tablet reboots into the same face and the
 same Studio identity.
 
@@ -230,16 +231,19 @@ Structural gains, by construction:
 - The animation module is linked in: no separate fetch, no guest instantiation.
 - Native: a 100 Hz device on a thread, a vsync view, as `crates/vizij` runs today.
 
-Measured costs, from the wasm spike:
+Measured costs, device and view in one module:
 
-- Payload: 7.6 MB gzipped after wasm-opt, against 0.76 MB for the device alone
-  today; about 90 MB of wasm memory per page.
-- Cold build: 27 CPU-minutes; incremental: 14 s.
+- Payload: 8.2 MB gzipped after wasm-opt, against 0.76 MB for the device alone
+  today.
+- Memory: 138 MB of wasm linear memory with one face resident, 196 MB with
+  two, flat over 25 load/unload cycles.
+- A step's writes are drawn one frame after they are made.
+- Face-ready on a software GPU: 2 s for Quori, 16 s for Toasty (unexplained).
+- Cold build: 27 CPU-minutes; a source change: 14 to 37 s.
 
-Not measured yet: browser frame time of this build with several faces. The
-one-module spike running now records it.
+Not measured yet: frame time on a real GPU with several faces.
 
-Sources: [bevy-wasm-spike](studies/bevy-wasm-spike.md), [plan §5](bevy_everywhere-plan.md#5-risks-and-open-questions).
+Sources: [wasm one-module](studies/challenge-wasm-one-module.md), [bevy-wasm-spike](studies/bevy-wasm-spike.md).
 
 ---
 
@@ -252,7 +256,8 @@ Sources: [bevy-wasm-spike](studies/bevy-wasm-spike.md), [plan §5](bevy_everywhe
 - Studio's writes do not reach a face's animatables today, in any app; a key
   profile in the device fixes it.
 - On Android, arora's app-data discovery fails and the cloud TTS panics
-  without the platform verifier; both need a change.
+  without the platform verifier; both need a change. No GLES build draws and
+  SwiftShader loses the device; Vulkan on the API 34/35 images does draw.
 - Every consumer that builds `namespace/...` paths changes.
 
 Source: [challenge verdicts](studies/challenge-verdicts.md).
@@ -293,8 +298,9 @@ Source: [plan §4](bevy_everywhere-plan.md#4-plan).
 
 ## 14. Risks
 
-1. Bevy 0.19 drew no frame on the first Android emulator image tried; newer
-   images and a tablet are the first thing tested.
+1. Android hardware: the emulator draws under Vulkan, but a tablet whose
+   swapchain lists no sRGB format fails in Bevy 0.19.1 (an upstream fix), and
+   a frame over 1 s becomes a device loss unless recovery is configured.
 2. Payload and memory in the browser (slide 11).
 3. Studio-capable builds ship wasmtime until arora splits `studio-bridge`
    from `native`.
@@ -324,9 +330,10 @@ Source: [plan §1](bevy_everywhere-plan.md#1-goal).
 
 ## 16. Next
 
-P0 needs no decision: the Android render gate on newer emulator images, the
-one-module wasm spike, the browser test of the TTS branch, the Studio bridge
-harness, the hygiene items, two arora-sdk items. The plan's status becomes
+P0 needs no decision: the Android smoke in its CI shape (x86_64 image,
+lavapipe, KVM), the Studio bridge harness, the hygiene items, two arora-sdk
+items; the render gate, the one-module spike and the TTS browser test are
+done. The plan's status becomes
 `planning` when this PR merges with the review's changes applied.
 
 Source: [plan §4](bevy_everywhere-plan.md#4-plan).
