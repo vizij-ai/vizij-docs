@@ -11,12 +11,14 @@ this page is the source they were created from and is edited first when a
 ticket changes. Sizes: S days, M one to two weeks, L several weeks of one
 person. Repos: vizij-rs unless stated.
 
-Dependency spine: T01–T07 start now; T08 → T10 → T12 → T13 ∥ T14 → T20;
-T09 → T16 → T19; T15 starts now → T17 → T18.
+Dependency spine: T01–T07 start now; T08 → T09 → T10 → T12 → T13 ∥ T15 → T23;
+T08 → T18 → T19 → T22; T16 starts now → T17 → T22; T20 → T21. Every ticket
+below links its Linear issue; the issues carry the same scope, definition of
+done and cues, and the blocking relations of this spine.
 
 ## P0, now, in parallel
 
-### T01 Android emulator smoke in its CI shape (S)
+### T01 Android emulator smoke in its CI shape (S) — [VIZ-136](https://linear.app/semio-ai/issue/VIZ-136)
 
 **Scope.** A GitHub Actions job on `ubuntu-latest` that boots an x86_64 API 35
 (or 34) `google_apis` image under KVM with `-gpu lavapipe`, installs a
@@ -37,7 +39,7 @@ x86_64 image under KVM is unmeasured. Recipe and flags:
 `studies/challenge-android-render.md`, ros-viz-rs `android-apk.yml` and
 `android/scripts/smoke-test.sh` for the KVM and screenshot steps.
 
-### T02 Studio bridge end-to-end harness (S, semio_studio + studio-bridge)
+### T02 Studio bridge end-to-end harness (S, semio_studio + studio-bridge) — [VIZ-137](https://linear.app/semio-ai/issue/VIZ-137)
 
 **Scope.** A test that starts a face device on the Studio bridge, has a
 Studio-side writer set one animatable, and records what reached the device's
@@ -57,7 +59,7 @@ view indexes bare UUIDs and the Studio client passes keys verbatim. A
 Studio-side writer: the `studio-bridge` `tui` binary or a zenoh script.
 Study: `studies/studio-consumers.md`, `studies/challenge-verdicts.md` (C6).
 
-### T03 vizij-rs hygiene with real consumers (S)
+### T03 vizij-rs hygiene with real consumers (S) — [VIZ-138](https://linear.app/semio-ai/issue/VIZ-138)
 
 **Scope.** `vizij-graph-core` compiles with `default-features = false`; the
 native TTS playhead reads `Sink::get_pos()` and both producers stop a run not
@@ -81,7 +83,7 @@ idle-stop rule is the spike's `src/lib.rs:327`
 (`studies/challenge-tts-wasm.md` 7). `rodio` is used only in `tts_piper.rs`;
 `crossterm` only in `main.rs:352-355`.
 
-### T04 `@vizij/runtime` packaging hygiene (S)
+### T04 `@vizij/runtime` packaging hygiene (S) — [VIZ-139](https://linear.app/semio-ai/issue/VIZ-139)
 
 **Scope.** The npm package ships its wasm once, its `pkg/` is CI-built (or
 refreshed) so the five Node tests are a live gate, and `stop()`/`running`
@@ -97,7 +99,7 @@ self-paced runtime can be stopped from JS.
 (`studies/browser-device-anatomy.md` 15); `vizij-arora-web/src/lib.rs` has no
 `stop`.
 
-### T05 `@vizij/render` export and loader hygiene (S, vizij-web)
+### T05 `@vizij/render` export and loader hygiene (S, vizij-web) — [VIZ-140](https://linear.app/semio-ai/issue/VIZ-140)
 
 **Scope.** `exportScene` returns bytes (the download moves to the caller);
 `load-gltf` parses an `ArrayBuffer` before trying a blob URL; React refs leave
@@ -113,7 +115,7 @@ and its T3 list of what stays; the blob-URL branch wins whenever
 `URL.createObjectURL` exists, including Node; `import { createRef } from
 "react"` is pulled by the world types today.
 
-### T06 arora-sdk: app-data directory override and bridge re-export (S, arora-sdk)
+### T06 arora-sdk: app-data directory override and bridge re-export (S, arora-sdk) — [VIZ-141](https://linear.app/semio-ai/issue/VIZ-141)
 
 **Scope.** `arora::studio::connect()` and `connect_with_operator()` accept an
 app-data directory (`ARORA_DATA_DIR`, or an entry taking explicit key and
@@ -130,7 +132,7 @@ find (no exe dir, no `HOME`, cwd `/`); `vizij` compiles against
 token. `studio-bridge` implies `native` (`Cargo.toml:39-45`): splitting them
 is ARORA-79 and is wanted only for a wasmtime-free Android build.
 
-### T07 The remaining wasm spikes (S)
+### T07 The remaining wasm spikes (S) — [VIZ-142](https://linear.app/semio-ai/issue/VIZ-142)
 
 **Scope.** On the one-module spike crate: a `Screenshot`/`Readback` on
 WebGL2 in headless Chromium; the hidden-tab behaviour of a mounted page
@@ -150,7 +152,7 @@ rebuild in 14–37 s on the warm target; face-ready is 2 s (Quori) and 16 s
 
 ## P1, the crate
 
-### T08 `crates/vizij` as lib + bin with per-target features (M)
+### T08 `crates/vizij` as lib + bin with per-target features (M) — [VIZ-143](https://linear.app/semio-ai/issue/VIZ-143)
 
 **Scope.** One package, `[lib] crate-type = ["rlib", "cdylib"]` plus the
 binary; modules `view`, `device`, `web` (wasm32), `android`, `panel`
@@ -178,7 +180,7 @@ Bevy features alone do not compile on Linux (winit needs `x11` or `wayland`)
 and lack picking (`studies/challenge-verdicts.md` C10). The `vizij-render`
 spike of STUDIO-256 is not a dependency.
 
-### T09 Per-face components and render layers in the view (S)
+### T09 Per-face components and render layers in the view (S) — [VIZ-144](https://linear.app/semio-ai/issue/VIZ-144)
 
 **Scope.** The view keeps every face's state as components on its scene
 root, never as startup resources; each face's scene and camera carry a
@@ -197,7 +199,7 @@ camera's layers; `RawRobotData` in `meta.rs:86-98` drops `id` today.
 
 ## P3, the browser module
 
-### T10 `vizij::web` and `@vizij/runtime` 3.0-alpha (M)
+### T10 `vizij::web` and `@vizij/runtime` 3.0-alpha (M) — [VIZ-145](https://linear.app/semio-ai/issue/VIZ-145)
 
 **Scope.** The wasm-bindgen surface moved from `vizij-arora-web` into the
 crate's `web` module: today's device API verbatim plus `stop`, `running`,
@@ -232,7 +234,7 @@ singleton and `init()` memoization stay (`npm/@vizij/runtime/src/index.ts:180-26
 (VIZ-58). Everything above is verified in
 `studies/challenge-wasm-one-module.md` and `studies/bevy-wasm-spike.md`.
 
-### T11 `say` in the browser (M)
+### T11 `say` in the browser (M) — [VIZ-146](https://linear.app/semio-ai/issue/VIZ-146)
 
 **Scope.** The wasm32 branch of `vizij-arora-tts` under one skeleton (the
 spike's cfg split), the page-side `play(bytes, marks) → playhead()` hook with
@@ -263,7 +265,7 @@ while it plays collides (arora ABI, no run id).
 
 ## P4, the web consumers
 
-### T12 `@vizij/runtime-react` 1.0 and `@vizij/render`'s face slot (M, vizij-web)
+### T12 `@vizij/runtime-react` 1.0 and `@vizij/render`'s face slot (M, vizij-web) — [VIZ-147](https://linear.app/semio-ai/issue/VIZ-147)
 
 **Scope.** The provider over `describe()` and the device API: the value
 mirror, the JavaScript graph composer, the three.js bundle extraction, the
@@ -289,7 +291,7 @@ mirror is `applyEngineChangesRef` → `setValues` (`:2645-2739`), the composer
 builds the prefix itself; VIZ-59's pose-control bridge lives in the same
 drained-changes path and is deleted after its equivalence check.
 
-### T13 The authoring viewport on the Bevy view (L, vizij-web)
+### T13 The authoring viewport on the Bevy view (L, vizij-web) — [VIZ-148](https://linear.app/semio-ai/issue/VIZ-148)
 
 **Scope.** In order: a picking e2e, a pixel check and a GLB-export e2e (the
 gate exists before the port); the headless exporter of T05 wired into
@@ -317,7 +319,7 @@ provider keys reloads on `JSON.stringify(world)` including mounted refs
 export round-trip first. Studies: `authoring-viewport.md`,
 `challenge-headless-export.md`, `challenge-verdicts.md` (C3).
 
-### T14 The render contract for authored and imported faces (M)
+### T14 The render contract for authored and imported faces (M) — [VIZ-149](https://linear.app/semio-ai/issue/VIZ-149)
 
 **Scope.** In `view`: a lit material path for `standard`/`phong` elements
 reproducing three.js under one ambient light of π/2 (`basic` stays unlit)
@@ -338,7 +340,7 @@ Studio's world model is per-axis (`packages/vizij/.../map-features.ts:46-73`);
 no shipped face carries a primitive (17 vizij-web and 6 Studio fixtures);
 HSL is not a `Value` kind and is baked into materials at export.
 
-### T15 The agent demo in the standalone's folder (M, vizij-web)
+### T15 The agent demo in the standalone's folder (M, vizij-web) — [VIZ-150](https://linear.app/semio-ai/issue/VIZ-150)
 
 **Scope.** `apps/vizij-standalone` rewritten as one browser page: microphone
 → Deepgram → OpenAI (the STT/LLM half of `speech-react` kept as source) →
@@ -362,7 +364,7 @@ only.
 
 ## P5, desktop
 
-### T16 The desktop binary's local bridge, registration and file open (M)
+### T16 The desktop binary's local bridge, registration and file open (M) — [VIZ-151](https://linear.app/semio-ai/issue/VIZ-151)
 
 **Scope.** An in-app `AroraWSServer` over a `ServerConfig` (`--bind`, control
 panel on) wrapped in `WsBridge`, the registry mirrored from `free_inputs`
@@ -393,7 +395,7 @@ the first bridge's identity; `FileDialog::pick_file` would stall the schedule,
 `default-features = false` and `xdg-portal` on Linux; `bevy_egui` 0.39 pins
 Bevy 0.18.
 
-### T17 Release workflow with binaries and installers (M)
+### T17 Release workflow with binaries and installers (M) — [VIZ-152](https://linear.app/semio-ai/issue/VIZ-152)
 
 **Scope.** `release-vizij.yml` on a pushed `vizij-v<version>` tag: per-OS
 `cargo build -p vizij --release --features studio` (no `tts-piper`),
@@ -414,7 +416,7 @@ credentials exist (`studies/packaging-and-ci.md`, `challenge-verdicts.md` C9).
 
 ## P6, Android
 
-### T18 The Android app (L)
+### T18 The Android app (L) — [VIZ-153](https://linear.app/semio-ai/issue/VIZ-153)
 
 **Scope.** The `android` module (`#[bevy_main]`), the Gradle directory
 (pinned `ndkVersion`, targetSdk 34, minSdk 24), one Kotlin `Activity`
@@ -441,7 +443,7 @@ build draws, Vulkan only; `LogPlugin` stays disabled. Studies:
 `bevy-android-spike.md`, `challenge-android-render.md`, `challenge-verdicts.md`
 (C7).
 
-### T19 Android CI, signing and the tablet gate script (M)
+### T19 Android CI, signing and the tablet gate script (M) — [VIZ-154](https://linear.app/semio-ai/issue/VIZ-154)
 
 **Scope.** CI `apk` + T01's smoke on main and dispatch, `cargo ndk check`
 per PR, signing from `android.yml`'s pattern moved to vizij-rs, the
@@ -463,7 +465,7 @@ keep `com.vizij.standalone` for in-place upgrades or plan an uninstall step.
 
 ## P7, Semio Studio
 
-### T20 Studio-key profile in the device and the passing E2E (M)
+### T20 Studio-key profile in the device and the passing E2E (M) — [VIZ-155](https://linear.app/semio-ai/issue/VIZ-155)
 
 **Scope.** Under the `studio` feature, `vizij::device` composes a mapping
 source from `FaceMeta` bindings that strips `.target_position`, aggregates
@@ -481,7 +483,7 @@ the device, on a scalar and a compound animatable, loading a Studio-exported
 `HalAssets::model_glb`, arora has no caller (`studies/studio-consumers.md` 3);
 depends on T14's per-axis bindings.
 
-### T21 Retire `apps/vizij-app` and re-point the Studio tickets (S, semio_studio)
+### T21 Retire `apps/vizij-app` and re-point the Studio tickets (S, semio_studio) — [STUDIO-263](https://linear.app/semio-ai/issue/STUDIO-263)
 
 **Scope.** Delete `apps/vizij-app` and its references (`package.json:29`,
 `.changeset/config.json:10`, the two docs pages); STUDIO-239 pointed at the
@@ -493,7 +495,7 @@ drives a stand-alone `vizij --studio` the way the app was driven (T20).
 
 ## P8, retirement
 
-### T22 Delete the Tauri standalone (S, vizij-web)
+### T22 Delete the Tauri standalone (S, vizij-web) — [VIZ-156](https://linear.app/semio-ai/issue/VIZ-156)
 
 **Scope.** The Tauri shell, the native second device, `android.yml`,
 `check-snap-env.mjs`, `dev:vizij-standalone`, the untracked leftovers
@@ -506,7 +508,7 @@ Android app.
 instructions under `deploy/*`; gated on T17's installers and T19's tablet
 gate.
 
-### T23 Retire the web renderer and re-point the docs (M, vizij-web + vizij-docs)
+### T23 Retire the web renderer and re-point the docs (M, vizij-web + vizij-docs) — [VIZ-157](https://linear.app/semio-ai/issue/VIZ-157)
 
 **Scope.** `three` only in `@vizij/render`'s loader and exporter;
 `speech-react` gone; the remaining vizij-web pages and vizij-docs
