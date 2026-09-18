@@ -40,13 +40,13 @@ the `namespace/` migration listed as a protocol change; fates given to
 module's browser artifact, `tests/ros4hri` and `examples/say.rs` (they stay in
 the binary), and the Studio consumers of `packages/vizij`.
 
-Not run (the session's budget ended the challenge with these agents
-unfinished): the one-module device + view spike (bytes loading, App restart,
-picking under SwiftShader, `taskrun` in headless Chrome), the Android spike on
-newer emulator images, the completeness critic, and the `challenge-tts-wasm`
-study's headless-Chrome test run (its file carries `PENDING_*` placeholders
-where the results would be). Their questions are listed in section 5 of the
-central plan and scheduled as P0 spikes.
+The three spikes the challenge's budget cut were run afterwards and are
+sibling pages: `challenge-wasm-one-module` (bytes loading, App restart,
+picking under SwiftShader, two faces on one canvas over 25 cycles),
+`challenge-android-render` (the API 34/35 images draw under Vulkan; GLES and
+SwiftShader do not), and the completed `challenge-tts-wasm` test run. The
+completeness critic did not run; the judges' completeness lens covers part of
+its ground.
 
 ## Questions answered
 

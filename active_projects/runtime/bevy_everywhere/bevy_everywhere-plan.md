@@ -11,7 +11,8 @@ finding number). The target picture and the plan were then challenged: each
 load-bearing claim was attacked through two or three lenses (feasibility, cost,
 consumer impact), three verification spikes ran, and three judges scored the
 plan; the verdicts are in [`studies/challenge-verdicts.md`](studies/challenge-verdicts.md)
-and sections 3 to 6 are the versions that survived. Stand-alone tests live
+and sections 3 to 6 are the versions that survived; the three spikes that
+followed closed the questions the challenge left open. Stand-alone tests live
 outside the product repos and are referenced from the study that ran them.
 
 | Study | Subject |
@@ -30,7 +31,9 @@ outside the product repos and are referenced from the study that ran them.
 | [`packaging-and-ci`](studies/packaging-and-ci.md) | ros-viz-rs recipes, vizij-rs and vizij-web CI, publishing |
 | [`challenge-ws-bridge-and-operator`](studies/challenge-ws-bridge-and-operator.md) | the local WS bridge and the Studio registration, built in-app and verified over the wire |
 | [`challenge-headless-export`](studies/challenge-headless-export.md) | GLB export from the JS world model without a renderer (verified on three faces) |
-| [`challenge-tts-wasm`](studies/challenge-tts-wasm.md) | a wasm32 branch of the TTS provider under one skeleton (compile-verified; its test log is incomplete) |
+| [`challenge-tts-wasm`](studies/challenge-tts-wasm.md) | a wasm32 branch of the TTS provider under one skeleton; the fragments and the wasm `say` tested natively and in headless Chrome |
+| [`challenge-wasm-one-module`](studies/challenge-wasm-one-module.md) | device + view in one wasm module: JS-paced device, two faces on one canvas, 25 load/unload cycles, bytes loading, picking, App restart (build spike) |
+| [`challenge-android-render`](studies/challenge-android-render.md) | Bevy 0.19 on the API 32/34/35 emulator images under Vulkan and GLES, host GPU, lavapipe and SwiftShader (build spike) |
 | [`challenge-verdicts`](studies/challenge-verdicts.md) | the refutation verdicts and judge scores behind sections 3 to 6 |
 
 ## 1. Goal
@@ -340,7 +343,7 @@ three.js or WebGL. `packages/@vizij/node-graph-authoring` also builds
   Runs are keyed by `hash(text, voice)` because the module ABI carries no run
   id, and a halt reaches the provider only as the absence of further polls
   (S:speech-and-agent 13–17; S:challenge-tts-wasm 7–8).
-- **The provider's wasm32 branch is a compile-verified split**: `reqwest` with
+- **The provider's wasm32 branch is a verified split**, tested natively and in headless Chrome (S:challenge-tts-wasm 9–10): `reqwest` with
   `json` compiles for wasm32 as declared (its fetch backend); only the producer
   (tokio runtime, rodio loop, `Instant`) is native-bound; on wasm the producer
   is `spawn_local` plus a page-supplied `play(bytes, marks)` returning a
@@ -419,19 +422,35 @@ three.js or WebGL. `packages/@vizij/node-graph-authoring` also builds
   lifetime: the glue caches its instance at module scope and an ES module
   record is never released.
 - Headless Chromium composites the WebGL2 canvas with no flags (5).
-- Two `App::run()`s in one module cannot coexist; two **instances of the same
-  module** (distinct import URLs) run two faces side by side; one App with one
-  transparent full-page canvas and one viewport camera per DOM rect also works,
-  once the global `ClearColor` is `NONE` (6–8). Whether an App can be exited
-  and restarted inside one instance is disputed by source reading and was not
-  run (section 5).
+- Two `App::run()`s in one module cannot coexist while the first loop lives;
+  after `AppExit` a second `mount` in the same instance succeeds (winit clears
+  its flag when the spawned loop finishes); two **instances of the same
+  module** (distinct import URLs) also run two faces; one App with one
+  transparent full-page canvas and one viewport camera per DOM rect works once
+  the global `ClearColor` is `NONE` (6–8; S:challenge-wasm-one-module 5).
 - The four interop crates check clean for wasm32; `crates/vizij` stops at
   arora's `native` feature and then at tokio `rt-multi-thread`/`net`,
   crossterm, rand/getrandom; the app's own sources are host-bound in seven
   places, none in `view.rs` (9–11).
-- Bevy 0.19 has an in-memory asset source (`MemoryAssetReader`, `Dir`) and
-  `AssetMetaCheck::Never`; loading a GLB from bytes through them was not run
-  (section 5).
+- Loading a GLB from a `Uint8Array` through `MemoryAssetReader`/`Dir` with
+  `AssetMetaCheck::Never` renders with zero `.meta` requests
+  (S:challenge-wasm-one-module 3).
+
+**Device + view in one module** (S:challenge-wasm-one-module): the arora
+device composed as `vizij-arora-web` does and the Bevy view build into one
+cdylib (28.0 MB / 8.2 MB gzipped after wasm-opt, 7.6 % above the view-only
+spike); the JS-owned device stepped from `requestAnimationFrame` and the view
+reading `RigHal::pose()` per frame never contend, and a step's writes are
+drawn one frame later (Bevy's rAF callback runs before the page's); Quori and
+Toasty render in their own viewports on one canvas once each face's scene and
+camera carry a distinct `RenderLayers` (all faces sit at the world origin);
+25 `unloadFace`/`loadFace` cycles leave linear memory flat at 195.9 MB with
+both faces resident (137.6 MB with Quori alone) and the WebGL context intact;
+mesh picking under WebGL2 on SwiftShader reports the glTF node name and
+RobotData id per click, casting against base vertices (a click on Quori's
+thin mouth resolves to the face behind it); face-ready on SwiftShader is 2 s
+for Quori and 16 s for Toasty, dominated by Bevy's glTF load; `bevy_picking`
++ `mesh_picking` add 1.6 MB and recompile twelve Bevy crates (1–5).
 
 **arora on wasm32** (S:arora-wasm-constraints): `arora` with no default
 features compiles; `Arora::step(dt)` is documented for an embedder clock;
@@ -454,10 +473,20 @@ Studio client is native-only by declaration (1–3, 7–9, 11, 13–14).
 - A minimal APK builds and installs (56 MB under the workspace profile when AGP
   strips it); Bevy's `audio` feature raises the API floor to 26; without it
   minSdk 24 holds (5–7).
-- **The emulator draws no frame**: wgpu 29's Vulkan device reports
-  `max_buffer_size 0` on the Android 12 arm64 image, and the GLES translator
-  lacks `SURFACE_VIEW_FORMATS`; newer images and hardware are untested; the
-  launch-only smoke passes while the render world is dead (8–9).
+- **The face draws and animates under Vulkan on the API 34 and 35 arm64
+  images** with the host GPU (MoltenVK through gfxstream) and with `-gpu
+  lavapipe` on API 35, from the APK's assets, release-profile Rust code;
+  emulator frame rates are 3.3 and 1.8 frames per second and bound nothing on
+  hardware (S:challenge-android-render 1–2). Nothing draws under SwiftShader
+  (wgpu-hal turns its 1 s acquire timeout into a device loss, wgpu issue 9029,
+  open through 30.0.1), under any GLES build (a GLSL ES image-qualifier
+  compile error on GLES 3.1, `SURFACE_VIEW_FORMATS` refused on GLES 3.0), or
+  on the API 32 image (its Vulkan advertises 1.3 without `maintenance4`, so
+  wgpu reads a zero buffer limit; that image is retired). `dumpsys gfxinfo`
+  counts HWUI frames only and reads 0 even when the face draws; screenshots
+  are the evidence. The recommended CI shape (x86_64 API 35 `google_apis`
+  under KVM with `-gpu lavapipe`) was not run here; the lavapipe result is
+  from the arm64 image on an M1 host (S:challenge-android-render 1, 3–4).
 - No file picker exists for a Bevy app on Android (`rfd` has no backend); the
   SAF route needs one Kotlin `Activity` subclass; `bevy_egui` 0.42 is the line
   for Bevy 0.19 (0.39 pins Bevy 0.18); the APK's `assets/` is Bevy's asset
@@ -585,10 +614,17 @@ if that is what it needs); that crate boundary is decided then, not now.
   one viewport per face slot (the verified overlay pattern, `ClearColor::NONE`);
   `pick(faceId, x, y)` forwards slot pointer events. This covers the authoring
   app's main, reference and empty-state faces, the demo's one, and the
-  showcase's five without a special case. The App is never exited; a second
-  module instance is not a supported pattern (about 90 MB pinned per instance,
-  never reclaimed). The animation host module's engine becomes per-device state
-  (closures over an owned engine) before N devices share an instance.
+  showcase's five without a special case. Every face's scene and camera carry
+  a distinct `RenderLayers`, propagated over the spawned hierarchy, because all
+  faces sit at the world origin; mesh picking filters on the same layers. The
+  App normally lives as long as the page; `unmount` is available as `AppExit`
+  plus a canvas clear and a memory-source purge, and a later `mount` restarts
+  cleanly (verified). A second module instance is not a supported pattern
+  (linear memory is 137.6 MB with one face resident and 195.9 MB with two, flat
+  over 25 load/unload cycles; the page may drop its own GLB copy after
+  `loadFace`). A step's writes are drawn one frame later than they are made.
+  The animation host module's engine becomes per-device state (closures over
+  an owned engine) before N devices share an instance.
 - **What the JS API adds**: `stop`, `running`, `mount`/`unmount`, `loadFace`,
   `unloadFace`, `setRects`, `pick`, `describe(gltf)` (bundle metadata for the
   UI: programs, clips, pose config, input constraints, over
@@ -650,8 +686,9 @@ if that is what it needs); that crate boundary is decided then, not now.
   it does not export and reload per tick. Animatable descriptor edits and
   input values are device calls, unchanged.
 - **Editor contract**: events out `picked(elementId)` (the app consumes one
-  hit; Bevy's mesh ray cast ignores morph targets, three's applied them: a
-  known parity delta), `pointerMissed`, `ready`/`error`, `onStep` (the
+  hit; Bevy's mesh ray cast uses base vertices, three's applied the morphs: a
+  click on a thin morphed mesh lands on the element behind it, so the editor
+  picks by nearest RobotData element within a tolerance), `pointerMissed`, `ready`/`error`, `onStep` (the
   motiongraph value sampler); commands in `setSelection(ids)`,
   `showSelectionGlow` (drawn as `Gizmos` polylines from CPU-extracted feature
   edges of the base mesh, since Bevy's wireframe is unavailable on WebGL),
@@ -691,9 +728,9 @@ if that is what it needs); that crate boundary is decided then, not now.
   target (`examples/say.rs` constructs the provider). The `AudioContext` unlock
   is the page's, at the click that requests the microphone; a still-suspended
   context reports playhead 0 so the lips wait with the audio. **Halt reaches
-  the provider as silence**: a run not polled for one step period stops its
-  playback and leaves the run map, natively and in JS, so a halted utterance
-  stops and a repeated `say` restarts. The missing run id in the module ABI
+  the provider as silence**: a run not polled for 250 ms stops its playback
+  and leaves the run map, in the JS playback and in the native producer's loop
+  alike, so a halted utterance stops and a repeated `say` restarts. The missing run id in the module ABI
   (arora-sdk `docs/async-functions.md`) stays a recorded limit: an agent
   repeating a sentence while it still plays collides.
 - The browser device registers what the native device registers: the TTS host
@@ -702,9 +739,12 @@ if that is what it needs); that crate boundary is decided then, not now.
   mapping stays the bundle's opt-in (composed when the GLB embeds
   `standard::ros4hri` or the page asks), matching today. The two skill
   compositions (standalone `skills.rs`, native `device.rs`) collapse into
-  `vizij::device`. The fragments' `taskrun` node on the browser interpreter
-  runs through the same synchronous in-process dispatch as natively; the
-  headless-Chrome run of that test is not recorded (section 5).
+  `vizij::device`. The fragments' `taskrun` node runs on the browser interpreter
+  through the same synchronous in-process dispatch as natively, verified in
+  headless Chrome (`play_viseme` through its envelope; the wasm `say` streaming
+  visemes at the page's playhead, once per tick, never after terminal); the
+  two wasm-bindgen tests join `vizij-arora-tts` and CI runs them under
+  `wasm-pack test --headless --chrome` (Chrome and chromedriver of one version).
 - **Lips through the standard need adaptations the faces lack.** The JS lipsync
   retires only once every shipped face carries a standard viseme adaptation:
   the four tracked GLBs are re-exported with their `standard-adaptation` graph
@@ -780,14 +820,20 @@ discovery, or an entry taking explicit key and token paths), set from
 setting `HOME` before connecting. The cloud TTS provider's TLS root store is
 decided before the first `say` on Android: package and initialise
 `rustls-platform-verifier`'s AAR from `android_main`, or switch the provider to
-a preconfigured webpki store as `arora-studio-bridge-client` does. Logging:
+a preconfigured webpki store as `arora-studio-bridge-client` does. Vulkan is
+the only Android backend: a GLES build fails structurally in Bevy 0.19.1, and
+the one hardware property that can still refuse Vulkan is a swapchain with no
+sRGB format on a driver without `VK_KHR_swapchain_mutable_format` (bevy issue
+15452), so a swapchain-format probe is the first step on a tablet. The
+device-loss policy is `RenderErrorPolicy::Recover` or an explicit restart
+(wgpu turns a frame over 1 s into a device loss; the default policy panics). Logging:
 `android_logger` in `env_logger`'s place, Bevy's `LogPlugin` disabled as on
 desktop. No `ros2-*` on Android. The applicationId (keep
 `com.vizij.standalone` for in-place upgrades, or a new id with an uninstall
 step) and the move of the signing secrets to vizij-rs are decided before the
-first release. **Rendering is validated before anything else on Android**, on
-newer emulator images first and on the plugged-in tablet over adb otherwise
-(P0, Gate 0); both are scripted, not manual.
+first release. Rendering is verified on the API 34/35 emulator images
+(section 2.10); the tablet run checks the hardware-only properties (swapchain
+formats, frame rate, device-loss recovery) over adb, scripted.
 
 ### 3.7 Semio Studio
 
@@ -869,11 +915,18 @@ newer emulator images first and on the plugged-in tablet over adb otherwise
   binary; on `main` and dispatch, the `wasm-pack` WebGL2 build followed by a
   Playwright step that mounts Quori and Toasty on a 763×486 canvas at DPR 1
   with an opaque black clear, waits for the `ready` signal and uploads the two
-  canvas screenshots, plus the APK job and the emulator smoke on the image
-  Gate 0 validated (KVM on `ubuntu-latest`, the ros-viz-rs recipe): install,
-  launch with a pushed fixture GLB, wait, then assert a non-uniform
-  `screencap`, `dumpsys gfxinfo` frames above zero, and no `panicked at` in
-  logcat; launch-only is the fallback only for an image that cannot draw.
+  canvas screenshots, plus the APK job and the emulator smoke: x86_64 API 35
+  (or 34) `google_apis` under KVM on `ubuntu-latest`, `-no-window -gpu
+  lavapipe -noaudio -no-boot-anim`, emulator 36.4.9 or later, never
+  `swiftshader_indirect` (it loses the device), a release-profile library
+  (debug builds' naga debug info crashes gfxstream's validator); install,
+  launch with a pushed fixture GLB, wait at least 15 s, then assert a
+  screenshot showing the face, two screenshots 5 s apart differing in the
+  animated region, and no `Caught` line in logcat (`dumpsys gfxinfo` reads 0
+  for Bevy and proves nothing). A self-hosted Apple-silicon Mac with `-gpu
+  host` is the GPU-backed variant; GitHub's arm64 macOS runners cannot run the
+  emulator. The wasm-bindgen browser tests of `vizij-arora-tts` run in the
+  same job as the wasm build.
   `rust-cache` keyed on lock + target + feature set; each Bevy target is 2–5 GB
   against the repo cache cap.
 - **Visual oracle**: the committed native golden set (plus the Blender-export
@@ -909,27 +962,19 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 
 ### P0 Now, in parallel (each S)
 
-1. **Gate 0, Android rendering**: the two spike APKs (Vulkan build,
-   `bevy_render/gles` build) on newer emulator images: x86_64 API 34 with KVM
-   and `-gpu swiftshader_indirect`, the image ros-viz-rs's CI screenshots Bevy
-   0.18 on, and arm64 API 34/35 `google_apis` on this Mac; only the API 32
-   arm64 image has been tried. Pass: the Quori face visible and its morphs
-   animating under at least one backend; screenshot, logcat and
-   `dumpsys gfxinfo` frame count attached to the ticket. An image that draws
-   becomes the CI smoke image, and the smoke asserts rendering from the first
-   job (3.9). If no image draws, the same APKs run on Victor's tablet over
-   adb (the script of P6's gate); if that draws, CI smoke stays launch-only on
-   the emulator and rendering is checked on the device. If nothing draws: the
-   decision is which Bevy/wgpu version is tried next, or the recorded
-   fallback (the Tauri Android shell around the wasm view, keeping the
-   two-device stitch).
-2. **Spikes on the existing wasm target dir** (14 s rebuilds): load the Quori
-   GLB from a byte buffer through `MemoryAssetReader`; one `Screenshot`/
-   `Readback` on WebGL2 in headless Chromium; `AppExit` then a second
-   `App::run` in one instance; mesh picking on SwiftShader; the one-module
-   device + view stepping test that did not complete; the fragments'
-   `taskrun` on `vizij-arora-web`'s interpreter with a stub provider
-   (`wasm-pack test --headless --chrome`, the `challenge-tts-wasm` test file).
+1. **Gate 0, Android rendering: passed on the emulator** (API 34/35 arm64,
+   host GPU and lavapipe, Vulkan; S:challenge-android-render). What remains
+   in P0: the CI-shaped confirmation, x86_64 API 35 `google_apis` under KVM on
+   `ubuntu-latest` with `-gpu lavapipe`, as the first Android CI job (not run
+   here); the tablet is no longer needed to prove that Bevy 0.19 renders and
+   is used in P6 for the hardware-only properties.
+2. **Spikes on the existing wasm target dir**: done for bytes loading, App
+   restart, picking, the one-module device + view, and the `taskrun` fragments
+   in headless Chrome (S:challenge-wasm-one-module, S:challenge-tts-wasm).
+   Still to run: a `Screenshot`/`Readback` on WebGL2 (the CI snapshot case
+   can use a page screenshot instead); the hidden-tab behaviour of a mounted
+   page; one WebGPU measurement; the animation host module and `spawn`/`halt`
+   in the one-module build.
 3. **Studio bridge E2E harness** in semio_studio: a Studio-side writer
    (`studio-bridge`'s `tui` binary or a zenoh script) writes
    `<id>.target_position` for one animatable of a fixture face; the face process
@@ -973,11 +1018,14 @@ P3: `vizij::web`, `mount`/`unmount`, `loadFace`/`unloadFace`, `setRects`,
 module, the WebGL2 `wasm-pack` job, the Playwright screenshots, the
 `snapshot-regression` wasm case. Gate: Quori and Toasty on a plain page within
 tolerance; 25 `loadFace`/`unloadFace` cycles with bounded memory and no WebGL
-context loss; the five Node tests green.
+context loss (the spike passes both on its own crate); per-face
+`RenderLayers`; the five Node tests green.
 
-P3b (independent, starts now in the interop crate): the TTS wasm branch, the
-audio hook, the fragment registration on the browser device, the adapted
-re-exports of the four shipped faces. Gate: a Playwright spec calls `say` and
+P3b (independent, starts now in the interop crate): the TTS wasm branch (the
+spike's cfg split, 93 lines, plus the 250 ms idle-stop rule in both
+producers), the audio hook, the two wasm-bindgen tests in CI, the fragment
+registration on the browser device, the adapted re-exports of the four
+shipped faces. Gate: a Playwright spec calls `say` and
 asserts `standard/vizij/viseme/<shape>` changes over time and the hook received
 bytes and marks.
 
@@ -1031,13 +1079,15 @@ the rendering `smoke` of 3.9 on main and dispatch, `cargo ndk check` per PR;
 signing from `android.yml`'s pattern moved to vizij-rs. **Retirement gate: an
 adb script** (`android/scripts/device-gate.sh`) run against Victor's tablet
 plugged in or reached by `adb connect`, repeatable and runnable from a
-self-hosted runner on demand: install the release APK, load a GLB through a
+self-hosted runner on demand: probe the swapchain formats first (an sRGB
+format, or `VK_KHR_swapchain_mutable_format`), install the release APK, load a GLB through a
 VIEW intent (`am start` on a pushed file) and through the picker (a UI
 Automator tap sequence, or a debug-only intent extra when the picker cannot be
 driven), reboot, assert the face and its Studio identity come back, then claim
 once in Studio and move a scalar and a compound animatable from the bridge
-E2E writer; every step leaves a screenshot, logcat and `gfxinfo` count in the
-run's artifact folder, which the Linear ticket links with the APK sha and the
+E2E writer; then force a device loss and check `RenderErrorPolicy::Recover` brings the
+face back; every step leaves a screenshot and logcat in the run's artifact
+folder, which the Linear ticket links with the APK sha and the
 device model and Android version.
 
 ### P7 Semio Studio (M, after P5)
@@ -1075,17 +1125,25 @@ STUDIO-239, STUDIO-256, STUDIO-257, ARORA-79.
 
 Risks, most severe first:
 
-1. **Android rendering is unproven on Bevy 0.19** (S:bevy-android-spike 8–9):
-   the one image tried (API 32 arm64) drew nothing; ros-viz-rs proves the
-   emulator pipeline itself with Bevy 0.18 on API 34 x86_64. Gate 0 is the
-   first action; the fallback (Tauri shell around the wasm view) is recorded.
+1. **Android hardware is unverified** although the emulator draws
+   (S:challenge-android-render): a tablet whose Vulkan swapchain lists no
+   sRGB format and lacks `VK_KHR_swapchain_mutable_format` fails
+   `Surface::configure` in Bevy 0.19.1 (bevy issue 15452, a fix belongs to
+   bevy_render or wgpu); wgpu maps a frame over 1 s to a device loss (issue
+   9029), so recovery must be configured; emulator frame rates bound nothing.
+   The CI shape (x86_64 image under KVM with lavapipe) is not yet confirmed.
    The full device half has only been type-checked for Android; linking and
-   launching with `studio` and TTS is a P6 gate.
-2. **Browser payload and memory**: 26 MB / 7.6 MB gzipped per page and about
-   90 MB of linear memory per module instance; one instance per page is the
-   design, faces as viewports; the size ceiling and the 25-cycle memory gate
-   protect it. A face slot living in another stacking or scroll context than
-   the shared canvas is not covered.
+   launching with `studio` and TTS is a P6 gate. The fallback (Tauri shell
+   around the wasm view) stays recorded, off the path.
+2. **Browser payload and memory**: 28 MB / 8.2 MB gzipped per page for the
+   combined module; 137.6 MB of linear memory with one face resident, 195.9 MB
+   with two, flat over 25 load/unload cycles (a high-water mark: what Bevy
+   retains in its allocator and GPU-side buffers are not measured); one
+   instance per page is the design, faces as viewports; the size ceiling and
+   the 25-cycle memory gate protect it. Face-ready on SwiftShader is 2 s for
+   Quori and 16 s for Toasty, the latter unexplained and unmeasured on a GPU.
+   A face slot living in another stacking or scroll context than the shared
+   canvas is not covered.
 3. **Studio's writes do not reach the face** (section 2.9): the key profile
    in P7 is the mitigation; until then no app moves a face from Studio.
 4. **Lips need adaptations the shipped faces lack**: P3b re-exports the four
@@ -1116,15 +1174,16 @@ The eleven decisions of the first review are recorded in section 1. Still
 open for Victor: a tablet, only if the newer emulator images also draw nothing
 (Gate 0); the VIZ ticket for the standard's conversation-state tier.
 
-Open technical questions not answered by the challenge (the spikes that did
-not complete): Bevy 0.19 glTF from an in-memory buffer at run time;
-`Screenshot` readback on WebGL2; `App` restart in one wasm instance (source
-reading disagrees); mesh picking under SwiftShader; the `taskrun` fragments on
-the browser interpreter in headless Chrome; the one-module device + view step;
-Android rendering on API 34/35 emulator images; the overlay canvas's alpha
-across wgpu versions; `$HOME` and the private files dir inside a NativeActivity
-process; whether `reqwest`'s wasm client and `spawn_local` behave in the
-device's tick as the compile spike assumes.
+Open technical questions (the spikes closed bytes loading, App restart,
+picking, the one-module device + view, the `taskrun` fragments in headless
+Chrome, `reqwest` and `spawn_local` in the device's tick, the `AudioContext`
+unlock, and Android rendering on the emulator): `Screenshot` readback on
+WebGL2; the hidden-tab behaviour of a mounted page; one WebGPU measurement;
+the overlay canvas's alpha across wgpu versions; `$HOME` and the private files
+dir inside a NativeActivity process; the x86_64 lavapipe emulator under KVM on
+`ubuntu-latest`; a tablet's swapchain formats, frame rate and device-loss
+recovery; Toasty's 16 s face-ready time; frame time of the combined module on
+a GPU adapter with several faces.
 
 ## 6. Acceptance criteria
 
