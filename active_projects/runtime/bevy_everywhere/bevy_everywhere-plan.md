@@ -778,8 +778,9 @@ a preconfigured webpki store as `arora-studio-bridge-client` does. Logging:
 desktop. No `ros2-*` on Android. The applicationId (keep
 `com.vizij.standalone` for in-place upgrades, or a new id with an uninstall
 step) and the move of the signing secrets to vizij-rs are decided before the
-first release. **Rendering on hardware is validated before anything else on
-Android** (P0, Gate 0).
+first release. **Rendering is validated before anything else on Android**, on
+newer emulator images first and on the plugged-in tablet over adb otherwise
+(P0, Gate 0); both are scripted, not manual.
 
 ### 3.7 Semio Studio
 
@@ -861,8 +862,11 @@ Android** (P0, Gate 0).
   binary; on `main` and dispatch, the `wasm-pack` WebGL2 build followed by a
   Playwright step that mounts Quori and Toasty on a 763×486 canvas at DPR 1
   with an opaque black clear, waits for the `ready` signal and uploads the two
-  canvas screenshots, plus the APK job and the emulator smoke (launch-only,
-  with `panicked at` added to the failure grep so a dead render world fails).
+  canvas screenshots, plus the APK job and the emulator smoke on the image
+  Gate 0 validated (KVM on `ubuntu-latest`, the ros-viz-rs recipe): install,
+  launch with a pushed fixture GLB, wait, then assert a non-uniform
+  `screencap`, `dumpsys gfxinfo` frames above zero, and no `panicked at` in
+  logcat; launch-only is the fallback only for an image that cannot draw.
   `rust-cache` keyed on lock + target + feature set; each Bevy target is 2–5 GB
   against the repo cache cap.
 - **Visual oracle**: the committed native golden set (plus the Blender-export
@@ -898,14 +902,20 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 
 ### P0 Now, in parallel (each S)
 
-1. **Gate 0, Android rendering**: first on newer emulator images (API 34 and
-   35, arm64, `google_apis`), with the existing spike APKs (Vulkan build,
-   `bevy_render/gles` build); a tablet is named only if the emulator still
-   draws nothing. Pass: the Quori face visible and its morphs animating under
-   at least one backend; screenshot, logcat and `dumpsys gfxinfo` frame count
-   attached to the ticket. Fail on every image: the decision is which
-   Bevy/wgpu version is tried next, or the recorded fallback (the Tauri
-   Android shell around the wasm view, keeping the two-device stitch).
+1. **Gate 0, Android rendering**: the two spike APKs (Vulkan build,
+   `bevy_render/gles` build) on newer emulator images: x86_64 API 34 with KVM
+   and `-gpu swiftshader_indirect`, the image ros-viz-rs's CI screenshots Bevy
+   0.18 on, and arm64 API 34/35 `google_apis` on this Mac; only the API 32
+   arm64 image has been tried. Pass: the Quori face visible and its morphs
+   animating under at least one backend; screenshot, logcat and
+   `dumpsys gfxinfo` frame count attached to the ticket. An image that draws
+   becomes the CI smoke image, and the smoke asserts rendering from the first
+   job (3.9). If no image draws, the same APKs run on Victor's tablet over
+   adb (the script of P6's gate); if that draws, CI smoke stays launch-only on
+   the emulator and rendering is checked on the device. If nothing draws: the
+   decision is which Bevy/wgpu version is tried next, or the recorded
+   fallback (the Tauri Android shell around the wasm view, keeping the
+   two-device stitch).
 2. **Spikes on the existing wasm target dir** (14 s rebuilds): load the Quori
    GLB from a byte buffer through `MemoryAssetReader`; one `Screenshot`/
    `Readback` on WebGL2 in headless Chromium; `AppExit` then a second
@@ -1010,12 +1020,18 @@ the Kotlin subclass, the app-data directory, the persisted answers, the
 auto-load, the TLS decision, `android_logger`; then a **link-and-launch gate**
 with `studio` and the cloud TTS compiled in (aws-lc through cmake, oboe,
 wasmtime if still present: logcat shows the bridge registering); CI `apk` +
-`smoke` on main and dispatch, `cargo ndk check` per PR; signing from
-`android.yml`'s pattern moved to vizij-rs. **Retirement gate** (a checklist in
-the Linear ticket: APK sha, tablet model and Android version, screenshots):
-install, open a GLB from the picker and from a VIEW intent, reboot and find the
-face and its Studio identity back, claim once in Studio, move a scalar and a
-compound animatable from Studio.
+the rendering `smoke` of 3.9 on main and dispatch, `cargo ndk check` per PR;
+signing from `android.yml`'s pattern moved to vizij-rs. **Retirement gate: an
+adb script** (`android/scripts/device-gate.sh`) run against Victor's tablet
+plugged in or reached by `adb connect`, repeatable and runnable from a
+self-hosted runner on demand: install the release APK, load a GLB through a
+VIEW intent (`am start` on a pushed file) and through the picker (a UI
+Automator tap sequence, or a debug-only intent extra when the picker cannot be
+driven), reboot, assert the face and its Studio identity come back, then claim
+once in Studio and move a scalar and a compound animatable from the bridge
+E2E writer; every step leaves a screenshot, logcat and `gfxinfo` count in the
+run's artifact folder, which the Linear ticket links with the APK sha and the
+device model and Android version.
 
 ### P7 Semio Studio (M, after P5)
 
@@ -1052,7 +1068,9 @@ STUDIO-239, STUDIO-256, STUDIO-257, ARORA-79.
 
 Risks, most severe first:
 
-1. **Android rendering is unproven** (S:bevy-android-spike 8–9): Gate 0 is the
+1. **Android rendering is unproven on Bevy 0.19** (S:bevy-android-spike 8–9):
+   the one image tried (API 32 arm64) drew nothing; ros-viz-rs proves the
+   emulator pipeline itself with Bevy 0.18 on API 34 x86_64. Gate 0 is the
    first action; the fallback (Tauri shell around the wasm view) is recorded.
    The full device half has only been type-checked for Android; linking and
    launching with `studio` and TTS is a P6 gate.
