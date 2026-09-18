@@ -70,7 +70,10 @@ applied in the section it names):
 
 - Android rendering is tried on newer emulator images before any tablet
   (P0, Gate 0).
-- The view adopts STUDIO-256's `vizij-render` (3.1).
+- The view is `crates/vizij`'s own renderer, repurposed as a library that
+  `@vizij/render` serves in the browser; STUDIO-256's `vizij-render` spike is
+  not adopted and does not gate this work; its scene may consume the
+  repurposed crate later (3.1).
 - `apps/vizij-app` dissolves: a stand-alone `vizij --studio` instance is what
   Studio connects to, the way it connected to that app (3.7).
 - The Studio scene's face-on-a-screen keeps three.js (3.7); it is out of
@@ -389,12 +392,14 @@ three.js or WebGL. `packages/@vizij/node-graph-authoring` also builds
 - `studio-arora` (draft PR #256) is a separate wasm module spawning `FakeHal`
   devices; it cannot share a store with the browser Vizij device as built
   (S:studio-consumers 16–17).
-- A Rust rendering line already exists in flight: Linear project "Rust
-  Rendering for Vizij and the Studio Scene" (STUDIO-256 In Progress, VIZ-130,
-  VIZ-131), with `vizij-render` and `scene` crates on the unpushed vizij-rs
-  branch `feat/vizij-render-core`; VIZ-131 measured render-to-texture at
-  1.05 ms per face on a screen, and STUDIO-256 concluded on per-face state as
-  components so one App hosts several faces (S:challenge-verdicts C3, C10).
+- A Rust rendering spike exists in flight: Linear project "Rust Rendering
+  for Vizij and the Studio Scene" (STUDIO-256 In Progress, VIZ-130, VIZ-131),
+  with `vizij-render` and `scene` crates on `feat/vizij-render-core`, a
+  vizij-rs branch that exists only on Andy's machine (unpushed as of
+  2026-09-15; absent from every local checkout and from `origin`). Its
+  ticket reports render-to-texture at 1.05 ms per face on a screen and
+  concludes that per-face state must be components, not startup resources,
+  for one App to host several faces (S:challenge-verdicts C3, C10).
 
 ### 2.10 Portability, verified by builds
 
@@ -525,7 +530,7 @@ device without the view, so there is no `vizij-view`/`vizij-device` split
 
 | Module | Content | Targets |
 | --- | --- | --- |
-| `view` | STUDIO-256's `vizij-render` (branch `feat/vizij-render-core`), adopted as the face renderer with its per-face-components design, absorbing what `view.rs`, `meta.rs`, `snapshot.rs` and `frames.rs` do that it does not: `FaceMeta` from bytes (the only entry), an in-memory asset source, frames, viewport fit, picking events, selection highlight, holds | all |
+| `view` | today's `view.rs`, `meta.rs`, `snapshot.rs`, `frames.rs` as a Bevy plugin, with per-face state as components rather than startup resources (one App hosts N faces): `FaceMeta` from bytes (the only entry), an in-memory asset source, pose application, frames, viewport fit, picking events, selection highlight, holds | all |
 | `device` | the composition (`load_face` over bytes, `builder_for`, skills, host modules) and the native thread driver, plus a command handle (`reload(bytes)`, `reregister(DeviceInfo)`, `set_background`) so the TUI, the egui panel and the file dialog are interchangeable front ends | native, Android |
 | `web` (`cfg(target_arch = "wasm32")`) | the `VizijArora` wasm-bindgen surface, moved from `vizij-arora-web`, which is retired; no Bevy `App` is built until `mount` | wasm32 |
 | `android` (`cfg(target_os = "android")`) | `#[bevy_main]`, the SAF/VIEW plumbing, the app-data directory; an `android/` Gradle directory in the crate | Android |
@@ -550,11 +555,13 @@ Publication: the crate stays `publish = false`; the GitHub release is the
 distribution. There is no Studio-branded build: Studio connects to a
 stand-alone `vizij --studio` instance (section 3.7).
 
-The in-flight Rust rendering line is the view: `vizij-render` (STUDIO-256,
-branch `feat/vizij-render-core`) is adopted as the `view` module, `view.rs`
-is retired into it, and the naming decided there (`arora-viz-core` ← `vizij`
-← `scene`, in separate repositories) stands; P1 reconciles the crate layout
-above with that naming rather than the other way round.
+STUDIO-256's spike (`vizij-render` and a scene crate on Andy's unpushed
+branch `feat/vizij-render-core`) is not a dependency and not the road taken
+here: it shows how a scene could consume a face renderer, and one of its
+findings is carried as a requirement (per-face state as components, never
+startup resources, so one App hosts several faces). When the scene work
+wants a face renderer, it consumes the repurposed `view` (as a library crate
+if that is what it needs); that crate boundary is decided then, not now.
 
 ### 3.2 The browser: one module instance per page, faces as viewports
 
@@ -946,11 +953,11 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 
 ### P1 Crate layout and the view module (S to M)
 
-One crate, lib + bin, the modules of section 3.1, with `vizij-render` merged
-from `feat/vizij-render-core` as the `view` module and `view.rs` retired into
-it (the snapshot goldens decide what of `view.rs`'s contract it must absorb);
-`desktop` default feature; per-target Bevy tables; `FaceMeta` from bytes as
-the only entry; the `device` command handle. First commit: the wasm32 and
+One crate, lib + bin, the modules of section 3.1; the `view` module is a pure
+move of today's four files, then its face state becomes per-face components
+(the snapshot goldens guard both steps); `desktop` default feature;
+per-target Bevy tables; `FaceMeta` from bytes as the only entry; the `device`
+command handle. First commit: the wasm32 and
 cargo-ndk check jobs in CI (with `--features studio`). Gate: `snapshot-regression` unchanged; both
 checks green; the Linux binary builds; the 33 tests plus one that drives the
 composition for N frames headless through `SnapshotPlugin` and reads a pose
@@ -1100,9 +1107,10 @@ Risks, most severe first:
 10. **Installers are on the critical path** without signing or notarization
     credentials; a dmg that macOS refuses to open is a gate that cannot close
     until they exist.
-11. **`vizij-render` is unpushed and unreviewed**; adopting it as the view
-    makes P1 depend on landing that branch and on its parity with `view.rs`'s
-    goldens.
+11. **Two Bevy face renderers may coexist for a while**: `view` here and
+    STUDIO-256's spike on Andy's machine; the plan takes nothing from that
+    branch, so the only cost is agreeing, when the scene work needs a face
+    renderer, that it consumes the repurposed `view` rather than the spike.
 
 The eleven decisions of the first review are recorded in section 1. Still
 open for Victor: a tablet, only if the newer emulator images also draw nothing
