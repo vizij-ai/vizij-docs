@@ -2,7 +2,7 @@
 <!-- tags: family=project; type=plan; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
 > **Last updated:** 2026-09-18
 
-> **Related documents:** [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
+> **Related documents:** [Reading guide (eighteen slides)](bevy_everywhere-deck.md) · [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
 
 This is a dry run: a study and a plan, with no implementation. Every claim about
 the current state is backed by a sub-study in `studies/`, each of which opens with
@@ -723,8 +723,8 @@ if that is what it needs); that crate boundary is decided then, not now.
 - **The face standard gains a conversation-state tier and an expression
   producer**: `standard/vizij/conversation/{speaking,user_speaking,thinking}`
   and `standard/vizij/expression/<name>`, adapted per face like the visemes
-  (a VIZ ticket; the standard's page and `vizij-bundle`'s coverage check are
-  updated with it). The agent writes only standard keys: `speaking` around its
+  ([VIZ-135](https://linear.app/semio-ai/issue/VIZ-135), a proposal; the
+  standard's page and `vizij-bundle`'s coverage check are updated with it). The agent writes only standard keys: `speaking` around its
   run (1 on spawn, 0 on terminal status or stop; VIZ-128 is why the run status
   alone is not the source), `user_speaking` and `thinking` from its own state,
   expressions by standard name with the tutorial's synonym table as the
