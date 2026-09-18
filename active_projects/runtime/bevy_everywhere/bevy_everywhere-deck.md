@@ -1,7 +1,7 @@
 # One Bevy view for every Vizij face, in sixteen slides
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
 > **Last updated:** 2026-09-18
-> **Related documents:** [Central plan](bevy_everywhere-plan.md) · [Sub-studies](studies/)
+> **Related documents:** [Central plan](bevy_everywhere-plan.md) · [Tickets](bevy_everywhere-tickets.md) · [Sub-studies](studies/)
 
 A reading guide to the plan for people who were not in the study. Each slide
 links to the section or study that carries the evidence. Nothing is
