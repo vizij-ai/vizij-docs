@@ -65,12 +65,25 @@ Two gates, not one: Android gates the deletion of the standalone's Tauri shell
 and native run; the browser port gates the rewrite of its folder into the demo
 (section 4, P8a and P8b).
 
-Assumptions not yet confirmed (flagged for review):
+Decided on 2026-09-18 (the eleven decisions of the first review; each is
+applied in the section it names):
 
-- Desktop installers (dmg, deb, rpm, msi) are not a retirement gate; a CI-built
-  binary per OS is, and installers follow the ros-viz-rs recipes afterwards.
-- Semio Studio's face-on-a-3D-screen is out of "everywhere" pending the
-  decision in section 3.7; acceptance criterion 2 is scoped to vizij-web.
+- Android rendering is tried on newer emulator images before any tablet
+  (P0, Gate 0).
+- The view adopts STUDIO-256's `vizij-render` (3.1).
+- `apps/vizij-app` dissolves: a stand-alone `vizij --studio` instance is what
+  Studio connects to, the way it connected to that app (3.7).
+- The Studio scene's face-on-a-screen keeps three.js (3.7); it is out of
+  "everywhere".
+- vizij-showcase is ported on the shared canvas (3.8).
+- One agent demo, a text agent; `tutorial-agent-face` folds into it (3.4).
+- The exporter writes the authored defaults (3.3).
+- `@vizij/render` is kept and reworked over the Bevy view; the authoring app
+  keeps using it with minimal changes; Studio adopts it (3.3, 3.7).
+- `studio-arora` is out of scope; its fate is a Studio decision (3.7).
+- The face standard gains a conversation-state tier and an expression producer
+  (3.4).
+- Desktop installers gate the retirement of the standalone (3.9, P5, P8a).
 
 ## 2. Current state
 
@@ -512,11 +525,11 @@ device without the view, so there is no `vizij-view`/`vizij-device` split
 
 | Module | Content | Targets |
 | --- | --- | --- |
-| `view` | today's `view.rs`, `meta.rs`, `snapshot.rs`, `frames.rs` as a Bevy plugin: `FaceMeta` from bytes (the only entry), an in-memory asset source, pose application, frames, viewport fit, picking events, selection highlight, holds | all |
+| `view` | STUDIO-256's `vizij-render` (branch `feat/vizij-render-core`), adopted as the face renderer with its per-face-components design, absorbing what `view.rs`, `meta.rs`, `snapshot.rs` and `frames.rs` do that it does not: `FaceMeta` from bytes (the only entry), an in-memory asset source, frames, viewport fit, picking events, selection highlight, holds | all |
 | `device` | the composition (`load_face` over bytes, `builder_for`, skills, host modules) and the native thread driver, plus a command handle (`reload(bytes)`, `reregister(DeviceInfo)`, `set_background`) so the TUI, the egui panel and the file dialog are interchangeable front ends | native, Android |
 | `web` (`cfg(target_arch = "wasm32")`) | the `VizijArora` wasm-bindgen surface, moved from `vizij-arora-web`, which is retired; no Bevy `App` is built until `mount` | wasm32 |
 | `android` (`cfg(target_os = "android")`) | `#[bevy_main]`, the SAF/VIEW plumbing, the app-data directory; an `android/` Gradle directory in the crate | Android |
-| `panel` (feature `egui`, `bevy_egui` 0.42) | the one egui `Operator` and device-info panel: owners, name, model family, endpoints, layout (root bounds, background); reused by desktop, Android and the Studio build | native, Android |
+| `panel` (feature `egui`, `bevy_egui` 0.42) | the one egui `Operator` and device-info panel: owners, name, model family, endpoints, layout (root bounds, background); reused by desktop and Android | native, Android |
 | `main.rs` | the desktop binary: CLI, TUI (feature `tui`), the in-app local WS bridge, `--ros2`, `--studio` | desktop |
 
 Features: `desktop` (default) = `arora/native`, `arora/tui`, tokio
@@ -534,16 +547,14 @@ feature (the app never uses Bevy's audio; it also lifts the API-26 floor on
 Android).
 
 Publication: the crate stays `publish = false`; the GitHub release is the
-distribution. The Studio-branded build is a packaging matrix entry of the
-release workflow (product name, icons, defaults for `model_family` and
-`hardware_version`), not a crate in semio_studio (section 3.7).
+distribution. There is no Studio-branded build: Studio connects to a
+stand-alone `vizij --studio` instance (section 3.7).
 
-Relation to the in-flight Rust rendering line: STUDIO-256's `vizij-render`
-crate (branch `feat/vizij-render-core`) and `crates/vizij/src/view.rs` are two
-Bevy face renderers. **Decision requested from Victor before P1**: `view` adopts
-`vizij-render` (its per-face-components design, which section 3.2 needs) or
-supersedes it; the naming already decided there (`arora-viz-core` ← `vizij` ←
-`scene`) is reconciled at the same time.
+The in-flight Rust rendering line is the view: `vizij-render` (STUDIO-256,
+branch `feat/vizij-render-core`) is adopted as the `view` module, `view.rs`
+is retired into it, and the naming decided there (`arora-viz-core` ← `vizij`
+← `scene`, in separate repositories) stands; P1 reconciles the crate layout
+above with that naming rather than the other way round.
 
 ### 3.2 The browser: one module instance per page, faces as viewports
 
@@ -607,20 +618,23 @@ supersedes it; the naming already decided there (`arora-viz-core` ← `vizij` �
 ### 3.3 The authoring app keeps its world model in JavaScript
 
 - The viewport swaps at the `VizijRuntimeFace` seam; the panels do not change.
-- `@vizij/render` becomes a **headless library** (~3,000 lines): the loader
+- `@vizij/render` is **kept and reworked over the Bevy view**: its `Vizij`
+  React component becomes a face slot on the page's shared canvas (section
+  3.2) with the same props its consumers pass today, so the authoring app and
+  `runtime-react` keep importing it with minimal changes; the loader
   (`traverseThree`, `aggressiveImport`, clip extraction), the exporter
   returning bytes, the bundle helpers, the world types without React refs, and
-  a store slimmed to world, animatables, values and selection. Deleted: the
-  React renderer, the r3f canvas, the renderables, the selection glow, the
+  a store slimmed to world, animatables, values and selection stay. Deleted:
+  the r3f canvas, the three.js renderables, the selection glow effect, the
   feature hooks, the memory counters. Added: the ~120-line scene-graph builder
   and a shared decoder for arora struct/f32 defaults (verified,
-  S:challenge-headless-export). **Decision requested from Victor**: the
-  exported node TRS and morph weights become the authored defaults (headless)
-  rather than the runtime pose snapshot; and whether the package keeps its name
-  or folds into `apps/vizij-authoring`, its only remaining consumer once
-  `runtime-react` reads bundles through `describe`. A Rust exporter is
-  JSON-chunk surgery over the source GLB (RobotData schema, TRS, materials,
-  BIN chunk verbatim) next to `vizij-bundle`; later, not a gate.
+  S:challenge-headless-export). The exported node TRS and morph weights are
+  the **authored defaults**, not the runtime pose snapshot; the shipped faces
+  are re-exported once. Studio adopts this package (STUDIO-239), Bevy
+  underneath; Studio may later use the Rust crates directly if that proves
+  simpler. A Rust exporter is JSON-chunk surgery over the source GLB
+  (RobotData schema, TRS, materials, BIN chunk verbatim) next to
+  `vizij-bundle`; later, not a gate.
 - **Structural edits** reach the view as they reach the device today: by
   reload, now as `loadFace(faceId, exportedBytes)` with the reload keyed on
   world data only; the export is a JSON re-serialization plus a buffer copy,
@@ -696,18 +710,21 @@ supersedes it; the naming already decided there (`arora-viz-core` ← `vizij` �
 - **One agent demo** in the standalone's folder: a text agent (microphone →
   Deepgram → OpenAI, the STT/LLM half of `speech-react` kept as shared source
   if the authoring app keeps its conversation panel, else as app source) calling
-  `say` through `spawn`, interrupting through `halt`; `speaking` written by the
-  agent around its run (1 on spawn, 0 on terminal status or stop; VIZ-128 is
-  why the run status alone is not the source); `user_speaking`/`thinking` as
-  agent writes onto the face's inputs; expressions through
-  `standard/vizij/expression/<name>` if the face carries a standard-expression
-  adaptation, else the bundle's emotion group with the tutorial's synonym table
-  as the agent-side mapping. The bundle's `speechConfig` keeps `voice`,
-  `visemeGroupId`, `emotionGroupId` and the three topic paths; `mode`,
-  `agentName`, `systemPrompt`, `autoActivateMic`, `apiBaseUrl` stop being
-  exported and are ignored. **Decision requested from Victor**: `tutorial-agent-face`
-  (Gemini Live, audio in and out, local aligner) folds into the demo in text
-  modality, or stays as the audio-agent shape with its JS lipsync producer.
+  `say` through `spawn`, interrupting through `halt`. `tutorial-agent-face`
+  folds into it: its guidebook route is re-pointed, its Gemini audio path and
+  aligner are dropped (or switched to text modality if that is verified).
+- **The face standard gains a conversation-state tier and an expression
+  producer**: `standard/vizij/conversation/{speaking,user_speaking,thinking}`
+  and `standard/vizij/expression/<name>`, adapted per face like the visemes
+  (a VIZ ticket; the standard's page and `vizij-bundle`'s coverage check are
+  updated with it). The agent writes only standard keys: `speaking` around its
+  run (1 on spawn, 0 on terminal status or stop; VIZ-128 is why the run status
+  alone is not the source), `user_speaking` and `thinking` from its own state,
+  expressions by standard name with the tutorial's synonym table as the
+  agent-side mapping. The bundle's `speechConfig` keeps `voice`,
+  `visemeGroupId` and `emotionGroupId` as the face's adaptation hints; the
+  three topic paths, `mode`, `agentName`, `systemPrompt`, `autoActivateMic`
+  and `apiBaseUrl` stop being exported and are ignored.
 - Retired with the standalone: `@vizij/speech-react` (deprecated on npm, removed
   from the publish set), `--deepgram-key`, `--openai-key`, `--auto-mic`,
   `--speech-mode`, `--silence-ms`, and the `speak`/`interrupt`/`mute_microphone`
@@ -766,20 +783,17 @@ Android** (P0, Gate 0).
 
 ### 3.7 Semio Studio
 
-- **`apps/vizij-app` is deleted.** Its Tauri shell goes because a native Bevy
-  window cannot coexist with tao on macOS or Android, and a wasm view in the
-  webview would make a native app depend on the browser deliverable. What it
-  did that the `vizij` binary does not, the device-info form layered defaults
-  ⊕ Studio-held (`Bridge::get_device_info()`) ⊕ operator input with a device
-  restart on change, moves into the egui panel; the branding is the release
-  workflow's `Semio Vizij` entry. semio_studio hosts no Rust for this; its
-  Cargo-only rule (crates.io dependencies) makes a `semio-vizij` crate there
-  cost six first-time crate publications or a git dependency. **Decision
-  requested from Victor**: does Studio need to own the artifact? If so, the
-  Studio-side job re-bundles the vizij-rs release binary with Studio icons.
-  STUDIO-257's first three items carry over to the panel; its fourth (the
-  value mirror) disappears. An existing `vizij-app` identity file is not
-  migrated.
+- **`apps/vizij-app` dissolves.** A stand-alone `vizij --studio` instance is
+  what Studio connects to, the same way it connected to that app: the device
+  registers with a name, model family and owners, appears in Studio, and is
+  driven from there. The Tauri shell goes because a native Bevy window cannot
+  coexist with tao on macOS or Android; what the app did that the `vizij`
+  binary does not, the device-info form layered defaults ⊕ Studio-held
+  (`Bridge::get_device_info()`) ⊕ operator input with a device restart on
+  change, moves into the egui panel and the persisted owners/name file.
+  semio_studio hosts no Rust and no branded artifact for this. STUDIO-257's
+  first three items carry over to the panel; its fourth (the value mirror)
+  disappears. An existing `vizij-app` identity file is not migrated.
 - **A Studio-key profile is this project's deliverable**: under the `studio`
   feature, `vizij::device` composes a mapping source from `FaceMeta` bindings
   (like `ros4hri_source`) that strips `.target_position`, aggregates
@@ -792,22 +806,19 @@ Android** (P0, Gate 0).
   device-side responder in `arora-studio-bridge-client` 6.1.0 although `RigHal`
   implements `HalAssets`: P7 adds the responder (an ARORA ticket) or records
   that create-project-with-device needs a matching model asset in Studio.
-- **The Studio scene's face-on-a-screen keeps three.js**, as Studio's
-  `packages/vizij` renderables reduced to that surface (plus the upload modal's
-  preview and export from mounted refs, `packages/core`'s loader and the
-  stories) over the headless world model of section 3.3. STUDIO-239 is
-  re-scoped: `@vizij/render` has no renderer to swap onto, so the ticket
-  retires `packages/vizij`'s loader and exporter for the headless library and
-  keeps its renderables; VIZ-131's render-to-texture spike (1.05 ms per face)
-  is the measured alternative. **Decision requested from Victor**, with those
-  numbers.
+- **Studio adopts `@vizij/render`** (STUDIO-239 proceeds), Bevy underneath,
+  for the upload modal's preview and export, `packages/core`'s loader and the
+  stories. **The scene's face-on-a-screen keeps three.js**: Studio's
+  `packages/vizij` renderables are reduced to that one surface over the shared
+  loader; VIZ-131's render-to-texture path (1.05 ms per face) is the later
+  shortcut if Studio moves to the Rust crates directly.
 - Studio-exported faces (per-axis RobotData) become readable by the Bevy view
   through the per-axis bindings of section 3.3; the GLB-format convergence
   itself stays STUDIO-239's.
-- `studio-arora` (draft PR #256) needs a decision (land on crates.io arora,
-  rebase, or close) before the browser device's host is fixed in P3; a browser
-  face reaching Studio is out of scope (a studio-bridge deliverable: a browser
-  device client over `zenoh-ts`).
+- `studio-arora` (draft PR #256) is out of this project's scope; its fate is a
+  Studio decision. The browser Vizij device is its own wasm module, and a
+  browser face reaching Studio is a studio-bridge deliverable (a browser
+  device client over `zenoh-ts`), not part of the retirement.
 
 ### 3.8 Fate of every app
 
@@ -815,15 +826,15 @@ Android** (P0, Gate 0).
 | --- | --- |
 | vizij-standalone | Tauri shell and native second device deleted (P8a); folder becomes the agent + Vizij demo (P8b) |
 | tutorial-fullscreen-face, demo-vizij-player | ported first (P4a) |
-| vizij-authoring | viewport ported (P4b); loader and exporter kept headless; SpeechPanel decision (3.4) |
-| tutorial-agent-face | folded into the demo or kept as the audio-agent shape (decision, 3.4) |
-| vizij-showcase | ported on the shared-canvas viewports (no special case), or retired (in no CI, guidebook or manifest); decision before P4a |
+| vizij-authoring | viewport ported (P4b) through the reworked `@vizij/render`; SpeechPanel moves onto `say` (3.4) |
+| tutorial-agent-face | folded into the agent demo (3.4); its route re-pointed |
+| vizij-showcase | ported on the shared-canvas viewports (P4a); the reference for many faces per page |
 | demo-animation-studio, demo-graph-studio, minimal-demo-* | unchanged (no face) |
 | vizij-ws-app, `packages/@vizij/arora-types`, `scripts/check-snap-env.mjs`, `dev:vizij-standalone` | deleted |
 | `@vizij/animation-module` (browser artifact), `vizij-arora-web` | retired into the host-module path and `vizij::web` |
-| semio_studio `apps/vizij-app` | deleted; replaced by the `vizij` binary's Studio build (3.7) |
-| semio_studio `packages/vizij`, scene screen, upload modal, stories | stay on three.js under STUDIO-239 as re-scoped (3.7) |
-| semio_studio `studio-arora` (PR #256) | decision requested (3.7) |
+| semio_studio `apps/vizij-app` | dissolves; Studio connects to a stand-alone `vizij --studio` (3.7) |
+| semio_studio `packages/vizij` | replaced by `@vizij/render` (STUDIO-239) except the scene-screen renderables, which stay on three.js (3.7) |
+| semio_studio `studio-arora` (PR #256) | out of scope; a Studio decision (3.7) |
 
 ### 3.9 Packaging, CI and tests
 
@@ -832,10 +843,12 @@ Android** (P0, Gate 0).
   gate): per-OS `cargo build -p vizij --release --features studio` (no
   `tts-piper`: GPLv3 and baked rpaths; `ros2-dds` only if packaged), uploaded as
   bare binaries plus the APK from P6 and the gzipped wasm; the Windows job adds
-  NASM for `aws-lc-sys`; Linux jobs install Bevy's apt headers. deb/rpm/dmg
-  follow on the ros-viz-rs recipes (`cargo deb -p vizij`, `cargo generate-rpm
-  -p vizij`, `package_macos.sh`), unsigned. The `Semio Vizij` entry is the same
-  build with Studio branding. Artifact feature sets are tabled in the workflow.
+  NASM for `aws-lc-sys`; Linux jobs install Bevy's apt headers. The
+  installers (dmg through `package_macos.sh`, deb through `cargo deb -p vizij`,
+  rpm through `cargo generate-rpm -p vizij`, exe) are part of the same release
+  and **gate the retirement of the standalone** (P8a); they ship unsigned and
+  un-notarized until credentials exist. Artifact feature sets are tabled in
+  the workflow.
 - **npm**: `@vizij/runtime` 3.0.0 as a `major` changeset through the existing
   OIDC workflow (no bootstrap), published at the end of P4a once `runtime-react`
   1.0 is green against it through `wasm-links`; a `3.0.0-alpha` channel or a CI
@@ -885,13 +898,13 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 
 ### P0 Now, in parallel (each S)
 
-1. **Gate 0, Android rendering on hardware**: install the existing spike APKs
-   (Vulkan build, `bevy_render/gles` build) on the target tablet (model,
-   Android version and GPU named as a schedule dependency), in parallel on an
-   API 34/35 arm64 emulator image. Pass: the Quori face visible and its morphs
-   animating under at least one backend; screenshot, logcat and
-   `dumpsys gfxinfo` frame count attached to the ticket. Fail: the decision is
-   which Bevy/wgpu version is tried next, or the recorded fallback (the Tauri
+1. **Gate 0, Android rendering**: first on newer emulator images (API 34 and
+   35, arm64, `google_apis`), with the existing spike APKs (Vulkan build,
+   `bevy_render/gles` build); a tablet is named only if the emulator still
+   draws nothing. Pass: the Quori face visible and its morphs animating under
+   at least one backend; screenshot, logcat and `dumpsys gfxinfo` frame count
+   attached to the ticket. Fail on every image: the decision is which
+   Bevy/wgpu version is tried next, or the recorded fallback (the Tauri
    Android shell around the wasm view, keeping the two-device stitch).
 2. **Spikes on the existing wasm target dir** (14 s rebuilds): load the Quori
    GLB from a byte buffer through `MemoryAssetReader`; one `Screenshot`/
@@ -923,10 +936,12 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 
 ### P1 Crate layout and the view module (S to M)
 
-One crate, lib + bin, the modules of section 3.1; `desktop` default feature;
-per-target Bevy tables; `FaceMeta` from bytes as the only entry; the
-`device` command handle. First commit: the wasm32 and cargo-ndk check jobs in
-CI (with `--features studio`). Gate: `snapshot-regression` unchanged; both
+One crate, lib + bin, the modules of section 3.1, with `vizij-render` merged
+from `feat/vizij-render-core` as the `view` module and `view.rs` retired into
+it (the snapshot goldens decide what of `view.rs`'s contract it must absorb);
+`desktop` default feature; per-target Bevy tables; `FaceMeta` from bytes as
+the only entry; the `device` command handle. First commit: the wasm32 and
+cargo-ndk check jobs in CI (with `--features studio`). Gate: `snapshot-regression` unchanged; both
 checks green; the Linux binary builds; the 33 tests plus one that drives the
 composition for N frames headless through `SnapshotPlugin` and reads a pose
 through `RigHal`.
@@ -956,10 +971,11 @@ three.js bundle extraction, neutral staging and guest-module loading deleted;
 the `namespace/` migration list (authoring, `node-graph-authoring`,
 `tutorial-agent-face`, showcase); `VizijRuntimeFace` = a face slot on the
 page's shared canvas; the `ready` signal and a non-uniform canvas pixel sample
-added to each app's smoke spec; `tutorial-fullscreen-face`, then
-`demo-vizij-player` (its load-sample e2e). The showcase decision is taken
-first. `@vizij/runtime` 3.0.0 publishes at the end. The guidebook's
-`integrate/*` and quickstart pages start here.
+added to each app's smoke spec; `@vizij/render`'s `Vizij` reworked as the
+face slot; `tutorial-fullscreen-face`, then `demo-vizij-player` (its
+load-sample e2e), then the showcase (five slots on one canvas).
+`@vizij/runtime` 3.0.0 publishes at the end. The guidebook's `integrate/*`
+and quickstart pages start here.
 
 ### P4b The authoring viewport (L) ∥ P4c The agent demo (M)
 
@@ -968,9 +984,11 @@ built before the port); the headless exporter and the plain-GLB
 import→export→`loadFace` path; the viewport swap; selection glow; `hold`;
 `setStaticFeature`; P1b's contract additions; the memory-checkpoint workflow
 in StrictMode; the Bevy load time per structural edit measured and accepted.
-P4c (depends on P3b): the standalone's folder rewritten as the text agent over
-`spawn(say)`/`halt`, `speaking` and the state topics from the agent, the
-`tutorial-agent-face` decision applied, `speech-react` deprecated.
+P4c (depends on P3b and on the standard's conversation-state tier): the
+standalone's folder rewritten as the text agent over `spawn(say)`/`halt`,
+the conversation-state and expression keys written by standard name,
+`tutorial-agent-face` folded in and its route re-pointed, `speech-react`
+deprecated.
 
 ### P5 Desktop (M, starts now)
 
@@ -980,8 +998,8 @@ accepted, `invoke reset` succeeds, `GET /` is the panel); `--studio` through
 `connect()` + `update_device_info` and the persisted owners/name file; the egui
 `Operator` panel built once here (feature `egui`); `FileDragAndDrop` and the
 `rfd` dialog; the window flags, URL loading and remembered model; the release
-workflow with a binary per OS and the `Semio Vizij` entry; a CHANGELOG for
-`vizij`. Gate: a tagged release with one binary per desktop OS; with no
+workflow with a binary and an installer per desktop OS; a CHANGELOG for
+`vizij`. Gate: a tagged release with dmg, deb, rpm and exe; with no
 `DEVICE_OWNERS`, the prompt appears and registration succeeds. The `deploy/*`
 guidebook pages are rewritten when this ships.
 
@@ -1002,14 +1020,14 @@ compound animatable from Studio.
 ### P7 Semio Studio (M, after P5)
 
 The Studio-key profile under the `studio` feature; the E2E of P0.3 passing on
-a scalar and a compound animatable with `vizij --studio` as the device (the
-face loaded from a Studio-exported, per-axis GLB); the `retrieveGlb` decision;
-the `Semio Vizij` build; `apps/vizij-app` deleted with its references
-(`package.json`, `.changeset/config.json`, the two docs pages); STUDIO-239
-re-scoped and STUDIO-257 re-targeted; the scene-screen and studio-arora
-decisions recorded.
+a scalar and a compound animatable with a stand-alone `vizij --studio` as the
+device (the face loaded from a Studio-exported, per-axis GLB), registered and
+driven the way `apps/vizij-app` was; the `retrieveGlb` decision;
+`apps/vizij-app` deleted with its references (`package.json`,
+`.changeset/config.json`, the two docs pages); STUDIO-239 pointed at the
+reworked `@vizij/render` and STUDIO-257 re-targeted at the panel.
 
-### P8a Retire the Tauri standalone (S, after P6's gate and P5)
+### P8a Retire the Tauri standalone (S, after P6's gate and P5's installers)
 
 Delete the Tauri shell, the native run, `android.yml` (once vizij-rs has
 produced a signed APK), `check-snap-env.mjs`, `dev:vizij-standalone`, the
@@ -1051,9 +1069,9 @@ Risks, most severe first:
 5. **Studio-capable builds ship wasmtime** until arora splits `studio-bridge`
    from `native`; on Android that puts wasmtime's link and initialisation on
    the gate path.
-6. **Export semantics change**: headless export writes authored defaults, not
+6. **Export semantics change**: the exporter writes authored defaults, not
    the runtime pose; three of five shipped faces differ on the first frame
-   until the device writes; a decision for Victor.
+   until the device writes, and are re-exported once.
 7. **The say contract has no stop and no run id**: interruption by silence is
    a convention; repeated utterances collide; an arora ABI change if the demo
    needs better.
@@ -1061,24 +1079,16 @@ Risks, most severe first:
    the tiering and caching of section 3.9 are part of the design.
 9. **The reference face's plain-GLB path** depends on the headless exporter
    landing before the viewport swap (ordered in P4b).
+10. **Installers are on the critical path** without signing or notarization
+    credentials; a dmg that macOS refuses to open is a gate that cannot close
+    until they exist.
+11. **`vizij-render` is unpushed and unreviewed**; adopting it as the view
+    makes P1 depend on landing that branch and on its parity with `view.rs`'s
+    goldens.
 
-Decisions requested from Victor (in order of when they block):
-
-1. Gate 0's tablet: which device, who runs it, where the artifacts go.
-2. `view` versus STUDIO-256's `vizij-render`: adopt, supersede, and the naming.
-3. The Studio-branded artifact: a vizij-rs release entry (proposed) or a crate
-   or re-bundling job owned by semio_studio.
-4. The Studio scene screen: three.js kept (proposed) or the render-to-texture
-   path VIZ-131 measured.
-5. vizij-showcase: port on the shared canvas or retire.
-6. The agent demo: text agent (proposed); fold or keep `tutorial-agent-face`.
-7. Export pose semantics: authored defaults (headless) or the runtime pose.
-8. `@vizij/render`'s remaining loader and exporter: keep the package or fold
-   into the authoring app.
-9. `studio-arora` (PR #256): land, rebase, or close.
-10. The face standard: conversation-state keys and an expression producer, so
-    an agent targets any face by standard names.
-11. Desktop installers: follow-up (assumed) or gate.
+The eleven decisions of the first review are recorded in section 1. Still
+open for Victor: a tablet, only if the newer emulator images also draw nothing
+(Gate 0); the VIZ ticket for the standard's conversation-state tier.
 
 Open technical questions not answered by the challenge (the spikes that did
 not complete): Bevy 0.19 glTF from an in-memory buffer at run time;
@@ -1095,8 +1105,9 @@ device's tick as the compile spike assumes.
 1. `vizij-standalone` no longer exists as a Tauri app; its folder holds the
    agent + Vizij demo on the wasm view.
 2. Every face-rendering app in vizij-web draws through the wasm Bevy view on
-   one shared canvas per page; `@vizij/render` contains no renderer; `three`
-   is a dependency of the authoring app's loader only.
+   one shared canvas per page, via `@vizij/render`'s reworked `Vizij`;
+   `@vizij/render` contains no three.js renderer; `three` is a dependency of
+   its loader and exporter only.
 3. The native app and the wasm view render the two reference faces and the
    Blender-export preset within the golden tolerance in CI; the Android app
    renders them on the named tablet.
@@ -1105,7 +1116,12 @@ device's tick as the compile spike assumes.
    device once in Studio, move a scalar and a compound animatable from Studio.
 5. `say` works on the native app and in the browser demo, lips driven by the
    viseme players from the same fragment on every shipped face.
-6. The `vizij` binary's Studio build replaces `apps/vizij-app` and moves under
-   Studio in the bridge E2E, loading a Studio-exported face.
-7. The guidebook's deploy, integrate and control pages describe the new
+6. A stand-alone `vizij --studio` instance registers with Studio and is driven
+   from Studio the way `apps/vizij-app` was, in the bridge E2E, loading a
+   Studio-exported face; `apps/vizij-app` is gone.
+7. A tagged release carries a binary and an installer (dmg, deb, rpm, exe) per
+   desktop OS.
+8. The agent demo writes only standard keys: visemes through `say`, the
+   conversation-state tier, expressions by standard name.
+9. The guidebook's deploy, integrate and control pages describe the new
    surfaces; the runtime summary and the tickets of P8b point here.
