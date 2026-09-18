@@ -7,8 +7,9 @@ The plan's phases decomposed into tickets, each with a definition of done a
 reviewer can check and the implementation cues the studies produced. The
 tickets live in the Linear project
 [Rust Rendering for Vizij and the Studio Scene](https://linear.app/semio-ai/project/rust-rendering-for-vizij-and-the-studio-scene-8339c10df2b1/overview);
-this page is the source they were created from and is edited first when a
-ticket changes. Sizes: S days, M one to two weeks, L several weeks of one
+under the umbrella issue [VIZ-158](https://linear.app/semio-ai/issue/VIZ-158),
+which also carries the working notes below; this page is the source they were
+created from and is edited first when a ticket changes. Sizes: S days, M one to two weeks, L several weeks of one
 person. Repos: vizij-rs unless stated.
 
 Dependency spine: T01–T07 start now; T08 → T09 → T10 → T12 → T13 ∥ T15 → T23;
