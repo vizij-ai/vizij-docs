@@ -2,7 +2,7 @@
 <!-- tags: family=project; type=plan; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
 > **Last updated:** 2026-09-18
 
-> **Related documents:** [Reading guide (eighteen slides)](bevy_everywhere-deck.md) · [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
+> **Related documents:** [Reading guide (sixteen slides)](bevy_everywhere-deck.md) · [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
 
 This is a dry run: a study and a plan, with no implementation. Every claim about
 the current state is backed by a sub-study in `studies/`, each of which opens with
