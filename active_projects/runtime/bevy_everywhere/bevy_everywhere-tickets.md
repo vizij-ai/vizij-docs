@@ -16,6 +16,26 @@ T08 → T18 → T19 → T22; T16 starts now → T17 → T22; T20 → T21. Every 
 below links its Linear issue; the issues carry the same scope, definition of
 done and cues, and the blocking relations of this spine.
 
+## Working notes for implementers
+
+- Spike code: vizij-rs branch `spikes/bevy-everywhere`; its README lists what
+  each directory establishes. Build outputs are not committed: a cold Bevy
+  wasm build is about 27 CPU-minutes, a cold Android build about 20 minutes,
+  a source change 14–37 s; the `wasm-bindgen` CLI must match the lock
+  (0.2.128); the native `wasm-opt` binary is needed.
+- Repo rules that bite here: vizij-rs work in sibling worktrees with their
+  own `target`; its pre-commit runs clippy (3–5 min) and pre-push the
+  workspace tests; never `cargo build --workspace` in arora-sdk; semio_studio's
+  Rust is crates.io-only; a new crate's or npm package's first publish is
+  manual (Trusted Publishing cannot create it); breaking changes are real
+  MAJOR bumps with a CHANGELOG; docs and commits state what is true, not how
+  it came to be; no draft PRs.
+- Not a dependency: STUDIO-256's `vizij-render` branch (Andy's machine only).
+  Out of scope: `studio-arora`, a browser face reaching Studio, the Studio
+  scene screen (three.js stays).
+- The vizij-docs validators hardcode another machine's path; check links by
+  hand.
+
 ## P0, now, in parallel
 
 ### T01 Android emulator smoke in its CI shape (S) — [VIZ-136](https://linear.app/semio-ai/issue/VIZ-136)
