@@ -28,8 +28,13 @@ What we get out of it:
   deleted, not rewritten.
 - **The same face everywhere.** What renders on the robot renders in the
   authoring app, pixel for pixel, checked by one golden set.
+- **A face is a component, not a device.** The `vizij` binary spawns a device
+  whose whole hardware is a face; as a library, Vizij is a view, a face
+  composition and a set of modules that any Arora device folds in — a robot
+  adds a face as one more piece of hardware, and a face grows into a robot by
+  adding a HAL. Studio sees one device either way.
 
-Source: [plan §1](bevy_everywhere-plan.md#1-goal).
+Source: [plan §1](bevy_everywhere-plan.md#1-goal), [§1.1](bevy_everywhere-plan.md#11-the-face-is-a-component-of-a-device-not-the-device).
 
 ---
 
@@ -115,6 +120,11 @@ With React, the same through `@vizij/runtime-react` and `@vizij/render`:
 </VizijRuntimeProvider>
 ```
 
+The runtime's entry is bytes (`loadFace(id, bytes)`); the provider's `glb`
+takes them as `kind: "url"` (fetched — a `blob:` URL included), `kind:
+"blob"` (an asset already in hand, as in Studio) or `kind: "world"` (an
+authored world, exported to bytes first).
+
 The provider API that `demo-vizij-player` and the tutorials use today is kept;
 what they lose is the namespace prefix on paths.
 
@@ -194,10 +204,13 @@ fills the screen; a panel asks once who owns the device
 and shows where it is reachable; the tablet reboots into the same face and the
 same Studio identity.
 
-Studio: a face is a device. `vizij --studio` registers it; Studio drives a
-scalar (a morph) and a compound (a translation) animatable through a key
-profile the device carries; the face's GLB is what Studio's upload modal
-previews, through the same `@vizij/render`.
+Studio: a face is hardware of a device — the whole of it for a stand-alone
+`vizij --studio`, one more HAL of a robot's device otherwise, one registration
+either way. Studio drives a scalar (a morph) and a compound (a translation)
+animatable through a key profile the device carries. The scene's screen shows
+the face as the image the device's view publishes into its store, so the
+screen pixels are the robot's pixels and Studio keeps no face renderer of its
+own; the upload modal previews the GLB through the same `@vizij/render`.
 
 Sources: [plan §3.6](bevy_everywhere-plan.md#36-android), [§3.7](bevy_everywhere-plan.md#37-semio-studio),
 [bevy-android-spike](studies/bevy-android-spike.md), [studio-consumers](studies/studio-consumers.md).
@@ -253,8 +266,9 @@ Sources: [wasm one-module](studies/challenge-wasm-one-module.md), [bevy-wasm-spi
   material path and a golden for that preset are required.
 - Lips through the standard need a viseme adaptation that only Quori carries;
   the four shipped faces are re-exported with one.
-- Studio's writes do not reach a face's animatables today, in any app; a key
-  profile in the device fixes it.
+- Studio animates a face it renders itself, but over the bridge its writes do
+  not reach a device's face (`<id>.target_position`, per-axis keys), in any
+  app; a key profile in the device fixes it.
 - On Android, arora's app-data discovery fails and the cloud TTS panics
   without the platform verifier; both need a change. No GLES build draws and
   SwiftShader loses the device; Vulkan on the API 34/35 images does draw.
@@ -316,10 +330,14 @@ Source: [plan §5](bevy_everywhere-plan.md#5-risks-and-open-questions).
 ## 15. Decided, and what is asked of you
 
 Decided on 2026-09-18: emulator images before any tablet; the view is vizij's
-own renderer; `apps/vizij-app` dissolves; the scene screen keeps three.js; the
+own renderer; `apps/vizij-app` dissolves; the scene screen keeps three.js as
+its surface and shows the face as the image the device's view produces; the
 showcase is ported; one text-agent demo; authored defaults on export;
-`@vizij/render` kept and reworked; `studio-arora` out of scope; a
-conversation-state tier in the standard; installers gate the retirement.
+`@vizij/render` kept and reworked; `studio-arora` is a dependency of the
+in-page path, not this project's work; a conversation-state tier in the
+standard; installers gate the retirement. Decided on 2026-09-21: the face is
+a component of a device, not the device — `view`, `face`, `modules`,
+`native`; a `Runtime` in JavaScript; arora to hold several HALs.
 
 Asked of reviewers: challenge these, and the structural choices of slides 3 to
 7. A comment against the plan section it concerns is the most useful form.

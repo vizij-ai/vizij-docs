@@ -68,6 +68,51 @@ Two gates, not one: Android gates the deletion of the standalone's Tauri shell
 and native run; the browser port gates the rewrite of its folder into the demo
 (section 4, P8a and P8b).
 
+### 1.1 The face is a component of a device, not the device
+
+In arora's vocabulary a **device** is an Arora instance around its hardware:
+one blackboard, one behavior, a HAL, bridges — the unit that registers with
+Semio Studio and is driven from there (arora-sdk `docs/architecture.md`, "an
+Arora instance — one device"). The `vizij` binary spawns one: the face is the
+whole of its hardware, so there the word is right, and `vizij --studio`
+registers a device.
+
+As a **library**, Vizij is a set of components an Arora device composes, none
+of which is a device:
+
+- the **view** — the Bevy renderer of a face, reading a `RigHal`'s pose;
+- the **face** — a GLB's bindings and bundle composed into a behavior graph,
+  and the `RigHal` it drives;
+- the **modules** — animation, gaze, viseme players, speech: host modules any
+  Arora loads, tied to no hardware.
+
+This cuts both ways. A robot that already is a device (arms, wheels, a base)
+takes a face as **one more piece of hardware**: the face's `RigHal` beside the
+robot's HAL, the face modules beside the robot's, one Studio registration —
+not a second device on the network. And a face that started alone grows into a
+robot by adding a HAL and modules to the same Arora: Vizij is an entry point to
+robotics because it runs Arora, not a product beside it.
+
+Consequences carried through this plan:
+
+- **Naming.** "Device" is used where an Arora instance stands alone — the
+  binary, Studio registration, a page-hosted face runtime — and never for a
+  component. The crate's modules are `view`, `face`, `modules` and `native`
+  (section 3.1); the JavaScript surface hands out a `Runtime`, not a `Device`.
+- **Composability.** A host building its own device must reach the pieces —
+  the composed graph, the `RigHal`, each module's `host_module()` — and fold
+  them into its own `AroraBuilder`; `start()` is one convenience over them,
+  not the only door (section 3.1).
+- **Several HALs in one device.** arora's builder takes one `Hal` and a
+  vector of bridges. A hybrid device needs the runtime to hold several HALs —
+  each owning the keys it describes, writes fanned out by key, update streams
+  merged — the way it already holds several bridges. That is an arora-sdk
+  change this plan asks for earlier than a face-only device needs it (P0.5,
+  risk 12), so that "add a face to a robot" is a builder line, not a fork.
+- **Studio.** A face reaches Studio as a device (stand-alone) or as part of
+  one; either way the scene shows it from the device's state, as the image the
+  view produces (section 3.7).
+
 Decided on 2026-09-18 (the eleven decisions of the first review; each is
 applied in the section it names):
 
@@ -79,8 +124,9 @@ applied in the section it names):
   repurposed crate later (3.1).
 - `apps/vizij-app` dissolves: a stand-alone `vizij --studio` instance is what
   Studio connects to, the way it connected to that app (3.7).
-- The Studio scene's face-on-a-screen keeps three.js (3.7); it is out of
-  "everywhere".
+- The Studio scene's face-on-a-screen keeps three.js as its surface; the face
+  on it is a texture the Arora-side view produces, so Studio hosts no second
+  face renderer (3.7).
 - vizij-showcase is ported on the shared canvas (3.8).
 - One agent demo, a text agent; `tutorial-agent-face` folds into it (3.4).
 - The exporter writes the authored defaults (3.3).
@@ -90,6 +136,9 @@ applied in the section it names):
 - The face standard gains a conversation-state tier and an expression producer
   (3.4).
 - Desktop installers gate the retirement of the standalone (3.9, P5, P8a).
+
+Decided on 2026-09-21 (Victor): the face is a component of a device, not the
+device (1.1); the naming and the several-HALs requirement follow from it.
 
 ## 2. Current state
 
@@ -277,6 +326,14 @@ Sources: S:standalone-anatomy 1, 6; S:native-app-anatomy 1–3; S:browser-device
 
 ### 2.6 The authoring editor's viewport contract
 
+- This section and its study describe **vizij-web's** authoring app over
+  `@vizij/render` and `@vizij/runtime-react`. Semio Studio's `packages/vizij`
+  is a divergent origin of the same renderer with its own contexts (a
+  per-namespace `VizijContext` over the scene store, S:studio-consumers 10–11)
+  and is covered in 2.9, not here. Within vizij-web, the findings separate the
+  **rendering** side (the drawn copy, picking, selection, camera fit) from the
+  **device** side (graph registration, staged inputs, programs), which reaches
+  the face through the runtime and is untouched by the viewport swap.
 - The viewport is `VizijRuntimeFace`; nothing in the app uses `@vizij/render`'s
   `Vizij` directly. The app-level render store is the world model at edit time;
   each runtime provider owns a second store that is re-seeded from it, and the
@@ -372,8 +429,10 @@ three.js or WebGL. `packages/@vizij/node-graph-authoring` also builds
   the GLB with Studio's own `packages/vizij`; the GLB is never served to Studio
   (`RigHal` implements `HalAssets`; arora has no caller for it); nothing builds
   the app in CI (S:studio-consumers 1–7; S:challenge-verdicts C6).
-- **Studio's writes do not reach the face's animatables**, in the Tauri app
-  either: Studio writes `<id>.target_position` / `.target_velocity` /
+- Studio animates a face it renders itself today: its player, derived tracks
+  and device feedback write the values store its `packages/vizij` draws from
+  (S:studio-consumers 11). **Over the bridge, Studio's writes do not reach a
+  device's face**, in the Tauri app either: Studio writes `<id>.target_position` / `.target_velocity` /
   `.studio_value` and reads `<id>.position`, where `<id>` is the RobotData UUID
   for scalars and `<uuid>.<axis>` for vectors, eulers and colours (split on
   load); the Bevy view indexes bare UUIDs and the Studio client passes keys
@@ -553,18 +612,29 @@ does not use (S:bevy-android-spike 1).
 ### 3.1 One crate, four entry points
 
 `crates/vizij` becomes one package with `[lib] crate-type = ["rlib", "cdylib"]`
-and the `vizij` binary. No consumer takes the view without the device or the
-device without the view, so there is no `vizij-view`/`vizij-device` split
-(repo rule: extract only on real redundancy). Modules:
+and the `vizij` binary. No consumer takes the view without the face or the
+face without the view, so there is no `vizij-view`/`vizij-face` split
+(repo rule: extract only on real redundancy). The modules are named for what
+they are — components of a device, not the device (section 1.1):
 
 | Module | Content | Targets |
 | --- | --- | --- |
-| `view` | today's `view.rs`, `meta.rs`, `snapshot.rs`, `frames.rs` as a Bevy plugin, with per-face state as components rather than startup resources (one App hosts N faces): `FaceMeta` from bytes (the only entry), an in-memory asset source, pose application, frames, viewport fit, picking events, selection highlight, holds | all |
-| `device` | the composition (`load_face` over bytes, `builder_for`, skills, host modules) and the native thread driver, plus a command handle (`reload(bytes)`, `reregister(DeviceInfo)`, `set_background`) so the TUI, the egui panel and the file dialog are interchangeable front ends | native, Android |
-| `web` (`cfg(target_arch = "wasm32")`) | the `VizijArora` wasm-bindgen surface, moved from `vizij-arora-web`, which is retired; no Bevy `App` is built until `mount` | wasm32 |
+| `view` | today's `view.rs`, `meta.rs`, `snapshot.rs`, `frames.rs` as a Bevy plugin, with per-face state as components rather than startup resources (one App hosts N faces): `FaceMeta` from bytes (the only entry), an in-memory asset source, pose application, frames (the rendered face into the store as an image), viewport fit, picking events, selection highlight, holds. The fit takes a rect and derives the camera per viewport; `rootBounds` is that rect's default and nothing in the API binds the rect to the GLB, so VIZ-130's animatable view rect stays open | all |
+| `face` | the composition: `load_face` over bytes (the GLB's bindings and bundle into one graph spec), `builder_for` / `builder_with_guests` (the graph, the `RigHal`, the store and the modules folded into an `AroraBuilder` a host may extend), the free inputs, the neutral pose, the skills' fragments | all |
+| `modules` | the host modules, one file each: `animation` (the engine as `AnimationModule` state per load), `gaze`, `viseme`, `tts_piper` (feature); each exposes `host_module()` and its function ids so any Arora — Vizij's or a robot's — loads it | all (Piper native) |
+| `native` | the driver of a stand-alone face device: the Arora on a worker thread under arora's operator flow, the local WS bridge (`arora-bridge-ws` with the face's inputs and skills in its registry), the ROS 2 and Studio bridges the build adds, and a `RuntimeHandle` (`reload(bytes)`, `set_background`) so the TUI, the egui panel and the file dialog are interchangeable front ends | native, Android |
+| `web` (`cfg(target_arch = "wasm32")`) | the wasm-bindgen surface, moved from `vizij-arora-web`, which is retired: `mount`, `loadFace` → a `FaceRuntime` (the page-paced Arora of one face, guest wasm modules loadable beside the host-linked ones), `placeFace`, picks, `describe`; no Bevy `App` is built until `mount` | wasm32 |
 | `android` (`cfg(target_os = "android")`) | `#[bevy_main]`, the SAF/VIEW plumbing, the app-data directory; an `android/` Gradle directory in the crate | Android |
 | `panel` (feature `egui`, `bevy_egui` 0.42) | the one egui `Operator` and device-info panel: owners, name, model family, endpoints, layout (root bounds, background); reused by desktop and Android | native, Android |
-| `main.rs` | the desktop binary: CLI, TUI (feature `tui`), the in-app local WS bridge, `--ros2`, `--studio` | desktop |
+| `main.rs` | the desktop binary — the one place a device is spawned: CLI, TUI (feature `tui`), the window, `--ros2`, `--studio` | desktop |
+
+A host that is already a device takes what it needs: `face::load_face` and
+`face::builder_for` for the composed graph and its `RigHal`, `modules::*` for
+the functions, `view::ViewPlugin` for the drawing — and folds them into its
+own `AroraBuilder` beside its own HAL, store and bridges. Until arora holds
+several HALs (section 1.1, P0.5), such a host wraps the robot's HAL and the
+face's `RigHal` in one `Hal` of its own that routes by key; the runtime
+change removes that wrapper.
 
 Features: `desktop` (default) = `arora/native`, `arora/tui`, tokio
 `rt-multi-thread`, crossterm, clap, env_logger; `studio` = `arora/studio-bridge`
@@ -739,7 +809,7 @@ if that is what it needs); that crate boundary is decided then, not now.
   mapping stays the bundle's opt-in (composed when the GLB embeds
   `standard::ros4hri` or the page asks), matching today. The two skill
   compositions (standalone `skills.rs`, native `device.rs`) collapse into
-  `vizij::device`. The fragments' `taskrun` node runs on the browser interpreter
+  `vizij::face`. The fragments' `taskrun` node runs on the browser interpreter
   through the same synchronous in-process dispatch as natively, verified in
   headless Chrome (`play_viseme` through its envelope; the wasm `say` streaming
   visemes at the page's playhead, once per tick, never after terminal); the
@@ -849,7 +919,7 @@ formats, frame rate, device-loss recovery) over adb, scripted.
   first three items carry over to the panel; its fourth (the value mirror)
   disappears. An existing `vizij-app` identity file is not migrated.
 - **A Studio-key profile is this project's deliverable**: under the `studio`
-  feature, `vizij::device` composes a mapping source from `FaceMeta` bindings
+  feature, `vizij::face` composes a mapping source from `FaceMeta` bindings
   (like `ros4hri_source`) that strips `.target_position`, aggregates
   `<uuid>.{x,y,z}` / `{r,p,y}` / `{r,g,b}` into the compound key, drops
   `.studio_value` and `.target_velocity`, and echoes `<id>.position` as
@@ -860,19 +930,53 @@ formats, frame rate, device-loss recovery) over adb, scripted.
   device-side responder in `arora-studio-bridge-client` 6.1.0 although `RigHal`
   implements `HalAssets`: P7 adds the responder (an ARORA ticket) or records
   that create-project-with-device needs a matching model asset in Studio.
-- **Studio adopts `@vizij/render`** (STUDIO-239 proceeds), Bevy underneath,
-  for the upload modal's preview and export, `packages/core`'s loader and the
-  stories. **The scene's face-on-a-screen keeps three.js**: Studio's
-  `packages/vizij` renderables are reduced to that one surface over the shared
-  loader; VIZ-131's render-to-texture path (1.05 ms per face) is the later
-  shortcut if Studio moves to the Rust crates directly.
+- **A face is hardware of a device, not a second device** (section 1.1).
+  Stand-alone, `vizij --studio` is the device. Inside a robot's device, the
+  face is one more HAL and a few more modules under the robot's registration —
+  Studio's own model, where Vizij content is a scene within the robot's scene
+  and its animatables sit beside the robot's, already says so. What follows
+  holds for both.
+- **The scene screen shows the face from the device's state, as an image the
+  view produces.** The scene keeps three.js as its surface; what changes is
+  what the screen's texture is. Today `screen.tsx` hosts Studio's own
+  `packages/vizij` renderer inside a drei `RenderTexture`, drawn from the
+  values store (S:studio-consumers 11): a second face renderer, drifting from
+  Vizij's. After: the Arora-side view renders the face and publishes each
+  frame into the device's store — `view::frames` already does, natively:
+  `display/face/compressed`, a PNG in the `sensor_msgs/CompressedImage` shape,
+  at a rate (15 Hz under ROS4HRI), a HAL reading like any other key — and the
+  screen's material maps that key, decoded in the browser. The Studio bridge
+  carries arora `Value`s, so the frame travels as the `ArrayU8` field of the
+  image structure; its wire encoding is JSON today (a byte per number), which
+  is why the compact bytes encoding of the buffer wire format is on arora's
+  side of this (an ARORA item, with the rate as the knob until then). The
+  face-on-a-screen is then the same pixels as the robot's, and Studio's
+  `packages/vizij` renderables retire from the scene too — leaving the upload
+  modal's preview and export, `packages/core`'s loader and the stories, which
+  **adopt `@vizij/render`** (STUDIO-239 proceeds), Bevy underneath.
+- **Where the device runs decides how the image gets there.** A native
+  `vizij --studio`, or a robot device with a face: the store key over the
+  Studio bridge, above. A device Studio runs **in the page** — the ambition of
+  `studio-arora` ([draft PR #256](https://github.com/semio-ai/semio_studio/pull/256),
+  a wasm plane spawning Arora instances over one shared store, migrated to
+  arora 9.1 on 2026-08-26 and not merged) — hosts the face as a component of
+  that wasm module: the same `face`, `modules` and `view` linked into it (two
+  cdylibs cannot share a store, S:studio-consumers 17), the frame either read
+  back (`Screenshot` on WebGL2, the P0.2 spike) or sampled straight from the
+  view's canvas as a `CanvasTexture`, no readback. This path **depends on
+  studio-arora landing** and on it linking `vizij`'s library; it is a Studio
+  decision, recorded here as a dependency (risk 13), not taken by this
+  project. Until it lands, every face Studio shows live is a device over the
+  bridge.
+- **Later**, when the scene itself moves to Bevy (STUDIO-256's render-to-
+  texture, 1.05 ms per face), the face is an entity of the scene's App and
+  the image round trip disappears; the `view` crate boundary is decided then.
 - Studio-exported faces (per-axis RobotData) become readable by the Bevy view
   through the per-axis bindings of section 3.3; the GLB-format convergence
   itself stays STUDIO-239's.
-- `studio-arora` (draft PR #256) is out of this project's scope; its fate is a
-  Studio decision. The browser Vizij device is its own wasm module, and a
-  browser face reaching Studio is a studio-bridge deliverable (a browser
-  device client over `zenoh-ts`), not part of the retirement.
+- A browser face reaching Studio **as a device** (a page's `FaceRuntime`
+  registering over a browser device client, `zenoh-ts`) is a studio-bridge
+  deliverable, not part of the retirement.
 
 ### 3.8 Fate of every app
 
@@ -988,7 +1092,11 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
    `exportScene` returns bytes, `load-gltf` parses buffers first, React refs
    leave the world types, the lodash import loads under Node; the drift of
    section 2.12.
-5. **arora-sdk**: the app-data-directory override (gates P6.2); optionally
+5. **arora-sdk**: the app-data-directory override (gates P6.2); **several
+   HALs in one device** (section 1.1: the builder takes HALs the way it takes
+   bridges, each owning the keys it describes, writes fanned out by key,
+   update streams merged; the ARORA ticket is filed by this plan and its
+   design precedes P7, where a robot device first takes a face); optionally
    `pub use arora_bridge_ws` under `native` so `vizij` does not pin the bridge
    crate in lockstep; the `studio-bridge`/`native` split (ARORA-79) if a
    wasmtime-free Android build is wanted; a `stop` path or run id for `say`
@@ -1001,8 +1109,8 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 One crate, lib + bin, the modules of section 3.1; the `view` module is a pure
 move of today's four files, then its face state becomes per-face components
 (the snapshot goldens guard both steps); `desktop` default feature;
-per-target Bevy tables; `FaceMeta` from bytes as the only entry; the `device`
-command handle. First commit: the wasm32 and
+per-target Bevy tables; `FaceMeta` from bytes as the only entry; the
+`RuntimeHandle`. First commit: the wasm32 and
 cargo-ndk check jobs in CI (with `--features studio`). Gate: `snapshot-regression` unchanged; both
 checks green; the Linux binary builds; the 33 tests plus one that drives the
 composition for N frames headless through `SnapshotPlugin` and reads a pose
@@ -1095,10 +1203,16 @@ device model and Android version.
 The Studio-key profile under the `studio` feature; the E2E of P0.3 passing on
 a scalar and a compound animatable with a stand-alone `vizij --studio` as the
 device (the face loaded from a Studio-exported, per-axis GLB), registered and
-driven the way `apps/vizij-app` was; the `retrieveGlb` decision;
-`apps/vizij-app` deleted with its references (`package.json`,
+driven the way `apps/vizij-app` was; **the face image on the scene screen**
+(section 3.7: `screen.tsx` maps the device's `display/face/compressed` key,
+the bridge carries it, the rate is the knob; gate: the scene shows the
+stand-alone device's face moving under the E2E's writes); the `retrieveGlb`
+decision; `apps/vizij-app` deleted with its references (`package.json`,
 `.changeset/config.json`, the two docs pages); STUDIO-239 pointed at the
-reworked `@vizij/render` and STUDIO-257 re-targeted at the panel.
+reworked `@vizij/render` and STUDIO-257 re-targeted at the panel. The in-page
+device path (studio-arora hosting the face component) is a Studio decision
+taken outside this phase; a robot device taking a face beside its own HAL
+waits on P0.5's arora change.
 
 ### P8a Retire the Tauri standalone (S, after P6's gate and P5's installers)
 
@@ -1169,6 +1283,17 @@ Risks, most severe first:
     STUDIO-256's spike on Andy's machine; the plan takes nothing from that
     branch, so the only cost is agreeing, when the scene work needs a face
     renderer, that it consumes the repurposed `view` rather than the spike.
+12. **A hybrid device has no home in arora yet**: the builder takes one HAL.
+    A robot adding a face wraps two HALs in one of its own until arora holds
+    several (P0.5); the wrapper is a real `Hal` (routing by key, merging
+    updates), so nothing built on it is thrown away, but two wrappers in two
+    hosts is the drift this plan exists to avoid.
+13. **Studio's in-page devices are stale**: studio-arora's PR #256 has been a
+    draft since 2026-08-26 on arora 9.1, and the face-on-a-screen path that
+    goes through it (section 3.7) needs it merged and linking `vizij`'s
+    library. Until then the scene shows faces only from devices over the
+    bridge, at the bridge's frame cost (JSON bytes until the buffer wire
+    format lands).
 
 The eleven decisions of the first review are recorded in section 1. Still
 open for Victor: a tablet, only if the newer emulator images also draw nothing
@@ -1178,7 +1303,9 @@ Open technical questions (the spikes closed bytes loading, App restart,
 picking, the one-module device + view, the `taskrun` fragments in headless
 Chrome, `reqwest` and `spawn_local` in the device's tick, the `AudioContext`
 unlock, and Android rendering on the emulator): `Screenshot` readback on
-WebGL2; the hidden-tab behaviour of a mounted page; one WebGPU measurement;
+WebGL2 (also the in-page face-on-a-screen's readback, or the `CanvasTexture`
+alternative); the frame's wire cost over the Studio bridge at 15 Hz and the
+rate a scene screen needs; the hidden-tab behaviour of a mounted page; one WebGPU measurement;
 the overlay canvas's alpha across wgpu versions; `$HOME` and the private files
 dir inside a NativeActivity process; the x86_64 lavapipe emulator under KVM on
 `ubuntu-latest`; a tablet's swapchain formats, frame rate and device-loss

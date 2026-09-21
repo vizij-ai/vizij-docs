@@ -1,6 +1,6 @@
 # Tickets for one Bevy view everywhere
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-09-21
 > **Related documents:** [Central plan](bevy_everywhere-plan.md) · [Reading guide](bevy_everywhere-deck.md) · [Sub-studies](studies/)
 
 The plan's phases decomposed into tickets, each with a definition of done a
@@ -12,8 +12,8 @@ which also carries the working notes below; this page is the source they were
 created from and is edited first when a ticket changes. Sizes: S days, M one to two weeks, L several weeks of one
 person. Repos: vizij-rs unless stated.
 
-Dependency spine: T01–T07 start now; T08 → T09 → T10 → T12 → T13 ∥ T15 → T23;
-T08 → T18 → T19 → T22; T16 starts now → T17 → T22; T20 → T21. Every ticket
+Dependency spine: T01–T07 and T24 start now; T08 → T09 → T10 → T12 → T13 ∥ T15 → T23;
+T08 → T18 → T19 → T22; T16 starts now → T17 → T22; T20 → T21; T20 → T25. Every ticket
 below links its Linear issue; the issues carry the same scope, definition of
 done and cues, and the blocking relations of this spine.
 
@@ -32,8 +32,13 @@ done and cues, and the blocking relations of this spine.
   MAJOR bumps with a CHANGELOG; docs and commits state what is true, not how
   it came to be; no draft PRs.
 - Not a dependency: STUDIO-256's `vizij-render` branch (Andy's machine only).
-  Out of scope: `studio-arora`, a browser face reaching Studio, the Studio
-  scene screen (three.js stays).
+  Out of scope: a browser face reaching Studio as a device (studio-bridge's).
+  `studio-arora` (semio_studio PR #256, draft) is a dependency of the in-page
+  face-on-a-screen path only; the scene screen itself is T25.
+- The face is a component of a device, not the device (plan §1.1): the crate's
+  modules are `view`, `face`, `modules`, `native`; "device" is the binary's
+  stand-alone Arora and what Studio registers; the JavaScript surface hands
+  out a `Runtime`.
 - The vizij-docs validators hardcode another machine's path; check links by
   hand.
 
@@ -152,6 +157,26 @@ find (no exe dir, no `HOME`, cwd `/`); `vizij` compiles against
 `dirs::home_dir()` (none on Android) and cwd; `IDENTITY_FILE` moves only the
 token. `studio-bridge` implies `native` (`Cargo.toml:39-45`): splitting them
 is ARORA-79 and is wanted only for a wasmtime-free Android build.
+
+### T24 arora-sdk: a device holds several HALs (M, arora-sdk) — [ARORA-103](https://linear.app/semio-ai/issue/ARORA-103)
+
+**Scope.** `AroraBuilder::with_hal` accepts several HALs (or a `with_hals`);
+the runtime keeps a vector, each HAL owning the keys it describes, a write
+fanned out to the owner of each key, the update streams merged into the step
+loop's inbound as the bridges' are; `HalAssets::model_glb` with a stated
+composition rule; `docs/architecture.md` says HALs.
+
+**Done when.** A device built with two `FakeHal`s over disjoint key sets
+routes each write to the right one and sees both update streams in its
+store; a host extends `vizij`'s `face::builder_for` output with a second HAL
+without wrapping (a doc example).
+
+**Implementation cues.** Plan §1.1: a robot adds a face as one more piece of
+hardware under one Studio registration, and a face grows into a robot by
+adding a HAL — a builder line only if the runtime holds several HALs. The
+bridges' vector (`AroraBuilder::with_bridge`, the merged inbound) is the
+model. Overlapping ownership is a build error, not a merge rule. Until it
+lands, a hybrid host wraps its HALs in one `Hal` routing by key (risk 12).
 
 ### T07 The remaining wasm spikes (S) — [VIZ-142](https://linear.app/semio-ai/issue/VIZ-142)
 
@@ -503,6 +528,29 @@ the device, on a scalar and a compound animatable, loading a Studio-exported
 `vizij-arora-host/src/ros4hri.rs` is the model; `RigHal` already implements
 `HalAssets::model_glb`, arora has no caller (`studies/studio-consumers.md` 3);
 depends on T14's per-axis bindings.
+
+### T25 The scene screen shows a device's face from the image its view publishes (M, semio_studio + vizij-rs) — [VIZ-159](https://linear.app/semio-ai/issue/VIZ-159)
+
+**Scope.** `view::frames` publishes the rendered face into the store
+(`display/face/compressed`, PNG, `sensor_msgs/CompressedImage` shape) under
+`--studio` as it does under ROS4HRI, at `--frame-rate`; semio_studio's
+`packages/scene/src/renderables/screen.tsx` maps the screen's material from
+that key of the device, decoded in the browser, instead of hosting
+`packages/vizij`'s `InnerVizij` in a drei `RenderTexture`; the frame's
+`ArrayU8` rides the Studio bridge (JSON bytes until the buffer wire format's
+compact encoding lands — an ARORA item; the rate is the knob).
+
+**Done when.** With a stand-alone `vizij --studio` registered (T20's E2E),
+the scene's screen shows that device's face and it moves under the E2E's
+writes; frame rate and bytes per second measured and recorded.
+
+**Implementation cues.** Plan §3.7: the scene keeps three.js as its surface;
+the face on it is the device's pixels, so Studio keeps no face renderer of
+its own and `packages/vizij`'s renderables leave the scene (the rest is
+STUDIO-239's). `screen.tsx:204-226` is the one surface. The in-page device
+path (studio-arora hosting the face component, the view's canvas as a
+`CanvasTexture` or a `Screenshot` readback) is a Studio decision, recorded as
+risk 13, not this ticket.
 
 ### T21 Retire `apps/vizij-app` and re-point the Studio tickets (S, semio_studio) — [STUDIO-263](https://linear.app/semio-ai/issue/STUDIO-263)
 

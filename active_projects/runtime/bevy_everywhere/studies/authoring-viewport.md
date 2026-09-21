@@ -3,6 +3,15 @@
 > **Last updated:** 2026-09-16
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
+**Scope.** This is vizij-web's authoring app over `@vizij/render` and
+`@vizij/runtime-react`. Semio Studio's `packages/vizij` is a divergent origin
+of the same renderer with its own contexts (a per-namespace `VizijContext`
+over the scene store) and is covered by [studio-consumers](studio-consumers.md)
+10–11, not here. The findings separate the **rendering** side (the drawn copy,
+picking, selection, camera fit) from the **device** side (graph registration,
+staged inputs, programs), which reaches the face through the runtime and is
+untouched by the viewport swap.
+
 ## Findings
 
 1. **The viewport draws through `@vizij/runtime-react`'s `VizijRuntimeFace`, a thin wrapper over `@vizij/render`'s `Vizij` (a react-three-fiber `Canvas`).** vizij-web/apps/vizij-authoring/src/components/app/Viewer.tsx:736-744; vizij-web/packages/@vizij/runtime-react/src/VizijRuntimeFace.tsx:6-23; vizij-web/packages/@vizij/render/src/vizij.tsx:47-110. The same pair is used by the reference face (RuntimeFaceFrame.tsx:69) and the empty-state demo (emptyStateDemo/EmptyStateDemo.tsx:13-27). Nothing in the app uses `@vizij/render`'s `Vizij` directly.
@@ -45,7 +54,7 @@
 | Hover | render only | shape.tsx:292-306, group.tsx:112-131 → `hoveredElement`; no consumer |
 | Selection glow | render, toggled by app | selection-glow-effect.tsx:36-139; Viewer.tsx:741; AppMenuBar.tsx:523 |
 | Safe area | render; app always off | vizij.tsx:157,255-280; Viewer.tsx:740 |
-| Camera fit (orthographic, auto to `rootBounds`) | render | vizij.tsx:143-148,193-233 |
+| Camera fit (orthographic, auto to `rootBounds`) | render | vizij.tsx:143-148,193-233 — the camera is inferred from the authored rect; [VIZ-130](https://linear.app/semio-ai/issue/VIZ-130) proposes the rect as an animatable with `rootBounds` as its default, which the view's fit-over-a-rect keeps possible |
 | Background | none (CSS panel) | vizij.tsx:142 commented |
 | Drag/gizmo, grid, zoom/pan, screenshots, visibility | none | finding 8 |
 | Reference face | app, second runtime | ReferenceFaceRuntime.tsx:303-318 |
