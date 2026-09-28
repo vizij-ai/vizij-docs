@@ -1,12 +1,13 @@
 # Anatomy of the `vizij` Bevy app and what a `vizij-view` library would carve out of it
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,bevy,vizij-rs,wasm,android,render-contract,tests -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
 All paths are repo-relative; `vizij-rs` is the default repo. Registry sources are
 quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
-`Cargo.lock` resolves). Raw command outputs live under
-`/private/tmp/claude-501/-Users-victor-paleologue-Code-Semio-semio-studio/3db729c2-88a1-4330-986e-37ae26376064/scratchpad/spikes/native-app-anatomy/`.
+`Cargo.lock` resolves). Raw command outputs are in
+[vizij-rs `spikes/bevy-everywhere/native-app-anatomy/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/native-app-anatomy)
+(branch `spikes/bevy-everywhere`).
 
 ## Findings
 
@@ -84,7 +85,7 @@ quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
    and tokio-tungstenite — all through `arora`'s default features `native` +
    `tui` (`arora-9.11.1/Cargo.toml` features) and vizij's own `tokio`,
    `crossterm`, `rodio` lines. `cargo tree --target wasm32-unknown-unknown`
-   confirms they stay in the wasm graph (`spikes/native-app-anatomy/` outputs);
+   confirms they stay in the wasm graph (`cargo-tree-targets.txt`);
    tokio's `rt-multi-thread`/`net` are a `compile_error!` on that target. The
    interop seams the view needs (`vizij-arora-hal`, `-store`, `-behavior`,
    `-host`, `vizij-api-core`) already build for wasm32-unknown-unknown: CI's
@@ -103,8 +104,7 @@ quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
     `meta.rs` 1, `frames.rs` 6 plus one under `ros2-*`, `device.rs` 17,
     `memory_tests.rs` 1) run on any host without a GPU or display — verified
     here: `cargo test -p vizij` passes all 33 in 254 s after an 18 min cold debug
-    build (`spikes/native-app-anatomy/cargo-test-vizij.log`,
-    `cargo-test-list.txt`); `device.rs:1364` (`ros4hri_drives_the_adapted_quori`)
+    build (`cargo-test-list.txt`); `device.rs:1364` (`ros4hri_drives_the_adapted_quori`)
     reports `ok` as a skip unless `VIZIJ_FIXTURES` names the Quori GLB; `ros2_tests.rs` (3 live-DDS
     tests, feature `ros2-dds`) are `cfg_attr(target_os = "macos", ignore)` for two
     and `#[ignore]` everywhere for the 35 s leak diagnostic (VIZ-118)

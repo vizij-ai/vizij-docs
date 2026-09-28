@@ -1,11 +1,10 @@
 # The web renderer's anatomy: what @vizij/render and Studio's fork draw, store, import and export
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,render,three.js,bevy,studio,glb -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
-Raw outputs: `scratchpad/spikes/web-render-anatomy/` (`consumer-imports.txt`,
-`glb-robotdata.txt`, `glb-materials.txt`, `studio-vs-render-diff.txt`; scripts
-`imports.mjs`, `glb-robotdata.mjs`).
+Raw outputs (import census, GLB RobotData and material dumps, the Studio vs
+`@vizij/render` diff) and the scripts that produced them are not kept.
 
 ## Findings
 
@@ -33,13 +32,13 @@ Raw outputs: `scratchpad/spikes/web-render-anatomy/` (`consumer-imports.txt`,
    `functions/create-stored-data.ts:12`). Shapes use the GLB mesh
    (`traverse-three.ts:71-79`; `renderables/shape.tsx:73-79`).
 4. No shipped face GLB contains an ellipse or rectangle: all 17 face fixtures in
-   vizij-web carry only `shape` and `group` RobotData (`glb-robotdata.txt`); the
+   vizij-web carry only `shape` and `group` RobotData; the
    only ellipse/rectangle world in source is a hand-built Storybook story
    (`semio_studio/apps/docs/stories/prebuilt/quori.ts`, 3 entries). Every face
    fixture is `THREE.GLTFExporter` output with `extensionsUsed`
    `RobotData`,`VIZIJ_bundle` (+`KHR_materials_unlit` on Toasty/Hugo), all
    materials double-sided, no Draco, morph targets on up to 15 primitives with
-   up to 13 targets (`glb-materials.txt`). The bundle sits on a *node*, not the
+   up to 13 targets. The bundle sits on a *node*, not the
    document root (`bundleNode=true, bundleRoot=false` for every fixture).
 5. The Bevy view (`vizij-rs/crates/vizij/src/view.rs`, `meta.rs`) reads the same
    RobotData and binds five feature kinds plus morphs: translation, rotation,
@@ -65,13 +64,13 @@ Raw outputs: `scratchpad/spikes/web-render-anatomy/` (`consumer-imports.txt`,
    import), tutorial-agent-face / tutorial-fullscreen-face / demo-vizij-player 0
    (they import `@vizij/runtime-react` only). Only **one** consumer draws:
    `runtime-react/src/VizijRuntimeFace.tsx:2,15` renders `<Vizij>`; every app
-   draws through it (`consumer-imports.txt`).
+   draws through it.
 8. Semio Studio's `packages/vizij` is the **origin**, not a fork: first commit
    `3e7846e1 2025-01-09 "added vizij package"` (79 commits, last content change
    2026-04-28); `@vizij/render` first appears in vizij-web as a squash
    `b94d2bee 2025-12-05` and STUDIO-239 states it is Studio's package extracted.
    Same 52-file skeleton; 4 files identical, the renderables and loader
-   rewritten on both sides (`studio-vs-render-diff.txt`).
+   rewritten on both sides.
 9. Studio's world model is **per-axis**: features are keyed `translation.x`,
    `rotation.r` (RPY), `color.r`; compound stored animatables are split into
    derived `AnimatableNumber`s `${id}.${axis}` on load
@@ -225,7 +224,7 @@ The authoring app keeps two stores: an editing store at the root
 | Color/tonemap/AA | sRGB out, `NoToneMapping`, `antialias` (`vizij.tsx:73-77`) | `Tonemapping::None`, `Msaa::Sample4` (`view.rs:319-321`) | none |
 | Background | Transparent canvas (page CSS shows) | Clear color flag (`view.rs:60-61`) | operator UI detail |
 | Shape transform | translation vec3/vec2, rotation euler ZYX or scalar Z, scale vec3/scalar (`group.tsx:60-93`) | vec3 only for translation/rotation; scale vec3 or scalar (`view.rs:494-521`) | vec2 / scalar rotation dropped |
-| Shape material | 5 kinds; color rgb/hsl/vec3; opacity; roughness, metalness, shininess, emissive, emissiveIntensity, specular (`shape.tsx:170-257,325-358`) | color (rgba or xyz) and opacity only (`meta.rs:160-174`, `view.rs:522-546`) | PBR extras dropped; no shipped fixture carries them (`glb-robotdata.txt`) |
+| Shape material | 5 kinds; color rgb/hsl/vec3; opacity; roughness, metalness, shininess, emissive, emissiveIntensity, specular (`shape.tsx:170-257,325-358`) | color (rgba or xyz) and opacity only (`meta.rs:160-174`, `view.rs:522-546`) | PBR extras dropped; no shipped fixture carries them |
 | Morphs | `morphTargetInfluences[i]` by dictionary (`shape.tsx:104-131`) | `MorphWeights` by index of name in `morphTargets` (`view.rs:451-461,547-555`) | none |
 | Ellipse/rectangle | Generated Circle/Plane + fat-line stroke, 10 typed features (`ellipse.tsx`, `rectangle.tsx`; `types/ellipse.ts:22-33`) | Not bound; kind unused | dropped — no shipped face uses them |
 | Selection glow, safe area, "No Output", hover/click | `selection-glow-effect.tsx`; `vizij.tsx:238-247,255-280`; `onElementClick` (`store.ts:53-115`) | none | authoring affordances |
@@ -236,8 +235,8 @@ The authoring app keeps two stores: an editing store at the root
 ### D. Studio's packages/vizij
 
 **D.1 Relation.** Studio original (2025-01-09) → extracted as `@vizij/render`
-(visible from 2025-12-05 squash) → both diverged. Lines changed per shared file
-(`studio-vs-render-diff.txt`): `import-mesh.ts` 512, `shape.tsx` 479,
+(visible from 2025-12-05 squash) → both diverged. Lines changed per shared file:
+`import-mesh.ts` 512, `shape.tsx` 479,
 `rectangle.tsx` 446, `ellipse.tsx` 436, `export.ts` 351 (Studio 36 lines vs
 369), `load-gltf.ts` 341 (74 vs 377), `vizij.tsx` 293, `import-group.ts` 263,
 `traverse-three.ts` 250, `store.ts` 239, `map-features.ts` 195 (199 vs 38).

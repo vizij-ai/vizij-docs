@@ -1,15 +1,18 @@
 # Both viseme fragments run on the browser interpreter in headless Chrome and on the native interpreter in `cargo test`; the wasm say branch streams visemes at the page's playhead, once per tick, never after terminal
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,speech,tts,visemes,wasm,browser,agent,testing -->
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-09-28
 
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [speech-and-agent](speech-and-agent.md) · [arora-wasm-constraints](arora-wasm-constraints.md) · [arora-sdk async-functions](https://github.com/semio-ai/arora-sdk/blob/main/docs/async-functions.md)
 
-Compile-and-test spike: `scratchpad/spikes/tts-wasm/` (`src/lib.rs` the provider with
-the cfg split and the device composition, `tests/browser.rs` the wasm-bindgen tests,
-`tests/native.rs` the native twin, `tests/debug_native.rs` the `behavior_error()`
-trace, `www/play.js` the page's playback callback, `webdriver.json` the headless
-Chrome binary, `run-{native,browser,device}.sh` the exact commands, `logs/` the raw
-outputs). Registry versions are vizij-rs's lock: arora 9.11.1 (arora-engine 4.1.0,
+Compile-and-test spike:
+[vizij-rs `spikes/bevy-everywhere/tts-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/tts-wasm)
+(branch `spikes/bevy-everywhere`; `src/lib.rs` the provider with the cfg split and
+the device composition, `tests/browser.rs` the wasm-bindgen tests, `tests/native.rs`
+the native twin, `tests/debug_native.rs` the `behavior_error()` trace, `www/play.js`
+the page's playback callback, `webdriver.json` the headless Chrome binary,
+`run-{native,browser,device}.sh` the exact commands). The raw build and test logs
+are not kept: the results and log lines quoted on this page are the record.
+Registry versions are vizij-rs's lock: arora 9.11.1 (arora-engine 4.1.0,
 arora-behavior 8.4.0, arora-types 2.5.1), reqwest 0.13.5, tokio 1.53.1, rodio 0.20.1,
 wasm-bindgen 0.2.128, wasm-bindgen-test 0.3.78; vizij-rs at `9406f66`, clean.
 Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
@@ -24,8 +27,8 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
    wasm-bindgen-futures / web-sys with only the `fetch` features on wasm
    (`reqwest-0.13.5/Cargo.toml:245-280`); the default features (`default-tls`,
    `http2`, `system-proxy`) are inert there. `cargo check --target
-   wasm32-unknown-unknown`: clean, 0 warnings, 54 s on the warm arora-wasm target dir
-   (`logs/check-wasm32.log`). The fetch itself is not exercised from a page
+   wasm32-unknown-unknown`: clean, 0 warnings, 54 s on the warm arora-wasm target
+   dir. The fetch itself is not exercised from a page
    (finding 10 scripts synthesis): NOT RUN, the P3b gate's item.
 2. **Only the producer is native-bound, so the split is one module with two bodies.**
    tokio `rt-multi-thread` is the compile error on wasm (`tokio-1.53.1/src/lib.rs:463`),
@@ -35,7 +38,7 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
    `mod native` under `cfg(not(target_arch = "wasm32"))`, `:346` `mod web` under
    `cfg(target_arch = "wasm32")`); the wasm side adds wasm-bindgen,
    wasm-bindgen-futures, js-sys, serde-wasm-bindgen and nothing else (`Cargo.toml`).
-   The native branch builds and tests clean (`logs/check-native.log`, 4 m 01 s cold).
+   The native branch builds and tests clean (4 m 01 s cold).
 3. **The wasm producer is `spawn_local` + a JS callback, and the tick only samples.**
    `spawn` spawns a future that awaits `synthesize`, then calls the page's
    `play(Uint8Array, marks)` and keeps the `playhead()` function it returns in the
@@ -80,8 +83,8 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
    is `CallBridgeFunctions::dispatch` → `arora_call`, the engine's synchronous
    in-process path (`vizij-arora-behavior/src/lib.rs:62-90`), the same on wasm.
 9. **Both fragments run on the native interpreter in a plain `cargo test`, over the
-   store and the interpreter with no HAL** (`logs/test-native-5.log`, 3 s warm,
-   `tests/native.rs`: 2 passed, 0.37 s):
+   store and the interpreter with no HAL** (3 s warm, `tests/native.rs`: 2 passed,
+   0.37 s):
    - `play_viseme_runs_on_the_native_interpreter`: ok — `aa` > 0.8 and
      `standard/vizij/viseme = "aa"` with `Running` after 0.2 s; `aa` < 0.1, `sil` and
      `Success` after 0.65 s; the twin of `device.rs:1152`
@@ -93,14 +96,12 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
      no-op-waker `JoinHandle` poll are exercised without the cloud or an audio device.
    - The product's own `device.rs` tests (`a_play_viseme_run…`, `a_new_play_viseme_run…`,
      `a_say_run…`, over the ros4hri device with a `RigHal`): 3 passed, 0 failed,
-     9.87 s, 73 s wall with `vizij` rebuilt on the warm target
-     (`logs/test-vizij-device-native-3.log`); that binary crate's cold build (Bevy,
-     wasmtime) is 26 m 04 s at load 250 (`logs/test-vizij-device-native-2.log`).
+     9.87 s, 73 s wall with `vizij` rebuilt on the warm target; that binary
+     crate's cold build (Bevy, wasmtime) is 26 m 04 s at load 250.
 10. **Both fragments run on the browser interpreter, in headless Chrome.**
     `wasm-pack test --headless --chrome --chromedriver … -- --test browser`: 2 passed,
-    0 failed, 0.74 s in the browser, 16 s wall on a warm target
-    (`logs/wasm-pack-test-chrome-4.log`); with a per-tick console trace: 2 passed,
-    0.81 s, 73 s wall including an 11 s recompile (`logs/wasm-pack-test-chrome-5.log`).
+    0 failed, 0.74 s in the browser, 16 s wall on a warm target; with a per-tick
+    console trace: 2 passed, 0.81 s, 73 s wall including an 11 s recompile.
     - `play_viseme_runs_on_the_browser_interpreter`: the native assertions (aa > 0.8
       after 0.2 s; `sil` and `Success` after 0.65 s) hold on wasm32; SPAWN goes through
       `interpreter_module::encode_spawn` → `arora.call` → the interpreter module, the
@@ -139,22 +140,22 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
     input node with neither a staged store value nor a `value` default fails the whole
     evaluation (`vizij-graph-core/src/eval/eval_node.rs:2387`); `Arora::step` returns
     `Ok` and the message is only in `behavior_error()`, while no fragment output is
-    written (`logs/test-native-5.log`, the `debug_native` trace: three ticks, status
+    written (the `debug_native` trace: three ticks, status
     and viseme keys `None`). Both test twins write `sensor/x` before the first tick
     (`stage_base_input`, `tests/native.rs:48`, `tests/browser.rs:55`); the product's
     device composes over the ros4hri mapping, whose inputs are shaped. A browser device
     with an unstaged input runs a `say` that moves nothing and reports nothing.
 13. **wasm-pack 0.15 fetches the chromedriver of Chrome for Testing's Stable channel,
     not of the installed Chrome.** With Chrome 152.0.7977.64 installed and Stable at
-    153.0.8010.52 the session is refused (`logs/wasm-pack-test-chrome-2.log:324-346`).
+    153.0.8010.52 the session is refused.
     The run that passes names both halves: `--chromedriver` pointing at a cached
     driver (`~/Library/Caches/.wasm-pack/chromedriver-f07dc4f5987c4c26`, 149.0.7827.22)
     and `webdriver.json` in the crate dir setting `goog:chromeOptions.binary` to
     Playwright's Chrome for Testing 149.0.7827.55; the runner reads that file
     (`wasm-bindgen-cli-0.2.128/src/wasm_bindgen_test_runner/headless.rs:142`) and adds
     its own `headless` / `no-sandbox` args. wasm-pack installs the wasm-bindgen CLI
-    matching the lock by `cargo install` (0.2.128, 4 m 45 s release build;
-    `logs/wasm-pack-test-chrome-2.log:132-318`). No `CHROMEDRIVER` variable and no
+    matching the lock by `cargo install` (0.2.128, 4 m 45 s release build). No
+    `CHROMEDRIVER` variable and no
     Playwright driver are needed; CI needs a Chrome and a chromedriver of one version.
 
 ## Questions answered
@@ -210,13 +211,13 @@ P3b item.
 
 | Check | Command (in the spike dir, `PATH` with `~/.cargo/bin`) | Result |
 |---|---|---|
-| wasm32 provider + composition | `CARGO_TARGET_DIR=…/arora-wasm/target cargo check --target wasm32-unknown-unknown` | clean, 0 warnings, 54 s (`logs/check-wasm32.log`) |
-| native provider + tests build | `CARGO_TARGET_DIR=…/arora-wasm/target-host cargo check --tests` | clean, 4 m 01 s cold (`logs/check-native.log`) |
-| native tests, all targets (`run-native.sh`) | `CARGO_TARGET_DIR=…/arora-wasm/target-host cargo test -- --nocapture` | 3 s warm (build 1.24 s): lib 1 passed; `native` 2 passed, 0.37 s (say → `Failure` after 4 ticks / 83 ms); `debug_native` 1 passed, 0.14 s (`logs/test-native-5.log`) |
-| product device.rs tests (`run-device.sh`) | `cd vizij-rs && CARGO_TARGET_DIR=…/tts-wasm/target cargo test --locked -p vizij --bin vizij -- device::tests::a_play_viseme_run… a_new_play_viseme_run… a_say_run…` | 73 s (rebuild of `vizij` 55.6 s): 3 passed, 0 failed, 9.87 s (`logs/test-vizij-device-native-3.log`); cold build 26 m 04 s, 3 passed, 3.63 s (`logs/test-vizij-device-native-2.log`) |
-| browser tests, wasm-pack's own driver | `CARGO_TARGET_DIR=…/arora-wasm/target wasm-pack test --headless --chrome -- --test browser` | 429 s: wasm32 test build 1 m 31 s, wasm-bindgen CLI 0.2.128 install 4 m 45 s, chromedriver 153 fetched, session refused against Chrome 152 (`logs/wasm-pack-test-chrome-2.log`) |
-| browser tests (`run-browser.sh`) | `CARGO_TARGET_DIR=…/arora-wasm/target wasm-pack test --headless --chrome --chromedriver ~/Library/Caches/.wasm-pack/chromedriver-f07dc4f5987c4c26/chromedriver -- --test browser -- --nocapture` with `webdriver.json` | 16 s warm: 2 passed, 0 failed, 0.74 s (`logs/wasm-pack-test-chrome-4.log`); with the per-tick trace, 73 s (recompile 8.5 s + 2.5 s): 2 passed, 0.81 s (`logs/wasm-pack-test-chrome-5.log`) |
-| fragment unit tests (prior study) | `cargo test -p vizij-arora-behavior -p vizij-arora-host --lib` | 4 + 5 pass (`spikes/speech-and-agent/test-behavior-host.log`) |
+| wasm32 provider + composition | `CARGO_TARGET_DIR=…/arora-wasm/target cargo check --target wasm32-unknown-unknown` | clean, 0 warnings, 54 s |
+| native provider + tests build | `CARGO_TARGET_DIR=…/arora-wasm/target-host cargo check --tests` | clean, 4 m 01 s cold |
+| native tests, all targets (`run-native.sh`) | `CARGO_TARGET_DIR=…/arora-wasm/target-host cargo test -- --nocapture` | 3 s warm (build 1.24 s): lib 1 passed; `native` 2 passed, 0.37 s (say → `Failure` after 4 ticks / 83 ms); `debug_native` 1 passed, 0.14 s |
+| product device.rs tests (`run-device.sh`) | `cd vizij-rs && CARGO_TARGET_DIR=…/tts-wasm/target cargo test --locked -p vizij --bin vizij -- device::tests::a_play_viseme_run… a_new_play_viseme_run… a_say_run…` | 73 s (rebuild of `vizij` 55.6 s): 3 passed, 0 failed, 9.87 s; cold build 26 m 04 s, 3 passed, 3.63 s |
+| browser tests, wasm-pack's own driver | `CARGO_TARGET_DIR=…/arora-wasm/target wasm-pack test --headless --chrome -- --test browser` | 429 s: wasm32 test build 1 m 31 s, wasm-bindgen CLI 0.2.128 install 4 m 45 s, chromedriver 153 fetched, session refused against Chrome 152 |
+| browser tests (`run-browser.sh`) | `CARGO_TARGET_DIR=…/arora-wasm/target wasm-pack test --headless --chrome --chromedriver ~/Library/Caches/.wasm-pack/chromedriver-f07dc4f5987c4c26/chromedriver -- --test browser -- --nocapture` with `webdriver.json` | 16 s warm: 2 passed, 0 failed, 0.74 s; with the per-tick trace, 73 s (recompile 8.5 s + 2.5 s): 2 passed, 0.81 s |
+| fragment unit tests (prior study) | `cargo test -p vizij-arora-behavior -p vizij-arora-host --lib` | 4 + 5 pass |
 
 ### The JS playback contract (`www/play.js`)
 

@@ -1,13 +1,15 @@
 # The authoring GLB export runs from the JS world model with no renderer: a headless three.js graph reproduces the file
 <!-- tags: family=project; type=reference; project_status=proposal; topics=authoring,export,render,three.js,glb,robotdata,bundle,rust,headless -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [Authoring viewport](authoring-viewport.md) · [Web render anatomy](web-render-anatomy.md)
 
-Raw outputs: `scratchpad/spikes/headless-export/` — `headless-export.mjs` (the
-spike), `register.mjs` + `cjs-named-exports-loader.mjs` (loaders), `run-*.log`,
-`*_report.json`, `*_headless.glb`, `*_fallback.glb`, `trs-vs-defaults.log`,
-`glb-inventory-facts.txt`, `quori-census.json`, `node-globals.txt`,
-`app-render-imports.txt`. Node v22.13.0, three 0.170.0, three-stdlib 2.36.1, taken
+Raw outputs:
+[vizij-rs `spikes/bevy-everywhere/headless-export/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/headless-export)
+(branch `spikes/bevy-everywhere`) — `headless-export.mjs` (the spike),
+`register.mjs` + `cjs-named-exports-loader.mjs` (loaders), `*_report.json`,
+`trs-vs-defaults.mjs`, `glb-inventory-facts.txt`, `quori-census.json`,
+`node-globals.txt`, `app-render-imports.txt`. The run logs and the exported GLBs
+are not kept: the reports and the figures quoted on this page are the record. Node v22.13.0, three 0.170.0, three-stdlib 2.36.1, taken
 from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
 
 ## Findings
@@ -23,10 +25,11 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    `VIZIJ_bundle` string-equal (3,626,348 chars); materials 0 diffs;
    `extras.targetNames` equal; BIN chunk 2,808,256 bytes on both sides.
    Hugo_Current_Extended (21 nodes, `KHR_materials_unlit`) and Toasty_Current
-   (49 nodes, 16 groups, 33 morph meshes) likewise (`run-*.log`, `*_report.json`).
+   (49 nodes, 16 groups, 33 morph meshes) likewise (`*_report.json`).
 2. **Round trip holds.** Reloading each headless GLB through the same loader gives
    0 diffs in world (refs and geometry objects excluded, geometry attribute sets
-   compared), animatables, bundle, and `rootBounds` (`run-*.log`, "round trip").
+   compared), animatables, bundle, and `rootBounds` (`*_report.json`,
+   `roundTrip`).
 3. **The only residual diffs are node TRS and mesh `weights`, and they expose an
    inconsistency in the shipped files, not in the headless path.** The mounted
    meshes track the runtime store's values written by the device
@@ -38,7 +41,7 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    lids, mouth morphs), Hugo_Current 6/21, Hugo_Current_Extended 3/21,
    Toasty_Current 2/49 — including Toasty's root `Scene` rotated 90° about X in
    the file (`[0.707,0,0,0.707]`) against a `(0,0,0)` default; Quori_Current 0/18
-   (`trs-vs-defaults.log`). A headless export writes the defaults as TRS, so the
+   (`trs-vs-defaults.mjs`). A headless export writes the defaults as TRS, so the
    two agree by construction.
 4. **Nothing in the encoding needs a renderer or the DOM.** three-stdlib's
    `GLTFExporter` reaches `document.createElement("canvas")`/`OffscreenCanvas`
@@ -67,7 +70,7 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    scene (`exportSceneRoot`, kept by `useVizijAssetLoader.ts:825,985`) adds a
    wrapper node (19 for 18), moves `VIZIJ_bundle` onto that wrapper and off the
    `RobotData` root, and writes loader-added `extras.name` and
-   `extras.targetNames` on every node (`run-quori.log`, "fallback-vs-source").
+   `extras.targetNames` on every node (`quori_report.json`, "fallback-vs-source").
 7. **`extras.selection` in every shipped face is picking metadata.**
    `shape.tsx:86-94` stores `{id, namespace, type}` in `userData.selection` for
    `onElementClick`; `GLTFExporter` serializes leftover userData as `extras`.
@@ -80,7 +83,7 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    diffs, 410 ms total; `deriveRootBounds` is `Box3.setFromObject`
    (`traverse-three.ts:320-358`), pure.
 9. **Cost in Node**, Quori 6.5 MB: load 0.6–1.7 s, graph build 5–100 ms, export
-   0.6–1.0 s, RSS ≤ 273 MB (`run-*.log`, "timings").
+   0.6–1.0 s, RSS ≤ 273 MB (`*_report.json`, `timingsMs`, `memoryMB`).
 10. **Defaults are arora Values, and the renderables never apply them.** Quori's
     `RobotData` defaults: 36 `struct` vector3, 18 `struct` euler, 15 `struct`
     rgb, 44 `{f32}`, 0 plain (`quori-census.json`). `@vizij/render`'s guards test

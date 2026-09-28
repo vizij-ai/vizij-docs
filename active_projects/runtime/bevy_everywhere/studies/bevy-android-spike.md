@@ -1,14 +1,15 @@
 # Bevy 0.19 builds to an installable Android APK from this Mac; `vizij` type-checks for Android behind one missing feature
 <!-- tags: family=project; type=reference; project_status=proposal; topics=android,bevy,vizij-rs,ros-viz-rs,packaging,wgpu,emulator -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [Native app anatomy](native-app-anatomy.md) · [Standalone anatomy](standalone-anatomy.md)
 
 Paths are repo-relative (`ros-viz-rs`, `vizij-rs`, `vizij-web`); registry
-sources are quoted as `<crate>-<version>/path`. The spike's sources, logs,
-APKs and screenshots live under
-`/private/tmp/claude-501/-Users-victor-paleologue-Code-Semio-semio-studio/3db729c2-88a1-4330-986e-37ae26376064/scratchpad/spikes/bevy-android/`
-(`app/` is the Bevy crate plus its Gradle project; `t2-*.log`, `t3*.log`,
-`logcat-*.txt`, `screen*.png`, `*.apk`).
+sources are quoted as `<crate>-<version>/path`. The spike's sources and
+screenshots are in
+[vizij-rs `spikes/bevy-everywhere/bevy-android/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/bevy-android)
+(branch `spikes/bevy-everywhere`; `app/` is the Bevy crate plus its Gradle
+project; `screen*.png`). Build logs, raw logcat dumps and APKs are not kept:
+the commands, timings and log lines quoted on this page are the record.
 
 ## Findings
 
@@ -41,14 +42,14 @@ APKs and screenshots live under
 3. **That missing feature is the only Android compile error in `vizij`.**
    `cargo ndk -t arm64-v8a check -p vizij` (default features) fails with
    exactly the six `android-activity` errors above and nothing else
-   (`t3-vizij-check.log`, 113 s). Enabled from the command line
+   (113 s). Enabled from the command line
    (`--features bevy/android-native-activity`, no source change), the same
    check passes with **0 errors, 0 warnings** across 472 crates
-   (`t3b-vizij-check-native-activity.log`, `Finished` after 23 min while a
+   (`Finished` after 23 min while a
    Bevy build ran alongside), and with `studio` added it passes again with 0
    errors across 445 more crates including zenoh 1.10.1, firestore 0.50.0,
    gcloud-sdk 0.30.2, arora-studio-bridge-client 6.1.0 and ring 0.17.14
-   (`t3c-vizij-check-studio.log`, 8 min incremental). wasmtime 45.0.3 (arora's
+   (8 min incremental). wasmtime 45.0.3 (arora's
    `native` → `wasmtime-host`), crossterm 0.28.1, ratatui 0.29.0 and both
    rodio lines type-check for `aarch64-linux-android`. The native build
    scripts ran through the NDK toolchain: aws-lc-sys 0.45.0 (cmake, produced
@@ -56,7 +57,7 @@ APKs and screenshots live under
    zstd-sys. `check` does not link, so link-time gaps remain possible
    (finding 6 shows one such gap for Bevy's own audio).
 4. **`vizij`'s Android-relevant dependency shape** (`cargo tree --target
-   aarch64-linux-android -i`, `t3-cargo-tree-invert.log`): aws-lc-sys comes
+   aarch64-linux-android -i`): aws-lc-sys comes
    from reqwest 0.13.5 ← `vizij-arora-tts` (rustls' default provider), so a
    cmake in the NDK cross-build is required by the cloud TTS provider, not by
    the Studio bridge; ring appears only with `studio` (zenoh's quinn/rcgen and
@@ -83,14 +84,14 @@ APKs and screenshots live under
    0.17.1's AAudio backend links `-laaudio`, which the NDK sysroot provides
    from API 26 only (`ndk/25.1.8937393/.../aarch64-linux-android/{24,26}/`);
    cargo-ndk defaults to platform 21 and the link fails with `unable to find
-   library -laaudio` (`t2-cargo-ndk-build-2.log`). `cargo ndk -P 26` (and
+   library -laaudio`. `cargo ndk -P 26` (and
    `minSdk 26`) fixes it. ros-viz-rs (Bevy 0.18, oboe) ships minSdk 24.
 7. **Sizes.** `--release` (opt 3, no LTO): `.so` 143.5 MB, 93.1 MB after
    `llvm-strip`. Workspace profile: 90.8 MB, 55.1 MB stripped; release APK
    **56.2 MB** (library stored uncompressed, Quori GLB 6.5 MB deflated to
    0.9 MB). AGP strips only when `ndkVersion` names an installed NDK;
    otherwise it logs "Unable to strip … packaging them as they are" and the
-   APK is 91.9 MB (`t2-gradle-assembleRelease-small*.log`). cargo-ndk copied no
+   APK is 91.9 MB. cargo-ndk copied no
    `libc++_shared.so` (nothing in Bevy 0.19's default graph links it).
 8. **The APK installs and launches on the arm64 API 32 AVD; Bevy boots but
    wgpu 29's Vulkan device cannot allocate a buffer on the emulator, so no
@@ -102,7 +103,7 @@ APKs and screenshots live under
    panic in `wgpu-29.0.4/src/backend/wgpu_core.rs:2253` (`Buffer::get_mapped_range`)
    and "Encountered a panic in system"; the process stays alive (pid
    reported), the screenshot shows the launcher (`screen.png`,
-   `screen-gpuhost-vulkan.png`, `logcat-launch*.txt`). wgpu derives
+   `screen-gpuhost-vulkan.png`). wgpu derives
    `max_buffer_size` from `VK_KHR_maintenance4::maxBufferSize` capped by
    `maintenance3::maxMemoryAllocationSize` (`wgpu-hal-29.0.4/src/vulkan/adapter.rs:1428-1447`);
    the emulator's Vulkan ICD (goldfish/gfxstream, Android 12 image) reports 0
@@ -114,7 +115,7 @@ APKs and screenshots live under
    `bevy_render/gles` (`bevy_render-0.19.1/Cargo.toml:45`) with no `bevy`-level
    alias (`grep '^gles' bevy-0.19.1/Cargo.toml` finds nothing). With
    `Backends::GL` and no `gles`, Bevy panics "Unable to find a GPU!"
-   (`logcat-launch-gl.txt`). Enabling `gles` means a direct `bevy_render`
+   (`screen-gl.png`). Enabling `gles` means a direct `bevy_render`
    dependency for feature unification (`app/Cargo.toml`, 619 s rebuild of the
    render stack). With it, wgpu finds "Android Emulator OpenGL ES Translator
    (Apple M1)", OpenGL ES 3.0, and Bevy creates its window, but
@@ -122,14 +123,14 @@ APKs and screenshots live under
    DownlevelFlags(SURFACE_VIEW_FORMATS) are required but not supported on the
    device`, then `Surface::get_current_texture_view` panics ("Surface is not
    configured for presentation"); `dumpsys gfxinfo` counts 0 frames
-   (`logcat-launch-gpuhost-gles.txt`, `screen-gpuhost-gles.png`). Bevy 0.19
+   (`screen-gpuhost-gles.png`). Bevy 0.19
    configures its surface with an sRGB view format, which this GLES 3.0
    translator cannot provide. So neither wgpu backend draws a frame on this
    emulator; hardware behaviour of either is unverified.
 10. **Logging reaches logcat twice by default.** Bevy's `LogPlugin` installs an
     Android layer (`bevy_log-0.19.1/src/lib.rs:21,370-371`, `android_log-sys`)
     and android-activity also redirects stdout/stderr under the tag
-    `RustStdoutStderr`; every event appears in both forms (`logcat-launch.txt`).
+    `RustStdoutStderr`; every event appears in both forms.
     `vizij` disables `LogPlugin` and routes `tracing` → `log` → env_logger or
     the TUI pane (`crates/vizij/src/main.rs:266,313`, `Cargo.toml` tracing
     comment), so on Android it needs either the `LogPlugin` kept or
@@ -210,7 +211,7 @@ pattern (finding 13); logging via `LogPlugin` or `android_logger` (finding 10).
 
 | Step | Command | Result |
 |---|---|---|
-| T3 check, defaults | `cargo ndk -t arm64-v8a check -p vizij` (in vizij-rs) | exit 101 after 113 s; 6 errors, all `android-activity-0.6.1` (`t3-vizij-check.log:225-308`) |
+| T3 check, defaults | `cargo ndk -t arm64-v8a check -p vizij` (in vizij-rs) | exit 101 after 113 s; 6 errors, all `android-activity-0.6.1` |
 | T3b check, backend selected | `cargo ndk -t arm64-v8a check -p vizij --features bevy/android-native-activity --keep-going` | exit 0, 0 errors, 0 warnings, 472 crates, 1391 s (contended) |
 | T3c check, + studio | same `--features bevy/android-native-activity,studio` | exit 0, 0 errors, 445 further crates, 484 s |
 | Spike build 1 | `cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs build --release --lib` | 2314 s cold (contended); one spike-code error (`AmbientLight` is a component in 0.19) |
@@ -221,7 +222,7 @@ pattern (finding 13); logging via `LogPlugin` or `android_logger` (finding 10).
 | Install + launch | `adb install -r …; adb shell am start -n ai.vizij.bevyspike/android.app.NativeActivity` | 2 s; process alive 15 s later |
 | Screenshot | `adb exec-out screencap -p > screen.png` | launcher only (render panic, finding 8) |
 
-### Runtime log, host GPU emulator (`logcat-launch-gpuhost-vulkan.txt`)
+### Runtime log, host GPU emulator
 
 ```
 AdapterInfo { name: "Apple M1", driver: "MoltenVK", driver_info: "1.4.0", backend: Vulkan, device_type: VirtualGpu … }
@@ -234,9 +235,8 @@ thread '<unnamed>' panicked at …/wgpu-29.0.4/src/backend/wgpu_core.rs:2253:18:
 Error in Buffer::get_mapped_range: Validation Error
 ```
 
-The headless SwiftShader run is identical except for the adapter line
-(`logcat-launch.txt`); the emulator itself was healthy (1 core, 1.9 GiB,
-Android 12, 1080x2220).
+The headless SwiftShader run is identical except for the adapter line; the
+emulator itself was healthy (1 core, 1.9 GiB, Android 12, 1080x2220).
 
 ### Environment on this Mac
 

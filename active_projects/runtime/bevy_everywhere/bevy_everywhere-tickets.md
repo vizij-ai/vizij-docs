@@ -1,6 +1,6 @@
 # Tickets for one Bevy view everywhere
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-09-21
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](bevy_everywhere-plan.md) · [Reading guide](bevy_everywhere-deck.md) · [Sub-studies](studies/)
 
 The plan's phases decomposed into tickets, each with a definition of done a
@@ -190,10 +190,10 @@ adapter.
 **Done when.** `studies/challenge-wasm-one-module.md` has a numbered finding
 per item, each verified or marked NOT RUN with the reason.
 
-**Implementation cues.** The spike crate and its page harness are under the
-session scratchpad `spikes/challenge-wasm/` (commit them to a `spikes/`
-branch of vizij-rs first, they vanish with the session); source changes
-rebuild in 14–37 s on the warm target; face-ready is 2 s (Quori) and 16 s
+**Implementation cues.** The spike crate and its page harness are in
+[vizij-rs `spikes/bevy-everywhere/challenge-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/challenge-wasm)
+(branch `spikes/bevy-everywhere`); source changes rebuild in 14–37 s on the
+warm target; face-ready is 2 s (Quori) and 16 s
 (Toasty) on SwiftShader.
 
 ## P1, the crate

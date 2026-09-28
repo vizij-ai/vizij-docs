@@ -1,6 +1,6 @@
 # How Semio Studio consumes a Vizij face today, and which shapes a Bevy view can take there
 <!-- tags: family=project; type=reference; project_status=proposal; topics=studio,vizij-app,tauri,bevy,wasm,scene,studio-arora,render -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [Native app anatomy](native-app-anatomy.md) · [Standalone anatomy](standalone-anatomy.md) · [Web render anatomy](web-render-anatomy.md) · [Browser device anatomy](browser-device-anatomy.md)
 
 Paths are repo-relative; `semio_studio` is the default repo, read on branch
@@ -9,8 +9,8 @@ Paths are repo-relative; `semio_studio` is the default repo, read on branch
 `main` on 2026-09-14; the local `main`/`origin/main` refs of this checkout
 predate that merge and still show the pre-port `vizij_controller.rs`). Registry
 sources are quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of
-what each `Cargo.lock` resolves). The stand-alone test and raw outputs live under
-`/private/tmp/claude-501/-Users-victor-paleologue-Code-Semio-semio-studio/3db729c2-88a1-4330-986e-37ae26376064/scratchpad/spikes/studio-consumers/`.
+what each `Cargo.lock` resolves). The stand-alone test and raw outputs are not
+kept; the Evidence section describes the test and quotes its output.
 
 ## Findings
 
@@ -164,8 +164,7 @@ what each `Cargo.lock` resolves). The stand-alone test and raw outputs live unde
     (`ScheduleRunnerPlugin`, camera → `COPY_SRC` target image, `Readback`) run on a
     spawned thread initialises Metal (`Apple M1`), delivers a readback whose corner
     is the camera's red clear color and whose centre is the lit green cube, drops
-    the `App` in 157 ms and exits the process cleanly
-    (`scratchpad/spikes/studio-consumers/bevy-offthread/run2.log`). The main-thread
+    the `App` in 157 ms and exits the process cleanly. The main-thread
     rule in Finding 13 is winit's and tao's, not wgpu's or Bevy's schedule.
 15. **`--studio` in the Bevy app is the same connection the Tauri app makes, minus
     the operator UI.** `vizij-rs/crates/vizij/src/device.rs:155-161` calls
@@ -293,14 +292,14 @@ Bevy wasm view would read that device's `RigHal` pose in-memory.
 
 ### Stand-alone test: Bevy rendering off the main thread (macOS)
 
-`scratchpad/spikes/studio-consumers/bevy-offthread/` — `bevy = "0.19.1"`, the
+A binary crate `bevy-offthread` — `bevy = "0.19.1"`, the
 snapshot recipe (`DefaultPlugins` minus `WinitPlugin` and `LogPlugin`,
 `primary_window: None`, `ScheduleRunnerPlugin`, a camera with a red clear color
 rendering a lit cube into a `COPY_SRC` target image, `Readback::texture`), run
 entirely on a spawned thread whose id is asserted different from the main
 thread's. The first readback arrives at the second `App::update`; the reported
 frame is the 30th readback so the scene is certainly drawn. Debug build, Bevy
-0.19.1 default features, macOS 25.6, Apple M1 (`run.log`, `run2.log`):
+0.19.1 default features, macOS 25.6, Apple M1:
 
 ```
 OK: thread=Some("bevy-offthread") update=31 readbacks=30 elapsed=24.33s

@@ -1,15 +1,18 @@
 # Bevy 0.19 draws and animates the Quori face on the API 34/35 arm64 emulator under Vulkan with a host GPU or lavapipe; SwiftShader loses the device at wgpu-hal's 1 s acquire timeout and every GLES build fails before its first frame
 <!-- tags: family=project; type=reference; project_status=proposal; topics=android,bevy,wgpu,emulator,gfxstream,swiftshader,lavapipe,ci,vizij-rs -->
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [Android packaging spike](bevy-android-spike.md)
 
-Spike directory (scripts, screenshots, logcats, emulator logs, the Vulkan
-probe, the animation APK):
-`/private/tmp/claude-501/-Users-victor-paleologue-Code-Semio-semio-studio/3db729c2-88a1-4330-986e-37ae26376064/scratchpad/spikes/challenge-android/`
-(paths below are relative to it; `bevy-android/` is the sibling packaging
-spike). Registry sources are quoted as `<crate>-<version>/path:line`. Stack
-under test: Bevy 0.19.1, wgpu 29.0.4, emulator 36.6.11 on an Apple M1, arm64
-`google_apis` images API 32, 34 and 35, 2560x1600 tablet AVDs (2 vCPUs, 3 GB)
+Spike directory (scripts, screenshots, run summaries, the Vulkan probe, the
+animation app):
+[vizij-rs `spikes/bevy-everywhere/challenge-android/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/challenge-android)
+(branch `spikes/bevy-everywhere`; paths below are relative to it;
+`bevy-android/` is the sibling packaging spike). Raw logcat dumps, emulator
+logs, build logs and APKs are not kept: each run's `<case>-summary.txt` and
+the log lines quoted on this page are the record. Registry sources are quoted
+as `<crate>-<version>/path:line`. Stack under test: Bevy 0.19.1, wgpu 29.0.4,
+emulator 36.6.11 on an Apple M1, arm64 `google_apis` images API 32, 34 and
+35, 2560x1600 tablet AVDs (2 vCPUs, 3 GB)
 plus one 640x480 AVD, three APKs of `--release` Rust code: the packaging
 spike's Vulkan build (`bevy-android/bevy-spike-vulkan-debug.apk`) and
 `bevy_render/gles` build (`bevy-android/bevy-spike-gles-debug.apk`), and the
@@ -35,7 +38,7 @@ lower-left quadrant, `app-anim/src/lib.rs:156-161`, so rotation is visible).
    13 142 pixels (of 844 800) between every consecutive pair of the eleven
    pairs (`api35-host-anim-summary.txt`). The `fit: bounds` line, emitted
    after 180 `Update` frames, lands 54.7 s after `Creating new window`
-   (`api35-host-anim-logcat.txt` 17:46:41.283 → 17:47:35.939): 3.3 frames/s.
+   (`api35-host-anim-summary.txt` 17:46:41.283 → 17:47:35.939): 3.3 frames/s.
    Zero `Caught`, `panicked` or `ANR in` lines in that run.
 3. **Lavapipe draws and animates too, with no device loss in 60 s.** `-gpu
    lavapipe` (emulator 36.4.9 release note: "Enabled Lavapipe as the default
@@ -44,16 +47,16 @@ lower-left quadrant, `app-anim/src/lib.rs:156-161`, so rotation is visible).
    on API 35, animation build: face and cube from t=10 s
    (`api35-lavapipe-anim-t20.png`), lower-left changes of 5 321 to 14 911
    pixels per 5 s, `fit: bounds` 98.2 s after window creation
-   (`api35-lavapipe-anim-logcat.txt` 17:50:19.755 → 17:51:57.958): 1.8
+   (`api35-lavapipe-anim-summary.txt` 17:50:19.755 → 17:51:57.958): 1.8
    frames/s; zero `Caught`/`panicked` lines; the emulator log has no fence
-   timeout (`emulator-api35-lavapipe-anim.log:92,99`, one create and one
-   destroy of the `VkDevice`, the latter at kill). The guest sees `apiVersion
-   1.3.0`, `maxBufferSize 4095 MiB`, `maxMemoryAllocationSize 2 GiB`, no
+   timeout (one create and one destroy of the `VkDevice`, the latter at
+   kill). The guest sees `apiVersion 1.3.0`, `maxBufferSize 4095 MiB`,
+   `maxMemoryAllocationSize 2 GiB`, no
    `VK_KHR_swapchain_mutable_format` (`vkprobe-api35-lavapipe-anim.txt`).
 4. **`dumpsys gfxinfo` and `dumpsys SurfaceFlinger --latency` are not
    evidence for a NativeActivity.** `gfxinfo` counts HWUI frames only and
    reads `Total frames rendered: 0` for every run, including the ones that
-   drew (`api34-host-vulkan-gfxinfo.txt`, `api35-host-vulkan-gfxinfo.txt`);
+   drew (`api35-host-vulkan-gfxinfo.txt`);
    on API 35 `--latency` returns a header row only for every
    `RequestedLayerState{…}` name `--list` prints
    (`api35-host-anim-summary.txt`). The screenshot pair is the frame
@@ -66,10 +69,11 @@ lower-left quadrant, `app-anim/src/lib.rs:156-161`, so rotation is visible).
    error variant (driver implementation is at fault)` and the render system
    panics in `Buffer::get_mapped_range` (`wgpu-29.0.4/src/backend/wgpu_core.rs:2253`):
    17.4 s after window creation at 2560x1600 on API 35
-   (`api35-swiftshader-vulkan-logcat.txt` 16:47:53.766 → 16:48:11.204), 43.5 s
-   on API 34 with the emulator alone (`api34-swiftshader-vulkan-alone-logcat.txt`),
-   11.1 s at 640x480 on API 35 with the animation build
-   (`api35small-swiftshader-anim-logcat.txt` 17:54:23.758 → 17:54:34.879;
+   (`api35-swiftshader-vulkan-summary.txt`; logcat 16:47:53.766 →
+   16:48:11.204), 43.5 s on API 34 with the emulator alone
+   (`api34-swiftshader-vulkan-alone-summary.txt`), 11.1 s at 640x480 on API
+   35 with the animation build
+   (`api35small-swiftshader-anim-summary.txt` 17:54:23.758 → 17:54:34.879;
    `api35small-swiftshader-anim-t20.png` shows the launcher). The mechanism
    is in wgpu-hal: `Surface::acquire` waits on the acquired image's fence
    with the frame timeout (`wgpu-hal-29.0.4/src/vulkan/swapchain/native.rs:473-474`;
@@ -81,8 +85,7 @@ lower-left quadrant, `app-anim/src/lib.rs:156-161`, so rotation is visible).
    #9029 (open, February 2026) reports the same mapping on a Windows Intel
    GPU. The host side agrees that a SwiftShader frame exceeds seconds: the
    emulator logs `Timeout when waiting for the Qsri fence.` then `Destroyed
-   VkDevice` (`emulator-api34-swiftshader.log:120-121,144-145`,
-   `emulator-api35small-swiftshader-anim.log:117-118`), gfxstream's 3 s bound
+   VkDevice` (API 34 SwiftShader and API 35 640x480 runs), gfxstream's 3 s bound
    on the present fence (`gfxstream-vk_android_native_buffer_operations.cpp:667,837-843`).
    The time to loss does not scale with pixels (11 s at 0.3 Mpx, 17 s at
    4.1 Mpx), so the cost is per frame (SwiftShader's LLVM 10 shader JIT and
@@ -121,7 +124,7 @@ lower-left quadrant, `app-anim/src/lib.rs:156-161`, so rotation is visible).
    DownlevelFlags(SURFACE_VIEW_FORMATS) are required` then the `Surface is
    not configured for presentation` panic
    (`wgpu-29.0.4/src/backend/wgpu_core.rs:3934`; `api34-host-gles-summary.txt`,
-   `api35-host2-gles-summary.txt`, `bevy-android/logcat-launch-gpuhost-gles.txt`).
+   `api35-host2-gles-summary.txt`, `bevy-android/screen-gpuhost-gles.png`).
    wgpu-hal sets `SURFACE_VIEW_FORMATS` only in the Vulkan adapter
    (`wgpu-hal-29.0.4/src/vulkan/adapter.rs:684-687`; wgpu issue #10337, open,
    proposes it for GLES over `EXT_sRGB_write_control`); Bevy asks for an
@@ -143,7 +146,7 @@ lower-left quadrant, `app-anim/src/lib.rs:156-161`, so rotation is visible).
    property to read on the tablet before anything else.
 9. **A second emulator or a cargo build on this Mac starves the guest**: those
    runs log ANRs of unrelated processes and show an "isn't responding" dialog
-   over the face (`api35-host2-vulkan-logcat.txt`, 15 `ANR in` lines;
+   over the face (`api35-host2-vulkan-summary.txt`, 15 `ANR in` lines;
    `api34-host-vulkan-t30.png`) and boot in 79 to 794 s; the three animation
    runs, each with the emulator alone, log zero ANRs and boot in 25 to 35 s.
 10. **Naga's debug `OpSource` breaks gfxstream's guest SPIR-V validator** on
@@ -219,15 +222,16 @@ Bevy 0.19.
 ## Evidence
 
 Matrix (arm64 `google_apis` images; "drew" = face visible in the screenshot;
-every row's logcat is `<case>-logcat.txt` or the `bevy-android/` file named;
+each row's key log lines are in `<case>-summary.txt` or, for the
+`bevy-android/` rows, quoted in the Result column;
 "anim" = the animation build, otherwise the packaging spike's builds):
 
 | Image | `-gpu` | Backend | Result | Evidence |
 |---|---|---|---|---|
-| API 32 | swiftshader_indirect | Vulkan | no frame: `Buffer size 32 is greater than the maximum buffer size (0)`, panic `wgpu_core.rs:2253` | `bevy-android/logcat-launch.txt`, `bevy-android/screen.png` (launcher) |
-| API 32 | host | Vulkan | no frame: same limit-0 error with adapter `Apple M1`/MoltenVK | `bevy-android/logcat-launch-gpuhost-vulkan.txt`, `bevy-android/screen-gpuhost-vulkan.png` (launcher) |
+| API 32 | swiftshader_indirect | Vulkan | no frame: `Buffer size 32 is greater than the maximum buffer size (0)`, panic `wgpu_core.rs:2253` | `bevy-android/screen.png` (launcher) |
+| API 32 | host | Vulkan | no frame: same limit-0 error with adapter `Apple M1`/MoltenVK | `bevy-android/screen-gpuhost-vulkan.png` (launcher) |
 | API 32 | swiftshader_indirect | GLES | no frame: GLSL ES image-qualifier error, app exits | `api32-swiftshader-gles-summary.txt`, `api32-swiftshader-gles.png` (launcher) |
-| API 32 | host | GLES | no frame: `SURFACE_VIEW_FORMATS` refused, panic `wgpu_core.rs:3934` | `bevy-android/logcat-launch-gpuhost-gles.txt` |
+| API 32 | host | GLES | no frame: `SURFACE_VIEW_FORMATS` refused, panic `wgpu_core.rs:3934` | `bevy-android/screen-gpuhost-gles.png` |
 | API 34 | swiftshader_indirect | Vulkan | no frame: black 44 s, DeviceLost, panic | `api34-swiftshader-vulkan-alone-summary.txt`, `-t5..t45.png` |
 | API 34 | swiftshader_indirect | GLES | no frame: GLSL ES image-qualifier error, app exits | `api34-swiftshader-gles-summary.txt` |
 | API 34 | host | Vulkan | **drew** at t=30 s (t=25 s clear colour only) | `api34-host-vulkan-t25.png`, `-t30.png`, `-summary.txt` |
@@ -254,11 +258,10 @@ Scripts: `run-case.sh`, `run-case2.sh`, `run-timeline.sh` (screenshot every
 5 s with dominant colours), `run-timeline2.sh` (adds the changed-pixel count
 of the lower-left quadrant between consecutive screenshots), and the
 boot-probe-case-kill wrappers `run-image.sh`, `run-host-image.sh`,
-`run-sw-image.sh`, `run-anim2.sh` (`run-final-chain.log` is the three
-animation runs). Animation build: `cargo ndk -t arm64-v8a -P 26 -o
-android/app/src/main/jniLibs build --release --lib`, 21 min 34 s with the
-Bevy chain recompiled (`build-anim-cargo-2.log`), `./gradlew --no-daemon
-assembleDebug` 18 s (`build-anim-gradle.log`), APK 94.9 MB (unstripped).
+`run-sw-image.sh`, `run-anim2.sh` (the three animation runs). Animation
+build: `cargo ndk -t arm64-v8a -P 26 -o android/app/src/main/jniLibs build
+--release --lib`, 21 min 34 s with the Bevy chain recompiled, `./gradlew
+--no-daemon assembleDebug` 18 s, APK 94.9 MB (unstripped).
 `api35-host-vulkan-manual.png` is a truncated PNG (unusable).
 
 ## Implications for the target picture

@@ -1,6 +1,6 @@
 # The local WS bridge, the operator seam and the file dialog: what arora's public API already gives the vizij binary
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,ws-bridge,arora,operator,studio-bridge,rfd,desktop,android -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
@@ -10,7 +10,8 @@ Paths are repo-relative: `arora/` = `arora-sdk/crates/arora/`, `ws/` =
 sources vizij-rs locks (`Cargo.lock`: arora 9.11.1, arora-bridge-ws 4.0.0,
 arora-bridge 4.1.0, arora-types 2.5.1, arora-studio-bridge-client 6.1.0). The
 spike that backs findings 1, 3, 4 and 6 is a native cargo project at
-`scratchpad/spikes/ws-operator/` (its run log: `logs/ws-operator-run.out`).
+[vizij-rs `spikes/bevy-everywhere/ws-operator/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/ws-operator)
+(branch `spikes/bevy-everywhere`; its run log: `logs/ws-operator-run.out`).
 
 ## Findings
 
@@ -204,8 +205,9 @@ spike that backs findings 1, 3, 4 and 6 is a native cargo project at
 
 ## Evidence
 
-- Spike: `scratchpad/spikes/ws-operator/` (`Cargo.toml`, `src/main.rs`,
-  `logs/ws-operator-run.out`; `CARGO_TARGET_DIR` inside). Port 9124. It
+- Spike: [vizij-rs `spikes/bevy-everywhere/ws-operator/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/ws-operator)
+  (`Cargo.toml`, `src/main.rs`, `logs/ws-operator-run.out`; `CARGO_TARGET_DIR`
+  inside). Port 9124. It
   asserts every wire reply listed in finding 1, the `LocalCaller` round trip
   of finding 3, and the idle-feed count of finding 6.
 - `arora/src/run.rs:108-181` (`local_ws_bridge`, `LocalBridge`),

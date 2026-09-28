@@ -1,12 +1,10 @@
 # Packaging and CI: what exists to build, test and release the Bevy app, its wasm package and its APK
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,bevy,ci,packaging,wasm,android,release -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
 Raw outputs (registry queries, run listings, runner-image readmes, the downloaded
-`@vizij/runtime` tarball) live in
-`scratchpad/spikes/packaging-and-ci/` (`registry-and-ci-runs.txt`, `runner-images/`,
-`npm-runtime/`).
+`@vizij/runtime` tarball) are not kept.
 
 ## Findings
 
@@ -135,8 +133,7 @@ Raw outputs (registry queries, run listings, runner-image readmes, the downloade
 17. **GitHub-hosted runners already carry the Android toolchain.** ubuntu-24.04: SDK
     cmdline-tools, build-tools 34-37, platforms android-34…37, NDK 27.3 (default),
     28.2, 29.0 with `ANDROID_NDK_HOME` set, Gradle 9.7, Rust 1.98; macos-15: the same
-    plus Android Emulator 37.1.11 (runner-images readmes, saved under
-    `scratchpad/spikes/packaging-and-ci/runner-images/`). The emulator on Ubuntu is
+    plus Android Emulator 37.1.11 (runner-images readmes). The emulator on Ubuntu is
     installed by `reactivecircus/android-emulator-runner`, which ros-viz-rs proves works
     with KVM.
 18. **Bevy 0.19.1's default features include no Android activity backend and do

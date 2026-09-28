@@ -1,17 +1,19 @@
 # Bevy 0.19.1 renders a Vizij face GLB in a browser canvas; what that build costs and what keeps `vizij` off wasm today
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,bevy,wasm,webgl2,vizij-rs,browser,ci,multi-face -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
 All paths are repo-relative; `vizij-rs` is the default repo. Registry sources are
 quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
-`Cargo.lock` resolves). The spike's sources, build script, pages, screenshots
-and raw logs live under
-`/private/tmp/claude-501/-Users-victor-paleologue-Code-Semio-semio-studio/3db729c2-88a1-4330-986e-37ae26376064/scratchpad/spikes/bevy-wasm/`
-(`SPIKE/` below): `Cargo.toml`, `src/lib.rs`, `build.sh`, `index.html`,
-`multi-a.html`, `multi-b.html`, `multi-c.html`, `shoot.js`, `pixdiff.py`,
-`t4-check.sh`, `wasm-sections.py`, `lto-variant/`, `logs/`, `shots/`, `pkg/`,
-`pkg-lto/`.
+`Cargo.lock` resolves). The spike's sources, build script, pages and
+screenshots are in
+[vizij-rs `spikes/bevy-everywhere/bevy-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/bevy-wasm)
+(branch `spikes/bevy-everywhere`; `SPIKE/` below): `Cargo.toml`, `src/lib.rs`,
+`build.sh`, `index.html`, `multi-a.html`, `multi-b.html`, `multi-c.html`,
+`shoot.js`, `pixdiff.py`, `t4-check.sh`, `wasm-sections.py`, `lto-variant/`,
+`shots/`, `pkg-lto/`. Build, HTTP and console logs and the built `.wasm` are
+not kept: the timings, sizes and log lines quoted on this page are the
+record.
 
 ## Findings
 
@@ -39,15 +41,15 @@ and raw logs live under
    with vizij-rs's profile (`opt-level = "s"`, `lto = true`, `codegen-units = 1`,
    `Cargo.toml:40-43`): wall 41 m 10 s, CPU 24 m 59 s user + 2 m 30 s sys, on an
    8-core / 16 GB Mac whose load average sat between 100 and 200 throughout
-   because sibling sub-studies were building at the same time
-   (`SPIKE/logs/build-cold.log`); the CPU time is the fairer number. Of the
-   42.3 MB, 24.7 MB is code, 13.1 MB is the `name` custom section (symbol names,
-   droppable), 4.1 MB is data (§Evidence B). `wasm-bindgen --target web` took
+   because sibling sub-studies were building at the same time; the CPU time
+   is the fairer number. Of the 42.3 MB, 24.7 MB is code, 13.1 MB is the
+   `name` custom section (symbol names, droppable), 4.1 MB is data (§Evidence
+   B). `wasm-bindgen --target web` took
    9.6 s; native `wasm-opt -Os --strip-debug` takes 2 m 49 s and leaves
    26.0 MB (7.6 MB gzipped) — the npm `binaryen` package's JavaScript wasm-opt
    had produced nothing after 30 min. An incremental rebuild after a one-line change takes 14 s wall
-   (`SPIKE/logs/build-warm.log`) — because **cargo applies no LTO to this
-   crate**: the final `rustc` runs with `-C codegen-units=1 -C opt-level=s
+   — because **cargo applies no LTO to this crate**: the final `rustc` runs
+   with `-C codegen-units=1 -C opt-level=s
    -C strip=debuginfo` and no `-C lto` (`cargo build -v`, §Evidence B). A lib
    target whose `crate-type` includes `rlib` is excluded from LTO by cargo's
    `Target::can_lto` rule (inferred from the flags; cargo's source was not
@@ -64,10 +66,9 @@ and raw logs live under
 4. **The wasm-bindgen CLI must match the locked crate version exactly, and the
    machine's does not**: `~/.cargo/bin/wasm-bindgen` is 0.2.104, `Cargo.lock`
    resolves `wasm-bindgen 0.2.128` (`Cargo.lock:11463-11465`); `cargo install
-   wasm-bindgen-cli --version 0.2.128 --locked` took 4 m 14 s
-   (`SPIKE/logs/install-wasm-bindgen-cli.log`). vizij-rs's CI installs
-   `wasm-pack` instead (`.github/workflows/ci.yml:62-63`), which downloads the
-   matching CLI itself.
+   wasm-bindgen-cli --version 0.2.128 --locked` took 4 m 14 s. vizij-rs's CI
+   installs `wasm-pack` instead (`.github/workflows/ci.yml:62-63`), which
+   downloads the matching CLI itself.
 5. **Headless Chromium composites the WebGL2 canvas with no flags at all.**
    Playwright 1.61's Chromium 149 (`chromium-1228`) reports
    `ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device …))` by default, and
@@ -118,17 +119,17 @@ and raw logs live under
 9. **The four interop crates already check clean for wasm32**:
    `cargo check -p {vizij-arora-store, vizij-arora-hal, vizij-arora-behavior,
    vizij-arora-host} --target wasm32-unknown-unknown --locked` all exit 0
-   (31 s, 16 s, 29 s, 2 s including their dependencies,
-   `SPIKE/logs/t4-summary.log`) — consistent with `vizij-arora-web` already
-   composing them for the browser (`crates/interop/vizij-arora-web/Cargo.toml`).
+   (31 s, 16 s, 29 s, 2 s including their dependencies) — consistent with
+   `vizij-arora-web` already composing them for the browser
+   (`crates/interop/vizij-arora-web/Cargo.toml`).
 10. **`crates/vizij` does not check for wasm32, and the first wall is arora's
     default features, not Bevy.** `cargo check -p vizij --target
     wasm32-unknown-unknown --locked` stops in 87 s at `errno`: *"The target OS
-    is "unknown" or "none", so it's unsupported by the errno crate"*
-    (`SPIKE/logs/t4-vizij.log`). `errno` reaches the wasm target through
-    `rustix ← cap-primitives/cap-net-ext ← wasmtime-wasi ← arora-engine`
-    (`cargo tree -i errno`, §Evidence F), i.e. arora's `native` default
-    feature (`arora-9.11.1/Cargo.toml:27-38`: `native` = `arora-bridge-ws`,
+    is "unknown" or "none", so it's unsupported by the errno crate"*. `errno`
+    reaches the wasm target through `rustix ← cap-primitives/cap-net-ext ←
+    wasmtime-wasi ← arora-engine` (`cargo tree -i errno`, §Evidence F), i.e.
+    arora's `native` default feature (`arora-9.11.1/Cargo.toml:27-38`:
+    `native` = `arora-bridge-ws`,
     `env_logger`, `clap`, `arora-engine/wasmtime-host`, `native-host`), which
     `crates/vizij/Cargo.toml` requests with `arora = "9.10"`. With
     `--keep-going`, six crates fail independently of one another — `errno`,
@@ -155,13 +156,13 @@ and raw logs live under
     view half (`view.rs`) itself uses nothing host-specific.
 12. **Bevy's asset loader fetches `assets/<path>` relative to the page and
     probes a `.meta` sidecar first**: the HTTP log shows
-    `GET /assets/Quori_Current_Extended.glb.meta → 404` then the GLB
-    (`SPIKE/logs/http.log`), a harmless console error to expect in the browser
-    device (`bevy_asset-0.19.1/src/io/wasm.rs`, `src/lib.rs:344`).
+    `GET /assets/Quori_Current_Extended.glb.meta → 404` then the GLB, a harmless
+    console error to expect in the browser device
+    (`bevy_asset-0.19.1/src/io/wasm.rs`, `src/lib.rs:344`).
 13. **`App::run()` returns immediately on the web**: the winit runner spawns the
     loop and returns `AppExit::Success` (`bevy_winit-0.19.1/src/state.rs:895-900`,
-    logged `App::run returned: Success` in `SPIKE/shots/single-default-console.log`),
-    so a JS `start()` is non-blocking and the page keeps control.
+    logged `App::run returned: Success` in the console), so a JS `start()` is
+    non-blocking and the page keeps control.
 
 ## Questions answered
 
@@ -213,15 +214,14 @@ failing-crate list in §Evidence F).
 | wasm-opt `-Os --strip-debug --strip-producers` (native binaryen `version_123` arm64 release tarball in `SPIKE/tools/`) | 2 m 49 s wall, 259 s user | 25,992,930 B raw (code 21,619,686; data 4,053,900; no `name` section), 7,625,738 B gzipped |
 | the same through `npx -y -p binaryen wasm-opt` (binaryen 132's JavaScript build) | killed after 30 min without output | — |
 | Incremental rebuild after a one-line change (same profile, same load; no LTO, see below) | 14.2 s wall, 3.1 s user (+ wasm-bindgen 26 s) | 47,811,936 B raw, 42,276,381 B after wasm-bindgen |
-| `cdylib`-only variant (`SPIKE/lto-variant/`; cargo applies fat LTO; 225 of the 300 units recompiled, the 75 reused ones being host build scripts and proc-macros; load avg 90–150) | 19 m 18 s wall, 19 m 00 s user, 1 m 24 s sys, of which the final crate (the LTO link) ≈ 8.5–9 min | 39,362,215 B raw; 35,010,796 B after wasm-bindgen (code 22,004,191; `name` 8,883,492; data 3,822,475), 8,817,694 B gzipped; after native wasm-opt 24,222,078 B (code 20,172,624; data 3,768,513), 7,205,261 B gzipped (`SPIKE/pkg-lto/`, `SPIKE/logs/build-lto.log`) |
+| `cdylib`-only variant (`SPIKE/lto-variant/`; cargo applies fat LTO; 225 of the 300 units recompiled, the 75 reused ones being host build scripts and proc-macros; load avg 90–150) | 19 m 18 s wall, 19 m 00 s user, 1 m 24 s sys, of which the final crate (the LTO link) ≈ 8.5–9 min | 39,362,215 B raw; 35,010,796 B after wasm-bindgen (code 22,004,191; `name` 8,883,492; data 3,822,475), 8,817,694 B gzipped; after native wasm-opt 24,222,078 B (code 20,172,624; data 3,768,513), 7,205,261 B gzipped (`SPIKE/pkg-lto/`) |
 
 Final-crate `rustc` flags of the `["cdylib", "rlib"]` build (`cargo build -v`):
 `-C codegen-units=1 -C opt-level=s -C strip=debuginfo` — no `-C lto`. In the
 `cdylib`-only variant every dependency is compiled with `-C linker-plugin-lto`
-in addition (`SPIKE/logs/build-lto.log`), which is why cargo recompiles the
-whole graph rather than reusing the first build's artifacts; the final crate's
-flags are `-C codegen-units=1 -C lto -C opt-level=s -C strip=debuginfo` with
-`--crate-type cdylib`.
+in addition, which is why cargo recompiles the whole graph rather than reusing
+the first build's artifacts; the final crate's flags are `-C codegen-units=1 -C
+lto -C opt-level=s -C strip=debuginfo` with `--crate-type cdylib`.
 
 Section breakdown of the 42,276,002 B wasm-bindgen output
 (`SPIKE/wasm-sections.py`): `code` 24,717,290; `name` 13,068,087;
@@ -243,8 +243,8 @@ true, args })`, viewport 1100×720, `SPIKE/shoot.js`:
 
 Console under every variant: `AdapterInfo { name: "ANGLE (…SwiftShader…)",
 device_type: Cpu }`, the b0006 software-rendering warning, and the capability
-fallbacks listed in finding 5 (`SPIKE/shots/single-*-console.log`). A
-"GPU stall due to ReadPixels" GL performance warning repeats a few times.
+fallbacks listed in finding 5. A "GPU stall due to ReadPixels" GL performance
+warning repeats a few times.
 
 ### D. Two faces (T3 a/b)
 
@@ -297,7 +297,7 @@ paths only; the `cbindgen` path is a host build-dependency):
 `net`, `fs`, `io-std`, `mio`, `socket2`, `macros`, `sync`, `time` — five of
 which `tokio-1.53.1/src/lib.rs:467-479` rejects on `target_family = "wasm"`.
 
-With `--keep-going` (`SPIKE/logs/t4-vizij-keep-going.log`), the crates that
+With `--keep-going`, the crates that
 fail independently of each other, and who pulls them on the wasm32 target
 (`cargo tree -i <crate> --edges normal`):
 

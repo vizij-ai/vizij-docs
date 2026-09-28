@@ -1,11 +1,14 @@
 # The arora device composition runs in-schedule on wasm32; every interop crate compiles except the TTS provider, and no Studio bridge exists for a browser device
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,wasm,arora,bevy,tts,studio-bridge -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
-Spike directory (manifest, sources, raw logs):
-`/private/tmp/claude-501/-Users-victor-paleologue-Code-Semio-semio-studio/3db729c2-88a1-4330-986e-37ae26376064/scratchpad/spikes/arora-wasm/`
-(`Cargo.toml`, `src/lib.rs`, `run-steps.sh`, `logs/step*.log`, `logs/summary.txt`).
+Spike directory (manifest, sources, run summary):
+[vizij-rs `spikes/bevy-everywhere/arora-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/arora-wasm)
+(branch `spikes/bevy-everywhere`; `Cargo.toml`, `src/lib.rs`, `run-steps.sh`,
+`logs/summary.txt`). The per-step cargo logs are not kept: `logs/summary.txt`
+gives each step's exit code, time and first error, and the log lines quoted on
+this page are the record.
 Toolchain: stable 1.96.0 (vizij-rs pins no toolchain), target `wasm32-unknown-unknown`,
 `arora = "=9.11.1"` from the registry as `vizij-rs/Cargo.lock:393-395` pins it, the
 vizij-rs crates as path dependencies, the lock seeded from `vizij-rs/Cargo.lock`.
@@ -13,7 +16,7 @@ vizij-rs crates as path dependencies, the lock seeded from `vizij-rs/Cargo.lock`
 ## Findings
 
 1. **`arora` 9.11.1 with `default-features = false` compiles for `wasm32-unknown-unknown`** —
-   cold `cargo check` in 5m55s, exit 0 (`logs/step0-arora-no-default.log`). Its `native`
+   cold `cargo check` in 5m55s, exit 0 (`logs/summary.txt`). Its `native`
    feature is the only thing that pulls wasmtime, `arora-bridge-ws`, clap, env_logger and the
    operator front end (registry copy `arora-9.11.1/Cargo.toml:26-38`, same feature list in
    the local checkout); `tui` and `studio-bridge` both imply `native` (registry
@@ -62,11 +65,10 @@ vizij-rs crates as path dependencies, the lock seeded from `vizij-rs/Cargo.lock`
 7. **`vizij-graph-core` does not build without its default `urdf_ik` feature, on any
    target**: `eval/eval_node.rs:20-21` and `eval/graph_runtime.rs:8` import
    `super::urdfik::{…}` unconditionally while `urdfik.rs:83-85` gates the items
-   (`logs/step1.log:366-470`, E0432; native reproduction in
-   `logs/host-graph-core-no-default.log`). The feature is therefore not a lever to trim the
-   wasm build; with `urdf_ik` on (`k` + `urdf-rs`) the crate compiles for wasm32
-   (`logs/step1-urdf.log`).
-8. **`vizij-arora-host`'s `publish-frames` feature compiles for wasm32** (`logs/step3-frames.log`,
+   (E0432, `logs/summary.txt`; reproduced natively). The feature is therefore not a lever
+   to trim the wasm build; with `urdf_ik` on (`k` + `urdf-rs`) the crate compiles for wasm32
+   (`logs/summary.txt`).
+8. **`vizij-arora-host`'s `publish-frames` feature compiles for wasm32** (`logs/summary.txt`,
    exit 0, 14s): `arora-msgs-ros2` 1.2.0 keeps `ros2-client` optional behind its `interop`
    feature (`~/.cargo/registry/src/*/arora-msgs-ros2-1.2.0/Cargo.toml:58-62`,
    `src/lib.rs:54-64`), so the default is serde message types only. The native app enables
@@ -80,8 +82,9 @@ vizij-rs crates as path dependencies, the lock seeded from `vizij-rs/Cargo.lock`
    any feature gate (`arora-9.11.1/src/lib.rs:61,370`). `vizij-animation-module` is a plain
    rlib+cdylib with `lazy_static` engine state (`src/lib.rs:82-90`); its build script's
    `tokio` `rt-multi-thread` is a **build-dependency**, compiled for the host, so it does not
-   touch the wasm target (`vizij-animation-module/Cargo.toml:21-26`); `logs/step5.log` records
-   the wasm outcome of the crate plus a `with_host_module` registration.
+   touch the wasm target (`vizij-animation-module/Cargo.toml:21-26`); step 5 in
+   `logs/summary.txt` records the wasm outcome of the crate plus a `with_host_module`
+   registration.
 10. **The TTS cloud provider is native-bound in three places and carries no `cfg`**
     (`vizij-rs/crates/interop/vizij-arora-tts/src/lib.rs`, `grep cfg`: none): a lazily built
     `tokio::runtime::Runtime` + `spawn` + `spawn_blocking` (`lib.rs:82-90,186-201`; manifest
@@ -92,9 +95,8 @@ vizij-rs crates as path dependencies, the lock seeded from `vizij-rs/Cargo.lock`
     (`lib.rs:187`). The poll shape — `Future::poll` on a `JoinHandle` with a no-op waker,
     per-run state in a content-keyed map (`lib.rs:139-177`) — is the portable part.
     On wasm32 the crate fails in `tokio` itself — "Only features sync,macros,io-util,rt,time
-    are supported on wasm" (`logs/step6.log:30-31`, `tokio-1.53.1/src/lib.rs:479`) — before
-    `reqwest` is reached; `cpal` 0.15.3 and `symphonia` did compile (`logs/step6.log:17-50`),
-    so `rodio` is not the first blocker, only the runtime-bound playback loop is.
+    are supported on wasm" (`logs/summary.txt`, `tokio-1.53.1/src/lib.rs:479`) — before
+    `reqwest` is reached; `cpal` 0.15.3 and `symphonia` did compile, so `rodio` is not the first blocker, only the runtime-bound playback loop is.
 11. **device.rs assumes a worker thread in six places**, none of them in the composition
     itself (`builder_for`, `device.rs:344-402`, is pure): the `std::thread::Builder` spawn
     holding the `Arora` (`device.rs:299-338`, "constructed inside the worker thread — it is
@@ -118,7 +120,7 @@ vizij-rs crates as path dependencies, the lock seeded from `vizij-rs/Cargo.lock`
     states it "is not meant to be compiled to WebAssembly"
     (`studio-bridge/device-client/README.md:31-32`); on wasm32 it fails in `mio` — "This wasm
     target is unsupported by mio. If using Tokio, disable the net feature"
-    (`logs/step8-studio.log:22-23`, 48 errors in `mio` 1.2.3) — i.e. the Zenoh transport's
+    (`logs/summary.txt`; 48 errors in `mio` 1.2.3) — i.e. the Zenoh transport's
     socket layer, before Firestore or gcloud are reached. The bridge's browser transport exists only on the **Studio** side: the router
     serves the native Zenoh protocol to devices and `zenoh-plugin-remote-api` over WebSocket
     to browsers (`studio-bridge/README.md:61-63`), and `studio-bridge-studio-client` is a
@@ -130,7 +132,7 @@ vizij-rs crates as path dependencies, the lock seeded from `vizij-rs/Cargo.lock`
 14. **`arora` with `native` does not build for wasm32**: the feature the vizij-rs native app
     uses (`vizij/Cargo.toml:32`, default features) pulls wasmtime 45 and cranelift, and the
     build dies in `errno` — "The target OS is \"unknown\" or \"none\", so it's unsupported by the
-    errno crate" (`logs/step9-native.log:39-41`, via `rustix`, 22s in). The Bevy wasm build
+    errno crate" (`logs/summary.txt`; via `rustix`, 22s in). The Bevy wasm build
     of `crates/vizij` must therefore depend on `arora` with `default-features = false`,
     which also drops the operator flow it cannot use (finding 11).
 
@@ -199,23 +201,23 @@ GPL C library with `bindgen` and out of scope for wasm (`vizij-piper/Cargo.toml`
 
 ### Compile spike: `cargo check --target wasm32-unknown-unknown --features <step>`
 
-Cumulative steps (each includes the previous unless noted). `first_error` is the first
-`error` line of the log.
+Cumulative steps (each includes the previous unless noted). `logs/summary.txt` gives each
+step's exit code, time and `first_error`, the first `error` line of its cargo output.
 
 | Step | Adds | Result | Detail |
 | --- | --- | --- | --- |
-| 0 | `arora =9.11.1`, `default-features = false` | compiles (5m55s cold) | `logs/step0-arora-no-default.log` |
-| 1 | `vizij-api-core`, `vizij-graph-core` (`default-features = false`) | **fails** | E0432 `super::urdfik::*` unresolved — `logs/step1.log:366-470` (not wasm-specific, finding 7) |
-| 1-urdf | `vizij-graph-core/urdf_ik` (`k`, `urdf-rs`) | compiles (108s) | `logs/step1-urdf.log` |
-| 2 | `vizij-arora-store`, `vizij-arora-hal` | compiles (2s) | `logs/step2.log` |
-| 3 | `vizij-arora-host` | compiles (3s) | `logs/step3.log` |
-| 3-frames | `vizij-arora-host/publish-frames` (branch off 3) | compiles (14s) | `logs/step3-frames.log` — `arora-msgs-ros2` without `interop` |
-| 4 | `vizij-arora-behavior` | compiles (7s) | `logs/step4.log` |
-| 5 | `vizij-animation-module` + `with_host_module(ModuleBuilder…)` + `step_once` (`src/lib.rs:24-55`) | compiles (12s) | `logs/step5.log`; the build script ran on the host |
-| 6 | `vizij-arora-tts` (branch off 5) | **fails** | `tokio`: "Only features sync,macros,io-util,rt,time are supported on wasm" — `logs/step6.log:30-31` |
-| 7 | `arora-web =6.1.0` (branch off 5) | compiles (9s) | `logs/step7.log` |
-| 8 | `arora-studio-bridge-client =6.1.0` alone | **fails** | `mio`: "This wasm target is unsupported by mio" — `logs/step8-studio.log:22-23` |
-| 9 | `arora/native` alone | **fails** | `errno` (under `rustix` / wasmtime 45): "target OS is unknown" — `logs/step9-native.log:39-41` |
+| 0 | `arora =9.11.1`, `default-features = false` | compiles (5m55s cold) | — |
+| 1 | `vizij-api-core`, `vizij-graph-core` (`default-features = false`) | **fails** | E0432 `super::urdfik::*` unresolved (not wasm-specific, finding 7) |
+| 1-urdf | `vizij-graph-core/urdf_ik` (`k`, `urdf-rs`) | compiles (108s) | — |
+| 2 | `vizij-arora-store`, `vizij-arora-hal` | compiles (2s) | — |
+| 3 | `vizij-arora-host` | compiles (3s) | — |
+| 3-frames | `vizij-arora-host/publish-frames` (branch off 3) | compiles (14s) | `arora-msgs-ros2` without `interop` |
+| 4 | `vizij-arora-behavior` | compiles (7s) | — |
+| 5 | `vizij-animation-module` + `with_host_module(ModuleBuilder…)` + `step_once` (`src/lib.rs:24-55`) | compiles (12s) | the build script ran on the host |
+| 6 | `vizij-arora-tts` (branch off 5) | **fails** | `tokio`: "Only features sync,macros,io-util,rt,time are supported on wasm" |
+| 7 | `arora-web =6.1.0` (branch off 5) | compiles (9s) | — |
+| 8 | `arora-studio-bridge-client =6.1.0` alone | **fails** | `mio`: "This wasm target is unsupported by mio" |
+| 9 | `arora/native` alone | **fails** | `errno` (under `rustix` / wasmtime 45): "target OS is unknown" |
 
 Steps 2-5 and 7 are seconds because they add only the named crates on top of the cached
 step; the crate lists above are what each step compiled for the first time.
@@ -293,7 +295,7 @@ step; the crate lists above are what each step compiled for the first time.
   `wasm-bindgen-futures` directly to stay Bevy-free? Not tested.
 - Whether `reqwest` 0.13's wasm backend compiles with the crate's current feature set
   (`json`) once the tokio use is cfg'd out — step 6 fails in `tokio` before `reqwest` is
-  checked (`logs/step6.log`), so this is unverified. `cpal`/`symphonia` did compile, but
+  checked, so this is unverified. `cpal`/`symphonia` did compile, but
   `rodio::OutputStream::try_default()` on a wasm build without cpal's `wasm-bindgen`
   feature is untested at run time.
 - `std::sync::Mutex` in `RigHal` and in the TTS run map on wasm32: fine single-threaded,

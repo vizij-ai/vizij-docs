@@ -1,13 +1,16 @@
 # One wasm module holds N JS-paced Arora devices and one Bevy 0.19 App for the page's lifetime: faces load from bytes into per-face viewports, 25 reload cycles hold memory flat, mesh picking works on SwiftShader, and the App exits and restarts in the same instance
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,bevy,wasm,browser,arora,picking,memory,testing -->
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-09-28
 
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [bevy-wasm-spike](bevy-wasm-spike.md) · [arora-wasm-constraints](arora-wasm-constraints.md) · [challenge-verdicts](challenge-verdicts.md)
 
-Spike: `scratchpad/spikes/challenge-wasm/` (`src/lib.rs` the crate, `build.sh`,
-`index.html` the page, `q1.js`/`q2.js`/`q4.js`/`q5.js` the Playwright drivers over
-`common.js`, `logs/` the build logs, the HTTP log and each driver's result as JSON,
-`shots/` the screenshots and console logs). The crate builds in the `bevy-wasm`
+Spike:
+[vizij-rs `spikes/bevy-everywhere/challenge-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/challenge-wasm)
+(branch `spikes/bevy-everywhere`; `src/lib.rs` the crate, `build.sh`, `index.html`
+the page, `q1.js`/`q2.js`/`q4.js`/`q5.js` the Playwright drivers over `common.js`,
+`logs/` each driver's result as JSON, `shots/` the screenshots). Build logs, the
+HTTP log, the browser console logs and the built modules are not kept: the
+figures and log lines quoted on this page are the record. The crate builds in the `bevy-wasm`
 spike's target directory; `pkg/` is the base module, `pkg-picking/` the module with
 `bevy_picking` + `mesh_picking`. The machine's load average was 100–190 during the
 builds and the first browser runs (another spike's Android build ran alongside) and
@@ -23,24 +26,21 @@ and are quoted with their load.
    as path dependencies, `getrandom 0.4.3` with `wasm_js`, `wasm-bindgen 0.2.128`
    (CLI 0.2.128). `cargo build --release --target wasm32-unknown-unknown --lib`
    (`build.sh`) rebuilt the dependency graph in 23 m 26 s wall / 6 m 22 s user
-   on a target directory that already held Bevy (`logs/build-1.log`: the vizij and
-   arora crates plus the Bevy crates that feature unification recompiled); a
+   on a target directory that already held Bevy (the vizij and arora crates plus the Bevy crates that feature unification recompiled); a
    crate-only rebuild is 37.0 s + 22.3 s of `wasm-bindgen --target web` at load
-   100 (`logs/build-3.log`) and 13.4 s + 6.9 s at load 15
-   (`logs/build-4-layers.log`). The crate keeps `crate-type = ["cdylib", "rlib"]`,
+   100 and 13.4 s + 6.9 s at load 15. The crate keeps `crate-type = ["cdylib", "rlib"]`,
    so cargo skips the profile's `lto = true` as in the bevy-wasm spike.
 2. **Size delta against the view-only spike: +2.7 MB after wasm-bindgen, +2.0 MB
    after wasm-opt.** 50,735,413 B raw; 44,972,312 B after wasm-bindgen
    (10,375,109 B gzipped); 27,959,526 B after
    `wasm-opt -Os --strip-debug --strip-producers` (binaryen 123, 7 m 23 s at load
-   110; 8,219,061 B gzipped; `logs/wasm-opt.log`). The bevy-wasm spike:
+   110; 8,219,061 B gzipped). The bevy-wasm spike:
    47,811,936 / 42,276,381 (9,652,814 gz) / 25,992,930 (7,625,738 gz). Sections
    after wasm-opt: code 23,271,247 B, data 4,359,076 B (`wasm-sections.py`).
    With `bevy_picking` + `mesh_picking`: 52,499,568 B raw, 46,566,489 B after
    wasm-bindgen (+1,594,177 B), 10,648,989 B gzipped (+273,880 B); that feature
    pair recompiles twelve Bevy crates (`bevy_render`, `bevy_mesh`, `bevy_camera`,
-   `bevy_gltf`, `bevy_pbr`, …): 20 m 52 s wall / 17 m 24 s user
-   (`logs/build-picking-1.log`).
+   `bevy_gltf`, `bevy_pbr`, …): 20 m 52 s wall / 17 m 24 s user.
 3. **The JS-owned device and the Bevy world share a `RigHal` clone without a
    borrow conflict.** `FaceDevice` (`src/lib.rs:269`) holds
    `Rc<RefCell<Option<Arora>>>`; `step(dtMs)` takes `try_borrow_mut` and
@@ -82,8 +82,8 @@ and are quoted with their load.
    `mem://<faceId>-<n>.glb` (`src/lib.rs:506-520`, `Dir::insert_asset`,
    `memory.rs:50`) and is removed at despawn (`src/lib.rs:686`, `Dir::remove_asset`,
    `memory.rs:77`). The HTTP log holds one `GET /assets/<name>.glb` per face file
-   per page load (the page's own `fetch`) and no `.meta` request over 27 requests
-   (`logs/http.log`). The scene renders (`shots/q1-1.png`).
+   per page load (the page's own `fetch`) and no `.meta` request over 27 requests.
+   The scene renders (`shots/q1-1.png`).
 8. **Two faces render in one App, one canvas, two viewport cameras.** Quori in
    slot A (600 × 400), Toasty in slot B (340 × 300), `Camera.viewport` from the DOM
    rects through `setRect` (`src/lib.rs:922`), `ClearColor::NONE` outside the
@@ -104,7 +104,7 @@ and are quoted with their load.
     context.** `WebAssembly.Memory.buffer.byteLength` is 195,887,104 B once both
     faces are resident and identical after every unload and every reload of all 25
     cycles; `isContextLost()` false throughout, no `webglcontextlost` event, 25
-    `despawned` and 27 `indexed` log lines (`logs/q2.json`, `shots/q2-console.log`);
+    `despawned` and 27 `indexed` log lines (`logs/q2.json`);
     the 25th reload renders pixel-identical to the first two-face frame
     (`pixdiff.py shots/q2-1-two-faces.png shots/q2-cycle-25.png`: 0 changed), and
     both devices answer writes afterwards (finding 5). The 25 cycles took 376.6 s
@@ -139,7 +139,7 @@ and are quoted with their load.
     they are already set` from `LogPlugin`, then loads, indexes and renders a new
     face whose eye moves on a write (frames 41 → 50; cluster (384, 240)–(472, 336),
     `shots/q5b-3-restarted.png` vs `shots/q5b-4-restarted-after-write.png`;
-    `logs/q5.json`, `logs/q5b.json`, `shots/q5-console.log`). No
+    `logs/q5.json`, `logs/q5b.json`). No
     `RecreationAttempt`. The mechanism in winit 0.30.13: `EventLoopBuilder::build`
     refuses a second loop while the static `EVENT_LOOP_CREATED` is set
     (`winit-0.30.13/src/event_loop.rs:69,118-120`) and the web runner clears the
@@ -194,15 +194,15 @@ and are quoted with their load.
 
 | Item | Command | Result |
 | --- | --- | --- |
-| Base build | `./build.sh` (`CARGO_TARGET_DIR=../bevy-wasm/target`; `cargo build --release --target wasm32-unknown-unknown --lib`; `../bevy-wasm/tools/bin/wasm-bindgen --target web --out-dir pkg --no-typescript`) | `logs/build-1.log` 23 m 26 s (deps), `logs/build-3.log` 37.0 s + 22.3 s, `logs/build-4-layers.log` 13.4 s + 6.9 s; 50,735,413 B raw, 44,972,312 B after wasm-bindgen, 10,375,109 B gz |
-| wasm-opt | `../bevy-wasm/tools/binaryen-version_123/bin/wasm-opt -Os --strip-debug --strip-producers pkg/challenge_wasm_bg.wasm -o pkg/challenge_wasm_bg.native-opt.wasm` | 27,959,526 B, 8,219,061 B gz, 7 m 23 s (`logs/wasm-opt.log`) |
-| Picking build | `./build.sh picking` (`--features picking` = `bevy/bevy_picking`, `bevy/mesh_picking`; output `pkg-picking/`) | 20 m 52 s wall, 17 m 24 s user; 52,499,568 B raw, 46,566,489 B after wasm-bindgen, 10,648,989 B gz (`logs/build-picking-1.log`) |
+| Base build | `./build.sh` (`CARGO_TARGET_DIR=../bevy-wasm/target`; `cargo build --release --target wasm32-unknown-unknown --lib`; `../bevy-wasm/tools/bin/wasm-bindgen --target web --out-dir pkg --no-typescript`) | 23 m 26 s (deps); crate-only 37.0 s + 22.3 s, 13.4 s + 6.9 s; 50,735,413 B raw, 44,972,312 B after wasm-bindgen, 10,375,109 B gz |
+| wasm-opt | `../bevy-wasm/tools/binaryen-version_123/bin/wasm-opt -Os --strip-debug --strip-producers pkg/challenge_wasm_bg.wasm -o pkg/challenge_wasm_bg.native-opt.wasm` | 27,959,526 B, 8,219,061 B gz, 7 m 23 s |
+| Picking build | `./build.sh picking` (`--features picking` = `bevy/bevy_picking`, `bevy/mesh_picking`; output `pkg-picking/`) | 20 m 52 s wall, 17 m 24 s user; 52,499,568 B raw, 46,566,489 B after wasm-bindgen, 10,648,989 B gz |
 | Server | `./serve.sh` (`python3 -m http.server 8766`, log `logs/http.log`) | 27 requests, one per `.glb` per page load, no `.meta` |
-| Q1 | `NODE_PATH=semio_studio/node_modules node q1.js http://127.0.0.1:8766/index.html shots/q1` | `logs/q1.json`, `shots/q1-1.png`, `shots/q1-2.png`, `shots/q1-console.log` |
-| Q2, 25 cycles (no layers) | `node q2.js http://127.0.0.1:8766/index.html shots/q2 25` | `logs/q2.json`, `shots/q2-1-two-faces.png`, `shots/q2-cycle-{1,25}.png`, `shots/q2-2-final-open.png`, `shots/q2-console.log` |
+| Q1 | `NODE_PATH=semio_studio/node_modules node q1.js http://127.0.0.1:8766/index.html shots/q1` | `logs/q1.json`, `shots/q1-1.png`, `shots/q1-2.png` |
+| Q2, 25 cycles (no layers) | `node q2.js http://127.0.0.1:8766/index.html shots/q2 25` | `logs/q2.json`, `shots/q2-1-two-faces.png`, `shots/q2-cycle-{1,25}.png`, `shots/q2-2-final-open.png` |
 | Q2, 3 cycles (layers) | `node q2.js http://127.0.0.1:8766/index.html shots/q2b 3` | `logs/q2b.json`, `shots/q2b-1-two-faces.png`, `shots/q2b-cycle-{1,3}.png`, `shots/q2b-2-final-open.png` |
-| Q4 | `node q4.js "http://127.0.0.1:8766/index.html?pkg=pkg-picking" shots/q4 a:301,250,mouth a:206,205,left-eye a:386,205,right-eye a:56,65,background b:106,150,toasty-eye b:171,215,toasty-mouth b:36,65,toasty-stripes` | `logs/q4.json`, `shots/q4.png`, `shots/q4-console.log` |
-| Q5 (no layers) | `node q5.js http://127.0.0.1:8766/index.html shots/q5` | `logs/q5.json`, `shots/q5-{1-running,2-stopped,3-restarted}.png`, `shots/q5-console.log` |
+| Q4 | `node q4.js "http://127.0.0.1:8766/index.html?pkg=pkg-picking" shots/q4 a:301,250,mouth a:206,205,left-eye a:386,205,right-eye a:56,65,background b:106,150,toasty-eye b:171,215,toasty-mouth b:36,65,toasty-stripes` | `logs/q4.json`, `shots/q4.png` |
+| Q5 (no layers) | `node q5.js http://127.0.0.1:8766/index.html shots/q5` | `logs/q5.json`, `shots/q5-{1-running,2-stopped,3-restarted}.png` |
 | Q5 with writes (layers) | `node q5.js http://127.0.0.1:8766/index.html shots/q5b` | `logs/q5b.json`, `shots/q5b-{1-running,2-stopped,2b-stopped-after-write,3-restarted,4-restarted-after-write}.png` |
 | Screenshot diffs | `python3 diffbox.py a.png b.png [x,y,w,h]`, `python3 pixdiff.py a.png b.png` | the cluster boxes and changed-pixel counts quoted in the findings |
 

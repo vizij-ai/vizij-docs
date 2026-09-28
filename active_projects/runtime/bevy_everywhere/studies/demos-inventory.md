@@ -1,12 +1,12 @@
 # Every surface that renders a Vizij face, and what each needs from a browser Bevy view
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,demos,e2e,guidebook -->
-> **Last updated:** 2026-09-16
+> **Last updated:** 2026-09-28
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
 Revisions read: vizij-web `f69f0ba8`, vizij-rs `9406f66`, semio_studio `1c002e17`
 (branch `chore/vizij-app-update`), vizij-docs worktree `docs/bevy-everywhere-study`.
-Raw grep outputs: `scratchpad/spikes/demos-inventory/raw-greps-vizij-web.txt` and
-`raw-greps-guidebook.txt` (session scratchpad).
+Raw grep outputs are not kept; the citations below are against the revisions
+above.
 
 ## Findings
 
