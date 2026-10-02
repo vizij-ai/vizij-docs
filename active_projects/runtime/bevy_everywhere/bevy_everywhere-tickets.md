@@ -14,7 +14,7 @@ person. Repos: vizij-rs unless stated.
 
 Dependency spine: T01–T07, T24 and T33 start now; T08 → T09 → T10 → P4a (T26 → T27; T28–T32; T14) → T12 ∥ T13, landed together → T23; T11 → T15 → T23;
 T08 → T18 → T19 → T22; T16 starts now → T17 → T22; T20 → T21; T20 → T25. Every ticket
-below links its Linear issue once filed; the issues carry the same scope, definition of
+below links its Linear issue; the issues carry the same scope, definition of
 done and cues, and the blocking relations of this spine.
 
 ## Working notes for implementers
@@ -316,7 +316,7 @@ no app is pinned to the `runtime-react` 0.4 line and no gap is left for an
 app to work around (plan §1, 2026-10-02). The vizij-rs tickets ship as
 `@vizij/runtime` 3.x minors, published on merge. T14 belongs to this phase.
 
-### T26 The `vizij-face` profile covers what the apps drive (S) — Linear issue to file
+### T26 The `vizij-face` profile covers what the apps drive (S) — [VIZ-165](https://linear.app/semio-ai/issue/VIZ-165)
 
 **Scope.** `crates/interop/vizij-arora-host/profiles/vizij-face.json` gains
 the keys the web apps drive and the profile lacks: blink, the apps' emotions
@@ -339,7 +339,7 @@ unchanged.
 (`runtime-react/src/utils/faceControls.ts`); the agent writes `speaking`
 around its run (plan 3.4).
 
-### T27 The shipped faces carry their standard adaptation (M, vizij-web + vizij-rs) — Linear issue to file
+### T27 The shipped faces carry their standard adaptation (M, vizij-web + vizij-rs) — [VIZ-171](https://linear.app/semio-ai/issue/VIZ-171)
 
 **Scope.** Every tracked GLB carrying a bundle is re-exported with its
 `standard-adaptation` graph and the authored defaults (plan 3.3). In
@@ -347,7 +347,7 @@ vizij-web that is fourteen files: seven Quori, five Hugo, one Toasty and
 `@vizij/render`'s `example.glb`. The three Blender exports carry no bundle
 and are T14's. Each face's adaptation is authored once: Quori's exists as a
 sidecar, Hugo's and Toasty's go through the authoring app's profile binding
-([vizij-web #116](https://github.com/vizij-ai/vizij-web/pull/116)), and
+([vizij-web #133](https://github.com/vizij-ai/vizij-web/pull/133)), and
 `vizij-bundle add-standard` grafts them.
 
 **Done when.** `vizij-bundle validate` reports L2 for each file; on the
@@ -360,9 +360,9 @@ The standalone's Quori ([vizij-web #128](https://github.com/vizij-ai/vizij-web/p
 is the first that does. Every app bundle passes
 `stageNeutralFilter: !path.includes("/color/")` because neutral staging
 zeroed the colour channels, so the re-export is checked against that case.
-Depends on T26 and on #116 landing.
+Depends on T26 and on vizij-web #133 landing.
 
-### T28 `describe()` returns the face's bundle (S) — Linear issue to file
+### T28 `describe()` returns the face's bundle (S) — [VIZ-166](https://linear.app/semio-ai/issue/VIZ-166)
 
 **Scope.** Next to its digest, `describe(glb)` returns the bundle the face
 carries, parsed once in Rust: poses and pose groups, rig inputs with their
@@ -378,7 +378,7 @@ mappings, skills, programs, profiles, the active program, neutral inputs and
 the face id. 0.4's consumers read the pose config 18 times, programs 14,
 metadata 14, the rig spec and input metadata 11, clips 9.
 
-### T29 Programs at run time (M) — Linear issue to file
+### T29 Programs at run time (M) — [VIZ-167](https://linear.app/semio-ai/issue/VIZ-167)
 
 **Scope.** Any program of the face can be started, paused and stopped from
 JavaScript while the device runs, several at once. A stop can reset the
@@ -396,7 +396,7 @@ its other values through each step.
 `useMotionGraphDriver.ts:37-212`. `applyGraphEdits` needs the composed node
 ids.
 
-### T30 The face's clips and their transport (M) — Linear issue to file
+### T30 The face's clips and their transport (M) — [VIZ-168](https://linear.app/semio-ai/issue/VIZ-168)
 
 **Scope.** The bundle's clips are loaded into the animation module at load,
 their keys resolved through the rig. From JavaScript: play, pause, stop
@@ -415,7 +415,7 @@ resolves their keys through `rigInputMap` (`:1910-1925`); its call builders
 are in `runtime-react/src/engine/animationModule.ts:318-431`. The module is
 registered host-side (VIZ-81).
 
-### T31 Rest on demand and per-face view options (S) — Linear issue to file
+### T31 Rest on demand and per-face view options (S) — [VIZ-169](https://linear.app/semio-ai/issue/VIZ-169)
 
 **Scope.** `runtime.reset()` over the `rest` module returns the face to rest,
 replacing 0.4's `stagePoseNeutral(true)`. Framing (a bounds override, fit,
@@ -432,7 +432,7 @@ one face only.
 overrides `rootBounds` per face (`RuntimeFaceFrame.tsx:96-138`); authoring
 pushes the authored bounds (`Viewer.tsx:255-321`) and passes `toneMapping`.
 
-### T32 The authoring view's runtime surface (M) — Linear issue to file
+### T32 The authoring view's runtime surface (M) — [VIZ-170](https://linear.app/semio-ai/issue/VIZ-170)
 
 **Scope.** The runtime half of T13, as `@vizij/runtime` calls:
 - picks that report misses as well as hits;
@@ -452,7 +452,7 @@ vertices. Output locks filter rig output writes per component
 (`runtimeOutputLocks.ts:147-217`). Reloads are keyed on
 `JSON.stringify(world)` (`updatePolicy.ts:77-93`).
 
-### T33 `@vizij/node-graph` 0.9 across vizij-web (S, vizij-web) — Linear issue to file
+### T33 `@vizij/node-graph` 0.9 across vizij-web (S, vizij-web) — [VIZ-172](https://linear.app/semio-ai/issue/VIZ-172)
 
 **Scope.** Every workspace package and app moves from `@vizij/node-graph`
 `^0.7.0` to `^0.9.0` (published), with the 0.8 and 0.9 changes applied.
@@ -467,7 +467,7 @@ consumers move in one landing: T12 and T13 are pull requests into one
 integration branch, one per package or app, and the branch is rebase-merged
 onto `main` once every one is green.
 
-### T12 `@vizij/render` 1.0, `@vizij/runtime-react` 1.0 and the apps (L, vizij-web + vizij-docs) — [VIZ-147](https://linear.app/semio-ai/issue/VIZ-147)
+### T12 `@vizij/render` 1.0, `@vizij/runtime-react` 1.0 and every app but authoring (L, vizij-web + vizij-docs) — [VIZ-147](https://linear.app/semio-ai/issue/VIZ-147)
 
 **Scope.**
 - `@vizij/render` 1.0: `<Vizij>` becomes a face slot on the page's shared
@@ -523,8 +523,8 @@ onto `main` once every one is green.
 6. The authoring memory-checkpoint workflow runs in StrictMode.
 7. The Bevy load time per structural edit is measured.
 
-It starts once the authoring work in flight (#116 and its siblings) has
-landed.
+It starts once the authoring work in flight (vizij-web #133 and its
+siblings) has landed.
 
 **Done when.**
 - The authoring smoke and workflow suites are green.

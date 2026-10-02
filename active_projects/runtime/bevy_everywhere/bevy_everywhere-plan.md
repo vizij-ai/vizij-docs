@@ -156,7 +156,7 @@ Decided on 2026-10-02 (Victor):
   branch, one pull request each, and the branch reaches `main` once all are
   green (P4b).
 - The authoring app migrates in the same move, once the authoring work in
-  flight (vizij-web #116 and its siblings) has landed (P4b).
+  flight (vizij-web #133 and its siblings) has landed (P4b).
 
 ## 2. Current state
 
@@ -838,7 +838,7 @@ if that is what it needs); that crate boundary is decided then, not now.
   every tracked GLB carrying a bundle (fourteen in vizij-web) is re-exported
   with its `standard-adaptation` graph grafted (`vizij-bundle add-standard`; a
   sidecar exists for Quori only) and the authoring app's profile binding
-  (vizij-web #116) authors the other faces' adaptations (P4a). The authoring
+  (vizij-web #133) authors the other faces' adaptations (P4a). The authoring
   `SpeechPanel`/`DemoVoicePanel` and the showcase
   `VoicePanel` are private JS-lipsync copies: they move onto the device's `say`
   in P4b, or are listed as surviving pose-weight producers; the "one viseme
