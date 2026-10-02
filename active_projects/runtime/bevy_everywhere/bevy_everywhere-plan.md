@@ -1,6 +1,6 @@
 # One Bevy view for every Vizij face: retiring vizij-standalone
 <!-- tags: family=project; type=plan; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-10-02
 
 > **Related documents:** [Reading guide (sixteen slides)](bevy_everywhere-deck.md) · [Tickets](bevy_everywhere-tickets.md) · [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
 
@@ -128,7 +128,7 @@ applied in the section it names):
   on it is a texture the Arora-side view produces, so Studio hosts no second
   face renderer (3.7).
 - vizij-showcase is ported on the shared canvas (3.8).
-- One agent demo, a text agent; `tutorial-agent-face` folds into it (3.4).
+- One agent demo, a text agent (3.4).
 - The exporter writes the authored defaults (3.3).
 - `@vizij/render` is kept and reworked over the Bevy view; the authoring app
   keeps using it with minimal changes; Studio adopts it (3.3, 3.7).
@@ -139,6 +139,24 @@ applied in the section it names):
 
 Decided on 2026-09-21 (Victor): the face is a component of a device, not the
 device (1.1); the naming and the several-HALs requirement follow from it.
+
+Decided on 2026-10-02 (Victor):
+
+- Every dependency is complete before a consumer moves. No app stays on, or
+  is pinned to, the `runtime-react` 0.4 line, and no gap is left for an app
+  to work around (P4a before P4b).
+- The `vizij-face` profile grows with what faces do: blink, the apps'
+  emotions, the conversation state. A ROS4HRI mapping is a bonus where one
+  exists, never a condition (P4a).
+- `tutorial-agent-face` stays, because vizij.ai's public tutorials are built
+  on it. It is ported on `runtime-react` 1.0 with its guidebook pages, and its
+  public routes keep working (3.8, P4b).
+- The web consumers land together. The apps link the packages through
+  `workspace:*`, so the packages and every app go into one integration
+  branch, one pull request each, and the branch reaches `main` once all are
+  green (P4b).
+- The authoring app migrates in the same move, once the authoring work in
+  flight (vizij-web #116 and its siblings) has landed (P4b).
 
 ## 2. Current state
 
@@ -817,19 +835,22 @@ if that is what it needs); that crate boundary is decided then, not now.
   `wasm-pack test --headless --chrome` (Chrome and chromedriver of one version).
 - **Lips through the standard need adaptations the faces lack.** The JS lipsync
   retires only once every shipped face carries a standard viseme adaptation:
-  the four tracked GLBs are re-exported with their `standard-adaptation` graph
-  grafted (`vizij-bundle add-standard`; a sidecar exists for Quori only) and the
-  authoring app gains an adaptation embedding entry next to its standard
-  profile import. The authoring `SpeechPanel`/`DemoVoicePanel` and the showcase
+  every tracked GLB carrying a bundle (fourteen in vizij-web) is re-exported
+  with its `standard-adaptation` graph grafted (`vizij-bundle add-standard`; a
+  sidecar exists for Quori only) and the authoring app's profile binding
+  (vizij-web #116) authors the other faces' adaptations (P4a). The authoring
+  `SpeechPanel`/`DemoVoicePanel` and the showcase
   `VoicePanel` are private JS-lipsync copies: they move onto the device's `say`
-  in P4b/P4c, or are listed as surviving pose-weight producers; the "one viseme
+  in P4b, or are listed as surviving pose-weight producers; the "one viseme
   vocabulary" claim holds only if all of them go.
 - **One agent demo** in the standalone's folder: a text agent (microphone →
   Deepgram → OpenAI, the STT/LLM half of `speech-react` kept as shared source
   if the authoring app keeps its conversation panel, else as app source) calling
   `say` through `spawn`, interrupting through `halt`. `tutorial-agent-face`
-  folds into it: its guidebook route is re-pointed, its Gemini audio path and
-  aligner are dropped (or switched to text modality if that is verified).
+  stays beside it, because vizij.ai's public tutorials are built on it: it is
+  ported on `runtime-react` 1.0 with its guidebook pages (P4b), its speech
+  moved onto the device (`say`, or the standard viseme keys for Gemini's
+  audio stream).
 - **The face standard gains a conversation-state tier and an expression
   producer**: `standard/vizij/conversation/{speaking,user_speaking,thinking}`
   and `standard/vizij/expression/<name>`, adapted per face like the visemes
@@ -983,10 +1004,10 @@ formats, frame rate, device-loss recovery) over adb, scripted.
 | App | Fate |
 | --- | --- |
 | vizij-standalone | Tauri shell and native second device deleted (P8a); folder becomes the agent + Vizij demo (P8b) |
-| tutorial-fullscreen-face, demo-vizij-player | ported first (P4a) |
-| vizij-authoring | viewport ported (P4b) through the reworked `@vizij/render`; SpeechPanel moves onto `say` (3.4) |
-| tutorial-agent-face | folded into the agent demo (3.4); its route re-pointed |
-| vizij-showcase | ported on the shared-canvas viewports (P4a); the reference for many faces per page |
+| tutorial-fullscreen-face, demo-vizij-player | ported on `runtime-react` 1.0 (P4b) |
+| vizij-authoring | ported (P4b) through the reworked `@vizij/render`, after the authoring work in flight lands; SpeechPanel moves onto `say` (3.4) |
+| tutorial-agent-face | ported on `runtime-react` 1.0 with its guidebook pages (P4b); its public routes keep working |
+| vizij-showcase | ported on the shared-canvas viewports (P4b); the reference for many faces per page |
 | demo-animation-studio, demo-graph-studio, minimal-demo-* | unchanged (no face) |
 | vizij-ws-app, `packages/@vizij/arora-types`, `scripts/check-snap-env.mjs`, `dev:vizij-standalone` | deleted |
 | `@vizij/animation-module` (browser artifact), `vizij-arora-web` | retired into the host-module path and `vizij::web` |
@@ -1007,10 +1028,9 @@ formats, frame rate, device-loss recovery) over adb, scripted.
   and **gate the retirement of the standalone** (P8a); they ship unsigned and
   un-notarized until credentials exist. Artifact feature sets are tabled in
   the workflow.
-- **npm**: `@vizij/runtime` 3.0.0 as a `major` changeset through the existing
-  OIDC workflow (no bootstrap), published at the end of P4a once `runtime-react`
-  1.0 is green against it through `wasm-links`; a `3.0.0-alpha` channel or a CI
-  `wasm-links` job carries P4's iterations; `files` stops shipping `pkg/`
+- **npm**: `@vizij/runtime` 3.0.0 is published under the `next` dist-tag
+  (`latest` stays on 2.4.0); P4a's additions ship as 3.x minors, published on
+  merge, and 3.x becomes `latest` when P4b lands; `files` stops shipping `pkg/`
   twice; `pkg/` is refreshed or CI-built so the Node tests are a live gate.
 - **CI tiering**: per PR, `cargo check --lib --target wasm32-unknown-unknown
   --no-default-features` and `cargo ndk -t arm64-v8a check -p vizij --lib
@@ -1061,7 +1081,8 @@ artifact and the `animation-module-boundary` job, semio_studio's
 
 Phases end with a gate CI or a named person can check. Sizes are relative
 (S: days, M: one to two weeks, L: several weeks of one person). The critical
-path to the demo is P0 → P1 → P3 → P4a → P4b ∥ P4c → P8b; the Android path is
+path to the web renderer's retirement is P0 → P1 → P3 → P4a → P4b → P8b, the
+agent demo P3b → P4c → P8b; the Android path is
 Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 
 ### P0 Now, in parallel (each S)
@@ -1116,7 +1137,7 @@ checks green; the Linux binary builds; the 33 tests plus one that drives the
 composition for N frames headless through `SnapshotPlugin` and reads a pose
 through `RigHal`.
 
-Deferred to P4b as P1b: the lit material path with its Blender-export golden,
+Deferred to P4a as P1b: the lit material path with its Blender-export golden,
 per-axis bindings, `Element.id`, the `vizij-bundle` container sharing.
 
 ### P3 The browser module (M) ∥ P3b browser `say` (M)
@@ -1137,31 +1158,66 @@ shipped faces. Gate: a Playwright spec calls `say` and
 asserts `standard/vizij/viseme/<shape>` changes over time and the hook received
 bytes and marks.
 
-### P4a `runtime-react` 1.0 and the first two apps (M)
+### P4a What the web consumers need (M to L)
 
-The provider API over `describe` and the device API; mirror, JS composition,
-three.js bundle extraction, neutral staging and guest-module loading deleted;
-the `namespace/` migration list (authoring, `node-graph-authoring`,
-`tutorial-agent-face`, showcase); `VizijRuntimeFace` = a face slot on the
-page's shared canvas; the `ready` signal and a non-uniform canvas pixel sample
-added to each app's smoke spec; `@vizij/render`'s `Vizij` reworked as the
-face slot; `tutorial-fullscreen-face`, then `demo-vizij-player` (its
-load-sample e2e), then the showcase (five slots on one canvas).
-`@vizij/runtime` 3.0.0 publishes at the end. The guidebook's `integrate/*`
-and quickstart pages start here.
+Every capability an app reads or calls exists before any app moves, so no app
+is pinned to the 0.4 line and none works around a gap:
 
-### P4b The authoring viewport (L) ∥ P4c The agent demo (M)
+- **The standard and the shipped faces.** The `vizij-face` profile gains
+  blink, the apps' emotions and the conversation-state tier. The tracked GLBs
+  are re-exported with their standard adaptation and the authored defaults
+  (3.3, 3.4).
+- **`@vizij/runtime` 3.x,** one minor per item, published on merge:
+  - `describe()` returns the face's bundle (poses and groups, rig inputs with
+    ranges and defaults, programs with labels, clips, metadata);
+  - programs started, paused, stopped and replaced at run time, several at
+    once;
+  - the bundle's clips loaded into the animation module, with their transport
+    and state from JavaScript;
+  - `reset()` over the `rest` module;
+  - framing and tone mapping per face;
+  - the authoring view's surface (picks with misses, selection glow, `hold`,
+    `setStaticFeature`, the headless exporter's bytes);
+  - P1b's render contract.
+- **`@vizij/node-graph` 0.9** across vizij-web, independent of the rest.
 
-P4b, in order: the picking e2e, a pixel check and a GLB-export e2e (the gate is
-built before the port); the headless exporter and the plain-GLB
-import→export→`loadFace` path; the viewport swap; selection glow; `hold`;
-`setStaticFeature`; P1b's contract additions; the memory-checkpoint workflow
-in StrictMode; the Bevy load time per structural edit measured and accepted.
-P4c (depends on P3b and on the standard's conversation-state tier): the
-standalone's folder rewritten as the text agent over `spawn(say)`/`halt`,
-the conversation-state and expression keys written by standard name,
-`tutorial-agent-face` folded in and its route re-pointed, `speech-react`
-deprecated.
+The gate is a browser test per capability, and `vizij-bundle validate` at L2
+for every shipped face.
+
+### P4b The web consumers, landed together (L)
+
+`@vizij/render` 1.0 makes `Vizij` a face slot on the page's shared canvas.
+`@vizij/runtime-react` 1.0 is the provider over `describe` and the device
+API. The mirror, the JS composition, the three.js bundle extraction, the
+neutral staging, the guest-module loading and the `namespace/` prefix are
+deleted, along with `@vizij/speech-react`.
+
+Every app moves:
+- `tutorial-fullscreen-face`;
+- `demo-vizij-player`;
+- the showcase, its slots on one canvas;
+- `tutorial-agent-face`, with its guidebook pages;
+- the authoring app.
+
+The authoring app follows its own order:
+1. The picking, pixel and GLB-export e2e are built before the port.
+2. The headless exporter and the plain-GLB import → export → load path.
+3. The viewport swap.
+4. The motion-graph editor and the timeline on the runtime's programs and
+   clips.
+5. The memory-checkpoint workflow in StrictMode.
+6. The Bevy load time per structural edit, measured and accepted.
+
+Each app's smoke spec gains the `ready` signal and a non-uniform canvas pixel
+sample. One integration branch takes one pull request per package or app and
+reaches `main` once all are green. `@vizij/runtime` 3.x then becomes `latest`.
+
+### P4c The agent demo (M)
+
+Depends on P3b and on the standard's conversation-state tier. The
+standalone's folder is rewritten as the text agent over `spawn(say)`/`halt`,
+writing the conversation-state and expression keys by standard name;
+`speech-react` is deprecated.
 
 ### P5 Desktop (M, starts now)
 

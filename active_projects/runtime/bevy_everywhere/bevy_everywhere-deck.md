@@ -1,6 +1,6 @@
 # One Bevy view for every Vizij face, in sixteen slides
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-10-02
 > **Related documents:** [Central plan](bevy_everywhere-plan.md) · [Tickets](bevy_everywhere-tickets.md) · [Sub-studies](studies/)
 
 A reading guide to the plan for people who were not in the study. Each slide
@@ -286,8 +286,8 @@ flowchart LR
   P1["P1 crate layout"]
   P3["P3 browser module"]
   P3b["P3b browser say"]
-  P4a["P4a runtime-react 1.0,<br/>player, tutorial, showcase"]
-  P4b["P4b authoring"]
+  P4a["P4a what the consumers need:<br/>profile, faces, runtime 3.x"]
+  P4b["P4b packages and every app,<br/>landed together"]
   P4c["P4c agent demo"]
   P5["P5 desktop + installers"]
   P6["P6 Android"]
@@ -295,8 +295,7 @@ flowchart LR
   P8a["P8a delete the standalone"]
   P8b["P8b retire the web renderer"]
   P0 --> P1 --> P3 --> P4a --> P4b --> P8b
-  P4a --> P4c --> P8b
-  P0 --> P3b --> P4c
+  P0 --> P3b --> P4c --> P8b
   P0 --> P5 --> P7
   P1 --> P6 --> P8a
   P5 --> P8a
@@ -337,7 +336,11 @@ showcase is ported; one text-agent demo; authored defaults on export;
 in-page path, not this project's work; a conversation-state tier in the
 standard; installers gate the retirement. Decided on 2026-09-21: the face is
 a component of a device, not the device — `view`, `face`, `modules`,
-`native`; a `Runtime` in JavaScript; arora to hold several HALs.
+`native`; a `Runtime` in JavaScript; arora to hold several HALs. Decided on
+2026-10-02: every dependency complete before a web consumer moves; the
+`vizij-face` profile grows with what faces do; `tutorial-agent-face` stays
+and is ported; the packages and every app land together through one
+integration branch, the authoring app after the work in flight.
 
 Asked of reviewers: challenge these, and the structural choices of slides 3 to
 7. A comment against the plan section it concerns is the most useful form.
