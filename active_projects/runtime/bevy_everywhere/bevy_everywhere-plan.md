@@ -977,11 +977,12 @@ formats, frame rate, device-loss recovery) over adb, scripted.
   **adopt `@vizij/render`** (STUDIO-239 proceeds), Bevy underneath.
 - **Where the device runs decides how the image gets there.** A native
   `vizij --studio`, or a robot device with a face: the store key over the
-  Studio bridge, above. A device Studio runs **in the page** — the ambition of
-  `studio-arora` ([draft PR #256](https://github.com/semio-ai/semio_studio/pull/256),
-  a wasm plane spawning Arora instances over one shared store, migrated to
-  arora 9.1 on 2026-08-26 and not merged) — hosts the face as a component of
-  that wasm module: the same `face`, `modules` and `view` linked into it (two
+  Studio bridge, above. A device Studio runs **in the page** — a device of
+  Studio on Arora's World
+  ([plan](https://github.com/semio-ai/semio_studio/pull/489), code from
+  [#256](https://github.com/semio-ai/semio_studio/pull/256) on: one Arora
+  store in the page, a namespace per device) — hosts the face as a component
+  of that wasm module: the same `face`, `modules` and `view` linked into it (two
   cdylibs cannot share a store, S:studio-consumers 17), the frame either read
   back (`Screenshot` on WebGL2, the P0.2 spike) or sampled straight from the
   view's canvas as a `CanvasTexture`, no readback. This path **depends on
@@ -989,9 +990,23 @@ formats, frame rate, device-loss recovery) over adb, scripted.
   decision, recorded here as a dependency (risk 13), not taken by this
   project. Until it lands, every face Studio shows live is a device over the
   bridge.
+- **The scene reads a device's keys through Studio on Arora's seams**, however
+  the device runs: the store port (Arora's `DataStore`: read, slot, subscribe)
+  the scene, Vizij and animation packages are injected with (that plan's P4),
+  and `SceneBinding`'s list of the store keys a view shows, each with the
+  features it feeds: strings, no Studio type (its P5). A device over the bridge
+  is mirrored into the same store under its id, so the face image key reaches
+  the screen the same way from a stand-alone `vizij --studio`, a robot or an
+  in-page device. A key crosses the bridge under its own name only if the
+  bridge's key mapping round-trips it, and `display/face/compressed`, which
+  has no component, comes back as `display/face.compressed`
+  ([studio-bridge#102](https://github.com/semio-ai/studio-bridge/issues/102)).
 - **Later**, when the scene itself moves to Bevy (STUDIO-256's render-to-
   texture, 1.05 ms per face), the face is an entity of the scene's App and
-  the image round trip disappears; the `view` crate boundary is decided then.
+  the image round trip disappears. The Bevy scene takes from `SceneBinding`
+  the store keys each view shows and reads them from the World's store in
+  Rust; Studio's projection of them into its values store is what retires.
+  The `view` crate boundary is decided then.
 - Studio-exported faces (per-axis RobotData) become readable by the Bevy view
   through the per-axis bindings of section 3.3; the GLB-format convergence
   itself stays STUDIO-239's.
@@ -1254,14 +1269,16 @@ face back; every step leaves a screenshot and logcat in the run's artifact
 folder, which the Linear ticket links with the APK sha and the
 device model and Android version.
 
-### P7 Semio Studio (M, after P5)
+### P7 Semio Studio (M, after P5 and Studio on Arora's P4 and P5)
 
 The Studio-key profile under the `studio` feature; the E2E of P0.3 passing on
 a scalar and a compound animatable with a stand-alone `vizij --studio` as the
 device (the face loaded from a Studio-exported, per-axis GLB), registered and
 driven the way `apps/vizij-app` was; **the face image on the scene screen**
 (section 3.7: `screen.tsx` maps the device's `display/face/compressed` key,
-the bridge carries it, the rate is the knob; gate: the scene shows the
+read through the store port under the device's namespace and named in
+`SceneBinding`; the bridge carries it once its name round-trips,
+studio-bridge#102; the rate is the knob; gate: the scene shows the
 stand-alone device's face moving under the E2E's writes); the `retrieveGlb`
 decision; `apps/vizij-app` deleted with its references (`package.json`,
 `.changeset/config.json`, the two docs pages); STUDIO-239 pointed at the
@@ -1344,12 +1361,12 @@ Risks, most severe first:
     several (P0.5); the wrapper is a real `Hal` (routing by key, merging
     updates), so nothing built on it is thrown away, but two wrappers in two
     hosts is the drift this plan exists to avoid.
-13. **Studio's in-page devices are stale**: studio-arora's PR #256 has been a
-    draft since 2026-08-26 on arora 9.1, and the face-on-a-screen path that
-    goes through it (section 3.7) needs it merged and linking `vizij`'s
-    library. Until then the scene shows faces only from devices over the
-    bridge, at the bridge's frame cost (JSON bytes until the buffer wire
-    format lands).
+13. **Studio's in-page devices have not landed**: Studio on Arora's code
+    stack (semio_studio #256 and the PRs on it, on arora 12.1) is open, and
+    the face-on-a-screen path that goes through it (section 3.7) needs it
+    merged and linking `vizij`'s library. Until then the scene shows faces
+    only from devices over the bridge, at the bridge's frame cost (JSON
+    bytes until the buffer wire format lands).
 
 The eleven decisions of the first review are recorded in section 1. Still
 open for Victor: a tablet, only if the newer emulator images also draw nothing
