@@ -28,10 +28,18 @@ Sources: [REP-155](https://www.ros.org/reps/rep-0155.html), [ros4hri.github.io](
 5. **Per-run key subtree** `tasks/<run_id>/…`: `status` written by the runtime each tick, live-drivable inputs auto-bound under `in/<param>` (the `predetermined_key` convention, instanced), outputs wherever the fragment writes. Feedback/status thus ride the store change feed — the transport we already have. Reserved top-level namespace (not under `arora/*`, which bridges filter out); exposure profiles include/exclude it by glob.
 6. **[ARORA-62](https://linear.app/semio-ai/issue/ARORA-62/arora-bridge-ros2-expose-bridge-methods-as-ros-2-services-restore) is a prerequisite**: the ROS 2 bridge exposes the method plane (`ListMethods`/`Call`) as services, so external ROS clients can reach spawn/cancel functions generically.
 7. **Exposure = named glob profiles, not regex, not hardwired**: a profile (e.g. `ros4hri`) = glob include + prefix rewrites (`standard/ros4hri/** → /**`) for bulk data keys, **plus** typed endpoint bindings for the skill surfaces (a topic like `/skill/set_expression` maps a structured message to several keys; no string rewrite can express that), plus a coverage check against the face's declared standard schema. Regex remains a possible later escape hatch.
-8. **Adaptation is math and lives with the asset**: making face X implement `standard/ros4hri/*` (names → pose weights, valence/arousal → blends, AUs → morphs) is an authored binding graph shipped in the GLB's `VIZIJ_bundle`, versioned via the planned `standardInputSchema` ("this face implements ros4hri v1"). Exposure profiles are deployment config; adaptation graphs are asset content.
+8. **Adaptation is layered: the asset-independent math ships with Vizij, the asset-specific math with the face.** The ROS4HRI mapping (expression-name routing, valence/arousal blending, gaze vergence, the idle blink, smoothing, playing a viseme stream) is a built-in graph asset in `vizij-arora-host`. It composes like the animations source and writes only the face standard's `standard/vizij/*` controls. What a control looks like on a given face is the face's own: its `standard-adaptation` graph, shipped in the GLB's `VIZIJ_bundle` from a reviewable sidecar, maps the controls onto its rig. A face implements the standard once, and every external standard reaches it through a mapping; a GLB carrying its own full ROS4HRI binding would make every face reimplement the universal math, N standards × M faces. Exposure profiles are deployment config, adaptations are asset content, mappings are Vizij content. Reference: [vizij-rs `docs/ros4hri.md`](https://github.com/vizij-ai/vizij-rs/blob/main/docs/ros4hri.md).
 9. **Asset source-of-truth is text, GLB is a build artifact** (agent-friendly authoring): the `VIZIJ_bundle` payloads (rig graphs, standard inputs, bindings, poses, schema declarations) live as JSON sidecars in the repo; a deterministic `pack` step injects them into the GLB. The authoring UI and coding agents edit the same sidecars.
 10. **LookAt MVP scope**: target tracking, `reset`, `glance`, cheap `random` (idle saccades). `social` returns `ROS_ENOTSUP` (attention-manager territory; revisit with ROS4HRI perception support).
 11. **`Meta.priority` replace/reject is enforced at the skill endpoint binding** in the bridge (one active gaze goal; higher priority cancels the previous run → `ROS_EINTR`), not in the task layer — the task layer happily runs N concurrent runs.
+12. **The face standard is tiered, and a face's compliance is read off what it listens on.** `standard/vizij` holds gaze, lids and the blink; 27 named expressions; the 15 visemes (the Oculus/Meta set: `sil PP FF TH DD kk CH SS nn RR aa E ih oh ou`); 36 muscle controls keyed to FACS action units and ARKit blendshapes; and the conversation state. A face declares nothing: `vizij-bundle validate` derives its level from the paths its graphs read: L0 gaze and lids, L1 the expressions, L2 the visemes, L3 at least half the muscle tier. ARKit names are metadata on the muscle controls rather than a rival vocabulary, so an avatar exported with them maps one to one. Beside the controls, a face reports state (its current viseme and the utterance it speaks) and carries one setting, its lipsync gain. The `vizij-face` profile declares the whole interface as data. Reference: [vizij-rs `docs/face-standard.md`](https://github.com/vizij-ai/vizij-rs/blob/main/docs/face-standard.md).
+13. **Key paths are unversioned; versions live in the profile declarations** (`vizij-face` v1, `ros4hri` v1), not in path segments. Versioning every segment taxes every graph edge for a migration that a profile version handles more cheaply; a path-level version remains the last resort for a true semantic break of a key.
+14. **The behavior's structure decides who writes a key.** A device composes the face's graphs, then the mappings, then the animations, then the playing program, and runs its task runs after all of them in spawn order, so a skill overrides an animation; within a graph the order is the graph's structure. The last writer in that order wins. A write to a key another branch of the behavior holds is a conflict to surface, not to resolve silently: arora-sdk's [behavior-languages proposal](https://github.com/semio-ai/arora-sdk/blob/main/docs/proposal-behavior-languages.md) reads a behavior's write set off its graph and fails the conflicting write.
+15. **Speech is a skill, and the lips belong to the run that plays them.** Two viseme players ship as skills:
+    - `say(text, voice)`: a task run hosting the device's speech provider. Providers are sibling modules on one `say` contract, chosen at build time: a cloud provider by default, Piper as a feature.
+    - `play_viseme(shape, weight, duration)`: one shape through a lipsync envelope.
+
+    Both drive the face's viseme weights through one lipsync driver whose smoothing state is the face's own weights, so a new run takes the lips over from wherever the last one left them, without a snap. The face reports the current viseme at `standard/vizij/viseme` and the utterance at `standard/vizij/speech`. No graph other than a run writes the viseme weights: a mapping writing them would compete with a run every tick. A remote viseme stream is a player too: the ROS4HRI mapping spawns `play_viseme` for each viseme arriving on `/tts/viseme` or `/tts/visemes`, held for the viseme's duration. The face's adaptation maps the weights onto its poses, scaled by the face's lipsync gain. Reference: [vizij-rs `docs/skills.md`](https://github.com/vizij-ai/vizij-rs/blob/main/docs/skills.md).
 
 ## Target ROS surface
 
@@ -40,7 +48,9 @@ Sources: [REP-155](https://www.ros.org/reps/rep-0155.html), [ros4hri.github.io](
 | `/skill/set_expression` | `interaction_skills/msg/SetExpression` sub | in | MVP |
 | `/robot_face/expression` | `hri_msgs/msg/Expression` sub (PAL alias) | in | MVP |
 | `/robot_face/look_at`, `/expressive_face/look_at` | `geometry_msgs/msg/PointStamped` sub | in | MVP |
-| `/robot_face/tts`, `/expressive_face/speech` | `std_msgs/msg/String` sub (lipsync) | in | MVP |
+| `/tts/viseme`, `/tts/visemes` | `hri_msgs/msg/Viseme`, `hri_msgs/msg/Visemes` sub (a viseme stream, decision 15) | in | MVP |
+| `/skill/say` | `communication_skills/action/Say` action server, feedback extended with the viseme and its intensity | in | MVP |
+| `/robot_face/speech`, `/robot_face/viseme` | `std_msgs/msg/String` pub: the utterance being spoken, the lip shape being spoken | out | MVP |
 | `/closed_captions` | `hri_actions_msgs/msg/ClosedCaption` sub | in | MVP |
 | `/robot_face/image_raw` (+`/compressed`) | `sensor_msgs/msg/Image` pub, subscriber-gated, `bgr8`, frame `sellion_link` | out | MVP |
 | `/diagnostics` | `diagnostic_msgs/msg/DiagnosticArray`, 1 Hz | out | MVP |
@@ -49,17 +59,15 @@ Sources: [REP-155](https://www.ros.org/reps/rep-0155.html), [ros4hri.github.io](
 | `/robot_face/overlay` | `hri_actions_msgs/action/FaceOverlay` server | in | Later |
 | Skill manifest | `<skill>`/`<implements>` package.xml exports + `ament_archlint` | — | Compliance |
 
-## `standard/ros4hri` key schema (draft v0)
+## `standard/ros4hri` key contract
 
-Rig-facing keys the adaptation graph consumes; the bridge's ros4hri profile binds the typed endpoints onto them.
+The device-scoped keys the bridge's ros4hri profile and the built-in ROS4HRI mapping meet on, declared as the `ros4hri` profile. The full table, with types, sources and behaviour per channel, is [vizij-rs `docs/ros4hri.md`](https://github.com/vizij-ai/vizij-rs/blob/main/docs/ros4hri.md#the-standardros4hri-key-contract).
 
-- `standard/ros4hri/expression/name` (text, the 25 ROS4HRI names), `…/expression/valence`, `…/expression/arousal` (f32, −1..1)
-- `standard/ros4hri/gaze/policy` (text enum), `…/gaze/target` (vec3, sellion-frame), `…/gaze/frame` (text, default `sellion_link`)
-- `standard/ros4hri/speech/text` (text — lipsync input)
-- `standard/ros4hri/caption/text`, `…/caption/speaker` (text)
-- Extensions (not in the standard, declared as such): `standard/ros4hri/viseme/<shape>` (f32 weights), `standard/ros4hri/au/<code>` (f32, FACS codes from `FacialActionUnits`)
+- Commands in: `expression/{name,valence,arousal}`, `gaze/{target,frame}`, `au/<code>`, and the streamed viseme, `viseme` (its ROS4HRI code) with `viseme/{time,duration}`.
+- Speech state out: `speech/text`, the utterance, and `speech/viseme`, the lip shape, both relayed from the face's own speech state.
+- Not yet keyed: captions (B4). A gaze policy travels in the `/skill/look_at` goal, not on a key.
 
-Adaptation graph for a given face maps these onto `standard/vizij/*` controls and pose weights (viseme/emotion poses already exist in the pose system). Incumbent-matched dynamics: ~200 ms smoothing, gaze mapping ±0.78 rad → ±1 normalized, `x ≤ 0.1` targets dropped.
+The mapping turns these into `standard/vizij/*` controls with the incumbent's dynamics: ~200 ms smoothing, gaze ±0.78 rad → ±1 normalized, targets at `x ≤ 0.1` dropped.
 
 ## Arora task runs (design outline)
 
@@ -96,14 +104,14 @@ Three tracks; A and B are independent until C.
 
 **Track B — Vizij (vizij-rs, vizij-web)**
 
-> **Status (2026-07-29):** B1 + B2 shipped in [vizij-rs#83](https://github.com/vizij-ai/vizij-rs/pull/83) (Linear VIZ-90 / VIZ-91). The face standard grew a semantic + muscle vocabulary (`standard/vizij/*`); the built-in ROS4HRI profile maps `standard/ros4hri/*` onto it as an editable, bundlable JSON asset; and `vizij-bundle` landed with inspect / pack / validate / add-standard. Topic ingestion (a bridge writing `standard/ros4hri/*` from live `hri_msgs` topics) stays on the arora side (Track A4/A5). See [vizij-rs's face-standard & ROS4HRI docs](https://github.com/vizij-ai/vizij-rs/blob/main/docs/ros4hri.md).
+> **Status:** B1–B3, B5 and B6 ship in vizij-rs; B4 (captions) is open. The face standard (`standard/vizij/*`) and the built-in ROS4HRI mapping are described in [vizij-rs's face-standard and ROS4HRI docs](https://github.com/vizij-ai/vizij-rs/blob/main/docs/ros4hri.md); topic ingestion is arora-bridge-ros2's ROS4HRI preset (Track A4/A5).
 
 - B1. ✅ `vizij-bundle` CLI + sidecar extraction for the reference face (quori); deterministic pack.
 - B2. ✅ `standard/ros4hri` schema JSON + adaptation graph for quori (expressions → poses, valence/arousal blend, gaze mapping, blink idle already present); headless golden tests.
-- B3. Lipsync: the `say` action — a streaming task run whose lipsync cursor emits `standard/ros4hri/viseme/*` for the profile to shape onto the face. Design: [task-runs-and-actions-proposal.md §6](task-runs-and-actions-proposal.md#6-worked-example--say-a-streaming-task-run).
+- B3. ✅ Lipsync: the `say` and `play_viseme` skills drive the face's visemes, and the ROS4HRI viseme stream plays through `play_viseme` (decision 15). Design: [task-runs-and-actions-proposal.md §6](task-runs-and-actions-proposal.md#6-worked-example--say-a-streaming-task-run).
 - B4. Captions rendering (8-word chunks, per-speaker colors) as a Vizij overlay.
-- B5. LookAt behavior fragment (track/reset/glance/random) over the gaze channels.
-- B6. Video-out: frame capture in vizij-standalone (subscriber-gated, ~20 Hz, 800×600, `bgr8` + JPEG) feeding A4's Image publisher.
+- B5. ✅ LookAt behavior fragment (track/reset/glance/random) over the gaze channels, spawned by `/skill/look_at`.
+- B6. ✅ Video-out: the native `vizij` renders the face, headless included, and publishes it on `/robot_face/image_raw` and `/robot_face/image_raw/compressed` through A4's image endpoints.
 
 **Track C — Integration & deployment**
 - C1. `vizij_face_bringup` ROS package: launch + remap sets for both ecosystems, skill manifests (`<skill>`/`<implements>` exports, `ament_archlint`), PAL module YAML for robots (`pal module disable expressive_eyes` + `deployed_ws` registration).
@@ -123,4 +131,4 @@ MVP = A3–A5 + B1–B4 + B6 + C1–C4 (topic parity + video). Compliance milest
 
 ## Upstream extension candidates (after MVP)
 
-Viseme command channel (the standard has none), AU command channel reusing `FacialActionUnits` vocabulary, TF-resolved `look_at` frames (the incumbent ignores `frame_id`), `social` policy once ROS4HRI perception is consumable from Arora. Proposals via the ros4hri GitHub org discussions.
+Viseme messages: `hri_msgs/Viseme` and `Visemes` as the ROS4HRI TTS nodes in the field publish them (upstream `hri_msgs` has none; arora-msgs-ros2 carries them as a recorded departure). AU command channel reusing `FacialActionUnits` vocabulary, TF-resolved `look_at` frames (the incumbent ignores `frame_id`), `social` policy once ROS4HRI perception is consumable from Arora. Proposals via the ros4hri GitHub org discussions.
