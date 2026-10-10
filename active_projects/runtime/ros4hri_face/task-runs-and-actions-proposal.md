@@ -855,45 +855,43 @@ why polly is a self-contained native cdylib today; in the browser `synth`/`audio
 become JS host capabilities — fetch-TTS + WebAudio — because the guest cannot
 spawn, per the async study.)
 
-### 6.3 The viseme output, and where dispatch belongs
+### 6.3 The viseme output: the run drives the lips
 
-The lipsync loop splits cleanly, and the seam is a standard key we already own:
+The run hosts the device's speech provider through a TaskRun node: the provider
+call's out-parameters (the viseme at the playhead, and the utterance once its
+audio plays) are the node's output ports. From them the run drives the face
+standard's viseme weights itself, `standard/vizij/viseme/<shape>`, through the
+**lipsync driver** it shares with the `play_viseme` skill:
 
-- **The run writes `standard/ros4hri/viseme/<shape>`** — the *current viseme
-  target* at the playhead (the 15-shape set, TTS codes mapped to it). It does
-  **not** write the face's viseme weights.
-- **The node graph catches it.** The built-in ROS4HRI profile
-  (`ros4hri_face-proposal.md` B2; vizij-rs `docs/ros4hri.md`) is the face's
-  standard viseme layer: its ~200 ms `Damp` *is* the crossfade, its
-  release-to-neutral *is* the decay, and it maps `standard/ros4hri/viseme/*` →
-  `standard/vizij/viseme/*` → the face's own poses.
+- **One smoother per shape, whose state is the face's own weight**, read back
+  from the store: `weight += (target − weight) · gain`, the gain from the
+  step's duration. Whichever run writes the lips continues the fade from where
+  the last one left them, so a run taking over never snaps and one ending
+  leaves nothing mid-fade.
+- **The run reports what it drives**: the face's current viseme at
+  `standard/vizij/viseme`, the utterance at `standard/vizij/speech`, and its
+  feedback `{viseme, intensity}`, which ROS4HRI's `/skill/say` carries in an
+  extended feedback.
+- **The run ends once the call has ended and the lips have settled.**
 
-So **the cursor is in the action binding; the dynamics and the face mapping are
-in the graph.** The cursor must be in the run — it needs the playhead (the run
-owns `audio`) and the timeline (the run's private product from `synth`), and it
-is stateful, variable-length, imperative work the graph should not host. The
-dynamics must be in the graph — they are per-shape smoothing, the graph's home
-turf, and already the profile's job.
+The lips are a player's, never a mapping's. A graph writing the viseme weights
+beside a run would compete with it every tick, and the loser's motion would
+vanish. So the convergence point is the driver, not a key: every source of
+visemes is a player.
+- The device's own `say` is a player.
+- `play_viseme(shape, weight, duration)` lets a caller with its own timing play
+  one shape at a time.
+- A remote viseme stream (`/tts/viseme`, `/tts/visemes`) is turned into
+  `play_viseme` runs by the ROS4HRI mapping, one per viseme.
 
-This is the §5.2 rule (*targets land on `standard/…` keys; the face's adaptation
-layer maps them*) applied to speech, and its payoff is convergence: **`say` is,
-for lips, a *local* ROS4HRI viseme source, indistinguishable from a remote one.**
-Any producer — a TTS with speech marks, a live phoneme aligner, a raw amplitude
-fallback, or a future ROS viseme topic — writes the same
-`standard/ros4hri/viseme/*` key, and the profile is the **one** dispatch point
-that shapes and maps all of them to the face. One place tunes the dynamics; every
-source inherits it.
+One driver tunes the dynamics, and every source inherits them. The face's
+adaptation then maps the weights onto its poses, scaled by its lipsync gain.
+Reference: [vizij-rs `docs/skills.md`](https://github.com/vizij-ai/vizij-rs/blob/main/docs/skills.md).
 
-The design is a translation of the shipped browser solution, not a new one:
-vizij-web's `@vizij/speech-react` (`useSpeechPlayback`) already runs this cursor
-— a Polly speech-mark timeline sampled by the audio element's clock, with a
-code → shape mapping — but writes rig pose weights *directly* and crossfades in
-JS, because standalone has no standard viseme layer. Splitting at
-`standard/ros4hri/viseme/*` moves the crossfade into the profile and lets the
-same cursor feed a ROS face. The `tutorial-agent-face` demo supplies the
-no-speech-marks sources (amplitude → jaw; a beam-search phoneme aligner →
-`bestVisemeAt`) — second producers on the same seam, degrading gracefully when
-the TTS ships no timeline.
+The cursor is the shipped browser solution's: vizij-web's `@vizij/speech-react`
+(`useSpeechPlayback`) samples a speech-mark timeline at the audio element's
+clock and maps codes to shapes. In the device, the provider runs that cursor and
+the driver replaces the JavaScript crossfade.
 
 ### 6.4 What `say` needs that `polly::say` lacks
 
@@ -909,8 +907,9 @@ cancellable stream rather than fire-and-forget:
   stop.
 
 Everything else is the §4 shape: shared standard-key actuation (here the viseme
-target, LWW), per-run `status`/`feedback`/`result`, and the same `spawn`/`halt`/
-`TaskHandle` — `say` is `LookAt` with a playhead and a producer.
+weights, one player at a time), per-run `status`/`feedback`/`result`, and the
+same `spawn`/`halt`/`TaskHandle` — `say` is `LookAt` with a playhead and a
+producer.
 
 [#202]: https://github.com/semio-ai/arora-sdk/pull/202
 [arora-sdk#85]: https://github.com/semio-ai/arora-sdk/pull/85
