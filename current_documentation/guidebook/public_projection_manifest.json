@@ -728,6 +728,16 @@
           "label": "tutorial-agent-face",
           "href": "https://github.com/vizij-ai/vizij-web/tree/main/apps/tutorial-agent-face",
           "description": "Current richer integration app behind the public branch."
+        },
+        {
+          "label": "@vizij/runtime-react",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/runtime-react",
+          "description": "The provider that loads the face and hands the app its runtime."
+        },
+        {
+          "label": "@vizij/render",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/render",
+          "description": "The page's canvas and the face's slot."
         }
       ],
       "labId": null,
@@ -779,7 +789,12 @@
         {
           "label": "@vizij/runtime-react",
           "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/runtime-react",
-          "description": "Runtime layer that resolves authored controls into visible motion."
+          "description": "The provider that loads a face as a device and hands the app its runtime."
+        },
+        {
+          "label": "@vizij/render",
+          "href": "https://github.com/vizij-ai/vizij-web/tree/main/packages/@vizij/render",
+          "description": "The page's canvas, on which the view draws the face."
         },
         {
           "label": "vizij-standalone",
