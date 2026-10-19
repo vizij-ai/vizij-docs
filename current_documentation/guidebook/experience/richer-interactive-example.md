@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,experience,richer-example,tutorial-agent-face -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-12
 > **Purpose:** show one maintained richer first-contact example without replacing the main beginner route
 
 # Richer Interactive Example
@@ -48,7 +48,7 @@ The current live conversation loop requires `VITE_GEMINI_API_KEY`.
 | --- | --- | --- |
 | Teaching job | fastest first proof | richer optional branch |
 | Shell complexity | low | medium to high |
-| Runtime model | provider + face + local hooks | same provider + face + local hooks, plus session layer |
+| Runtime model | one canvas, one provider, one face, driven through the face standard | the same, plus the face's own program and a session layer |
 | External dependency | none required | live loop is optional, API key required only for that layer |
 | What it proves | the runtime is real | the same runtime can live inside a product-shaped shell |
 
