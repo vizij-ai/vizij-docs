@@ -1,7 +1,7 @@
 # Vizij Runtime Program Summary
 <!-- tags: family=project; type=summary; project_status=tracking; topics=runtime,wasm,standalone,protocol -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-09-18
 
 ## Goals
 
@@ -25,6 +25,7 @@ Detailed implementation truth still lives in:
 | Speech + Viseme + Conversation Enablement | `planned` | [`audio_video-proposal.md`](audio_video/audio_video-proposal.md) | — | — |
 | Multi-Screen and Operator Control | `planned` | [`multi_screen-proposal.md`](multi_screen/multi_screen-proposal.md) | [`multi_screen-plan.md`](multi_screen/multi_screen-plan.md) | — |
 | Standalone / Arora Deployment Branch | `in_progress` | — | [`standalone_ws-plan.md`](standalone_ws/standalone_ws-plan.md) | — |
+| Bevy view everywhere / retiring vizij-standalone | `proposal` | — | [`bevy_everywhere-plan.md`](bevy_everywhere/bevy_everywhere-plan.md) | sub-studies in [`bevy_everywhere/studies/`](bevy_everywhere/studies/) |
 
 ## Current Verified State
 
