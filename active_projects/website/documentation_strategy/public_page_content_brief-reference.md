@@ -2,7 +2,7 @@
 
 > **Related documents:** [Website & Ecosystem summary](../summary.md) · [Documentation Strategy & Content - Plan & Tracking](documentation_strategy-plan.md) · [Public Teaching Gap Audit](public_teaching_gap_audit-reference.md) · [Vizij Roadmap & Active Programs](../../../current_documentation/ROADMAP.md)
 >
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** page-by-page sourcebook and implementation brief for upgrading public docs, tutorials, and demos from descriptive copy into actual teaching content
 
 # Public Page Teaching Sourcebook
@@ -35,13 +35,12 @@ Every technical page should include these elements unless there is a strong reas
 
 These facts recur across multiple pages and should be taught consistently:
 
-1. Runtime setup centers on `VizijRuntimeProvider`, `VizijRuntimeFace`, and `useVizijRuntime`.
-2. Asset bundles are the unit of runtime loading. A bundle can include:
-   - `glb`
-   - `rig`
-   - `pose`
-   - `animations`
-   - `initialInputs`
+1. Runtime setup centers on `<VizijCanvas>` (the page's one canvas, from `@vizij/render`), `VizijRuntimeProvider` (given the face's GLB), the `VizijRuntimeFace` slot the face draws over, and `useVizijRuntime`.
+2. A face GLB is the unit of runtime loading. Its embedded `VIZIJ_bundle` can carry:
+   - the rig, pose-driver, pose and standard-adaptation graphs
+   - poses and pose groups
+   - animations
+   - programs
    - `metadata`
 3. Embedded `VIZIJ_bundle` metadata is the preferred export path from authoring.
 4. Standard inputs use `/standard/{standard_namespace}/...` style control paths.
@@ -52,8 +51,7 @@ These facts recur across multiple pages and should be taught consistently:
    - pose layer.
 6. Pose weights currently resolve to:
    - `rig/{face}/poses/{poseId}.weight`
-7. Runtime inputs are `ValueJSON`, commonly:
-   - `{ float: 0.5 }`
+7. Every key of a face lives under its rig prefix, `rig/{face}/`; `runtime.path(relative)` builds one. Values cross as `ValueJSON`, and `runtime.setValue(path, 0.5)` takes a plain number for the face standard's `f32` keys.
 8. Browser and standalone are both first-class deployment references.
 
 ### Site implementation constraints
@@ -120,7 +118,7 @@ Understand what Vizij can do live and know where each behavior comes from.
 1. Each demo section is a runtime slice built on `VizijRuntimeProvider` via the site-local `ShowcaseRuntime`.
 2. Face assets come from site bundles that point to:
    - `vizij-ai.github.io/public/demos/assets/Quori_Current_Extended.glb`
-3. Rig Controls stage exact path/value writes through `setInput()`.
+3. Rig Controls write exact path/value pairs into the face's store.
 4. Expressions map buttons to pose weight paths.
 5. Gaze maps pointer movement to standard eye position paths.
 6. Voice depends on external API configuration (`VITE_API_URL`) and drives viseme paths plus audio playback.
@@ -128,19 +126,22 @@ Understand what Vizij can do live and know where each behavior comes from.
 **Concrete examples to embed**
 
 ```tsx
-const bundle = {
-  namespace: "demo",
-  glb: { kind: "url", src: new URL("./face.glb", import.meta.url).href },
-};
+const glb = new URL("./face.glb", import.meta.url).href;
 
-<VizijRuntimeProvider assetBundle={bundle} autostart>
-  <VizijRuntimeFace />
-</VizijRuntimeProvider>;
+<>
+  <VizijCanvas />
+  <VizijRuntimeProvider glb={glb}>
+    <VizijRuntimeFace />
+  </VizijRuntimeProvider>
+</>;
 ```
 
 ```ts
-setInput(`rig/${faceId}/standard/vizij/left_eye/pos/x`, { float: 0.4 });
-setInput(`rig/${faceId}/standard/vizij/right_eye/pos/x`, { float: 0.4 });
+const { runtime } = useVizijRuntime();
+runtime.writeValues({
+  [runtime.path("standard/vizij/gaze/target/x")]: 0.7,
+  [runtime.path("standard/vizij/gaze/target/weight")]: 1,
+});
 ```
 
 ```ts
@@ -272,27 +273,28 @@ Understand paths, values, namespaces, and state progression.
 
 **Must teach**
 
-1. Runtime inputs are staged by path and value.
-2. `ValueJSON` uses explicit typed wrappers such as `{ float: 0.5 }`.
-3. Namespace and face id matter.
-4. Standard gaze uses four path writes for two-dimensional eye motion.
+1. Runtime inputs are written by path and value into the face's store.
+2. `ValueJSON` uses explicit typed wrappers such as `{ f32: 0.5 }`; `setValue` also takes a plain number.
+3. The face's rig prefix matters: `runtime.path(...)` builds its keys.
+4. The face standard's gaze target is one point on the face's frame plus a weight.
 
 **Concrete examples to embed**
 
 ```tsx
-const { setInput, faceId } = useVizijRuntime();
+const { runtime } = useVizijRuntime();
 
-setInput(`rig/${faceId}/standard/vizij/left_eye/pos/x`, { float: 0.25 });
-setInput(`rig/${faceId}/standard/vizij/right_eye/pos/x`, { float: 0.25 });
-setInput(`rig/${faceId}/standard/vizij/left_eye/pos/y`, { float: -0.15 });
-setInput(`rig/${faceId}/standard/vizij/right_eye/pos/y`, { float: -0.15 });
+runtime.writeValues({
+  [runtime.path("standard/vizij/gaze/target/x")]: 0.25,
+  [runtime.path("standard/vizij/gaze/target/y")]: 0.6,
+  [runtime.path("standard/vizij/gaze/target/weight")]: 1,
+});
 ```
 
 ```json
-[
-  { "path": "standard/vizij/left_eye/pos/x", "value": { "float": 0.25 } },
-  { "path": "standard/vizij/right_eye/pos/x", "value": { "float": 0.25 } }
-]
+{
+  "rig/quori_latest/standard/vizij/gaze/target/x": { "f32": 0.25 },
+  "rig/quori_latest/standard/vizij/gaze/target/weight": { "f32": 1 }
+}
 ```
 
 **Validation**
@@ -355,37 +357,24 @@ Understand the shape of animation assets and the runtime playback contract.
 
 **Must teach**
 
-1. Animation clips are reusable assets with duration, tracks, and keyframes.
-2. Runtime can trigger stored clips or animate individual values.
-3. Clip playback and ad hoc value tweens solve different problems.
+1. Animations are reusable assets with duration, tracks, and keyframes, carried in the face's GLB; `describe()` lists each one's id, name, duration and tracks.
+2. A face's animations play in its device through Arora's animation module, called by name; the app can also tween individual values.
+3. Animation playback and ad hoc value tweens solve different problems.
 
 **Concrete examples to embed**
 
 ```tsx
-await playAnimation("greeting");
-await animateValue(`rig/${faceId}/poses/blink.weight`, { float: 1 }, { duration: 0.18 });
-```
+const id = { player: { u32: player.player } };
+await runtime.invoke("seek", { ...id, time_ns: { u64: 0 } });
+await runtime.invoke("set_weight", { ...id, instance: { u32: instance }, weight: { f32: 1 } });
+await runtime.invoke("play", id);
 
-```ts
-const storedAnimation = {
-  name: "Scalar Ramp",
-  duration: 2000,
-  tracks: [
-    {
-      id: "scalar",
-      animatableId: "demo/scalar",
-      points: [
-        { id: "k0", stamp: 0.0, value: 0 },
-        { id: "k1", stamp: 1.0, value: 1 },
-      ],
-    },
-  ],
-};
+animateValue(runtime.path("standard/vizij/blink"), 1, { duration: 0.1 });
 ```
 
 **Validation**
 
-Reader can explain when to use `playAnimation()` and when to use `animateValue()`.
+Reader can explain when to play an animation through the animation module and when to use `animateValue()`.
 
 **Presentation ideas**
 
@@ -471,37 +460,34 @@ Render a face and trigger one deterministic visible change.
 **Must teach**
 
 1. How to install runtime dependencies.
-2. How to define a minimal asset bundle.
-3. How to render a `VizijRuntimeFace`.
-4. How to trigger one pose or one path write.
+2. How to hand the provider a face GLB.
+3. How to mount the page's canvas and place the face's `VizijRuntimeFace` slot.
+4. How to trigger one path write.
 5. That the package depends on wasm assets and the app bundler must emit `.wasm` resources correctly.
 
 **Concrete examples to embed**
 
 ```bash
-pnpm add @vizij/runtime-react @vizij/render react react-dom
+pnpm add @vizij/runtime-react @vizij/render @vizij/runtime react react-dom
 ```
 
 ```tsx
-const assetBundle = {
-  namespace: "demo",
-  glb: { kind: "url", src: new URL("./face.glb", import.meta.url).href },
-  pose: {
-    stageNeutralFilter: (_id, path) => !path.includes("/color/"),
-  },
-};
+const glb = new URL("./face.glb", import.meta.url).href;
 
 export function App() {
   return (
-    <VizijRuntimeProvider assetBundle={assetBundle} autostart>
-      <VizijRuntimeFace />
-    </VizijRuntimeProvider>
+    <>
+      <VizijCanvas />
+      <VizijRuntimeProvider glb={glb}>
+        <VizijRuntimeFace style={{ width: 480, height: 360 }} />
+      </VizijRuntimeProvider>
+    </>
   );
 }
 ```
 
 ```ts
-setInput(`rig/${faceId}/poses/blink.weight`, { float: 1 });
+animateValue(runtime.path("standard/vizij/expression/happy"), 1);
 ```
 
 **Validation**
@@ -531,19 +517,23 @@ Reproduce the live path writes used in the lab.
 
 ```ts
 const STANDARD_GAZE_PATHS = {
-  leftX: "standard/left_eye/pos/x",
-  leftY: "standard/left_eye/pos/y",
-  rightX: "standard/right_eye/pos/x",
-  rightY: "standard/right_eye/pos/y",
+  leftX: "standard/vizij/left_eye/pos/x",
+  leftY: "standard/vizij/left_eye/pos/y",
+  rightX: "standard/vizij/right_eye/pos/x",
+  rightY: "standard/vizij/right_eye/pos/y",
 };
 ```
 
 ```ts
-setInput(`rig/${faceId}/${STANDARD_GAZE_PATHS.leftX}`, { float: nextHorizontal });
-setInput(`rig/${faceId}/${STANDARD_GAZE_PATHS.rightX}`, { float: nextHorizontal });
-setInput(`rig/${faceId}/${STANDARD_GAZE_PATHS.leftY}`, { float: nextVertical });
-setInput(`rig/${faceId}/${STANDARD_GAZE_PATHS.rightY}`, { float: nextVertical });
+runtime.writeValues({
+  [runtime.path(STANDARD_GAZE_PATHS.leftX)]: nextHorizontal,
+  [runtime.path(STANDARD_GAZE_PATHS.rightX)]: nextHorizontal,
+  [runtime.path(STANDARD_GAZE_PATHS.leftY)]: nextVertical,
+  [runtime.path(STANDARD_GAZE_PATHS.rightY)]: nextVertical,
+});
 ```
+
+On a face whose program moves its eyes, the program writes these keys every step; there the lab steers the gaze target (`standard/vizij/gaze/target/{x,y,weight}`) instead.
 
 **Validation**
 
@@ -646,9 +636,9 @@ Build the smallest reliable runtime shell outside authoring.
 
 1. This page should map explicitly to `tutorial-fullscreen-face`.
 2. A minimal player is just:
-   - asset bundle,
-   - runtime provider,
-   - runtime face,
+   - the page's canvas,
+   - a runtime provider given the face's GLB,
+   - the face's slot,
    - loading/error handling,
    - optional simple interaction.
 3. The bundler still needs the runtime wasm packages to resolve correctly.
@@ -661,12 +651,13 @@ pnpm run dev:tutorial-fullscreen-face
 ```
 
 ```tsx
-if (loading) return <div>Loading face…</div>;
-if (error) return <div>Error: {error.message}</div>;
+const { status, error } = useVizijRuntime();
+if (status === "error") return <div>Error: {error?.message}</div>;
 
+// The slot shows its own loading view until the face is drawn.
 return (
   <div className="fullscreen">
-    <VizijRuntimeFace className="face-canvas" showSafeArea={false} />
+    <VizijRuntimeFace className="face-slot" />
   </div>
 );
 ```
@@ -689,19 +680,19 @@ Add reusable motion and reason about playback state.
 **Must teach**
 
 1. Sequence playback used by the site lab is a teaching stand-in, not the whole animation system.
-2. Runtime supports both stored clip playback and ad hoc rig-value tweening.
+2. Runtime supports both playing the face's animations through its animation module and ad hoc value tweening.
 
 **Concrete examples to embed**
 
 ```tsx
-await animateValue(binding.weightPath, { float: 1 }, { duration: 0.18 });
-await animateValue(binding.weightPath, { float: 0 }, { duration: 0.18 });
+animateValue(runtime.path("standard/vizij/expression/happy"), 1, { duration: 0.18 });
+animateValue(runtime.path("standard/vizij/expression/happy"), 0, { duration: 0.18 });
 ```
 
 ```tsx
-<AnimationProvider animations={storedAnimation} autostart updateHz={60}>
-  <Panel />
-</AnimationProvider>
+// demo-vizij-player's AnimationPanel: the module's transport, by name
+await runtime.invoke("play", { player: { u32: player.player } });
+await runtime.invoke("stop", { player: { u32: player.player } });
 ```
 
 **Validation**
@@ -940,7 +931,7 @@ The public rewrite should stay page-specific. These route maps connect each publ
    - `vizij-ai.github.io/src/components/tutorial-labs/AnimationLab.tsx`
 2. Runtime animation hooks:
    - `vizij-web/packages/@vizij/runtime-react/README.md`
-   - `vizij-web/packages/@vizij/animation-react/README.md`
+   - `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
 3. Archived workshop reference:
    - `vizij-docs/archive/workshops/2026-03-vizij-afternoon-workshop/handouts/animation-integration-deployment-reference.md`
 
@@ -972,8 +963,7 @@ The public rewrite should stay page-specific. These route maps connect each publ
 2. Reference implementation:
    - `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
    - `vizij-web/apps/tutorial-fullscreen-face/src/FaceApp.tsx`
-   - `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
-   - `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
+   - `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useFaceHotkeys.ts`
 3. Runtime package:
    - `vizij-web/packages/@vizij/runtime-react/README.md`
 
@@ -1032,7 +1022,7 @@ The public rewrite should stay page-specific. These route maps connect each publ
    - `vizij-ai.github.io/src/components/tutorial-labs/AnimationLab.tsx`
 2. Runtime animation surfaces:
    - `vizij-web/packages/@vizij/runtime-react/README.md`
-   - `vizij-web/packages/@vizij/animation-react/README.md`
+   - `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
 3. Reference player and archived workshop material:
    - `vizij-web/apps/demo-vizij-player/src/components/AnimationPanel.tsx`
    - `vizij-docs/archive/workshops/2026-03-vizij-afternoon-workshop/handouts/animation-integration-deployment-reference.md`
