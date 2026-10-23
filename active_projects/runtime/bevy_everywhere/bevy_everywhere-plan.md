@@ -1,19 +1,66 @@
 # One Bevy view for every Vizij face: retiring vizij-standalone
-<!-- tags: family=project; type=plan; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-10-02
+<!-- tags: family=project; type=plan; project_status=tracking; topics=runtime,standalone,bevy,wasm,android,authoring -->
+> **Last updated:** 2026-10-23
 
 > **Related documents:** [Reading guide (sixteen slides)](bevy_everywhere-deck.md) · [Tickets](bevy_everywhere-tickets.md) · [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
 
-This is a dry run: a study and a plan, with no implementation. Every claim about
-the current state is backed by a sub-study in `studies/`, each of which opens with
-its findings; the sections below are the synthesis and cite the study (`S:slug`,
-finding number). The target picture and the plan were then challenged: each
-load-bearing claim was attacked through two or three lenses (feasibility, cost,
-consumer impact), three verification spikes ran, and three judges scored the
-plan; the verdicts are in [`studies/challenge-verdicts.md`](studies/challenge-verdicts.md)
-and sections 3 to 6 are the versions that survived; the three spikes that
-followed closed the questions the challenge left open. Stand-alone tests live
-outside the product repos and are referenced from the study that ran them.
+**Status (2026-10-23): every Vizij face in the browser draws on the Bevy view,
+and the desktop line is delivered; the web renderer's retirement, the Android
+line, the Semio Studio line and the deletion of the Tauri standalone are
+open.**
+
+- Delivered:
+  - the `vizij` crate as a library plus the desktop binary, faces as entities
+    of their own, several in one App, the browser module, and `say` in the browser (P1, P3,
+    P3b: [vizij-rs#126](https://github.com/vizij-ai/vizij-rs/pull/126),
+    [vizij-rs#127](https://github.com/vizij-ai/vizij-rs/pull/127),
+    [vizij-rs#128](https://github.com/vizij-ai/vizij-rs/pull/128),
+    [vizij-rs#129](https://github.com/vizij-ai/vizij-rs/pull/129));
+  - every Vizij face in vizij-web drawn on the Bevy view: `@vizij/render`
+    2.0.0 and `@vizij/runtime-react` 1.0.0, every face app and the authoring
+    app on `@vizij/runtime` 8, three.js drawing no face,
+    `@vizij/speech-react`, `@vizij/animation-react` and the animation demos
+    deleted, on the capabilities P4a added to `@vizij/runtime` (P4b:
+    [vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206), released
+    by [vizij-web#207](https://github.com/vizij-ai/vizij-web/pull/207));
+  - a face's animations played through Arora's animation module
+    (`@arora/animation`), with Vizij's own animation engine removed
+    ([vizij-rs#260](https://github.com/vizij-ai/vizij-rs/pull/260),
+    [vizij-rs#261](https://github.com/vizij-ai/vizij-rs/pull/261));
+  - the desktop binary's local bridge, Studio registration, file opening and
+    window flags, and its release per desktop OS (P5:
+    [VIZ-151](https://linear.app/semio-ai/issue/VIZ-151) in
+    [vizij-rs#130](https://github.com/vizij-ai/vizij-rs/pull/130),
+    [VIZ-152](https://linear.app/semio-ai/issue/VIZ-152) in
+    [vizij-rs#146](https://github.com/vizij-ai/vizij-rs/pull/146), released
+    as [`vizij-v0.2.0`](https://github.com/vizij-ai/vizij-rs/releases/tag/vizij-v0.2.0)).
+    The in-window egui operator panel P5 names is not built.
+- Open:
+  - retiring the web renderer (P8b): `three` out of the authoring app
+    ([vizij-web#208](https://github.com/vizij-ai/vizij-web/pull/208), in
+    review), leaving it only in `@vizij/render`'s GLB loader and exporter, and
+    the docs and tickets re-pointed
+    ([VIZ-157](https://linear.app/semio-ai/issue/VIZ-157));
+  - Android (P6): [VIZ-136](https://linear.app/semio-ai/issue/VIZ-136),
+    [VIZ-153](https://linear.app/semio-ai/issue/VIZ-153),
+    [VIZ-154](https://linear.app/semio-ai/issue/VIZ-154);
+  - Semio Studio (P7): [VIZ-155](https://linear.app/semio-ai/issue/VIZ-155)
+    then [STUDIO-263](https://linear.app/semio-ai/issue/STUDIO-263), and the
+    scene screen's face image, [VIZ-159](https://linear.app/semio-ai/issue/VIZ-159);
+  - the agent demo in the standalone's folder (P4c):
+    [VIZ-150](https://linear.app/semio-ai/issue/VIZ-150), in review;
+  - deleting the Tauri standalone and rewriting the `deploy/*` guidebook pages
+    (P8a): [VIZ-156](https://linear.app/semio-ai/issue/VIZ-156).
+
+Section 2 is the state the plan starts from, at the revisions its studies read.
+Each claim in it is backed by a sub-study in `studies/`, each of which opens
+with its findings; section 2 is their synthesis and cites the study (`S:slug`,
+finding number). Sections 3 to 6 are the target picture and the plan as they
+survived a challenge: each load-bearing claim attacked through two or three
+lenses (feasibility, cost, consumer impact), verification spikes, and three
+judges' scores, recorded in [`studies/challenge-verdicts.md`](studies/challenge-verdicts.md).
+Stand-alone tests live outside the product repos and are referenced from the
+study that ran them.
 
 | Study | Subject |
 | --- | --- |
@@ -390,7 +437,8 @@ Sources: S:standalone-anatomy 1, 6; S:native-app-anatomy 1–3; S:browser-device
 | tutorial-fullscreen-face | yes | runtime-react | none | build | guidebook, manifest |
 | tutorial-agent-face | yes | runtime-react, @google/genai | Gemini Live (audio), local aligner | build | guidebook, manifest |
 | vizij-showcase | yes ×5 | render, runtime-react | Polly copy (VoicePanel) | build | not projected |
-| demo-animation-studio, demo-graph-studio, minimal-demo-* (5 apps) | no | animation/node-graph packages only | none | build, e2e smoke | — |
+| demo-graph-studio, minimal-demo-graph | no | node-graph packages only | none | build, e2e smoke | — |
+| demo-animation-studio, minimal-demo-animation, minimal-demo-animation-graph | no | animation packages only; deleted with Vizij's animation engine ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)) | none | — | — |
 | vizij-ws-app | residue (one tracked `.gitignore`) | — | — | — | — |
 
 The public website is a generated projection of the guidebook (15 pages) and
@@ -1023,7 +1071,9 @@ formats, frame rate, device-loss recovery) over adb, scripted.
 | vizij-authoring | ported (P4b) through the reworked `@vizij/render`, after the authoring work in flight lands; SpeechPanel moves onto `say` (3.4) |
 | tutorial-agent-face | ported on `runtime-react` 1.0 with its guidebook pages (P4b); its public routes keep working |
 | vizij-showcase | ported on the shared-canvas viewports (P4b); the reference for many faces per page |
-| demo-animation-studio, demo-graph-studio, minimal-demo-* | unchanged (no face) |
+| demo-graph-studio, minimal-demo-graph | unchanged (no face) |
+| demo-animation-studio, minimal-demo-animation, minimal-demo-animation-graph | deleted with Vizij's animation engine: a face's animations play in its device through Arora's animation module ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)) |
+| `@vizij/animation-react` | deleted with them ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)) |
 | vizij-ws-app, `packages/@vizij/arora-types`, `scripts/check-snap-env.mjs`, `dev:vizij-standalone` | deleted |
 | `@vizij/animation-module` (browser artifact), `vizij-arora-web` | retired into the host-module path and `vizij::web` |
 | semio_studio `apps/vizij-app` | dissolves; Studio connects to a stand-alone `vizij --studio` (3.7) |
