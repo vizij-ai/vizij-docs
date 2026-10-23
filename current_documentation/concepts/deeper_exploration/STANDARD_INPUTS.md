@@ -1,7 +1,7 @@
 # Standard Inputs
 
 <!-- tags: family=reference; type=reference; topics=standards,inputs,rigging -->
-> **Last updated:** 2026-10-02
+> **Last updated:** 2026-10-23
 
 ## Purpose
 
@@ -11,7 +11,8 @@ poses, drivers, and tools by agreeing on a stable set of control paths. A rig
 
 ## Path Shape
 
-The canonical standard input path is the authoring/operator slot form:
+The canonical standard input path is the authored form, the one rig inputs
+carry in the authoring app and in a face's bundle:
 
 ```
 /standard/{standard_namespace}/{channel}/{track}/{attribute}
@@ -31,14 +32,21 @@ or compatibility notes, but they are no longer the canonical teaching form.
 
 ## Related Surfaces
 
-The same control can appear in multiple surfaces:
+The same control appears in three forms:
 
 | Surface | Canonical shape | Example | Use it for |
 | --- | --- | --- | --- |
-| standard input path | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `/standard/vizij/left_eye/pos/x` | authoring/operator slot form |
-| runtime path | `rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `rig/{face}/standard/vizij/left_eye/pos/x` | runtime writes and diagnostics |
-| deployment slot | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | `standard/vizij/left_eye/pos/x` | external client writes at deployment boundaries |
-| observer key | `{runtime_namespace}/rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `vizij-standalone/rig/{face}/standard/vizij/left_eye/pos/x` | advanced shared-runtime inspection |
+| standard input path | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `/standard/vizij/left_eye/pos/x` | the authored form of a rig input |
+| relative path | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | `standard/vizij/left_eye/pos/x` | a face's own key without its rig prefix: the name the face standard and its profile give the control, the same on every face, and what `runtime.path()` takes |
+| runtime path | `rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `rig/{face}/standard/vizij/left_eye/pos/x` | the key in the face's device store: what an app writes, what a bridge lists and carries, what diagnostics show |
+
+Each face is an Arora device of its own, and every key of the face lives under
+its rig prefix, `rig/{face}/` (`runtime.rigPrefix` in `@vizij/runtime`, where
+`runtime.path(relative)` builds a runtime path). A bridge carries keys as they
+are, with no shorter alias in between: a client lists a device's keys and
+writes, by runtime path, only the ones listed as writable, which are the face's
+free inputs. A device-scoped profile's keys, such as ROS4HRI's
+`standard/ros4hri/*`, carry no rig prefix.
 
 ## Scope and Required Set
 
@@ -60,7 +68,7 @@ conversation state is reported without being graded.
 ## The Vizij Face Standard
 
 Every key is an `f32` weight in `[0, 1]` resting at `0` unless the table says
-otherwise. Paths are shown in deployment-slot form; a face addresses them under
+otherwise. Paths are shown as relative paths; a face's device holds them under
 its rig prefix (`rig/{face}/standard/vizij/...`).
 
 | Tier | Keys | Range | Meaning |
@@ -68,6 +76,8 @@ its rig prefix (`rig/{face}/standard/vizij/...`).
 | `gaze` | `standard/vizij/{left,right}_eye/pos/{x,y}` | `[-1, 1]` | eye position: `x` left to right, `y` down to up |
 | `gaze` | `standard/vizij/{left,right}_eye_top_eyelid/pos/y` | `[0, 1]` | eyelid position: 0 open, 1 closed |
 | `gaze` | `standard/vizij/blink` | `[0, 1]` | both eyes: 0 open, 1 closed |
+| `gaze` | `standard/vizij/gaze/target/{x,y}` | `[0, 1]` | where the eyes look on the face's frame: origin top-left, `y` down; rests at 0.5, straight ahead |
+| `gaze` | `standard/vizij/gaze/target/weight` | `[0, 1]` | how strongly the eyes hold the target: 0 not at all, 1 fully |
 | `expression` | `standard/vizij/expression/<name>` | `[0, 1]` | one weight per named expression, 27 names |
 | `viseme` | `standard/vizij/viseme/<shape>` | `[0, 1]` | one weight per viseme shape, the 15-shape set |
 | `muscle` | `standard/vizij/face/<control>`, `standard/vizij/mouth/morph/jaw_open` | `[0, 1]` | fine controls keyed to FACS action units and ARKit blendshapes, 36 keys |
