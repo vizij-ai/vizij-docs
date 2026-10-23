@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,integrate,player,runtime-shell -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** establish the smallest believable player-stage runtime surface in the guidebook route
 
 # Minimal Web Player
@@ -49,7 +49,7 @@ Use this page as the last stop before you branch, not as proof that every next s
 
 | If this describes you... | Treat this page as successful when... | Open this next |
 | --- | --- | --- |
-| you are not building in React | you can explain the `VizijAssetBundle`, provider-owned readiness states, and one working control path | [Loading, Playback, and Embedding](loading-playback-and-embedding.md), then repo-local implementation docs for your framework |
+| you are not building in React | you can explain the face GLB, provider-owned readiness states, and one working control path | [Loading, Playback, and Embedding](loading-playback-and-embedding.md), then repo-local implementation docs for your framework |
 | your next real question is operator control or deployment topology | you have one healthy player shell and one visible control path reaching the face | [Deploy](../deploy/README.md), then [Easiest Standalone Deployment](../deploy/easiest-standalone-deployment.md) or [Hardware, ROS, and Multi-Screen Topologies](../deploy/hardware-ros-and-multi-screen-topologies.md) |
 
 ## What A Minimal Player Must Prove
@@ -158,11 +158,13 @@ Open:
 The runtime shape to notice is:
 
 ```tsx
+<VizijCanvas style={CANVAS_STYLE} />
+…
 <VizijRuntimeProvider
   key={source.id}
-  assetBundle={assetBundle}
-  autostart
-  orchestratorScope="isolated"
+  glb={glb}
+  vizijId="player"
+  options={FACE_OPTIONS}
 >
   <WorkspaceSurface sourceLabel={sourceLabel} sourceMeta={sourceMeta} />
 </VizijRuntimeProvider>
@@ -170,9 +172,10 @@ The runtime shape to notice is:
 
 What this shows:
 
-1. the player still starts with one `VizijAssetBundle`
-2. the provider owns runtime startup and controller registration
-3. the app shell then builds panels from the resolved runtime state
+1. the player starts from one face GLB, a curated sample or an uploaded file
+2. the provider loads it as the face's own device and owns its lifecycle
+3. the face draws on the page's one canvas, over its slot (`VizijRuntimeFace`) in the workspace
+4. the app shell then builds panels from what the face's GLB declares (`describe()`)
 
 That is the reusable pattern for a first player. The shell grows around the runtime instead of bypassing it.
 
@@ -192,8 +195,8 @@ It is trying to be a trustworthy bundle-first player. That scope discipline is p
 
 If you are building a first integration surface, copy these ideas before you copy visual polish:
 
-1. construct one `VizijAssetBundle` from a known source
-2. mount one `VizijRuntimeProvider`
+1. take one face GLB from a known source
+2. mount one `<VizijCanvas>` for the page and one `VizijRuntimeProvider` for the face
 3. make loading, ready, empty, and error states explicit
 4. build controls from resolved runtime data instead of hard-coded assumptions
 5. prove one known-good control path before adding more product UI

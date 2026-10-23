@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,integrate,application-patterns,runtime-react,orchestrator -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** help readers choose the right simple Vizij application integration pattern without confusing pattern choice with a different runtime model
 
 # Application Integration Patterns
@@ -47,10 +47,17 @@ You do not need to run every app to use this page, but it helps if you can inspe
 All maintained patterns still reduce to the same core shell:
 
 ```tsx
-<VizijRuntimeProvider assetBundle={assetBundle}>
-  <VizijRuntimeFace />
-</VizijRuntimeProvider>
+<>
+  <VizijCanvas />
+  <VizijRuntimeProvider glb={faceGlb}>
+    <VizijRuntimeFace />
+  </VizijRuntimeProvider>
+</>
 ```
+
+`<VizijCanvas>` is the page's one canvas, on which `@vizij/runtime`'s Bevy view
+draws every face; `VizijRuntimeFace` is the face's slot over it, a `<div>` with
+no canvas of its own.
 
 What changes from pattern to pattern is not “what Vizij is.”
 
@@ -61,7 +68,7 @@ What changes is what your app chooses to own directly around that shell.
 | If you mainly need... | Start with this pattern | Runtime lifecycle owner | New ownership your app takes on | First example to inspect |
 | :--- | :--- | :--- | :--- | :--- |
 | one face in a small app shell with honest loading, ready, and error states | **Minimal Provider Shell** | `VizijRuntimeProvider` | page-level UI only | `tutorial-fullscreen-face` |
-| local face behavior such as gaze, hotkeys, or lightweight HUD controls | **Provider + Runtime Hooks** | `VizijRuntimeProvider` | hook-level input writes and local timing | `tutorial-fullscreen-face` hooks |
+| local face behavior such as expression hotkeys or lightweight HUD controls | **Provider + Runtime Hooks** | `VizijRuntimeProvider` | hook-level input writes and local timing | `tutorial-fullscreen-face` hooks |
 | bundle selection, diagnostics, and transport panels around the same runtime shell | **Provider + Diagnostics Shell** | `VizijRuntimeProvider` | sample/library state, diagnostics panels, transport UI | `demo-vizij-player` |
 | external session, tool calls, or service-driven face behavior | **Service-Backed Face App** | `VizijRuntimeProvider` plus a separate session layer | session state and the translation bridge into runtime actions | `tutorial-agent-face` |
 
@@ -72,16 +79,16 @@ Move toward higher complexity only when a real requirement forces you to own mor
 
 This is the smallest app-shaped React pattern built around:
 
-1. `VizijAssetBundle`,
-2. `VizijRuntimeProvider`,
-3. `VizijRuntimeFace`,
+1. `<VizijCanvas>`, the page's one canvas,
+2. `VizijRuntimeProvider`, given the face's GLB,
+3. `VizijRuntimeFace`, the face's slot,
 4. a small readiness or error surface.
 
 Choose this when:
 
 1. you need one face on screen,
 2. you want visible readiness states,
-3. you do not need deep manual orchestration control yet,
+3. you do not need to step the face's device yourself,
 4. you want the easiest path toward a real application shell.
 
 Current anchor:
@@ -93,13 +100,13 @@ Current anchor:
 
 This pattern keeps the same provider-owned runtime shell, but adds app behavior through `useVizijRuntime()` and related hooks.
 
-In the current repo, `tutorial-fullscreen-face` uses this shape for gaze and pose hotkeys.
+In the current repo, `tutorial-fullscreen-face` uses this shape for its expression and viseme hotkeys.
 
 Choose this when:
 
 1. you want the provider to remain the runtime backbone,
 2. you need lightweight interactions or local app behaviors,
-3. you want to extend one face view without taking over orchestration internals.
+3. you want to extend one face view without taking over the face's lifecycle.
 
 Current anchor:
 
@@ -109,13 +116,13 @@ Current anchor:
 
 This pattern still uses the provider and runtime hooks, but the high-level behavior is influenced by an external session.
 
-In the current repo, `tutorial-agent-face` is the maintained example: the face remains a `VizijRuntimeProvider` plus `VizijRuntimeFace` app, while live service logic, audio handling, tool calls, and status surfaces sit around that runtime shell.
+In the current repo, `tutorial-agent-face` is the maintained example: the face remains a `VizijRuntimeProvider` plus `VizijRuntimeFace` app on the page's canvas, while live service logic, audio handling, tool calls, and status surfaces sit around that runtime shell.
 
 Choose this when:
 
 1. a live service or external session is part of the product experience,
 2. the face is one subsystem inside a broader interaction flow,
-3. you want to keep `runtime-react` as the base rather than dropping to manual orchestrator ownership.
+3. you want to keep `runtime-react` as the base rather than driving `@vizij/runtime` directly.
 
 Current anchor:
 
@@ -129,15 +136,15 @@ In the current repo, `demo-vizij-player` is the main anchor. It explicitly owns:
 
 1. sample selection and uploaded-GLB selection,
 2. bundle metadata displayed around the face,
-3. diagnostic panels and controller visibility,
+3. diagnostic panels: the face's graphs, keys and runs,
 4. transport controls for bundled animations and programs,
-5. metadata-driven face-control panels built from runtime state.
+5. face-control panels built from what the face's GLB declares (`describe()`).
 
 Choose this when:
 
 1. diagnostic visibility is a primary requirement,
 2. you need bundle or sample selection in the same app shell,
-3. you want clip/program transport and controller inspection without dropping below the provider layer.
+3. you want animation and program transport and runtime inspection without dropping below the provider layer.
 
 Current anchor:
 

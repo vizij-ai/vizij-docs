@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,integrate,loading,embedding,playback -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** explain the basic mechanics of getting a Vizij face loaded into a usable application surface and keeping that surface honest
 
 # Loading, Playback, and Embedding
@@ -42,9 +42,9 @@ Loading is the moment the app acquires the asset and prepares the runtime.
 
 That usually includes:
 
-1. reading a GLB or equivalent asset source,
-2. extracting or attaching rig, pose, and animation metadata,
-3. creating the runtime bundle the provider will use,
+1. fetching a face GLB, which carries its rig, poses, animations and programs in its `VIZIJ_bundle`,
+2. loading it as the face's own Arora device, which composes its graphs,
+3. drawing its first frame on the page's canvas,
 4. surfacing loading or error states honestly.
 
 ### 2. Playback
@@ -53,43 +53,54 @@ Playback is what happens when the runtime actually drives the face over time.
 
 This includes:
 
-1. playing authored animations,
-2. tweening values such as gestures or eye movement,
+1. playing authored animations through the face's animation module,
+2. running the face's programs, and tweening values such as expressions,
 3. exposing a ready state where the face can respond predictably.
 
 ### 3. Embedding
 
-Embedding is how a Vizij runtime surface lives inside a broader application.
+Embedding is how a Vizij face lives inside a broader application.
+
+A page has one canvas, `<VizijCanvas>` from `@vizij/render`, on which
+`@vizij/runtime`'s Bevy view draws every face the page shows. Each face draws
+over its slot, `VizijRuntimeFace`: a `<div>` the app places and sizes like any
+element, which renders no canvas of its own.
 
 In React terms, the basic embedded pattern is:
 
 ```tsx
+import { VizijCanvas } from "@vizij/render";
 import {
   VizijRuntimeProvider,
   VizijRuntimeFace,
   useVizijRuntime,
+  type VizijSource,
 } from "@vizij/runtime-react";
 
-export function FaceFeature({ assetBundle }) {
+export function FaceFeature({ glb }: { glb: VizijSource }) {
   return (
-    <VizijRuntimeProvider assetBundle={assetBundle} autostart>
-      <FaceView />
-    </VizijRuntimeProvider>
+    <>
+      <VizijCanvas />
+      <VizijRuntimeProvider glb={glb}>
+        <FaceView />
+      </VizijRuntimeProvider>
+    </>
   );
 }
 
 function FaceView() {
-  const { loading, ready, error } = useVizijRuntime();
+  const { status, error } = useVizijRuntime();
 
-  if (loading) return <p>Loading face…</p>;
-  if (error) return <p>Runtime failed: {error.message}</p>;
-  if (!ready) return <p>Initialising orchestrator…</p>;
+  if (status === "error") return <p>The face failed to load: {error?.message}</p>;
 
-  return <VizijRuntimeFace />;
+  return <VizijRuntimeFace style={{ width: 480, height: 360 }} />;
 }
 ```
 
-The provider owns the runtime shell.
+The slot shows a loading view of its own until the face is first drawn.
+
+The provider owns the face's runtime: it loads the face, steps its device every
+animation frame, and unloads it on unmount.
 
 The app owns only the hooks and UI that serve the page's purpose.
 
@@ -104,8 +115,8 @@ The app owns only the hooks and UI that serve the page's purpose.
 
 `tutorial-agent-face` demonstrates that richer apps still build on the same base:
 
-1. a runtime provider,
-2. a runtime face,
+1. the page's canvas,
+2. a runtime provider and the face's slot,
 3. application hooks,
 4. an additional session and tool layer.
 
@@ -137,18 +148,19 @@ flowchart LR
     classDef loading fill:#fff4e5,stroke:#c97a00,stroke-width:1.5px
     classDef playback fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
 
-    asset["GLB or asset source"]
-    bundle["Resolved VizijAssetBundle"]
-    provider["VizijRuntimeProvider\nowns runtime startup"]
+    asset["Face GLB\nwith its VIZIJ_bundle"]
+    provider["VizijRuntimeProvider\nloads the face as a device"]
     state["Loading, ready, and error state"]
-    face["VizijRuntimeFace\nruntime-driven face surface"]
+    face["VizijRuntimeFace\nthe face's slot"]
+    canvas["VizijCanvas\nthe page's one canvas"]
 
-    asset --> bundle --> provider
+    asset --> provider
     provider --> state
     provider --> face
+    canvas -->|"draws the face over"| face
 
-    class asset,bundle,provider loading
-    class state,face playback
+    class asset,provider loading
+    class state,face,canvas playback
 ```
 
 ### Embedding Boundary
@@ -160,7 +172,7 @@ flowchart LR
 
     provider["VizijRuntimeProvider"]
     state["Runtime readiness state"]
-    face["VizijRuntimeFace"]
+    face["VizijRuntimeFace slot"]
     hooks["App-owned hooks,\npanels, or session layer"]
     shell["Page or feature shell"]
 
@@ -177,9 +189,9 @@ flowchart LR
 
 The smallest recurring anatomy in the current repo is:
 
-1. `VizijAssetBundle`
-2. `VizijRuntimeProvider`
-3. `VizijRuntimeFace`
+1. `<VizijCanvas>`, the page's one canvas
+2. `VizijRuntimeProvider`, given the face's `glb`
+3. `VizijRuntimeFace`, the face's slot on the canvas
 4. application-specific hooks or panels
 
 If a reader can identify those pieces, they can usually orient themselves in any maintained Vizij web app.
