@@ -1,6 +1,6 @@
 <!-- tags: family=reference; type=architecture; topics=architecture,repo-map,contracts,deployment -->
 > **Audience:** Contributors who need the current cross-repo technical map
-> **Last updated:** 2026-04-02
+> **Last updated:** 2026-10-23
 
 # Vizij Cross-Repo Technical Architecture
 
@@ -19,8 +19,8 @@ For source-of-truth boundaries, placement rules, and metadata conventions, use [
 
 Vizij currently spans five interacting layers:
 
-1. **Rust runtime layer (`vizij-rs`)** - runtime semantics, wasm bindings, fixtures, and registry export tooling.
-2. **Web packages and apps layer (`vizij-web`)** - React/runtime packages, authoring surfaces, demos, standalone shell, and operator-control protocol surfaces.
+1. **Rust runtime layer (`vizij-rs`)** - runtime semantics, the Bevy view that draws every face, the native `vizij` app, wasm bindings, fixtures, and registry export tooling.
+2. **Web packages and apps layer (`vizij-web`)** - the React packages over the runtime, the authoring app, the face apps and demos, and the standalone shell.
 3. **Assets layer (`vizij-assets`)** - binary meshes, rigs, and graph artifacts reused across demos, render flows, and public examples.
 4. **Internal documentation layer (`vizij-docs`)** - maintained cross-repo technical references, program summaries, decisions, and operational policy.
 5. **Public site layer (`vizij-ai.github.io`)** - Astro-based public docs, showcase, and routed public examples.
@@ -31,8 +31,8 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 
 | Repo or surface | Architectural role | Key contracts or outputs |
 | --- | --- | --- |
-| `vizij-rs` | Engine-agnostic runtime core | `Value`, `Shape`, `TypedPath`, graph evaluation, animation sampling, the Arora device interop, wasm wrappers, fixtures |
-| `vizij-web` | Application and integration layer | React runtime bindings, authoring flows, demos, standalone deployment shell, protocol integration surfaces |
+| `vizij-rs` | Runtime core and the face's view | `Value`, `Shape`, `TypedPath`, graph evaluation, the Arora device interop, the Bevy view, the `vizij` binary, wasm wrappers, fixtures |
+| `vizij-web` | Application and integration layer | React runtime bindings, authoring flows, demos, standalone deployment shell |
 | `vizij-docs` | Cross-repo reference and coordination layer | maintained architecture summaries, roadmap/program framing, decisions, known issues, release-note policy |
 | `vizij-ai.github.io` | Public delivery layer | curated docs, guides, showcase content, public routing into examples |
 | `vizij-assets` | Shared binary asset layer | meshes, rigs, graph artifacts, and sample assets consumed by demos and render/runtime flows |
@@ -42,89 +42,89 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 
 ### Runtime stacks
 
-`vizij-rs` currently contains these primary workspace crates:
+`vizij-rs` contains these workspace crates:
 
+- **The `vizij` crate**: a library plus the desktop binary ([README](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/README.md))
+  - `view` — the Bevy renderer of a face from its GLB bytes, drawing the pose its device's rig HAL holds each frame
+  - `face` — a GLB's bindings and bundle composed into one graph, folded with the rig HAL and the store into an Arora builder
+  - `modules` — the host modules any device loads: Arora's animation module (`@arora/animation`, from `arora-animation-module`), the rest module (`reset`, `reset_keys`), the local Piper voice (feature)
+  - `native` — the stand-alone device on a worker thread, with the bridges a build adds
+  - `web` — the browser module behind `@vizij/runtime`, linked as a cdylib of its own by `vizij-wasm`
+- **`vizij-wasm`**: the `vizij` crate's `web` module as a wasm-bindgen cdylib of its own, so the release profile's fat LTO applies to it; `@vizij/runtime` ships its build
 - **API stack**
   - `vizij-api-core`
   - `vizij-api-wasm`
-  - `bevy_vizij_api`
-- **Animation stack**
-  - `vizij-animation-core`
-  - `vizij-animation-wasm`
-  - `bevy_vizij_animation`
 - **Node graph stack**
   - `vizij-graph-core`
   - `vizij-graph-wasm`
-  - `bevy_vizij_graph`
   - `vizij-graph-registry-export`
 - **Arora interop stack** (`crates/interop/`)
   - `vizij-arora` — Vizij↔Arora value identity (`vizij_api_core::Value` **is** `arora_types::value::Value`)
   - `vizij-arora-store` — a Vizij `Blackboard` as an Arora `DataStore`
   - `vizij-arora-hal` — a Vizij rig as an Arora HAL
   - `vizij-arora-behavior` — `ProcessingGraph`: a Vizij node graph as an Arora `BehaviorInterpreter`
-  - `vizij-arora-web` — the browser device: a wasm cdylib assembling `arora-web`'s `BrowserRuntime` over the pieces above
-  - `vizij-animation-module` — the animation engine packaged as an Arora wasm module
-- **Orchestrator stack** (superseded in the web runtime by the Arora device; the vizij-web packages are retired and the authoring tooling has migrated, but `vizij-orchestrator-core` still has an internal consumer in `vizij-arora-behavior`, so the crates remain pending removal — VIZ-62)
-  - `vizij-orchestrator-core`
-  - `vizij-orchestrator-wasm`
+  - `vizij-arora-host` — the composition shared by the native app and the browser module: the device behavior from a bundle's graphs, the program to autoplay, the neutral pose, the face standard and its profiles
+  - `vizij-arora-tts` — the `say` module over the Vizij TTS provider, natively and in the browser
+  - `vizij-piper` — the local Piper voice
+  - `vizij-animation-artifact` — writes `arora-animation-module`'s module directory, the guest `@vizij/runtime`'s tests load
+- **Tools**
+  - `vizij-bundle` — inspect, unpack, pack and validate a face GLB's `VIZIJ_bundle`
+  - `vizij-glb-migrate`
 - **Shared fixtures**
   - `vizij-test-fixtures`
 
 ### Current architecture notes
 
-- Rust remains the runtime source of truth for `Value`, `Shape`, `TypedPath`, graph evaluation, and animation sampling.
-- In the browser, Vizij runs **as an Arora device**: `@vizij/runtime` (built from `vizij-arora-web`) boots an Arora runtime whose behavior is a composed Vizij node graph on a shared key/value store. Scheduling is the Arora step loop; cross-graph data flows through store paths.
+- Rust remains the runtime source of truth for `Value`, `Shape`, `TypedPath`, and graph evaluation; a face's animations play in its device through Arora's animation module.
+- **Each Vizij face is an Arora device** whose behavior is its composed graphs (rig, pose driver, poses, standard adaptation) on a key/value store, with programs and skills running beside them as runs of its interpreter. Scheduling is the Arora step loop; cross-graph data flows through store paths. A face's keys live under its rig prefix, `rig/<faceId>/`.
+- **The Bevy view draws every Vizij face.** In the browser, `@vizij/runtime` is one wasm module holding the view and, per face, the face's device: a page mounts one canvas and places each face in a rectangle of it. The desktop `vizij` binary runs the same composition natively, in a window. three.js draws no face; it remains only in `@vizij/render`'s GLB loader and exporter (section 4).
 - Vizij and Arora share one runtime value type, so values cross the store boundary without translation; JS sees them as `ValueJSON`.
-- Bevy adapters currently exist for API, animation, and node graph.
-- The npm wrappers under `vizij-rs/npm/@vizij/*` expose the wasm layer to the web stack.
-- Shared helper packages such as `@vizij/value-json`, `@vizij/wasm-loader`, and `@vizij/test-fixtures` keep JSON, loader, and fixture behavior aligned across repos.
+- The npm wrappers under `vizij-rs/npm/@vizij/*` expose the wasm layer to the web stack: `@vizij/runtime`, `@vizij/node-graph`, and the shared helpers `@vizij/value-json`, `@vizij/wasm-loader`, and `@vizij/test-fixtures`, which keep JSON, loader, and fixture behavior aligned across repos.
 
 ## 4. `vizij-web` Application Architecture
 
-`vizij-web` contains published libraries, local support crates, creator/operator tooling, example apps, and standalone deployment surfaces.
+`vizij-web` contains published libraries, creator/operator tooling, example apps, and a standalone deployment surface. Its own [`ARCHITECTURE.md`](https://github.com/vizij-ai/vizij-web/blob/main/ARCHITECTURE.md) owns the detail.
 
 ### Packages
 
 | Package | Role |
 | --- | --- |
-| `@vizij/animation-react` | React bindings for `@vizij/animation` |
-| `@vizij/node-graph-react` | React bindings for `@vizij/node-graph` |
-| `@vizij/render` | Three.js renderer and related controllers |
-| `@vizij/runtime-react` | Runtime provider wiring the renderer to an Arora device engine (`@vizij/runtime`) |
-| `@vizij/utils` | Shared utility layer |
+| `@vizij/render` | The page's canvas (`<VizijCanvas>`) and the face slot (`<Vizij>`, a `<div>` the canvas draws a face over) over `@vizij/runtime`'s Bevy view; the GLB loader, the headless exporter, and the world model the authoring app edits. `three` is used only by the loader and the exporter |
+| `@vizij/runtime-react` | One face's lifecycle in React (`VizijRuntimeProvider`, the `VizijRuntimeFace` slot), the fan-out of its store changes, value hooks, and `useAnimateValue`; it hands out `@vizij/runtime`'s `Runtime` |
+| `@vizij/utils` | Shared value types and rig helpers |
 | `@vizij/node-graph-authoring` | Authoring and compiler helpers plus IR inspection tooling |
-| `@vizij/minimal-demo-ui` | Shared UI and chrome for minimal demo apps |
+| `@vizij/node-graph-react` | React bindings for `@vizij/node-graph` |
+| `@vizij/minimal-demo-ui` | Shared UI and chrome for the minimal graph demo |
+
+`@vizij/runtime` is a peer dependency of `@vizij/render` and `@vizij/runtime-react`, so a page resolves one copy of it and therefore one wasm module.
 
 ### Protocol and bridge surfaces
 
-The former in-repo `arora-connection` / `arora-websocket` crates and the `@vizij/arora-types` package were retired in the multi-bridge migration (VIZ-54). The bridge is now the published arora-sdk crates (`arora-bridge-ws`, `arora-bridge-ros2`) on the Rust side; `vizij-standalone` carries its remaining WebSocket/slot protocol types app-locally, and value serde crosses the boundary through `@vizij/value-json`.
+A face the native `vizij` binary shows reaches clients outside it through the Arora bridges composed into that device: the published arora-sdk crates (`arora-bridge-ws`, `arora-bridge-ros2`) and the Semio Studio bridge client (`arora-studio-bridge-client`, from semio-ai/studio-bridge, through arora's `studio-bridge` feature). A bridge carries a device's keys as they are, and a client writes only the keys the device lists as writable. A face in a browser page has no bridge: the page drives it through `@vizij/runtime`. The Tauri shell of `vizij-standalone` composes the same kinds of bridge into a device of its own, which no face shows. Value serde crosses JS boundaries through `@vizij/value-json`.
 
 ### Apps
 
 | App | Role |
 | --- | --- |
-| `vizij-authoring` | Runtime-truthful authoring surface for rigs, bindings, pose workflows, and export |
-| `demo-vizij-player` | Runtime-facing demo for runtime-driven playback |
-| `demo-animation-studio` | Animation-focused playground |
-| `demo-graph-studio` | Graph authoring and editor demo |
-| `minimal-demo-animation` | Minimal animation smoke surface |
-| `minimal-demo-animation-graph` | Combined animation and graph sample |
-| `minimal-demo-graph` | Minimal graph surface |
-| `minimal-demo-orchestrator` | Minimal orchestrator surface |
-| `tutorial-fullscreen-face` | Runtime tutorial example |
-| `tutorial-agent-face` | Tutorial and demo surface with agent interaction |
-| `vizij-showcase` | Shareable fullscreen showcase with runtime and voice features |
-| `vizij-standalone` | Tauri-based standalone application surface |
+| `vizij-authoring` | Runtime-truthful authoring surface for rigs, bindings, pose workflows, and export; its viewport draws on the Bevy view |
+| `demo-vizij-player` | One face export, its rig, poses, animations and programs driven from panels |
+| `demo-graph-studio` | Graph authoring and editor demo, with no face |
+| `minimal-demo-graph` | Minimal graph surface, with no face |
+| `tutorial-fullscreen-face` | The smallest React app driving a face |
+| `tutorial-agent-face` | A face wired to a live agent |
+| `vizij-showcase` | Five sections, a face each, on one canvas |
+| `vizij-standalone` | The face page with a voice agent on `@vizij/runtime`, in a Tauri shell that runs a device of its own beside it |
 
 ## 5. Deployment Architecture
 
 The current deployment architecture is intentionally broader than a single app shell.
 
-- **Browser deployments** use the Rust wasm packages, npm wrappers, React runtime bindings, and renderer stack inside `vizij-web`.
-- **`vizij-standalone`** packages the same runtime and operator-control architecture inside a Tauri shell for desktop-oriented deployment.
-- **Operator/control architecture** spans `vizij-standalone` (Tauri), the app-local WebSocket/slot protocol types, `@vizij/value-json` for value serde, and the published arora-sdk bridge crates (`arora-bridge-ws`, `arora-bridge-ros2`).
+- **Browser deployments** run the face apps on `@vizij/runtime`: one canvas per page, each face a device of its own drawn over its slot.
+- **The `vizij` desktop binary** shows one face in a window, with the local WebSocket bridge and its control panel, `--ros2`, and `--studio`. vizij-rs releases it as `vizij-v<version>`, with a binary and an installer per desktop OS.
+- **`vizij-standalone`** wraps the face page in a Tauri shell, beside a device of its own that the page does not render, and is the current Android build. Deleting it waits on the `vizij` Android app; the [Bevy plan](../active_projects/runtime/bevy_everywhere/bevy_everywhere-plan.md) tracks both.
+- **Operator/control architecture** spans the `vizij` binary's bridges above and `@vizij/value-json` for value serde.
 - **Authoring-to-runtime export flows** connect `vizij-authoring` outputs to runtime/player/deployment surfaces rather than stopping at an isolated editor boundary.
-- **Shared namespaces and multi-face runtime patterns** remain relevant architectural extension points for larger deployments, even though they are not required in every current surface.
+- **Many faces per page** is the default: each face is a device of its own with its keys under its rig prefix, and the page's one canvas draws them all (`vizij-showcase` shows five).
 
 ## 6. Assets And Site Layers
 
@@ -152,7 +152,7 @@ The most important contracts that currently cross repo boundaries are:
 - wasm ABI and loader behavior
 - fixture manifests and shared sample assets
 - runtime bundle and export semantics used by authoring, demos, tutorials, showcase, and deployment surfaces
-- protocol types and runtime path conventions used by standalone and operator-control surfaces
+- a face's key conventions — its rig prefix and the Vizij face standard's keys — used by apps, bridges, and operator surfaces
 
 These contracts should be described once at the architecture layer and then linked to lower-level repo-local implementation detail as needed.
 
@@ -161,5 +161,6 @@ These contracts should be described once at the architecture layer and then link
 - `vizij-docs/current_documentation/ROADMAP.md`
 - `vizij-docs/current_documentation/DECISIONS.md`
 - `vizij-rs/README.md`
-- `vizij-web/README.md`
+- `vizij-rs/crates/vizij/README.md`
+- `vizij-web/ARCHITECTURE.md`
 - `vizij-web/apps/vizij-authoring/docs/README.md`

@@ -1,7 +1,7 @@
 # Vizij Authoring Program Summary
 <!-- tags: family=project; type=summary; project_status=tracking; topics=authoring,workflow,runtime-correctness,ui-ux -->
 
-> **Last updated:** 2026-04-02
+> **Last updated:** 2026-10-23
 
 ## Goals
 
@@ -41,7 +41,7 @@ Detailed execution tracking, stage gates, and feature-level backlog detail live 
 ## Current Verified State
 
 - `vizij-authoring` is a real current workspace app in `vizij-web/apps/vizij-authoring`.
-- The app currently depends on real current workspace packages including `@vizij/runtime-react`, `@vizij/node-graph-authoring`, `@vizij/node-graph-react`, `@vizij/render`, and `@vizij/utils`. (The motiongraph tooling has migrated off `@vizij/orchestrator-react`, which is retired.)
+- The app currently depends on real current workspace packages including `@vizij/runtime-react`, `@vizij/node-graph-authoring`, `@vizij/node-graph-react`, `@vizij/render`, and `@vizij/utils`, and on `@vizij/runtime` 8. Its viewport draws the main and reference faces on the Bevy view, each a device of its own; picks, selection glow and held outputs are calls on `@vizij/runtime`, and a structural edit reloads the face from its exported GLB bytes ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206), [VIZ-148](https://linear.app/semio-ai/issue/VIZ-148)). The world model it edits stays in JavaScript, in `@vizij/render`'s store, and the headless exporter writes the GLB.
 - The local authoring docs remain the authoritative detailed tracker for stage-by-stage execution.
 - The local authoring docs were trimmed on 2026-03-30 so the active set now centers on the tracker trio (`README.md`, `ROADMAP.md`, `BACKLOG.md`, `TRACKER.md`), active local contracts, and a smaller set of living implementation references; several completed goal/implementation plans were archived locally instead of remaining in the active path.
 - The local authoring tracker currently reports:
