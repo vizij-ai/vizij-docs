@@ -2,7 +2,7 @@
 
 > **Related documents:** [Website & Ecosystem summary](../summary.md) · [Documentation Strategy & Content - Plan & Tracking](documentation_strategy-plan.md) · [Vizij Architecture & Documentation Guide](../../../current_documentation/ARCHITECTURE.md) · [Public Page Teaching Sourcebook](public_page_content_brief-reference.md)
 >
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Scope:** `vizij-ai.github.io` routes under `/demos`, `/docs`, and `/tutorials`
 
 # Public Teaching Gap Audit
@@ -533,8 +533,8 @@ The missing educational content should be extracted from these verified sources 
 
 1. `vizij-web/packages/@vizij/runtime-react/README.md`
 2. `vizij-web/packages/@vizij/render/README.md`
-3. `vizij-web/packages/@vizij/animation-react/README.md`
-4. `vizij-web/packages/@vizij/orchestrator-react/README.md`
+3. `vizij-web/apps/demo-vizij-player/docs/runtime-react-walkthrough.md`
+4. `vizij-web/packages/@vizij/runtime-react/DESIGN-1.0.md`
 5. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
 6. `vizij-web/apps/tutorial-agent-face/tutorial.md`
 7. `vizij-web/apps/vizij-authoring/README.md`

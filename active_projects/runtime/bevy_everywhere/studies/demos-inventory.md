@@ -1,6 +1,6 @@
 # Every surface that renders a Vizij face, and what each needs from a browser Bevy view
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,demos,e2e,guidebook -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-10-23
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
 Revisions read: vizij-web `f69f0ba8`, vizij-rs `9406f66`, semio_studio `1c002e17`
@@ -65,7 +65,7 @@ Purpose is taken from each app's README/AGENTS.md. "Face" names the component; "
 
 | App | Fate | Reasons |
 |---|---|---|
-| demo-animation-studio, demo-graph-studio, minimal-demo-* (5) | keep as is | no face, no render/runtime-react dependency (Finding 4); their e2e boot smokes stay as the wasm animation/graph canaries. |
+| demo-graph-studio, minimal-demo-graph | keep as is | no face, no render/runtime-react dependency (Finding 4); their e2e boot smokes stay as the wasm graph canaries. demo-animation-studio, minimal-demo-animation and minimal-demo-animation-graph are deleted with Vizij's animation engine ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)): a face's animations play in its device through Arora's animation module. |
 | tutorial-fullscreen-face | port first | smallest face app (13 tracked files, one provider + one face + two hooks); it is the guidebook's Hello Face path (21 pages) and the website's `tutorials-hello-face`; its `tutorial.md` becomes the first "browser Bevy view" tutorial. |
 | demo-vizij-player | port second | the declared reference consumer of runtime-react (`README.md:7-17`); the only face app with a load-driving e2e (`demo-vizij-player-load-sample.spec.ts`) — that spec becomes the wasm-view load canary. Needs the device's JS surface (metadata, `setValue`, transport), not only a canvas. |
 | vizij-authoring | port the viewport; scene model is a separate decision | in scope by plan §1. Requirements beyond "draw a face": picking (`onPointerMissed`, selection glow, `Viewer.tsx:738-745`), `transformOutputWrite`, `setGraphBundle` hot-swap (README:19-21), root-bounds framing, 2 instances (main + reference). Its 44 `@vizij/render` imports are the GLB world/bundle model and export (Finding 5): retiring three.js here means either keeping `@vizij/render` as a headless data library or re-homing load/export in Rust (`vizij-bundle` already exists in vizij-rs). |

@@ -1,19 +1,66 @@
 # One Bevy view for every Vizij face: retiring vizij-standalone
-<!-- tags: family=project; type=plan; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-10-02
+<!-- tags: family=project; type=plan; project_status=tracking; topics=runtime,standalone,bevy,wasm,android,authoring -->
+> **Last updated:** 2026-10-23
 
 > **Related documents:** [Reading guide (sixteen slides)](bevy_everywhere-deck.md) · [Tickets](bevy_everywhere-tickets.md) · [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
 
-This is a dry run: a study and a plan, with no implementation. Every claim about
-the current state is backed by a sub-study in `studies/`, each of which opens with
-its findings; the sections below are the synthesis and cite the study (`S:slug`,
-finding number). The target picture and the plan were then challenged: each
-load-bearing claim was attacked through two or three lenses (feasibility, cost,
-consumer impact), three verification spikes ran, and three judges scored the
-plan; the verdicts are in [`studies/challenge-verdicts.md`](studies/challenge-verdicts.md)
-and sections 3 to 6 are the versions that survived; the three spikes that
-followed closed the questions the challenge left open. Stand-alone tests live
-outside the product repos and are referenced from the study that ran them.
+**Status (2026-10-23): every Vizij face in the browser draws on the Bevy view,
+and the desktop line is delivered; the web renderer's retirement, the Android
+line, the Semio Studio line and the deletion of the Tauri standalone are
+open.**
+
+- Delivered:
+  - the `vizij` crate as a library plus the desktop binary, faces as entities
+    of their own, several in one App, the browser module, and `say` in the browser (P1, P3,
+    P3b: [vizij-rs#126](https://github.com/vizij-ai/vizij-rs/pull/126),
+    [vizij-rs#127](https://github.com/vizij-ai/vizij-rs/pull/127),
+    [vizij-rs#128](https://github.com/vizij-ai/vizij-rs/pull/128),
+    [vizij-rs#129](https://github.com/vizij-ai/vizij-rs/pull/129));
+  - every Vizij face in vizij-web drawn on the Bevy view: `@vizij/render`
+    2.0.0 and `@vizij/runtime-react` 1.0.0, every face app and the authoring
+    app on `@vizij/runtime` 8, three.js drawing no face,
+    `@vizij/speech-react`, `@vizij/animation-react` and the animation demos
+    deleted, on the capabilities P4a added to `@vizij/runtime` (P4b:
+    [vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206), released
+    by [vizij-web#207](https://github.com/vizij-ai/vizij-web/pull/207));
+  - a face's animations played through Arora's animation module
+    (`@arora/animation`), with Vizij's own animation engine removed
+    ([vizij-rs#260](https://github.com/vizij-ai/vizij-rs/pull/260),
+    [vizij-rs#261](https://github.com/vizij-ai/vizij-rs/pull/261));
+  - the desktop binary's local bridge, Studio registration, file opening and
+    window flags, and its release per desktop OS (P5:
+    [VIZ-151](https://linear.app/semio-ai/issue/VIZ-151) in
+    [vizij-rs#130](https://github.com/vizij-ai/vizij-rs/pull/130),
+    [VIZ-152](https://linear.app/semio-ai/issue/VIZ-152) in
+    [vizij-rs#146](https://github.com/vizij-ai/vizij-rs/pull/146), released
+    as [`vizij-v0.2.0`](https://github.com/vizij-ai/vizij-rs/releases/tag/vizij-v0.2.0)).
+    The in-window egui operator panel P5 names is not built.
+- Open:
+  - retiring the web renderer (P8b): `three` out of the authoring app
+    ([vizij-web#208](https://github.com/vizij-ai/vizij-web/pull/208), in
+    review), leaving it only in `@vizij/render`'s GLB loader and exporter, and
+    the docs and tickets re-pointed
+    ([VIZ-157](https://linear.app/semio-ai/issue/VIZ-157));
+  - Android (P6): [VIZ-136](https://linear.app/semio-ai/issue/VIZ-136),
+    [VIZ-153](https://linear.app/semio-ai/issue/VIZ-153),
+    [VIZ-154](https://linear.app/semio-ai/issue/VIZ-154);
+  - Semio Studio (P7): [VIZ-155](https://linear.app/semio-ai/issue/VIZ-155)
+    then [STUDIO-263](https://linear.app/semio-ai/issue/STUDIO-263), and the
+    scene screen's face image, [VIZ-159](https://linear.app/semio-ai/issue/VIZ-159);
+  - the agent demo in the standalone's folder (P4c):
+    [VIZ-150](https://linear.app/semio-ai/issue/VIZ-150), in review;
+  - deleting the Tauri standalone and rewriting the `deploy/*` guidebook pages
+    (P8a): [VIZ-156](https://linear.app/semio-ai/issue/VIZ-156).
+
+Section 2 is the state the plan starts from, at the revisions its studies read.
+Each claim in it is backed by a sub-study in `studies/`, each of which opens
+with its findings; section 2 is their synthesis and cites the study (`S:slug`,
+finding number). Sections 3 to 6 are the target picture and the plan as they
+survived a challenge: each load-bearing claim attacked through two or three
+lenses (feasibility, cost, consumer impact), verification spikes, and three
+judges' scores, recorded in [`studies/challenge-verdicts.md`](studies/challenge-verdicts.md).
+Stand-alone tests live outside the product repos and are referenced from the
+study that ran them.
 
 | Study | Subject |
 | --- | --- |
@@ -390,7 +437,8 @@ Sources: S:standalone-anatomy 1, 6; S:native-app-anatomy 1–3; S:browser-device
 | tutorial-fullscreen-face | yes | runtime-react | none | build | guidebook, manifest |
 | tutorial-agent-face | yes | runtime-react, @google/genai | Gemini Live (audio), local aligner | build | guidebook, manifest |
 | vizij-showcase | yes ×5 | render, runtime-react | Polly copy (VoicePanel) | build | not projected |
-| demo-animation-studio, demo-graph-studio, minimal-demo-* (5 apps) | no | animation/node-graph packages only | none | build, e2e smoke | — |
+| demo-graph-studio, minimal-demo-graph | no | node-graph packages only | none | build, e2e smoke | — |
+| demo-animation-studio, minimal-demo-animation, minimal-demo-animation-graph | no | animation packages only; deleted with Vizij's animation engine ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)) | none | — | — |
 | vizij-ws-app | residue (one tracked `.gitignore`) | — | — | — | — |
 
 The public website is a generated projection of the guidebook (15 pages) and
@@ -977,11 +1025,12 @@ formats, frame rate, device-loss recovery) over adb, scripted.
   **adopt `@vizij/render`** (STUDIO-239 proceeds), Bevy underneath.
 - **Where the device runs decides how the image gets there.** A native
   `vizij --studio`, or a robot device with a face: the store key over the
-  Studio bridge, above. A device Studio runs **in the page** — the ambition of
-  `studio-arora` ([draft PR #256](https://github.com/semio-ai/semio_studio/pull/256),
-  a wasm plane spawning Arora instances over one shared store, migrated to
-  arora 9.1 on 2026-08-26 and not merged) — hosts the face as a component of
-  that wasm module: the same `face`, `modules` and `view` linked into it (two
+  Studio bridge, above. A device Studio runs **in the page** — a device of
+  Studio on Arora's World
+  ([plan](https://github.com/semio-ai/semio_studio/pull/489), code from
+  [#256](https://github.com/semio-ai/semio_studio/pull/256) on: one Arora
+  store in the page, a namespace per device) — hosts the face as a component
+  of that wasm module: the same `face`, `modules` and `view` linked into it (two
   cdylibs cannot share a store, S:studio-consumers 17), the frame either read
   back (`Screenshot` on WebGL2, the P0.2 spike) or sampled straight from the
   view's canvas as a `CanvasTexture`, no readback. This path **depends on
@@ -989,9 +1038,23 @@ formats, frame rate, device-loss recovery) over adb, scripted.
   decision, recorded here as a dependency (risk 13), not taken by this
   project. Until it lands, every face Studio shows live is a device over the
   bridge.
+- **The scene reads a device's keys through Studio on Arora's seams**, however
+  the device runs: the store port (Arora's `DataStore`: read, slot, subscribe)
+  the scene, Vizij and animation packages are injected with (that plan's P4),
+  and `SceneBinding`'s list of the store keys a view shows, each with the
+  features it feeds: strings, no Studio type (its P5). A device over the bridge
+  is mirrored into the same store under its id, so the face image key reaches
+  the screen the same way from a stand-alone `vizij --studio`, a robot or an
+  in-page device. A key crosses the bridge under its own name only if the
+  bridge's key mapping round-trips it, and `display/face/compressed`, which
+  has no component, comes back as `display/face.compressed`
+  ([studio-bridge#102](https://github.com/semio-ai/studio-bridge/issues/102)).
 - **Later**, when the scene itself moves to Bevy (STUDIO-256's render-to-
   texture, 1.05 ms per face), the face is an entity of the scene's App and
-  the image round trip disappears; the `view` crate boundary is decided then.
+  the image round trip disappears. The Bevy scene takes from `SceneBinding`
+  the store keys each view shows and reads them from the World's store in
+  Rust; Studio's projection of them into its values store is what retires.
+  The `view` crate boundary is decided then.
 - Studio-exported faces (per-axis RobotData) become readable by the Bevy view
   through the per-axis bindings of section 3.3; the GLB-format convergence
   itself stays STUDIO-239's.
@@ -1008,7 +1071,9 @@ formats, frame rate, device-loss recovery) over adb, scripted.
 | vizij-authoring | ported (P4b) through the reworked `@vizij/render`, after the authoring work in flight lands; SpeechPanel moves onto `say` (3.4) |
 | tutorial-agent-face | ported on `runtime-react` 1.0 with its guidebook pages (P4b); its public routes keep working |
 | vizij-showcase | ported on the shared-canvas viewports (P4b); the reference for many faces per page |
-| demo-animation-studio, demo-graph-studio, minimal-demo-* | unchanged (no face) |
+| demo-graph-studio, minimal-demo-graph | unchanged (no face) |
+| demo-animation-studio, minimal-demo-animation, minimal-demo-animation-graph | deleted with Vizij's animation engine: a face's animations play in its device through Arora's animation module ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)) |
+| `@vizij/animation-react` | deleted with them ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)) |
 | vizij-ws-app, `packages/@vizij/arora-types`, `scripts/check-snap-env.mjs`, `dev:vizij-standalone` | deleted |
 | `@vizij/animation-module` (browser artifact), `vizij-arora-web` | retired into the host-module path and `vizij::web` |
 | semio_studio `apps/vizij-app` | dissolves; Studio connects to a stand-alone `vizij --studio` (3.7) |
@@ -1254,14 +1319,16 @@ face back; every step leaves a screenshot and logcat in the run's artifact
 folder, which the Linear ticket links with the APK sha and the
 device model and Android version.
 
-### P7 Semio Studio (M, after P5)
+### P7 Semio Studio (M, after P5 and Studio on Arora's P4 and P5)
 
 The Studio-key profile under the `studio` feature; the E2E of P0.3 passing on
 a scalar and a compound animatable with a stand-alone `vizij --studio` as the
 device (the face loaded from a Studio-exported, per-axis GLB), registered and
 driven the way `apps/vizij-app` was; **the face image on the scene screen**
 (section 3.7: `screen.tsx` maps the device's `display/face/compressed` key,
-the bridge carries it, the rate is the knob; gate: the scene shows the
+read through the store port under the device's namespace and named in
+`SceneBinding`; the bridge carries it once its name round-trips,
+studio-bridge#102; the rate is the knob; gate: the scene shows the
 stand-alone device's face moving under the E2E's writes); the `retrieveGlb`
 decision; `apps/vizij-app` deleted with its references (`package.json`,
 `.changeset/config.json`, the two docs pages); STUDIO-239 pointed at the
@@ -1344,12 +1411,12 @@ Risks, most severe first:
     several (P0.5); the wrapper is a real `Hal` (routing by key, merging
     updates), so nothing built on it is thrown away, but two wrappers in two
     hosts is the drift this plan exists to avoid.
-13. **Studio's in-page devices are stale**: studio-arora's PR #256 has been a
-    draft since 2026-08-26 on arora 9.1, and the face-on-a-screen path that
-    goes through it (section 3.7) needs it merged and linking `vizij`'s
-    library. Until then the scene shows faces only from devices over the
-    bridge, at the bridge's frame cost (JSON bytes until the buffer wire
-    format lands).
+13. **Studio's in-page devices have not landed**: Studio on Arora's code
+    stack (semio_studio #256 and the PRs on it, on arora 12.1) is open, and
+    the face-on-a-screen path that goes through it (section 3.7) needs it
+    merged and linking `vizij`'s library. Until then the scene shows faces
+    only from devices over the bridge, at the bridge's frame cost (JSON
+    bytes until the buffer wire format lands).
 
 The eleven decisions of the first review are recorded in section 1. Still
 open for Victor: a tablet, only if the newer emulator images also draw nothing

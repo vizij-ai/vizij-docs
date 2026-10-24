@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,deploy,operator,standalone -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** explain what a deployed Vizij runtime consists of and how an operator actually interacts with it
 
 # Operator and Deployment Model
@@ -122,19 +122,17 @@ This is why deployment is not just about rendering. The runtime has to expose a 
 
 ## Path Contract At The Deployment Boundary
 
-Keep these three strings separate when you validate or debug the standalone endpoint:
+Keep these two strings separate when you validate or debug the standalone endpoint:
 
 | What you are looking at | Example | Trust it for |
 | --- | --- | --- |
 | runtime path | `rig/{faceId}/standard/vizij/left_eye/pos/x` | internal runtime reasoning and bundle-to-renderer diagnostics |
 | deployment slot | `standard/vizij/left_eye/pos/x` | external client writes and operator-facing control |
-| observer key | `{runtime_namespace}/rig/{faceId}/standard/vizij/left_eye/pos/x` | shared-runtime or orchestrator-level inspection |
 
 The practical rule is simple:
 
 1. copy deployment slots from the endpoint when writing through WebSocket or the built-in panel,
-2. use the full runtime path when you are inspecting runtime internals,
-3. use the observer-key form only when a shared runtime or diagnostics surface actually shows it.
+2. use the full runtime path when you are inspecting runtime internals.
 
 ## Recommended First Deployment Choice
 

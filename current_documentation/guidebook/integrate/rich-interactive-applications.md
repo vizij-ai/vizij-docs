@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,integrate,interactive-applications,advanced,runtime-react -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** explain how richer Vizij applications grow beyond the minimal player while preserving the same runtime contract and honest ownership boundaries
 
 # Rich Interactive Applications
@@ -66,10 +66,10 @@ The face is still important, but it is no longer the entire product surface.
 The stable contract still looks the same:
 
 ```text
-asset bundle
--> runtime provider
--> orchestrator-managed updates
--> renderer-facing output
+face GLB
+-> runtime provider, loading the face as its own device
+-> the device's steps over the face's store
+-> the Bevy view drawing the face on the page's canvas
 -> visible face
 ```
 
@@ -155,7 +155,7 @@ Keep these four boundaries visible in status language and recovery guidance:
 
 | Boundary | Owned by | Healthy signal | Failure should be named as |
 | --- | --- | --- | --- |
-| runtime readiness | Vizij runtime shell | face loaded, controllers registered, ready state is true | load/initialization/runtime error |
+| runtime readiness | Vizij runtime shell | face loaded and drawn, `status` is `ready` | load/initialization/runtime error |
 | session readiness | external client or service layer | disconnected, connecting, connected, or error shown separately | session/auth/provider error |
 | translation boundary | app-owned bridge logic | requested behavior resolves into valid runtime writes or transports | missing binding, unsupported tool action, bridge failure |
 | product-surface ownership | surrounding app shell | the right UI, controls, and recovery affordances are visible | app-state or feature-shell issue |
@@ -214,7 +214,7 @@ Use this sequence when you are growing a working integration surface instead of 
 
 | Step | Add this | Keep stable while you add it | Validate before moving on |
 | --- | --- | --- | --- |
-| 1 | minimal provider shell | one `VizijAssetBundle`, one `VizijRuntimeProvider`, honest loading/ready/error states | face loads and one control path visibly works |
+| 1 | minimal provider shell | one page canvas, one `VizijRuntimeProvider` given the face's GLB, honest loading/ready/error states | face loads and one control path visibly works |
 | 2 | local interaction layer | the same provider-owned runtime shell | local hooks still respect runtime readiness and path discipline |
 | 3 | service-backed behavior | the same runtime shell plus explicit session status | runtime health and session health still read as different truths |
 | 4 | larger app-shell UI and diagnostics | the same face/runtime contract | user-facing panels explain the right layer when something fails |

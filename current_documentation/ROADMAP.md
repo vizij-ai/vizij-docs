@@ -1,6 +1,6 @@
 # Vizij Roadmap & Active Programs
 <!-- tags: family=reference; type=roadmap; topics=roadmap,strategy,planning -->
-> **Last updated:** 2026-04-02
+> **Last updated:** 2026-10-23
 
 This roadmap defines the current outward-facing Vizij system after the strategy rewrite. It organizes the work around one maintained public story instead of a loose set of repos, tutorial packs, and demos.
 
@@ -113,11 +113,12 @@ Only these items should block creator-phase completion:
 
 ### Branch structure
 
+- One renderer draws every Vizij face: the Bevy view of the vizij-rs `vizij` crate, in every vizij-web browser surface and in the desktop `vizij` binary. Its Android app, Semio Studio's use of it, and the deletion of `vizij-standalone`'s Tauri shell are the open lines of the [Bevy plan](../active_projects/runtime/bevy_everywhere/bevy_everywhere-plan.md); the [runtime summary](../active_projects/runtime/summary.md) carries their state.
 - Browser/runtime deployments and `vizij-standalone` are both first-class references in this phase.
 - Split-screen and operator-control work are part of the core deployment story now, not a side experiment.
 - Legacy `vizij-ws-app` references should not be centered in the main deployment story.
 - The deployment branch should now be read as a coherence and operator-trust problem more than a missing-runtime problem.
-- Namespacing and multi-face shared-runtime work remain visible, but as future-facing runtime expressiveness work rather than near-term deployment gates.
+- Many faces per page is delivered: each face is its own Arora device with its keys under its rig prefix, and the page's one canvas draws them all.
 
 ### Near-term work
 
@@ -130,6 +131,7 @@ Only these items should block creator-phase completion:
 ### Current anchors
 
 - [Runtime summary](../active_projects/runtime/summary.md)
+- [Bevy plan: one Bevy view for every Vizij face](../active_projects/runtime/bevy_everywhere/bevy_everywhere-plan.md)
 - [Standalone WS plan](../active_projects/runtime/standalone_ws/standalone_ws-plan.md)
 - [Multi-Screen plan](../active_projects/runtime/multi_screen/multi_screen-plan.md)
 
@@ -167,7 +169,7 @@ These programs should stay visible because they are likely next useful capabilit
 
 After the current public-system phase, the most likely next major wave is **runtime expressiveness**:
 
-- shared runtime identity and namespacing follow-on
+- a face as one more piece of a robot's device: a device holding several HALs, the face's rig among them ([ARORA-103](https://linear.app/semio-ai/issue/ARORA-103))
 - richer blackboard / orchestration capabilities
 - remaining `graph nodes` work and broader graph expressiveness
 - `behavior tree` discovery
@@ -176,8 +178,8 @@ After the current public-system phase, the most likely next major wave is **runt
 ### Keep visible, but non-competing in this phase
 
 - This lane should stay visible as the next major runtime wave, but it is still less settled than the current onboarding / creator / deployment lanes.
-- Namespacing and multi-face shared-runtime work are the clearest bridge from the current deployment/operator branch into this later-horizon work.
-- Behavior-tree work should remain explicitly exploratory until the shared-runtime, graph, and blackboard contracts are sharper.
+- A face composed into a robot's own device is the clearest bridge from the current deployment/operator branch into this later-horizon work.
+- Behavior-tree work should remain explicitly exploratory until the graph and blackboard contracts are sharper.
 - `visual handles`
 - broader creator UX depth beyond the blocking creator spine
 - deeper runtime/platform restructuring

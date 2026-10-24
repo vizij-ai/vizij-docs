@@ -1,7 +1,7 @@
 # Vizij Runtime Program Summary
 <!-- tags: family=project; type=summary; project_status=tracking; topics=runtime,wasm,standalone,protocol -->
 
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-10-23
 
 ## Goals
 
@@ -25,22 +25,19 @@ Detailed implementation truth still lives in:
 | Speech + Viseme + Conversation Enablement | `planned` | [`audio_video-proposal.md`](audio_video/audio_video-proposal.md) | — | — |
 | Multi-Screen and Operator Control | `planned` | [`multi_screen-proposal.md`](multi_screen/multi_screen-proposal.md) | [`multi_screen-plan.md`](multi_screen/multi_screen-plan.md) | — |
 | Standalone / Arora Deployment Branch | `in_progress` | — | [`standalone_ws-plan.md`](standalone_ws/standalone_ws-plan.md) | — |
-| Bevy view everywhere / retiring vizij-standalone | `proposal` | — | [`bevy_everywhere-plan.md`](bevy_everywhere/bevy_everywhere-plan.md) | sub-studies in [`bevy_everywhere/studies/`](bevy_everywhere/studies/) |
+| Bevy view everywhere / retiring vizij-standalone | `in_progress` | — | [`bevy_everywhere-plan.md`](bevy_everywhere/bevy_everywhere-plan.md) | sub-studies in [`bevy_everywhere/studies/`](bevy_everywhere/studies/) |
 
 ## Current Verified State
 
-- `vizij-rs` currently contains real workspace stacks for API, animation, node graph, orchestrator, and shared fixtures.
-- Bevy adapters exist today for API, animation, and node graph; there is no orchestrator Bevy crate in the current Rust workspace.
-- `vizij-web` currently contains real runtime surfaces including `@vizij/runtime-react`, `demo-vizij-player`, `tutorial-fullscreen-face`, `tutorial-agent-face`, `vizij-showcase`, and `vizij-standalone`.
+- **The Bevy view draws every Vizij face in vizij-web and in the desktop `vizij` binary.** `@vizij/runtime` 8 is one wasm module per page holding the vizij-rs `vizij` crate's view and each face's Arora device; `@vizij/render` 2.0.0 and `@vizij/runtime-react` 1.0.0 put every face app and the authoring app on it ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206), released by [vizij-web#207](https://github.com/vizij-ai/vizij-web/pull/207)). three.js draws no face; `three` remains only in `@vizij/render`'s GLB loader and exporter. The desktop binary ships per OS from vizij-rs's `vizij-v<version>` releases. The open lines are in the [Bevy plan](bevy_everywhere/bevy_everywhere-plan.md)'s status: retiring the web renderer (`three` out of the authoring app, [vizij-web#208](https://github.com/vizij-ai/vizij-web/pull/208), in review; the docs and tickets re-pointed, [VIZ-157](https://linear.app/semio-ai/issue/VIZ-157)), Android, Semio Studio, and deleting the Tauri standalone.
+- Each face is its own Arora device, with its keys under its rig prefix, `rig/<faceId>/`; a page shows any number of faces on its one canvas.
+- `vizij-rs` contains the `vizij` crate (the view, the face composition, the host modules, the native device and the browser module), the API and node-graph stacks, the Arora interop crates, the bundle tools and shared fixtures. A face's animations play through Arora's animation module (`@arora/animation`, from `arora-animation-module`), which vizij-rs links as a host module ([vizij-rs#261](https://github.com/vizij-ai/vizij-rs/pull/261)); vizij-rs has no animation engine of its own, and vizij-web's packages are `@vizij/render`, `@vizij/runtime-react`, `@vizij/utils`, `@vizij/node-graph-authoring`, `@vizij/node-graph-react` and `@vizij/minimal-demo-ui`.
+- `vizij-web` contains the face apps `demo-vizij-player`, `tutorial-fullscreen-face`, `tutorial-agent-face`, `vizij-showcase`, `vizij-authoring` and `vizij-standalone`, and the graph demos `demo-graph-studio` and `minimal-demo-graph`.
 - Browser/runtime deployments and `vizij-standalone` are both first-class references in the current phase.
 - Split-screen and operator-control work are part of the core deployment branch, not a side experiment.
-- Standalone/protocol work is currently spread across:
-  - `@vizij/value-json` for value serde, plus app-local WebSocket/slot protocol types in `vizij-standalone` (the retired `@vizij/arora-types` package split into these)
-  - the published arora-sdk bridge crates (`arora-bridge-ws`, `arora-bridge-ros2`); the former in-repo `arora-connection` / `arora-websocket` crates were retired in the multi-bridge migration
-  - `vizij-standalone` (now a multi-bridge host)
+- Bridges are the published arora-sdk crates (`arora-bridge-ws`, `arora-bridge-ros2`) and the Semio Studio bridge client (`arora-studio-bridge-client`), composed into the desktop `vizij` binary, whose face they reach, and into `vizij-standalone`'s Tauri shell, whose device no face shows ([Known issues](../../current_documentation/KNOWN_ISSUES.md)). A face in a browser page has no bridge. `@vizij/value-json` carries value serde across JS boundaries.
 - Older docs may still mention a former `vizij-ws-app` surface; treat that as historical rather than current runtime inventory.
 - The main remaining runtime/deployment problem is now coherence and operator trust rather than absence of real deployment surfaces.
-- Namespacing remains important, but it is a later follow-on for runtime expressiveness rather than a near-term deployment gate.
 
 ## Near-Term Focus
 
@@ -68,7 +65,7 @@ Detailed implementation truth still lives in:
 
 The later comprehensive roadmap review should decide how the next-wave runtime lines should be promoted after the current onboarding/build/deploy phase, with likely order:
 
-- shared runtime identity and namespacing
+- a face composed into a robot's own device, beside its hardware
 - richer blackboard / orchestration capabilities
 - graph-node expansion and broader graph expressiveness
 - behavior logic / behavior-tree exploration

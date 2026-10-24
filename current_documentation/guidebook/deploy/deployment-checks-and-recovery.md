@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,deploy,validation,recovery,standalone -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** define the first deployment readiness loop and the fastest recovery path for the standalone endpoint
 
 # Deployment Checks and Recovery
@@ -123,9 +123,8 @@ Treat these as different evidence, not as interchangeable strings:
 | --- | --- | --- |
 | runtime path | `rig/{faceId}/standard/vizij/left_eye/pos/x` | confirming which internal runtime path the app expects |
 | deployment slot | `standard/vizij/left_eye/pos/x` | writing values from the built-in panel or a WebSocket client |
-| observer key | `{runtime_namespace}/rig/{faceId}/standard/vizij/left_eye/pos/x` | shared-runtime inspection only |
 
-The fastest way to lose deployment confidence is to remember one of these forms and guess the others from memory.
+The fastest way to lose deployment confidence is to remember one of these forms and guess the other from memory.
 
 Copy the deployment slot from the endpoint first, then use the runtime path only to confirm the bridge is targeting the face you think it is.
 

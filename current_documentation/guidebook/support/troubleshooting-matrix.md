@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,support,troubleshooting,matrix -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** collect the common route-level failure patterns and the fastest guidebook-aligned recovery paths
 
 # Troubleshooting Matrix
@@ -33,7 +33,7 @@ This page works best after [Validation Checkpoints](validation-checkpoints.md), 
 | Route stage | Symptom | Most likely interpretation | Inspect next | Fast recovery |
 | --- | --- | --- | --- | --- |
 | Experience | face never becomes visible | asset load, dev shell, or startup state failed before teaching can even begin | app load state, terminal output, selected asset | reload the app or choose another known-good asset before reading farther |
-| Experience or Control | face renders but mouse or hotkeys do nothing | the route is visible but the control proof is missing | pointer focus, hotkey hook, face bundle pose support | retry focus and input once, then use code anchors if the teaching goal is conceptual |
+| Experience or Control | face renders but hotkeys do nothing | the route is visible but the control proof is missing | page focus, the face's `ready` status, the hotkey hook, the face's standard adaptation | retry focus and input once, then use code anchors if the teaching goal is conceptual |
 | Customize | the reader cannot tell whether they should import, rig, pose, animate, or write procedural behavior | routing failure, not merely missing detail | current authoring goal and the next-page chooser tables | return to the closest chooser page and pick one layer explicitly before editing more |
 | Customize | an authored pose, clip, or program exists but runtime behavior still does not change | export, layer choice, or runtime handoff is unclear | exported artifact, bundle/runtime handoff, chosen authoring layer | verify which layer changed, then re-test with one concrete runtime or player proof |
 | Integrate | app compiles but readiness still feels ambiguous | the shell exists but health proof is weak | loading, ready, and error surfaces; provider placement | narrow back to one visible readiness path before adding richer UI |
@@ -73,7 +73,7 @@ flowchart LR
 | Symptom | Likely cause | Where to inspect | Fast recovery |
 | --- | --- | --- | --- |
 | Face does not render | missing asset, missing WASM, wrong repo root, broken dev environment | app terminal output, app loading state, current working directory | restart the app, verify repo root, confirm asset path and WASM setup |
-| `tutorial-fullscreen-face` renders but mouse or hotkeys do nothing | pointer not over app, missing pose data, hook not active, bundle mismatch | `useMouseGaze.ts`, `usePoseHotkeys.ts`, face bundle configuration | reload the page, verify pointer focus, inspect hotkey mapping in code and continue conceptually if needed |
+| `tutorial-fullscreen-face` renders but hotkeys do nothing | page not focused, face not yet `ready` (the hotkeys bind only then), a key with no binding, a face without the standard adaptation | the key hints shown on pointer move, `useFaceHotkeys.ts`, the face's bundle | reload the page, focus it, press a key the hints list, inspect the hotkey mapping in code and continue conceptually if needed |
 | authoring route feels directionless | the reader is mixing import, rigging, pose, animation, and procedural layers | chooser tables in `Customize`, current immediate goal | route back to one explicit authoring layer and postpone the others |
 | authored export exists but a player or runtime still does not reflect it | authored layer changed, but the runtime or export handoff is unclear | export output, chosen authoring layer, runtime shell | verify the exported artifact boundary, then retest with one concrete player or runtime proof |
 | `tutorial-agent-face` will not connect | missing `VITE_GEMINI_API_KEY`, missing mic permissions, no network | app status chips, local env vars, browser permissions | treat the page as a richer example only, explain the UI states, and continue with non-live runtime concepts |

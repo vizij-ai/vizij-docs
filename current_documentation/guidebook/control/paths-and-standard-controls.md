@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,control,paths,standard-controls -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** explain the core path and standard-control vocabulary behind visible runtime behavior
 
 # Paths and Standard Controls
@@ -24,7 +24,7 @@ After this page, you should be able to read common Vizij control paths, distingu
 
 This page is for readers who have already seen a face working and now need the mental model underneath it. It is especially useful after [Hello Face Quickstart](../experience/hello-face-quickstart.md).
 
-The artifact here is the control vocabulary itself: runtime input paths, standard control paths, pose-weight paths, and speech-facing pose labels that still write through the same pose path family. These are the stable handles that let different Vizij surfaces stay aligned.
+The artifact here is the control vocabulary itself: runtime paths, the Vizij face standard's keys, and pose-weight paths. These are the stable handles that let different Vizij surfaces stay aligned.
 
 ## What You Need
 
@@ -33,7 +33,7 @@ You do not need to understand every runtime package to use this page.
 It helps if you have already:
 
 1. run `tutorial-fullscreen-face`,
-2. looked briefly at `useMouseGaze.ts` or `usePoseHotkeys.ts`,
+2. looked briefly at its `useFaceHotkeys.ts`,
 3. seen at least one face in `vizij-authoring`.
 
 ## The Core Idea
@@ -52,46 +52,50 @@ Before you read the path grammar, keep these definitions nearby:
 
 | Term | Read it as | Where it usually shows up first |
 | --- | --- | --- |
-| `path` | the runtime address a value is written to | hooks, diagnostics panels, transport clients |
-| `standard control` | a reusable control family such as gaze, jaw, or brows | mouse gaze, resolved face controls, player UIs |
-| `pose weight` | the current strength of an authored facial state | hotkeys, pose panels, authored expression blending |
-| `viseme` | a speech-facing label for mouth-oriented poses, not a separate runtime path family | speech and live-agent surfaces |
-| `slot` | a deployment-facing exposed control entry, not a synonym for every path | standalone operator control surfaces |
+| `path` | the runtime address a value is written to | hooks, diagnostics panels, bridge clients |
+| `rig prefix` | `rig/{face}/`, the prefix every key of one face lives under | `runtime.rigPrefix`, `runtime.path(...)` |
+| `standard control` | a key of the Vizij face standard, the same on every face: gaze, expressions, visemes, muscle controls | hotkeys, agent tools, player UIs |
+| `pose weight` | the current strength of an authored facial state | pose panels, authored expression blending |
+| `viseme` | a mouth shape of the face standard, `standard/vizij/viseme/<shape>` | speech and live-agent surfaces |
 
-If you need the broader distinction between `runtime path`, `deployment slot`, `controller`, `driver`, `layer`, `mode`, and `stage`, use [Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md).
+If you need the broader distinction between `runtime path`, `relative path`, `controller`, `driver`, `layer`, `mode`, and `stage`, use [Glossary and Terminology Bridge](../support/glossary-and-terminology-bridge.md).
 
-## Runtime Path Versus Deployment Slot
+## Three Forms of One Control
 
-This page teaches how the same standard control appears across four distinct
-surfaces: standard input path, runtime path, deployment slot, and observer key.
+This page teaches how the same standard control appears in three forms: the
+standard input path, the relative path, and the runtime path.
 
-Keep those surfaces separate:
+Keep those forms separate:
 
-| Surface | What you read or write | Example | Why it differs |
+| Form | What you read or write | Example | Why it differs |
 | --- | --- | --- | --- |
-| standard input path | authoring/operator slot form | `/standard/vizij/left_eye/pos/x` | canonical inner `standard namespace` form for teaching reusable rig channels |
-| runtime path | full runtime path inside the face runtime | `rig/{face}/standard/vizij/left_eye/pos/x` | includes face identity because the runtime is writing into one specific face's control tree |
-| deployment slot | short operator-facing slot discovered from the endpoint | `standard/vizij/left_eye/pos/x` | the standalone bridge resolves this external slot into the runtime path it writes internally |
-| observer key | runtime snapshot key in a shared orchestrator | `{runtime_namespace}/rig/{face}/standard/vizij/left_eye/pos/x` | advanced diagnostics can prefix the runtime path with a runtime namespace for observation |
+| standard input path | the authored form of a rig input | `/standard/vizij/left_eye/pos/x` | canonical inner `standard namespace` form, as the authoring app and a face's bundle carry rig inputs |
+| relative path | a face's own key without its rig prefix | `standard/vizij/left_eye/pos/x` | the name the face standard gives the control, the same on every face; `runtime.path()` takes it |
+| runtime path | the key in the face's device store | `rig/{face}/standard/vizij/left_eye/pos/x` | each face is an Arora device of its own, and its keys live under its rig prefix |
 
 Use `standard namespace` for the inner `/standard/{standard_namespace}/...` segment.
-Use `runtime namespace` only for the outer observer/snapshot prefix.
 
-If you are debugging the runtime itself, think in runtime paths.
+In an app, build the runtime path from the relative one with `runtime.path(...)`
+rather than by hand: `runtime.rigPrefix` is `rig/{face}/` for the face the
+runtime loaded.
 
-If you are driving `vizij-standalone`, copy the deployment slot from the
-endpoint and let the bridge map it back into the internal runtime path.
+Over a bridge, write a key as the endpoint's key list (`list_keys`) gives it: a
+bridge carries keys as they are, with no shorter alias in between. A client
+writes only the keys listed as writable: the face's free inputs, which no graph
+of its composition writes, by runtime path. A device that composes the ROS4HRI
+mapping also opens the `standard/ros4hri/*` keys, which are device-scoped and
+carry no rig prefix; the mapping writes the face's eye, lid and expression keys
+from them, so those are not free inputs there.
 
 ## Canonical Mapping Table
 
-Use this one control across all four surfaces:
+Use this one control across all three forms:
 
-| Surface | Canonical shape | Example |
+| Form | Canonical shape | Example |
 | --- | --- | --- |
 | standard input path | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `/standard/vizij/left_eye/pos/x` |
+| relative path | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | `standard/vizij/left_eye/pos/x` |
 | runtime path | `rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `rig/{face}/standard/vizij/left_eye/pos/x` |
-| deployment slot | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | `standard/vizij/left_eye/pos/x` |
-| observer key | `{runtime_namespace}/rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | `vizij-standalone/rig/{face}/standard/vizij/left_eye/pos/x` |
 
 ## Standard Control Path Shape
 
@@ -106,7 +110,25 @@ Examples:
 1. `rig/{face}/standard/vizij/left_eye/pos/x`
 2. `rig/{face}/standard/vizij/right_eye/pos/y`
 
-In practice, these paths are useful when you want reusable, face-legible controls such as gaze and other common rig channels.
+Named keys of the Vizij face standard follow the same prefix:
+
+1. `rig/{face}/standard/vizij/expression/happy`
+2. `rig/{face}/standard/vizij/gaze/target/x`
+3. `rig/{face}/standard/vizij/viseme/aa`
+
+These keys are reusable across faces: each face maps them onto its own rig,
+its rig reading some directly and its standard adaptation mapping the others
+onto its poses and inputs (Quori's rig reads the eye positions, the lids and
+`mouth/morph/jaw_open` itself). [Standard Inputs](../../concepts/deeper_exploration/STANDARD_INPUTS.md)
+lists every key of the standard with its range.
+
+The face standard's rule is one writer per key: a key one of the face's graphs
+or programs writes every step is that writer's. A face whose program moves its
+eyes writes the eye positions itself, so an app steers its gaze through the
+gaze target (`standard/vizij/gaze/target/{x,y,weight}`) rather than the eye
+positions. Where two of a face's sources do write one key (Quori's program and
+its standard adaptation both write some of its brow, lower-lid and mouth keys),
+the later write in the step wins.
 
 ## Pose Weight Path Shape
 
@@ -121,26 +143,19 @@ Examples:
 1. `rig/{face}/poses/smile.weight`
 2. `rig/{face}/poses/surprised.weight`
 
-These are useful when you want named facial states or authored expressions that can be triggered or blended.
+These are useful when you want a face's own authored poses, as a page that inspects one face's rig does (`demo-vizij-player`'s pose panel).
 
-## Speech-Facing Poses Still Use Pose Paths
+A face loaded with its standard adaptation writes its pose weights every step
+from the standard's keys, so an app that drives such a face writes the standard's
+expression and viseme keys, not the pose weights. A page that drives the pose
+weights itself loads the face without the adaptation.
 
-Speech and live-agent surfaces often talk about `visemes` and `emotions`, but those labels do not create extra runtime path segments.
+## Pose Groups Are Not Path Segments
 
-The current runtime-react contract is:
-
-1. pose groups exist to divide poses into blend groups with group-specific blending behavior,
-2. labels such as `viseme` or `emotion` may be useful for organizing those groups, but they are not the functional reason the groups exist,
-3. speech-driven poses still write through the same per-pose path family,
-3. the runtime-facing input path stays `rig/{face}/poses/{poseId}.weight`.
-
-So if a speech system drives pose id `pose_p`, the write still lands on:
-
-```text
-rig/{face}/poses/pose_p.weight
-```
-
-The group controls how subsets of poses blend. It is not part of the input path.
+Pose groups divide a face's poses into blend groups, such as visemes and
+emotions. A group controls how its poses blend; it is not part of the input
+path, which stays `rig/{face}/poses/{poseId}.weight` whatever group the pose
+belongs to.
 
 ## Internal Pose-Control Routing
 
@@ -150,40 +165,38 @@ There is one other path family worth recognizing, but it is an internal runtime 
 rig/{face}/pose/control/{inputId}
 ```
 
-Pose graphs emit these internal pose-control outputs. Runtime-react then inspects the registered rig inputs, auto-detects the matching runtime input path, and bridges the value onto the actual rig input when possible. That auto-detection prefers explicit direct rig inputs and falls back to the native `pose/control` input when needed.
+The face's pose-driver graph reads the pose weights (`poses/{poseId}.weight`) and writes one pose-control value per rig input its poses move; the rig graph reads those keys directly as inputs.
 
 ## Current Control-Family Inventory
 
-At the route level, expect two face-facing runtime path families, one internal runtime-routing family, and one external deployment alias:
+At the route level, expect two face-facing runtime path families and one internal runtime-routing family, plus the authored form of the standard inputs:
 
-| Family | Runtime shape or external alias | Best used for | Common write sources | Do not collapse it into |
+| Family | Shape | Best used for | Common write sources | Do not collapse it into |
 | --- | --- | --- | --- | --- |
-| `standard input path` | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | authoring/operator slot form for reusable standard controls | authoring docs, operator slot reasoning, mapping tables | a full runtime path |
-| `runtime path` | `rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | reusable rig-facing channels such as gaze, jaw, and brows at runtime | hooks, sliders, runtime diagnostics, procedural outputs | a pose-weight path |
-| `pose-weight path` | `rig/{face}/poses/{pose_slug}.weight` | authored named expression blending | hotkeys, pose panels, animation tracks, procedural outputs | a lower-level standard channel |
-| `internal pose-control path` | `rig/{face}/pose/control/{inputId}` | pose-graph outputs that runtime-react bridges back onto the correct rig input | compiled pose graphs, runtime bridging | a face-facing authored pose path |
-| `deployment slot` | `standard/{standard_namespace}/{channel}/{track}/{attribute}` | external operator-facing writes through `vizij-standalone` | standalone clients and web control panels | the full internal runtime path |
-| `observer key` | `{runtime_namespace}/rig/{face}/standard/{standard_namespace}/{channel}/{track}/{attribute}` | shared-runtime or orchestrator inspection only | advanced diagnostics surfaces | the string an operator client should write directly |
+| `standard input path` | `/standard/{standard_namespace}/{channel}/{track}/{attribute}` | the authored form of reusable standard controls | authoring, mapping tables | a runtime path |
+| `runtime path` (standard) | `rig/{face}/standard/{standard_namespace}/...` | the face standard's controls at runtime: gaze, expressions, visemes, muscle controls, the conversation state | apps, agent tools, bridge clients, programs, `say` and `play_viseme` | a pose-weight path |
+| `pose-weight path` | `rig/{face}/poses/{pose_slug}.weight` | a face's own authored poses | the standard adaptation, pose panels, animation tracks | a standard control |
+| `internal pose-control path` | `rig/{face}/pose/control/{inputId}` | the pose-driver graph's outputs, which the rig graph reads as inputs | the pose-driver graph | a face-facing authored pose path |
 
-Two rules keep this inventory readable:
+Three rules keep this inventory readable:
 
-1. animation tracks and procedural programs are common write sources, not separate face-facing path families by themselves,
+1. animation tracks, programs, and skills are write sources, not separate face-facing path families by themselves,
 2. pose groups define how subsets of poses blend, not separate path families or path segments,
-3. deployment slots are external aliases that the bridge maps back into internal runtime paths,
-4. observer keys belong mostly to advanced diagnostics, not broad introductory teaching.
+3. a bridge client writes only the keys its endpoint lists as writable, by the same runtime path an app uses.
 
 ## Visible Interaction vs Runtime Meaning
 
-In `Hello Face`, the mouse interaction is teaching standard control paths through eye movement.
-
-The hotkeys are teaching pose-weight paths through visible expression changes.
+In `Hello Face`, holding a key fades one of the face standard's expression
+weights, `standard/vizij/expression/<name>`, up and back down, and a viseme key
+calls the face's `play_viseme` method, which plays one mouth shape through the
+face's lipsync envelope.
 
 That difference matters:
 
-1. a standard path often represents a reusable channel like eye position,
-2. a pose-weight path represents the strength of a named authored pose,
-3. speech systems still stage pose weights, even when those poses belong to groups with different blend behavior,
-4. both are runtime writes, but they describe different kinds of behavior.
+1. an expression key is a standard control the app writes directly,
+2. a viseme is played through a method, which writes the standard's viseme keys itself,
+3. the face's standard adaptation turns both into the face's own pose weights,
+4. both are runtime behavior, but they reach the face through different doors.
 
 ## Where These Paths Show Up
 
@@ -191,14 +204,14 @@ You will see these ideas repeated across Vizij:
 
 1. in `tutorial-fullscreen-face` runtime hooks,
 2. in `vizij-authoring` when inspecting or organizing controls,
-3. in player and deployment surfaces that send or receive typed values,
-4. in operator and deployment surfaces where the face must be controlled predictably.
+3. in player panels that read and write a face's keys,
+4. in bridge clients that drive a face from outside the page.
 
 ## Good Questions To Ask When Reading a Path
 
 1. Is this path meant to be standard and reusable across faces?
 2. Is this a named pose or a lower-level continuous control?
-3. If this is speech-related, is it still writing a canonical pose-weight path while the pose groups continue to define blend behavior separately?
+3. Does one of the face's graphs or programs already write it every step?
 4. Would this path make sense to expose in a simple UI, or is it more diagnostic or advanced?
 
 ## Current Useful Visual
@@ -212,38 +225,35 @@ flowchart LR
     classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
     classDef note fill:#f4f5f7,stroke:#6b7280,stroke-width:1.2px
 
-    std["Runtime path\nrig/{faceId}/standard/{standard_namespace}/{channel}/{track}/{attribute}"]
+    std["Runtime path\nrig/{faceId}/standard/{standard_namespace}/..."]
     pose["Pose-weight runtime path\nrig/{faceId}/poses/{poseSlug}.weight"]
-    speech["Hotkeys, speech systems, and pose UIs\nstill write canonical pose-weight paths"]
-    note["Read the semantic family first:\nstandard = reusable rig channel\nposes = named authored state"]
+    adapt["The face's standard adaptation\nmaps the standard onto its poses"]
+    note["Read the semantic family first:\nstandard = the same control on every face\nposes = this face's authored state"]
 
-    speech --> pose
-    std -. compare with .-> pose
+    std --> adapt --> pose
     note -. use this question when reading any path .-> std
 
     class std,pose runtime
-    class note,speech note
+    class note,adapt note
 ```
 
-### Deployment Slot Mapping
+### From Relative Path To Runtime Path
 
 ```mermaid
 flowchart LR
     classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
-    classDef deploy fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
+    classDef app fill:#eef4ff,stroke:#4e79a7,stroke-width:1.5px
 
-    slot["Deployment slot\nstandard/{standard_namespace}/{channel}/{track}/{attribute}"] --> bridge["Standalone bridge\nrestores rig/{faceId}/... internally"] --> std["Runtime path\nrig/{faceId}/standard/{standard_namespace}/{channel}/{track}/{attribute}"]
+    rel["Relative path\nstandard/vizij/expression/happy"] --> path["runtime.path(...)\nprepends rig/{faceId}/"] --> std["Runtime path\nrig/{faceId}/standard/vizij/expression/happy"]
 
-    class slot,bridge deploy
+    class rel,path app
     class std runtime
 ```
 
-The best wave-1 visual is still the existing `tutorial-fullscreen-face` screenshot plus the code in:
+The clearest current proof surface for this path vocabulary is the
+`tutorial-fullscreen-face` app and its hook:
 
-1. `apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
-2. `apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
-
-Those anchors remain the clearest current proof surface for this path vocabulary.
+1. `apps/tutorial-fullscreen-face/src/hooks/useFaceHotkeys.ts`
 
 ## Success Check
 
@@ -251,21 +261,21 @@ You are done with this page when:
 
 1. you can read a standard control path and say what kind of behavior it targets,
 2. you can read a pose-weight path and say how it differs,
-3. you can explain why mouse gaze and pose hotkeys are not the same kind of control.
+3. you can turn a relative path into the runtime path of one face,
+4. you can explain why an expression key and a viseme reach the face through different doors.
 
 ## Implementation Anchors
 
 Use these when you need the current implementation truth:
 
-1. `vizij-web/packages/@vizij/runtime-react/src/utils/posePaths.ts`
-2. `vizij-web/packages/@vizij/runtime-react/src/utils/faceControls.ts`
-3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
-4. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/usePoseHotkeys.ts`
-5. `vizij-web/packages/@vizij/runtime-react/README.md`
+1. `vizij-web/packages/@vizij/runtime-react/README.md`
+2. `vizij-web/packages/@vizij/runtime-react/DESIGN-1.0.md`, section 4: every intent and its key or method
+3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useFaceHotkeys.ts`
+4. `vizij-rs/docs/face-standard.md`: every key of the Vizij face standard
 
 ## Recommended Next Steps
 
 1. If you want the smallest runtime shell after understanding the path model, read [Minimal Web Player](../integrate/minimal-web-player.md).
 2. If you want to understand how runtime meaning changes by control family, continue to [Runtime Inputs and Semantics](runtime-inputs-and-semantics.md).
 3. If you want to make the face your own instead, branch later into the `Customize` bucket.
-4. If you are already thinking about operator-facing slots, jump to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+4. If you are already thinking about driving a face from outside the page, jump to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).

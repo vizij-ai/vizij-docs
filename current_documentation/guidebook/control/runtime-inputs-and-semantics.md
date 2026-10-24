@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=live; topics=guidebook,control,inputs,semantics -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** explain what runtime inputs mean, where they are written, and how visible face behavior maps to runtime semantics
 
 # Runtime Inputs and Semantics
@@ -24,7 +24,7 @@ After this page, you should be able to explain what a Vizij runtime input is, ho
 
 This page is for readers who already understand the basic path vocabulary from [Paths and Standard Controls](paths-and-standard-controls.md) and now need the next layer of runtime reasoning.
 
-The artifact here is not a single app screen. It is the runtime contract that multiple Vizij surfaces rely on: typed paths, typed values, staged runtime inputs, blackboard reads and writes, and output paths that can later be observed or rendered.
+The artifact here is not a single app screen. It is the runtime contract that multiple Vizij surfaces rely on: typed paths, typed values, the face's store, and the graphs, programs and modules that read and write it before the view draws the result.
 
 ## What You Need
 
@@ -38,10 +38,10 @@ It helps if you have already:
 
 Visible face behavior is usually the end of a longer chain:
 
-1. an app or hook decides to set an input,
-2. the input is staged under a path,
-3. graphs and animations read and write values against the shared runtime state,
-4. the renderer receives the resulting animatable values,
+1. an app, a hook, or a bridge client writes a key of the face's store, or calls one of the face's methods,
+2. the face's device steps: its composed graph, its programs and skills, and its animation module read and write values in the store,
+3. the rig holds the face's resulting pose,
+4. the view draws that pose,
 5. the user sees a face change.
 
 That is why the same visual behavior can show up in multiple apps. The UI is not the whole story. The runtime meaning is more stable than the surface.
@@ -59,19 +59,19 @@ The important parts are:
 In the architecture and concepts references, this is the `TypedPath` plus
 `Value` plus `Shape` contract.
 
-That contract matters because Vizij does not want a control system that only works inside one UI. Inputs have to survive movement across apps, bundles, runtime controllers, and deployment surfaces.
+That contract matters because Vizij does not want a control system that only works inside one UI. Inputs have to survive movement across apps, bundles, bridges, and deployment surfaces.
 
-## Staging, Reading, and Writing
+## Writing, Stepping, and Drawing
 
-The runtime is designed so inputs are staged first and then consumed during the runtime step.
+A write lands in the face's store at once, and the device's next step carries it to the face.
 
 At a high level:
 
-1. the app stages a value,
-2. the orchestrator advances a frame,
-3. graphs and animations evaluate against the current state,
-4. output values are merged deterministically,
-5. the renderer applies the resulting values.
+1. the app writes a key (`runtime.setValue`, `writeValues`, a tween from `useAnimateValue`) or calls a method (`runtime.invoke`),
+2. the device steps, once per animation frame under `VizijRuntimeProvider`,
+3. the composed graph evaluates against the store, and the runs and modules beside it advance,
+4. each key holds the last value written to it in the step,
+5. the view draws the pose the rig holds.
 
 This is different from directly mutating a scene or attaching view-only state to a slider. Vizij is intentionally closer to a runtime control pipeline.
 
@@ -81,19 +81,19 @@ This is different from directly mutating a scene or attaching view-only state to
 
 | Category | Meaning | Encountered In |
 | :--- | :--- | :--- |
-| **Standard** | Reusable rig channels (Gaze) | `Hello Face` / `useMouseGaze` |
-| **Poses** | Authored expressions | `Hello Face` / `usePoseHotkeys` |
-| **Speech-timed poses** | Speech-driven pose weights that still use canonical pose paths | `Agent Face` / `STT` |
+| **Standard** | The face standard's keys: gaze, expressions, visemes | `Hello Face` / `useFaceHotkeys` |
+| **Poses** | A face's own authored poses | `Player` / pose panel |
+| **Visemes** | Mouth shapes that `say` and `play_viseme` write on the standard's viseme keys | `Agent Face` / `Hello Face` |
 | **Animations** | Time-based motion | `Authoring` / `Player` |
-| **Outputs** | Derived runtime values | `Player` / `Diagnostics` |
+| **Outputs** | Keys a graph or program writes every step | `Player` / `Diagnostics` |
 
 The most useful categories for guidebook readers are:
 
-1. standard controls, which expose reusable channels such as gaze or shared rig movement,
-2. pose weights, which expose named authored states,
-3. speech-timed pose driving, which still stages pose weights even when authoring groups those poses for different blend behavior,
-4. animation controls, which drive authored time-based motion,
-5. renderer outputs, which can be observed for UI, diagnostics, or logging.
+1. standard controls, the face standard's keys, the same on every face,
+2. pose weights, which expose a face's named authored states,
+3. visemes, which the face's `say` and `play_viseme` methods write over time,
+4. animation controls, which drive authored time-based motion through the face's animation module,
+5. outputs, keys a graph or program writes, which can be read for UI, diagnostics, or logging.
 
 These categories can all show up as paths, but they do not mean the same thing.
 
@@ -103,12 +103,12 @@ Use this chooser before you start wiring a control or debugging a write:
 
 | If you are trying to... | Likely semantic family | Why | Best next page |
 | --- | --- | --- | --- |
-| steer a reusable eye, brow, jaw, or similar channel | standard control | you are driving a reusable rig-facing channel directly | [Paths and Standard Controls](paths-and-standard-controls.md) |
-| blend a named facial state such as `smile` | pose weight | you are changing the strength of an authored expression | [Poses](../customize/poses.md) |
-| play or inspect motion over time | animation control | the main question is clip transport, timing, or playback | [Animations](../customize/animations.md) |
-| drive speech-shaped mouth motion | speech-timed pose weight | the speech layer still writes a canonical pose-weight path, while pose groups continue to define how subsets of poses blend | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md) |
-| inspect what the runtime resolved after evaluation | output path | you are validating the result of orchestration, not only the staged input | [Orchestration and Diagnostics](orchestration-and-diagnostics.md) |
-| expose operator control through a deployment endpoint | deployment slot over runtime input | the client sees a deployment slot, but the runtime still resolves it into the same typed input semantics underneath | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) |
+| steer the gaze or show an expression | standard control | you are writing a key of the face standard, which each face maps onto its own rig | [Paths and Standard Controls](paths-and-standard-controls.md) |
+| blend a named facial state such as `smile` | pose weight | you are changing the strength of one face's authored pose | [Poses](../customize/poses.md) |
+| play or inspect motion over time | animation control | the main question is animation transport, timing, or playback | [Animations](../customize/animations.md) |
+| drive speech-shaped mouth motion | viseme | the face's `say` and `play_viseme` methods write the face standard's viseme keys, which the face's standard adaptation maps onto its own mouth poses | [Animation, Integration, and Deployment Reference](../reference/animation-integration-and-deployment-reference.md) |
+| inspect what the runtime resolved after a step | output | you are validating what the face's graphs and programs wrote, not only what you wrote | [Orchestration and Diagnostics](orchestration-and-diagnostics.md) |
+| expose operator control through a deployment endpoint | bridge-written key | a client writes only the keys the endpoint lists as writable: the face's free inputs, by runtime path, and, where the ROS4HRI mapping is composed, the device-scoped `standard/ros4hri/*` keys | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) |
 
 ## Why Semantics Matter More Than UI Labels
 
@@ -116,9 +116,9 @@ Two controls can look similar in a UI and still represent different semantics.
 
 For example:
 
-1. a slider that writes `rig/{face}/standard/vizij/left_eye/pos/x` is steering a reusable rig channel,
-2. a slider that writes `rig/{face}/poses/smile.weight` is blending a named authored state,
-3. a speech-driven system may still write `rig/{face}/poses/{poseId}.weight` without the user touching a control at all.
+1. a slider that writes `rig/{face}/standard/vizij/expression/happy` commands an expression of the face standard, which any face maps onto its own poses,
+2. a slider that writes `rig/{face}/poses/smile.weight` is blending one face's authored pose,
+3. a `say` run writes `rig/{face}/standard/vizij/viseme/{shape}` over time without the user touching a control at all.
 
 The visible widget is just a surface. The runtime meaning is the important teaching target.
 
@@ -128,18 +128,12 @@ Pose groups matter here because they determine how different subsets of poses bl
 
 You can already see the semantic layers in the maintained apps:
 
-1. `tutorial-fullscreen-face` stages gaze and pose inputs through tutorial hooks,
-2. `tutorial-agent-face` layers conversation-driven viseme and expression behavior on top of the same runtime concepts,
-3. `demo-vizij-player` exposes loading state, controllers, and output paths in a more application-like shell,
-4. `vizij-standalone` maps externally driven values into deployment-facing control slots.
+1. `tutorial-fullscreen-face` fades the face standard's expression keys and plays visemes from its hotkeys,
+2. `tutorial-agent-face` layers the conversation state, the gaze target, expressions and visemes from a live agent on top of the same runtime concepts,
+3. `demo-vizij-player` exposes loading state, the face's rig inputs, poses, animations, programs and keys in a more application-like shell,
+4. the native `vizij` binary exposes a face's free inputs to bridge clients.
 
-Those apps are different surfaces, but the runtime language underneath them is continuous.
-
-That continuity is the main reason the guidebook keeps separating runtime meaning from surface labels:
-
-1. a deployment client may discover and write slot names such as `standard/vizij/left_eye/pos/x`,
-2. the standalone bridge then resolves those names into runtime paths such as `rig/{faceId}/standard/vizij/left_eye/pos/x`,
-3. the underlying semantic family is still "standard control" even though the operator surface does not expose the full runtime path directly.
+Those apps are different surfaces, but the runtime language underneath them is continuous: a hook, an agent tool, and a bridge client all address a face's keys by runtime path.
 
 ## A Useful Mental Model
 
@@ -151,7 +145,7 @@ That question usually clarifies whether the reader is dealing with:
 
 1. a user input,
 2. an authored pose or animation,
-3. a derived controller output,
+3. a graph's or program's output,
 4. a deployment-facing control signal.
 
 ## Current Useful Diagram
@@ -167,19 +161,19 @@ flowchart LR
 
     hook["App hook or UI event"]
     speech["Speech or agent behavior"]
-    operator["Deployment client or discovered slot"]
-    authored["Animation or procedural controller"]
-    staged["Staged input\npath + value + shape"]
-    orch["Orchestrator step"]
+    operator["Bridge client\n(the keys the endpoint lists)"]
+    authored["Animation or program"]
+    store["The face's store\npath + value + shape"]
+    step["The device's step"]
 
-    hook --> staged
-    speech --> staged
-    operator --> staged
-    authored --> orch
-    staged --> orch
+    hook --> store
+    speech --> store
+    operator --> store
+    authored --> step
+    store --> step
 
     class hook,speech,operator,authored source
-    class staged,orch runtime
+    class store,step runtime
 ```
 
 ### Runtime Resolution And Observation
@@ -191,33 +185,30 @@ flowchart TB
     classDef runtime fill:#eef7ee,stroke:#2f855a,stroke-width:1.5px
     classDef observe fill:#fdf1f3,stroke:#c05670,stroke-width:1.5px
 
-    orch["Orchestrator step"]
-    board["Blackboard\nshared typed state"]
-    merged["Merged output writes"]
-    render["Renderer applies resolved values"]
-    diag["Diagnostics\noutputPaths, frame data, target snapshots"]
+    step["The device's step"]
+    board["The store\nshared typed state"]
+    outputs["Graph and program outputs"]
+    view["The view draws the rig's pose"]
+    diag["Diagnostics\nreadValues, listKeys, run status"]
     face["Visible face behavior"]
 
-    orch --> board --> merged
-    merged --> render --> face
-    merged --> diag
+    step --> board --> outputs
+    outputs --> view --> face
+    outputs --> diag
     board --> diag
 
-    class orch,board,merged runtime
-    class render,diag,face observe
+    class step,board,outputs runtime
+    class view,diag,face observe
 ```
 
-The screenshot shows the "ready" state where the face is active and responding to standard control writes.
-
-Until then, the cross-repo architecture doc and the concepts reference guide
-are the best current textual bridges.
+The cross-repo architecture doc and the concepts reference guide are the best current textual bridges.
 
 ## Success Check
 
 You are done with this page when:
 
 1. you can explain why runtime inputs are more stable than any one UI,
-2. you can distinguish staged inputs from rendered outputs,
+2. you can distinguish the keys you write from the keys the face's graphs and programs write,
 3. you can describe how standard controls, poses, visemes, and animation-related values differ semantically.
 
 ## Implementation Anchors
@@ -226,9 +217,9 @@ Use these when you need the current implementation truth:
 
 1. `current_documentation/concepts/REFERENCE_GUIDE.md`
 2. `vizij-web/packages/@vizij/runtime-react/README.md`
-3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useMouseGaze.ts`
+3. `vizij-web/apps/tutorial-fullscreen-face/src/hooks/useFaceHotkeys.ts`
 4. `vizij-web/apps/tutorial-agent-face/src/FaceApp.tsx`
-5. `vizij-web/apps/vizij-standalone/src/hooks/useWebSocketSync.ts`
+5. `vizij-web/packages/@vizij/runtime-react/DESIGN-1.0.md`, section 4: every intent and its key or method
 
 ## Recommended Next Steps
 

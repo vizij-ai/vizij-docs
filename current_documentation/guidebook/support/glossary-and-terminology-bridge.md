@@ -1,6 +1,6 @@
 <!-- tags: family=guidebook; type=guidebook-module; editorial_status=completed; publication_status=planned; topics=guidebook,support,glossary,terminology -->
 
-> **Last updated:** 2026-03-31
+> **Last updated:** 2026-10-23
 > **Purpose:** give readers a route-level terminology seam so the same Vizij artifact can be described correctly across authoring, runtime, integration, and deployment pages
 
 # Glossary and Terminology Bridge
@@ -47,9 +47,9 @@ Use this table first when the same artifact seems to get renamed as you move thr
 | If you are thinking about... | `Customize` or asset view | `Control` or runtime view | `Integrate` or app view | `Deploy` or operator view |
 | --- | --- | --- | --- | --- |
 | the main thing itself | face artifact | runtime-controlled face | embedded face surface | deployed endpoint carrying a face |
-| the authored package around it | authored artifact bundle | runtime bundle inputs and controllers | `VizijAssetBundle` or runtime bundle | loaded face plus exposed operator control surface |
+| the authored package around it | authored artifact bundle | the face's composed graphs, programs and animations | the GLB handed to `VizijRuntimeProvider` | loaded face plus exposed operator control surface |
 | making it move now | authored capability | runtime control | playback inside an app shell | operator-driven or client-driven control |
-| where values go | authored rig and behavior definitions | paths, values, shapes, blackboard writes | provider and face component lifecycle | slots and typed values exposed to clients |
+| where values go | authored rig and behavior definitions | paths, values, shapes, blackboard writes | provider and face component lifecycle | keys and typed values exposed to clients |
 | whether it is usable yet | export succeeded | inputs can stage and render | loading, ready, error states are honest | runtime ready, client connected, face responds |
 
 One sentence to keep in mind:
@@ -58,19 +58,19 @@ One sentence to keep in mind:
 
 ## Path Contract Cheat Sheet
 
-These three strings often point at the same control target, but they are not interchangeable names for the same thing:
+These two strings point at the same control target, but they are not interchangeable:
 
 | If you are looking at... | Example | Trust it for | Do not collapse it into |
 | --- | --- | --- | --- |
-| runtime path | `rig/{face}/standard/vizij/left_eye/pos/x` | runtime writes, helper calls, and control reasoning | an operator-facing slot string |
-| deployment slot | `standard/vizij/left_eye/pos/x` | discovered external control writes in `vizij-standalone` | the full internal runtime path |
-| observer key | `{runtime_namespace}/rig/{face}/standard/vizij/left_eye/pos/x` | shared-runtime or orchestrator inspection | the string an operator client should write directly |
+| runtime path | `rig/{face}/standard/vizij/left_eye/pos/x` | the key in the face's store: app writes, diagnostics, and a bridge client's writes to the keys its endpoint lists as writable | a name that holds on every face |
+| relative path | `standard/vizij/left_eye/pos/x` | the name the face standard gives the control, the same on every face; what `runtime.path(...)` takes | a key you can write as is |
 
 Read them in this order:
 
-1. `runtime path` when you are reasoning about the live face runtime itself,
-2. `deployment slot` when you are writing through an operator-facing endpoint,
-3. `observer key` when you are inspecting a shared runtime or orchestrator snapshot.
+1. `relative path` when you are naming a control of the face standard,
+2. `runtime path` when you are writing or inspecting one face's key, from an app or over a bridge.
+
+[Paths and Standard Controls](../control/paths-and-standard-controls.md) owns the full set of forms, including the authored `/standard/vizij/...` form.
 
 ## The Core Bridge Terms
 
@@ -80,10 +80,10 @@ Use this quick-reference block when a guidebook term and an implementation term 
 | --- | --- | --- | --- |
 | `face artifact` | GLB, bundled GLB, loaded asset | the face asset and authored data that later surfaces can load | `vizij-authoring` export flow |
 | `authored artifact bundle` | export bundle, bundled GLB, GraphSpec + IR + assets | the package authoring produces for runtime consumers | `vizij-authoring` |
-| `runtime bundle` | `VizijAssetBundle`, `assetBundle`, resolved bundle | the app-facing runtime payload handed to `VizijRuntimeProvider` | `@vizij/runtime-react` |
-| `runtime control` | `setInput(...)`, `animateValue(...)`, clip/program transport | live writes and playback happening right now | runtime-react apps |
+| `runtime bundle` | the face GLB and its `VIZIJ_bundle`, `describe(glb)` | the face the app hands to `VizijRuntimeProvider` (`glb`), which loads it as a device | `@vizij/runtime-react` |
+| `runtime control` | `runtime.setValue(...)`, `animateValue(...)`, `runtime.invoke(...)` for methods, programs and animations | live writes and playback happening right now | runtime-react apps |
 | `application integration surface` | provider tree, face component, diagnostics shell | the app shell that hosts the face as part of a broader UI | `tutorial-fullscreen-face`, `demo-vizij-player`, `tutorial-agent-face` |
-| `deployment surface` | WebSocket endpoint, web control panel, slots | an operator-facing endpoint with exposed control and recoverable health | `vizij-standalone` |
+| `deployment surface` | WebSocket endpoint, web control panel, keys | an operator-facing endpoint with exposed control and recoverable health | `vizij-standalone` |
 
 The terms below are the ones most likely to save you from crossing buckets incorrectly.
 
@@ -103,7 +103,7 @@ Use this term when you want to talk about the face itself without accidentally m
 
 ### Runtime Bundle / Authored Artifact Bundle
 
-In current guidebook pages, the implementation-facing term you will usually see is `runtime bundle`, including `VizijAssetBundle` in the React integration layer.
+In current guidebook pages, the implementation-facing term you will usually see is `runtime bundle`: the `VIZIJ_bundle` a face GLB carries, which the React integration layer receives as the provider's `glb` and reads with `describe(glb)`.
 
 For route-level teaching, it is also useful to think of this as the `authored artifact bundle`: the face artifact plus the authored runtime information needed to load it honestly.
 
@@ -133,7 +133,7 @@ An `application integration surface` is the app shell that hosts a face as part 
 In the current guidebook, that usually means:
 
 1. a provider that boots the runtime,
-2. a face component or visible rendering surface,
+2. the page's one canvas (`<VizijCanvas>`) and the face's slot on it (`VizijRuntimeFace`),
 3. loading, ready, and error states,
 4. optional hooks, controls, or app logic layered on top.
 
@@ -178,15 +178,19 @@ This matters across buckets because paths let:
 
 1. authored controls stay addressable,
 2. runtime inputs stay stable across apps,
-3. deployment-facing slots map to meaningful control targets.
+3. a client outside the page writes the same keys an app does.
 
 When a guidebook page says `path`, read it as "stable semantic address," not as an arbitrary string label.
 
 ### Runtime Path
 
-Use `runtime path` when the string includes the face-scoped runtime address, usually `rig/{face}/...`.
+Use `runtime path` when the string includes the face's rig prefix, `rig/{face}/...`: it is the key in the face's store.
 
-This is the form used by `setInput(...)`, `animateValue(...)`, and most runtime-control reasoning in the guidebook.
+This is the form `runtime.setValue(...)` and `animateValue(...)` write, built in an app with `runtime.path(...)`, the form in which a bridge lists a face's keys, and the form most runtime-control reasoning in the guidebook uses. A bridge client writes only the keys listed as writable, the face's free inputs; a device-scoped profile's keys, such as ROS4HRI's `standard/ros4hri/*`, carry no rig prefix.
+
+### Relative Path
+
+Use `relative path` for a face's key without its rig prefix, such as `standard/vizij/expression/happy`: the name the face standard gives a control, the same on every face. `runtime.path(relative)` turns it into one face's runtime path.
 
 ### Value
 
@@ -236,23 +240,21 @@ At the route level, a `control family` means the kind of target being written, n
 
 The current guidebook-level families are:
 
-1. `standard control paths` for reusable rig-facing channels such as gaze, jaw, or brows,
+1. `standard control paths` for the Vizij face standard's keys: gaze, expressions, visemes, muscle controls, the conversation state,
 2. `pose-weight paths` for named authored facial states,
-3. `speech-timed pose driving` for speech systems that still stage canonical pose weights,
-4. `internal pose-control paths` for pose-graph routing inside the runtime,
-5. `deployment slots` for external operator-facing aliases that map back into one of the internal runtime families above.
+3. `internal pose-control paths` for pose-graph routing inside the runtime.
 
-Animation tracks, procedural programs, runtime hooks, and operator clients are common write sources. They usually target one of the internal control families rather than introducing a separate fourth runtime-path grammar.
+Animation tracks, programs, skills such as `say`, runtime hooks, and bridge clients are common write sources. They target one of these families rather than introducing a separate runtime-path grammar.
 
 ### Standard Control Path
 
-A `standard control path` is a reusable rig-facing control channel, such as the standard gaze channels introduced in [Paths and Standard Controls](../control/paths-and-standard-controls.md).
+A `standard control path` is a key of the Vizij face standard, such as the gaze and expression keys introduced in [Paths and Standard Controls](../control/paths-and-standard-controls.md).
 
 Use this term when the control is:
 
-1. lower-level than a named authored expression,
-2. reusable across faces in a normalized way,
-3. best understood as a controllable rig channel.
+1. named the same on every face,
+2. mapped onto each face's own rig by its standard adaptation,
+3. what an app or a bridge client commands the face through.
 
 ### Pose-Weight Path
 
@@ -264,17 +266,11 @@ Use this term when the question is "how much of this authored facial state is ac
 
 This distinction matters because a slider that changes a reusable rig channel and a slider that blends `smile.weight` may look similar in a UI while meaning different things in the runtime.
 
-### Viseme Label
+### Viseme
 
-A `viseme` is a speech-facing label people often use for mouth-oriented poses, not a separate runtime path family.
+A `viseme` is a mouth shape of the Vizij face standard, one weight per shape at `standard/vizij/viseme/<shape>`.
 
-In the current runtime-react contract:
-
-1. pose groups exist so subsets of poses can blend with group-specific behavior,
-2. the runtime still writes any driven pose on the canonical pose-weight path,
-3. the group name is not part of the input path itself.
-
-Use this term when the face behavior is speech-shaped rather than generic expression control, but keep the path model clear: the write still lands on `rig/{face}/poses/{poseId}.weight`, and the group still exists to define blend behavior rather than path syntax.
+The face's `say` and `play_viseme` methods write those keys themselves, through the face's lipsync envelope, and the face's standard adaptation maps them onto its own mouth poses. A face's pose groups, such as its visemes, define how its poses blend; a group name is not part of any input path.
 
 ### Internal Pose-Control Path
 
@@ -284,7 +280,7 @@ An `internal pose-control path` is the runtime-internal path family used by comp
 
 Use this term when you are explaining how pose-graph outputs are routed inside the runtime.
 
-Do not use it as the default learner-facing path for authored expressions. Runtime-react auto-detects the matching rig input and bridges these internal outputs onto the actual rig input path when possible.
+Do not use it as the default learner-facing path for authored expressions. The face's pose-driver graph reads the pose weights and writes these values, one per rig input its poses move, and the rig graph reads them directly as inputs.
 
 ### Loading
 
@@ -324,23 +320,17 @@ This word belongs to `Integrate`, not to `Deploy`.
 
 ### Slot
 
-`Slot` is one of the easiest words to misread, so keep its route-level meaning narrow.
+`Slot` is one of the easiest words to misread, so keep its meaning narrow.
 
-In the deployment pages, a slot is the deployment-facing exposed controllable entry that a client can discover and write through the operator path.
+A face's slot is the page element it draws over: `<Vizij>` from `@vizij/render`, or `VizijRuntimeFace` bound to a provider. It is a `<div>` the page's one canvas places the face over, not a canvas of its own.
 
-That is the meaning this bridge page cares about.
+What a client writes over an Arora bridge is a key, not a slot: one of the keys the endpoint lists as writable (`list_keys`), by its runtime path. The `Deploy` pages' `deployment slot` names the standalone endpoint's controllable entries; [VIZ-156](https://linear.app/semio-ai/issue/VIZ-156) rewrites those pages.
 
-This page does not try to unify every other implementation-specific use of `slot`, especially deeper authoring internals. If you are reading deployment guidance, think `exposed controllable path/value entry`, not "every slot concept in the repo."
-
-### Observer Key
-
-Use this term when a shared runtime or orchestrator snapshot prefixes a runtime path with a runtime namespace, such as `{runtime_namespace}/rig/{face}/...`.
-
-This is a diagnostics form, not the string an operator client should memorize or write.
+This page does not try to unify every other implementation-specific use of `slot`, especially deeper authoring internals.
 
 ### Merge Policy
 
-Use `merge policy` when multiple controllers can write the same target path and the runtime must decide what survives.
+Use `merge policy` for what survives when more than one writer targets the same key. The face standard's rule is one writer per key: a key one of the face's graphs or programs writes every step is that writer's. Where two of a face's sources do write one key, the later write in the step wins ([VIZ-58](https://linear.app/semio-ai/issue/VIZ-58) tracks an explicit combiner), and `holdKeys` keeps a client's write against the face's own writers.
 
 This belongs to runtime-execution language, not to basic authoring terminology.
 
@@ -385,7 +375,7 @@ When precision matters, prefer `runtime control`, `standard control path`, `pose
 
 `Slot` should not be used as a generic synonym for any configurable thing.
 
-In the route-level deployment story, it means a deployment-facing exposed control entry. If you mean a deeper authoring or binding concept, say that directly instead of relying on the word `slot` alone.
+It means the page element a face draws over. Over a bridge, say `key`. If you mean a deeper authoring or binding concept, say that directly instead of relying on the word `slot` alone.
 
 ### `Loading`
 
@@ -421,7 +411,7 @@ Route back into the guidebook with this table instead of reopening the whole buc
 | path syntax, pose weights, speech-driven pose writes, or runtime values | [Paths and Standard Controls](../control/paths-and-standard-controls.md) | names the runtime address grammar behind visible control behavior |
 | runtime readiness, loading, playback, or embedding boundaries | [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md) | separates asset loading, runtime state, and app ownership clearly |
 | advanced app-state versus session-state confusion | [API-Backed Interactive Application](../integrate/api-backed-interactive-application.md) | distinguishes runtime health from external-session health |
-| operator endpoints, slots, and exposed control surfaces | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) | grounds deployment terms in the current standalone endpoint |
+| operator endpoints, keys, and exposed control surfaces | [Operator and Deployment Model](../deploy/operator-and-deployment-model.md) | grounds deployment terms in the current standalone endpoint |
 | whether the system is healthy enough to trust | [Validation Checkpoints](validation-checkpoints.md) | turns vague status language into explicit pass/fail signals |
 | failure symptoms and next recovery moves | [Troubleshooting Matrix](troubleshooting-matrix.md) | maps symptom language back to the maintained recovery route |
 
@@ -432,7 +422,7 @@ You are done with this page when:
 1. you can explain the same face as artifact, runtime-controlled surface, application surface, and deployment surface without collapsing those layers,
 2. you can distinguish standard control paths, pose-weight paths, and speech-driven pose writes without inventing an extra viseme path family,
 3. you can explain the difference between loading, playback, and embedding,
-4. you can say what `slot` means in the deployment route without overgeneralizing it,
+4. you can say what `slot` means (the page element a face draws over) and what a bridge client writes instead (a key),
 5. you know which deeper guidebook page to open next when a term still needs bucket-specific detail.
 
 ## Implementation Anchors
@@ -442,7 +432,7 @@ Use these when you need the current implementation truth behind this bridge:
 1. `vizij-web/apps/vizij-authoring/README.md`
 2. `vizij-web/apps/vizij-authoring/docs/ARCHITECTURE.md`
 3. `vizij-web/packages/@vizij/runtime-react/README.md`
-4. `vizij-web/packages/@vizij/runtime-react/src/utils/posePaths.ts`
+4. `vizij-web/packages/@vizij/runtime-react/DESIGN-1.0.md`
 5. `vizij-web/apps/tutorial-fullscreen-face/tutorial.md`
 6. `vizij-web/apps/vizij-standalone/README.md`
 7. `vizij-web/apps/vizij-standalone/src-tauri/src/lib.rs`
@@ -452,4 +442,4 @@ Use these when you need the current implementation truth behind this bridge:
 
 1. If your main confusion is about runtime meaning, continue to [Runtime Inputs and Semantics](../control/runtime-inputs-and-semantics.md).
 2. If your main confusion is about app lifecycle language, continue to [Loading, Playback, and Embedding](../integrate/loading-playback-and-embedding.md).
-3. If your main confusion is about operator language and slots, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
+3. If your main confusion is about operator language and keys, continue to [Operator and Deployment Model](../deploy/operator-and-deployment-model.md).
