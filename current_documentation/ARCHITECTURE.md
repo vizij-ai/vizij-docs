@@ -1,6 +1,6 @@
 <!-- tags: family=reference; type=architecture; topics=architecture,repo-map,contracts,deployment -->
 > **Audience:** Contributors who need the current cross-repo technical map
-> **Last updated:** 2026-10-23
+> **Last updated:** 2026-10-29
 
 # Vizij Cross-Repo Technical Architecture
 
@@ -31,7 +31,7 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 
 | Repo or surface | Architectural role | Key contracts or outputs |
 | --- | --- | --- |
-| `vizij-rs` | Runtime core and the face's view | `Value`, `Shape`, `TypedPath`, graph evaluation, the Arora device interop, the Bevy view, the `vizij` binary, wasm wrappers, fixtures |
+| `vizij-rs` | Runtime core and the face's view | `Value`, `Shape`, `TypedPath`, the node-graph format and its loading onto Arora's behavior tree, the Arora device interop, the Bevy view, the `vizij` binary, wasm wrappers, fixtures |
 | `vizij-web` | Application and integration layer | React runtime bindings, authoring flows, demos, standalone deployment shell |
 | `vizij-docs` | Cross-repo reference and coordination layer | maintained architecture summaries, roadmap/program framing, decisions, known issues, release-note policy |
 | `vizij-ai.github.io` | Public delivery layer | curated docs, guides, showcase content, public routing into examples |
@@ -52,17 +52,17 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
   - `web` — the browser module behind `@vizij/runtime`, linked as a cdylib of its own by `vizij-wasm`
 - **`vizij-wasm`**: the `vizij` crate's `web` module as a wasm-bindgen cdylib of its own, so the release profile's fat LTO applies to it; `@vizij/runtime` ships its build
 - **API stack**
-  - `vizij-api-core`
+  - `vizij-api-core` — shapes, typed paths, records and enumerations, coercion, write batches and the graph-spec JSON forms; it re-exports the geometry types of arora-sdk's `arora-geometry` and the colour of `arora-graphics-types`
   - `vizij-api-wasm`
 - **Node graph stack**
-  - `vizij-graph-core`
-  - `vizij-graph-wasm`
+  - `vizij-graph-core` — the graph format (`GraphSpec`), the editor registry, the importer from a graph onto an Arora behavior tree, and `TreeRuntime`, which runs it; each node is a call of a function of arora-sdk's `arora-dataflow-nodes`
+  - `vizij-graph-wasm` — `WasmGraph`, the editor's graph runtime behind `@vizij/node-graph`
   - `vizij-graph-registry-export`
 - **Arora interop stack** (`crates/interop/`)
   - `vizij-arora` — Vizij↔Arora value identity (`vizij_api_core::Value` **is** `arora_types::value::Value`)
   - `vizij-arora-store` — a Vizij `Blackboard` as an Arora `DataStore`
   - `vizij-arora-hal` — a Vizij rig as an Arora HAL
-  - `vizij-arora-behavior` — `ProcessingGraph`: a Vizij node graph as an Arora `BehaviorInterpreter`
+  - `vizij-arora-behavior` — `ProcessingGraph`: a Vizij node graph as an Arora `BehaviorInterpreter`, run on `arora-behavior-tree`
   - `vizij-arora-host` — the composition shared by the native app and the browser module: the device behavior from a bundle's graphs, the program to autoplay, the neutral pose, the face standard and its profiles
   - `vizij-arora-tts` — the `say` module over the Vizij TTS provider, natively and in the browser
   - `vizij-piper` — the local Piper voice
@@ -75,7 +75,8 @@ The platform contract still centers on Rust-defined runtime data and wasm packag
 
 ### Current architecture notes
 
-- Rust remains the runtime source of truth for `Value`, `Shape`, `TypedPath`, and graph evaluation; a face's animations play in its device through Arora's animation module.
+- Rust remains the runtime source of truth for `Value`, `Shape` and `TypedPath`; a face's animations play in its device through Arora's animation module.
+- **A node graph runs on Arora's behavior tree** (`arora-behavior-tree`). `vizij-graph-core` imports a graph's JSON as a tree whose nodes are calls of the functions of arora-sdk's `arora-dataflow-nodes` (the modules `@arora/dataflow`, `@arora/geometry` and `@arora/kinematics`). A device's graphs run the nodes its outputs read whose inputs, parameters or clock changed; the editor's `@vizij/node-graph` evaluates every node so it can report every port. The graph JSON format stays Vizij's.
 - **Each Vizij face is an Arora device** whose behavior is its composed graphs (rig, pose driver, poses, standard adaptation) on a key/value store, with programs and skills running beside them as runs of its interpreter. Scheduling is the Arora step loop; cross-graph data flows through store paths. A face's keys live under its rig prefix, `rig/<faceId>/`.
 - **The Bevy view draws every Vizij face.** In the browser, `@vizij/runtime` is one wasm module holding the view and, per face, the face's device: a page mounts one canvas and places each face in a rectangle of it. The desktop `vizij` binary runs the same composition natively, in a window. three.js draws no face; it remains only in `@vizij/render`'s GLB loader and exporter (section 4).
 - Vizij and Arora share one runtime value type, so values cross the store boundary without translation; JS sees them as `ValueJSON`.
