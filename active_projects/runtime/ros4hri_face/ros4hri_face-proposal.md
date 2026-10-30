@@ -63,7 +63,8 @@ Sources: [REP-155](https://www.ros.org/reps/rep-0155.html), [ros4hri.github.io](
 
 The device-scoped keys the bridge's ros4hri profile and the built-in ROS4HRI mapping meet on, declared as the `ros4hri` profile. The full table, with types, sources and behaviour per channel, is [vizij-rs `docs/ros4hri.md`](https://github.com/vizij-ai/vizij-rs/blob/main/docs/ros4hri.md#the-standardros4hri-key-contract).
 
-- Commands in: `expression/{name,valence,arousal}`, `gaze/{target,frame}`, `au/<code>`, and the streamed viseme, `viseme` (its ROS4HRI code) with `viseme/{time,duration}`.
+- Commands in: `expression/{name,valence,arousal}`, `gaze/{target,frame}`, and the streamed viseme, `viseme` (its ROS4HRI code) with `viseme/{time,duration}`.
+- No action units: ROS4HRI publishes them only as perception output, and commanding a face in FACS is the [face interfaces proposal](face-interfaces-proposal.md)'s `set_facial_action_units` skill.
 - Speech state out: `speech/text`, the utterance, and `speech/viseme`, the lip shape, both relayed from the face's own speech state.
 - Not yet keyed: captions (B4). A gaze policy travels in the `/skill/look_at` goal, not on a key.
 
@@ -131,4 +132,4 @@ MVP = A3–A5 + B1–B4 + B6 + C1–C4 (topic parity + video). Compliance milest
 
 ## Upstream extension candidates (after MVP)
 
-Viseme messages: `hri_msgs/Viseme` and `Visemes` as the ROS4HRI TTS nodes in the field publish them (upstream `hri_msgs` has none; arora-msgs-ros2 carries them as a recorded departure). AU command channel reusing `FacialActionUnits` vocabulary, TF-resolved `look_at` frames (the incumbent ignores `frame_id`), `social` policy once ROS4HRI perception is consumable from Arora. Proposals via the ros4hri GitHub org discussions.
+Viseme messages: `hri_msgs/Viseme` and `Visemes` as the ROS4HRI TTS nodes in the field publish them (upstream `hri_msgs` has none; arora-msgs-ros2 carries them as a recorded departure). Face messages layered for perception and action: content shared, observation and timing as wrappers ([face interfaces proposal](face-interfaces-proposal.md)). TF-resolved `look_at` frames (the incumbent ignores `frame_id`), `social` policy once ROS4HRI perception is consumable from Arora. Proposals via the ros4hri GitHub org discussions.
