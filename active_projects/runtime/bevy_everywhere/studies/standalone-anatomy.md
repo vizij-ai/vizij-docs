@@ -1,6 +1,6 @@
 # What vizij-standalone is made of, and what the Bevy app already replaces
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,tauri,android,bevy,studio-bridge,ws-bridge -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
 Paths are repo-relative: `standalone/` = `vizij-web/apps/vizij-standalone/`,
@@ -8,10 +8,9 @@ Paths are repo-relative: `standalone/` = `vizij-web/apps/vizij-standalone/`,
 `ws/` = `arora-sdk/crates/arora-bridge-ws/`. Registry sources are the versions
 the standalone locks (`Cargo.lock`: arora 9.11.1, arora-bridge-ws 4.0.0); the
 arora-sdk checkout's `studio/` module is byte-identical to the published 9.11.1
-(`diff` empty). Raw outputs:
-[vizij-rs `spikes/bevy-everywhere/standalone-anatomy/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/standalone-anatomy)
-(branch `spikes/bevy-everywhere`; the `.txt`/`.out` names below are relative to
-it).
+(`diff` empty). Raw outputs are not kept: the figures and wire replies quoted on this page
+are the record. The Bevy app this study compares against is on main as
+[`crates/vizij`](https://github.com/vizij-ai/vizij-rs/tree/main/crates/vizij).
 
 ## Findings
 
@@ -41,7 +40,7 @@ it).
    (`arora 9.11.1 src/run.rs:108-133`): port 9000, loopback, `validate_paths: true`,
    `serve_control_panel: false` (`ws src/server.rs:40-49`), and nothing in arora
    or `vizij/` populates the registry (grep: no `set_keys`/`register_method`).
-   Wire check (`ws-default-writes.out`):
+   Wire check (a client against `arora-bridge-ws` 4.0.0 under `ServerConfig::default()`):
    `list_keys` → `[]`, `list_methods` → `[]`, `write_values` →
    `"Unknown input path(s)"`, `invoke reset` → `Method not found`, HTTP `GET /`
    → connection reset. The plan's "HTTP control panel arora-bridge-ws already
@@ -87,13 +86,11 @@ it).
     0.17.14 and aws-lc-rs 1.17.1/aws-lc-sys 0.42.0 (via arora-studio-bridge-client,
     hyper-rustls/reqwest, quinn), firestore 0.49.0, gcloud-sdk 0.30.1, tonic 0.14.6,
     hyper 1.8.1, reqwest 0.13.2, rustls-platform-verifier(-android), tokio 1.49,
-    tauri 2.10.3/wry 0.54.2; no wasmtime, no openssl
-    (`tree-android-studio-bridge.txt`, `closure-sizes.txt`).
+    tauri 2.10.3/wry 0.54.2; no wasmtime, no openssl.
 11. **The Bevy crate pulls arora's `native`+`tui` defaults, which the standalone
     deliberately avoids for Android.** `vizij/Cargo.toml:32` (`arora = "9.10"`,
     default features) → wasmtime 45.0.3, cranelift, ratatui, crossterm on every
-    target, 866 crates on `aarch64-linux-android`, 1137 with `studio`
-    (`tree-vizij--target_aarch64-linux-android.txt`, `tree-vizij_studio--target_aarch64-linux-android.txt`).
+    target, 866 crates on `aarch64-linux-android`, 1137 with `studio`.
     The standalone's `arora = { default-features = false }` exists "so the
     Android targets stay buildable" (`standalone/src-tauri/Cargo.toml:20-24`).
     `vizij/` has no `android`/`wasm32` mention anywhere; ros-viz-rs ships

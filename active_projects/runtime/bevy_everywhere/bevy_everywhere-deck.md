@@ -1,13 +1,13 @@
 # One Bevy view for every Vizij face, in sixteen slides
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-10-02
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](bevy_everywhere-plan.md) · [Tickets](bevy_everywhere-tickets.md) · [Sub-studies](studies/)
 
 A reading guide to the plan for people who were not in the study. Each slide
-links to the section or study that carries the evidence. Nothing is
-implemented yet; every choice is open to challenge in the pull request. The
-code shapes below show how the stack would be used; the exact names are
-settled during the work.
+links to the section or study that carries the evidence. The slides present the
+plan as it was reviewed; the [plan's status](bevy_everywhere-plan.md) says what
+has landed and what is open. The code shapes below show how the stack is used;
+the exact names were settled during the work.
 
 ---
 
@@ -351,10 +351,8 @@ Source: [plan §1](bevy_everywhere-plan.md#1-goal).
 
 ## 16. Next
 
-P0 needs no decision: the Android smoke in its CI shape (x86_64 image,
-lavapipe, KVM), the Studio bridge harness, the hygiene items, two arora-sdk
-items; the render gate, the one-module spike and the TTS browser test are
-done. The plan's status becomes
-`planning` when this PR merges with the review's changes applied.
+The render gate, the one-module crate, the TTS browser test and the Android
+smoke in its CI shape (x86_64 image, lavapipe, KVM) are done. The
+[plan's status](bevy_everywhere-plan.md) carries what is open.
 
 Source: [plan §4](bevy_everywhere-plan.md#4-plan).

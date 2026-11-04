@@ -1,34 +1,33 @@
 # Bevy 0.19.1 renders a Vizij face GLB in a browser canvas; what that build costs and what keeps `vizij` off wasm today
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,bevy,wasm,webgl2,vizij-rs,browser,ci,multi-face -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
-All paths are repo-relative; `vizij-rs` is the default repo. Registry sources are
-quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
-`Cargo.lock` resolves). The spike's sources, build script, pages and
-screenshots are in
-[vizij-rs `spikes/bevy-everywhere/bevy-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/bevy-wasm)
-(branch `spikes/bevy-everywhere`; `SPIKE/` below): `Cargo.toml`, `src/lib.rs`,
-`build.sh`, `index.html`, `multi-a.html`, `multi-b.html`, `multi-c.html`,
-`shoot.js`, `pixdiff.py`, `t4-check.sh`, `wasm-sections.py`, `lto-variant/`,
-`shots/`, `pkg-lto/`. Build, HTTP and console logs and the built `.wasm` are
-not kept: the timings, sizes and log lines quoted on this page are the
-record.
+All paths are repo-relative and read the trees the study ran on; `vizij-rs` is
+the default repo. Registry sources are quoted as `<crate>-<version>/path` (the
+`~/.cargo/registry` copy of what `Cargo.lock` resolves). The renderer this study
+proved is on vizij-rs main: [`crates/vizij/src/view/mod.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/view/mod.rs)
+draws the face, [`crates/vizij/src/web.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/web.rs) is the browser
+surface, one App per page with faces as viewports, and the `cdylib`-only
+[`crates/vizij-wasm`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij-wasm/Cargo.toml) carries the release profile's fat
+LTO, built by [`scripts/build-runtime-wasm.mjs`](https://github.com/vizij-ai/vizij-rs/blob/main/scripts/build-runtime-wasm.mjs).
+[`crates/vizij/Cargo.toml`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/Cargo.toml) names the engine crate by crate,
+narrower than finding 2's list. The study's crate, pages, screenshots, helper scripts,
+build, HTTP and console logs and the built `.wasm` are not kept: the timings, sizes and
+log lines quoted on this page are the record.
 
 ## Findings
 
 1. **Bevy 0.19.1 renders a Vizij face GLB with morph targets into a page canvas
-   over WebGL2, and the morphs animate.** A 190-line crate (`SPIKE/src/lib.rs`)
-   mirroring `crates/vizij/src/view.rs` (orthographic camera fitted to the
+   over WebGL2, and the morphs animate.** A 190-line crate mirroring `crates/vizij/src/view.rs` (orthographic camera fitted to the
    authored `rootBounds`, `Tonemapping::None`, `DebandDither::Disabled`,
    `Msaa::Sample4`, materials made unlit/double-sided with the ambient factor
    baked in) loads `assets/Quori_Current_Extended.glb` and oscillates the
    Mouth's `jawud` and the lids' first target. Two headless screenshots 0.9 s
    apart differ on 4.2 % of the canvas pixels, with the jaw open in one and
-   closed in the other (`SPIKE/shots/single-default-{1,2}.png`; §Evidence A).
+   closed in the other (§Evidence A).
 2. **The Bevy feature set that suffices for the face is
-   `default_app, 3d_bevy_render, scene, std, bevy_winit, multi_threaded, webgl2`**
-   (`SPIKE/Cargo.toml`): ros-viz-rs's expanded default list
+   `default_app, 3d_bevy_render, scene, std, bevy_winit, multi_threaded, webgl2`**: ros-viz-rs's expanded default list
    (`ros-viz-rs/Cargo.toml:97-118`) minus 2d, ui, audio, picking, gilrs, x11,
    wayland, sysinfo, default_font and the Android backends. `3d_api` carries
    `morph`, `morph_animation` and `bevy_gltf` (`bevy-0.19.1/Cargo.toml`,
@@ -56,8 +55,7 @@ record.
    read), and the spike copied `["cdylib", "rlib"]` from vizij-rs's wasm
    crates (`crates/interop/vizij-arora-web/Cargo.toml:9`) and ros-viz-rs
    (`ros-viz-rs/Cargo.toml:176`) — so those builds are not LTO'd either,
-   whatever `[profile.release] lto = true` says. A `cdylib`-only variant
-   (`SPIKE/lto-variant/`) recompiles the whole dependency graph under cargo's
+   whatever `[profile.release] lto = true` says. A `cdylib`-only variant recompiles the whole dependency graph under cargo's
    LTO unit hashes (every dependency gets `-C linker-plugin-lto`) and links
    with `-C lto`: 19 m 18 s wall / 19 m CPU for the whole graph, of which the
    fat-LTO link of the final crate alone is ≈ 9 min — and it buys 7 % after
@@ -88,30 +86,28 @@ record.
    first app keeps running; the second canvas stays blank; `LogPlugin` also
    errors (`Could not set global logger … already set`). Sequential apps
    (exit, then start) would be allowed by winit; concurrent ones are not
-   (`SPIKE/shots/multi-a-1.png`, §Evidence D).
+   (§Evidence D).
 7. **Two instances of the same wasm module, each in its own memory, run two
    faces side by side.** Importing the generated glue twice under distinct
    URLs (`./pkg/x.js?instance=a`, `?instance=b`) yields two module objects
    (`a === b` is false), because the glue caches its instance in a module-level
    `wasm` variable (`wasm-bindgen-cli-support-0.2.128/src/js/mod.rs:1550,1570`)
    — one per module instance. Both `start()` calls succeed; Quori and Toasty
-   render and animate in their own canvases (5.3 % / 28.8 % changed pixels,
-   `SPIKE/shots/multi-b-{1,2}.png`). The price is one 42 MB module compiled
+   render and animate in their own canvases (5.3 % / 28.8 % changed pixels). The price is one 42 MB module compiled
    and instantiated per face; memory use per instance is unmeasured.
 8. **One App, one full-page transparent canvas and one viewport camera per DOM
    element works — the three.js "multiple elements" pattern.** `start_overlay`
    spawns N `Camera3d`s with `order = i`; the page pushes each slot's
    `getBoundingClientRect()` every animation frame through an exported
-   `set_rects`, and a system sets `Camera.viewport` in physical pixels
-   (`SPIKE/src/lib.rs`, `apply_rects`). Both slots show the animating face at
-   their own size (26.9 % / 20.9 % changed pixels, `SPIKE/shots/multi-c-{1,2}.png`).
+   `set_rects`, and a system sets `Camera.viewport` in physical pixels. Both slots show the animating face at
+   their own size (26.9 % / 20.9 % changed pixels).
    The region outside every viewport is cleared with the *global* `ClearColor`
    resource (Bevy's default `srgb_u8(43, 44, 47)`, measured `[43,44,47,255]` in
    the canvas, §Evidence E), not the cameras' own clear color, so it must be
    set to `Color::NONE`. With that one line the canvas outside the viewports
    reads `[0,0,0,0]`, and the page's text, gradient and slot borders show
    through around the two animating faces
-   (`SPIKE/shots/multi-c-v2-{1,2}.png`, §Evidence E) — even though wgpu's WebGL
+   (§Evidence E) — even though wgpu's WebGL
    backend advertises only `CompositeAlphaMode::Opaque`
    (`wgpu-hal-29.0.4/src/gles/adapter.rs:1275`): the canvas context it creates
    has `alpha: true, premultipliedAlpha: true`, and the cleared alpha reaches
@@ -196,25 +192,25 @@ failing-crate list in §Evidence F).
 
 | Item | Value |
 |---|---|
-| Crate | `SPIKE/Cargo.toml`, `SPIKE/src/lib.rs` (edition 2021, `bevy = "=0.19.1"`, `wasm-bindgen = "=0.2.128"`) |
+| Crate | edition 2021, `bevy = "=0.19.1"`, `wasm-bindgen = "=0.2.128"` |
 | Camera | `Projection::Orthographic` with `ScalingMode::AutoMin { min_width: 22.58, min_height: 14.41 }` (Quori's `rootBounds`, read from the GLB's `Scene` node `RobotData`), `Transform::from_xyz(cx, cy, 100)` looking at `(cx, cy, 0)` — `view.rs`'s `Fit::Contain` |
 | Window | `Window { canvas: Some("#face-a"), fit_canvas_to_parent: true, prevent_default_event_handling: false }` |
-| Page | `SPIKE/index.html`: `<canvas id="face-a">` in a 763×486 stage; `import('./pkg/bevy_wasm_spike.js')`, `await mod.default()`, `mod.start('#face-a', 'Quori_Current_Extended.glb')` |
+| Page | `<canvas id="face-a">` in a 763×486 stage; `import('./pkg/bevy_wasm_spike.js')`, `await mod.default()`, `mod.start('#face-a', 'Quori_Current_Extended.glb')` |
 | wasm ready | 239 ms from `import` to `init()` resolved (local server, 42 MB) |
-| Screenshot pair | `shots/single-default-{1,2}.png`: 35 distinct colors in the canvas, 15,415 / 370,818 pixels changed (4.2 %) between t+5 s and t+5.9 s; jaw closed in 1, open in 2 |
+| Screenshot pair | 35 distinct colors in the canvas, 15,415 / 370,818 pixels changed (4.2 %) between t+5 s and t+5.9 s; jaw closed in 1, open in 2 |
 
 ### B. Build cost (T1)
 
 | Step | Time | Size |
 |---|---|---|
-| `cargo install wasm-bindgen-cli --version 0.2.128 --locked --root SPIKE/tools` | 4 m 14 s | — |
+| `cargo install wasm-bindgen-cli --version 0.2.128 --locked` | 4 m 14 s | — |
 | `cargo build --release --target wasm32-unknown-unknown --lib` (cold, load avg 100–200) | 41 m 10 s wall, 24 m 59 s user, 2 m 30 s sys | `bevy_wasm_spike.wasm` 47,811,367 B |
 | `wasm-bindgen --target web --no-typescript` | 9.6 s | `bevy_wasm_spike_bg.wasm` 42,276,002 B; `.js` 100,577 B |
 | `gzip -9` of the wasm-bindgen output | — | 9,652,623 B |
-| wasm-opt `-Os --strip-debug --strip-producers` (native binaryen `version_123` arm64 release tarball in `SPIKE/tools/`) | 2 m 49 s wall, 259 s user | 25,992,930 B raw (code 21,619,686; data 4,053,900; no `name` section), 7,625,738 B gzipped |
+| wasm-opt `-Os --strip-debug --strip-producers` (native binaryen `version_123` arm64 release tarball) | 2 m 49 s wall, 259 s user | 25,992,930 B raw (code 21,619,686; data 4,053,900; no `name` section), 7,625,738 B gzipped |
 | the same through `npx -y -p binaryen wasm-opt` (binaryen 132's JavaScript build) | killed after 30 min without output | — |
 | Incremental rebuild after a one-line change (same profile, same load; no LTO, see below) | 14.2 s wall, 3.1 s user (+ wasm-bindgen 26 s) | 47,811,936 B raw, 42,276,381 B after wasm-bindgen |
-| `cdylib`-only variant (`SPIKE/lto-variant/`; cargo applies fat LTO; 225 of the 300 units recompiled, the 75 reused ones being host build scripts and proc-macros; load avg 90–150) | 19 m 18 s wall, 19 m 00 s user, 1 m 24 s sys, of which the final crate (the LTO link) ≈ 8.5–9 min | 39,362,215 B raw; 35,010,796 B after wasm-bindgen (code 22,004,191; `name` 8,883,492; data 3,822,475), 8,817,694 B gzipped; after native wasm-opt 24,222,078 B (code 20,172,624; data 3,768,513), 7,205,261 B gzipped (`SPIKE/pkg-lto/`) |
+| `cdylib`-only variant (cargo applies fat LTO; 225 of the 300 units recompiled, the 75 reused ones being host build scripts and proc-macros; load avg 90–150) | 19 m 18 s wall, 19 m 00 s user, 1 m 24 s sys, of which the final crate (the LTO link) ≈ 8.5–9 min | 39,362,215 B raw; 35,010,796 B after wasm-bindgen (code 22,004,191; `name` 8,883,492; data 3,822,475), 8,817,694 B gzipped; after native wasm-opt 24,222,078 B (code 20,172,624; data 3,768,513), 7,205,261 B gzipped |
 
 Final-crate `rustc` flags of the `["cdylib", "rlib"]` build (`cargo build -v`):
 `-C codegen-units=1 -C opt-level=s -C strip=debuginfo` — no `-C lto`. In the
@@ -223,15 +219,14 @@ in addition, which is why cargo recompiles the whole graph rather than reusing
 the first build's artifacts; the final crate's flags are `-C codegen-units=1 -C
 lto -C opt-level=s -C strip=debuginfo` with `--crate-type cdylib`.
 
-Section breakdown of the 42,276,002 B wasm-bindgen output
-(`SPIKE/wasm-sections.py`): `code` 24,717,290; `name` 13,068,087;
+Section breakdown of the 42,276,002 B wasm-bindgen output: `code` 24,717,290; `name` 13,068,087;
 `data` 4,109,871; `element` 221,240; `function` 127,223; rest < 40 KB.
 
 ### C. Headless compositing (T2)
 
 Playwright 1.61.0 (`semio_studio/node_modules/playwright`), Chromium 149.0.7827.55
 (`~/Library/Caches/ms-playwright/chromium-1228`), `chromium.launch({ headless:
-true, args })`, viewport 1100×720, `SPIKE/shoot.js`:
+true, args })`, viewport 1100×720:
 
 | args | `UNMASKED_RENDERER_WEBGL` | rendered | changed pixels |
 |---|---|---|---|
@@ -250,36 +245,35 @@ warning repeats a few times.
 
 | Page | Mechanism | Outcome |
 |---|---|---|
-| `multi-a.html` | one `init()`, `start('#face-a')` then `start('#face-b')` | first returns; second throws `RuntimeError: unreachable` after the panic `Failed to build event loop: RecreationAttempt` (`bevy_winit-0.19.1/src/lib.rs:128`); `bevy_log` errors `Could not set global logger and tracing subscriber as they are already set`; face-a animates (1.0 % changed), face-b blank (2 colors, 0 changed) |
-| `multi-b.html` | `import('./pkg/x.js?instance=a')` and `?instance=b`, each `await init()` | `a === b` false; both `start()` return; Quori (5.3 % changed) and Toasty (28.8 % changed) animate side by side |
+| Two Apps | one `init()`, `start('#face-a')` then `start('#face-b')` | first returns; second throws `RuntimeError: unreachable` after the panic `Failed to build event loop: RecreationAttempt` (`bevy_winit-0.19.1/src/lib.rs:128`); `bevy_log` errors `Could not set global logger and tracing subscriber as they are already set`; face-a animates (1.0 % changed), face-b blank (2 colors, 0 changed) |
+| Two instances | `import('./pkg/x.js?instance=a')` and `?instance=b`, each `await init()` | `a === b` false; both `start()` return; Quori (5.3 % changed) and Toasty (28.8 % changed) animate side by side |
 
-Toasty's striped background in `multi-b-1.png` is the spike's naive
+Toasty's striped background in the two-instance screenshot is the spike's naive
 oscillation of every morphed node's first target (`round` on `FaceGEO` and
 `FaceShadowGeo`), not a rendering defect (unverified beyond the target names).
 
 ### E. Overlay canvas with viewport cameras (T3 c)
 
-`multi-c.html`: `#overlay { position: fixed; inset: 0; pointer-events: none }`
+The page: `#overlay { position: fixed; inset: 0; pointer-events: none }`
 holding the canvas; two in-flow dashed slots (400×260 and 300×300); a
 `requestAnimationFrame` loop calling `set_rects(Float32Array)` with each
 slot's `getBoundingClientRect()`; `start_overlay('#face-overlay', glb, 2)`.
 Cameras: `Camera { order: i, clear_color: Custom(Color::NONE) }`, viewport =
 rect × `scale_factor`, clamped to the canvas, camera deactivated when the
-clamped rect is empty (`SPIKE/src/lib.rs`, `apply_rects`).
+clamped rect is empty.
 
 | Check | Result |
 |---|---|
-| Both slots draw the face at their own size | yes (`shots/multi-c-{1,2}.png`; slot A 26.9 %, slot B 20.9 % changed pixels) |
+| Both slots draw the face at their own size | yes (slot A 26.9 %, slot B 20.9 % changed pixels) |
 | Canvas outside the viewports, global `ClearColor` left at Bevy's default | `[43, 44, 47, 255]` read back through `drawImage` — Bevy's default global `ClearColor`; the page text under it is hidden |
 | Canvas context attributes | `alpha: true, premultipliedAlpha: true, antialias: false, preserveDrawingBuffer: false` (wgpu's WebGL context, `wgpu-hal-29.0.4/src/gles/web.rs:101-105`) |
 | `Window { transparent: true }` | reaches winit as `with_transparent(true)` (`bevy_winit-0.19.1/src/winit_windows.rs:133`); wgpu's gles adapter offers `composite_alpha_modes: [Opaque]` only (`wgpu-hal-29.0.4/src/gles/adapter.rs:1275`) |
-| Canvas outside the viewports, global `ClearColor(Color::NONE)` | canvas outside the viewports reads `[0,0,0,0]`; screenshot samples at (400,20)/(700,550) are the page gradient `(42,42,63)`/`(38,38,51)`; the status text and both dashed slot borders are visible; slot A 26.7 % changed pixels (`shots/multi-c-v2-{1,2}.png`) |
+| Canvas outside the viewports, global `ClearColor(Color::NONE)` | canvas outside the viewports reads `[0,0,0,0]`; screenshot samples at (400,20)/(700,550) are the page gradient `(42,42,63)`/`(38,38,51)`; the status text and both dashed slot borders are visible; slot A 26.7 % changed pixels |
 | Screenshot cost | a full-viewport software-rendered canvas made Playwright's `page.screenshot` exceed its 30 s default at 1100×720; it passed at 800×600 with a 120 s timeout |
 
 ### F. `cargo check` for wasm32 (T4)
 
-`SPIKE/t4-check.sh`, `CARGO_TARGET_DIR=SPIKE/target-t4`, `--locked` (the lock
-file is untouched; `git status` clean):
+`cargo check --target wasm32-unknown-unknown --locked`, crate by crate (the lock file is untouched; `git status` clean):
 
 | Crate | Exit | Time | Errors |
 |---|---|---|---|
@@ -382,7 +376,7 @@ fail independently of each other, and who pulls them on the wasm32 target
   overlay pattern is adopted.
 - Memory per module instance in the two-instance pattern (finding 7) is
   unmeasured; a 42 MB module twice may matter on tablets.
-- The dim first screenshot of `multi-c-1.png` (both faces at reduced
+- The dim first capture of the overlay page (both faces at reduced
   brightness in one capture) is unexplained: a compositor capture timing
   artifact under SwiftShader is the likely cause, unverified.
 - WebGPU (`bevy/webgpu`) was not built; ros-viz-rs ships both bundles and

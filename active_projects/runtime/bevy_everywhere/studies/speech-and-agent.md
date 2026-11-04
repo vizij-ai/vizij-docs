@@ -1,6 +1,6 @@
 # Speech lives in JavaScript on the web and in the say skill on the device; the browser demo needs a wasm say provider with a Web Audio playhead
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,speech,tts,visemes,agent,standalone,wasm -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [vizij-rs skills](https://github.com/vizij-ai/vizij-rs/blob/main/docs/skills.md) · [face standard](https://github.com/vizij-ai/vizij-rs/blob/main/docs/face-standard.md) · [VIZ-126](https://linear.app/semio-ai/issue/VIZ-126)
 
 ## Findings
@@ -69,7 +69,7 @@
 |---|---|---|
 | Contract (`SAY_ID`, signature, `SILENCE_VISEME`, `polly_shape`) | carries: pure Rust, re-exported from vizij-arora-behavior | lib.rs:28-57 |
 | Poll-on-tick closure over a shared viseme cell | carries in shape; the `JoinHandle` becomes a wasm-bindgen future or a JS-owned state cell | lib.rs:139-177 |
-| tokio `rt-multi-thread` + `spawn_blocking` | fails: `compile_error!` on wasm | spikes log; Cargo.toml |
+| tokio `rt-multi-thread` + `spawn_blocking` | fails: `compile_error!` on wasm | [arora-wasm-constraints](arora-wasm-constraints.md) step 6; Cargo.toml |
 | reqwest client | carries: reqwest targets wasm via `fetch` (its `[target.'cfg(not(target_arch = "wasm32"))']` sections gate the native stack) | `reqwest-0.13.2/Cargo.toml:245-274` |
 | rodio `OutputStream`/`Sink`/`Decoder` + `std::thread::sleep` loop | fails as written; rodio's only wasm path is cpal's `wasm-bindgen` feature and it cannot host a blocking loop | lib.rs:206-245; `rodio-0.20.1/Cargo.toml:215` |
 | `std::env::var("API_URL")` | fails silently (no env on wasm); must become a constructor argument | lib.rs:187 |

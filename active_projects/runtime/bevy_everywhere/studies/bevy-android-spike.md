@@ -1,15 +1,17 @@
 # Bevy 0.19 builds to an installable Android APK from this Mac; `vizij` type-checks for Android behind one missing feature
 <!-- tags: family=project; type=reference; project_status=proposal; topics=android,bevy,vizij-rs,ros-viz-rs,packaging,wgpu,emulator -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [Native app anatomy](native-app-anatomy.md) · [Standalone anatomy](standalone-anatomy.md)
 
-Paths are repo-relative (`ros-viz-rs`, `vizij-rs`, `vizij-web`); registry
-sources are quoted as `<crate>-<version>/path`. The spike's sources and
-screenshots are in
-[vizij-rs `spikes/bevy-everywhere/bevy-android/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/bevy-android)
-(branch `spikes/bevy-everywhere`; `app/` is the Bevy crate plus its Gradle
-project; `screen*.png`). Build logs, raw logcat dumps and APKs are not kept:
-the commands, timings and log lines quoted on this page are the record.
+Paths are repo-relative (`ros-viz-rs`, `vizij-rs`, `vizij-web`) and read the trees
+the study ran on; registry sources are quoted as `<crate>-<version>/path`. The
+recipe this study proved is on vizij-rs main: the Gradle project
+[`crates/vizij/android/`](https://github.com/vizij-ai/vizij-rs/tree/main/crates/vizij/android) packages the `vizij` cdylib,
+[`crates/vizij/src/android.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/android.rs) is its entry point,
+and [`android.yml`](https://github.com/vizij-ai/vizij-rs/blob/main/.github/workflows/android.yml) builds the APK per ABI and
+smoke-tests it. The study's crate, Gradle project, screenshots, build logs, raw
+logcat dumps and APKs are not kept: the commands, timings and log lines quoted on
+this page are the record.
 
 ## Findings
 
@@ -70,7 +72,7 @@ the commands, timings and log lines quoted on this page are the record.
 5. **A minimal Bevy 0.19.1 app builds and packages with the copied recipe.**
    Spike: cdylib + `#[bevy_main]`, clear color, spinning cube, the Quori GLB
    from the APK's `assets/` under an orthographic camera fitted to the meshes'
-   AABB (`app/src/lib.rs`, `app/Cargo.toml`). Toolchain on this Mac: NDK
+   AABB. Toolchain on this Mac: NDK
    25.1.8937393 (its darwin-x86_64 prebuilt runs under Rosetta on the M1),
    Temurin JDK 21, the Gradle 8.14.3 wrapper copied from
    `vizij-web/apps/vizij-standalone/src-tauri/gen/android`, AGP 8.11.0 (both
@@ -102,8 +104,7 @@ the commands, timings and log lines quoted on this page are the record.
    buffer size (0)` for `bevy_pbr`'s "GPU clustering vertex buffer", then a
    panic in `wgpu-29.0.4/src/backend/wgpu_core.rs:2253` (`Buffer::get_mapped_range`)
    and "Encountered a panic in system"; the process stays alive (pid
-   reported), the screenshot shows the launcher (`screen.png`,
-   `screen-gpuhost-vulkan.png`). wgpu derives
+   reported), the screenshot shows the launcher. wgpu derives
    `max_buffer_size` from `VK_KHR_maintenance4::maxBufferSize` capped by
    `maintenance3::maxMemoryAllocationSize` (`wgpu-hal-29.0.4/src/vulkan/adapter.rs:1428-1447`);
    the emulator's Vulkan ICD (goldfish/gfxstream, Android 12 image) reports 0
@@ -114,16 +115,13 @@ the commands, timings and log lines quoted on this page are the record.
    Bevy's `webgl2` is wgpu's wasm-only `webgl`; the native GLES backend is
    `bevy_render/gles` (`bevy_render-0.19.1/Cargo.toml:45`) with no `bevy`-level
    alias (`grep '^gles' bevy-0.19.1/Cargo.toml` finds nothing). With
-   `Backends::GL` and no `gles`, Bevy panics "Unable to find a GPU!"
-   (`screen-gl.png`). Enabling `gles` means a direct `bevy_render`
-   dependency for feature unification (`app/Cargo.toml`, 619 s rebuild of the
-   render stack). With it, wgpu finds "Android Emulator OpenGL ES Translator
+   `Backends::GL` and no `gles`, Bevy panics "Unable to find a GPU!". Enabling `gles` means a direct `bevy_render`
+   dependency for feature unification (619 s rebuild of the render stack). With it, wgpu finds "Android Emulator OpenGL ES Translator
    (Apple M1)", OpenGL ES 3.0, and Bevy creates its window, but
    `Surface::configure` is refused: `Downlevel flags
    DownlevelFlags(SURFACE_VIEW_FORMATS) are required but not supported on the
    device`, then `Surface::get_current_texture_view` panics ("Surface is not
-   configured for presentation"); `dumpsys gfxinfo` counts 0 frames
-   (`screen-gpuhost-gles.png`). Bevy 0.19
+   configured for presentation"); `dumpsys gfxinfo` counts 0 frames. Bevy 0.19
    configures its surface with an sRGB view format, which this GLES 3.0
    translator cannot provide. So neither wgpu backend draws a frame on this
    emulator; hardware behaviour of either is unverified.
@@ -207,7 +205,7 @@ pattern (finding 13); logging via `LogPlugin` or `android_logger` (finding 10).
 
 ## Evidence
 
-### Builds and runs (all under the spike directory; `CARGO_TARGET_DIR` inside it)
+### Builds and runs
 
 | Step | Command | Result |
 |---|---|---|
@@ -249,7 +247,7 @@ emulator itself was healthy (1 core, 1.9 GiB, Android 12, 1080x2220).
 | Rust | cargo 1.96.0, target `aarch64-linux-android`; cargo-ndk 4.1.2 installed by this study |
 | cmake | 3.28.3 (`/Applications/CMake.app`), used by aws-lc-sys |
 
-### Gradle project deltas from ros-viz-rs (`app/android/`)
+### Gradle project deltas from ros-viz-rs
 
 `namespace`/`applicationId` `ai.vizij.bevyspike`; `compileSdk 36`; `minSdk 26`;
 `ndkVersion '25.1.8937393'` (so AGP strips); `abiFilters 'arm64-v8a'`; AGP
