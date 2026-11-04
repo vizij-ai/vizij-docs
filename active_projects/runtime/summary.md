@@ -1,7 +1,7 @@
 # Vizij Runtime Program Summary
 <!-- tags: family=project; type=summary; project_status=tracking; topics=runtime,wasm,standalone,protocol -->
 
-> **Last updated:** 2026-10-23
+> **Last updated:** 2026-11-04
 
 ## Goals
 
@@ -29,7 +29,7 @@ Detailed implementation truth still lives in:
 
 ## Current Verified State
 
-- **The Bevy view draws every Vizij face in vizij-web and in the desktop `vizij` binary.** `@vizij/runtime` 8 is one wasm module per page holding the vizij-rs `vizij` crate's view and each face's Arora device; `@vizij/render` 2.0.0 and `@vizij/runtime-react` 1.0.0 put every face app and the authoring app on it ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206), released by [vizij-web#207](https://github.com/vizij-ai/vizij-web/pull/207)). three.js draws no face; `three` remains only in `@vizij/render`'s GLB loader and exporter. The desktop binary ships per OS from vizij-rs's `vizij-v<version>` releases. The open lines are in the [Bevy plan](bevy_everywhere/bevy_everywhere-plan.md)'s status: retiring the web renderer (`three` out of the authoring app, [vizij-web#208](https://github.com/vizij-ai/vizij-web/pull/208), in review; the docs and tickets re-pointed, [VIZ-157](https://linear.app/semio-ai/issue/VIZ-157)), Android, Semio Studio, and deleting the Tauri standalone.
+- **The Bevy view draws every Vizij face in vizij-web and in the desktop `vizij` binary.** `@vizij/runtime` 8 is one wasm module per page holding the vizij-rs `vizij` crate's view and each face's Arora device; `@vizij/render` 2.0.0 and `@vizij/runtime-react` 1.0.0 put every face app and the authoring app on it ([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206), released by [vizij-web#207](https://github.com/vizij-ai/vizij-web/pull/207)). three.js draws no face; `three` remains only in `@vizij/render`'s GLB loader and exporter. The desktop binary ships per OS from vizij-rs's `vizij-v<version>` releases. The Android app is on vizij-rs main, its APK smoke-tested on the emulator in CI. The open lines are in the [Bevy plan](bevy_everywhere/bevy_everywhere-plan.md)'s status: Android's signing and tablet gate, retiring Semio Studio's `apps/vizij-app`, and deleting the Tauri standalone.
 - Each face is its own Arora device, with its keys under its rig prefix, `rig/<faceId>/`; a page shows any number of faces on its one canvas.
 - `vizij-rs` contains the `vizij` crate (the view, the face composition, the host modules, the native device and the browser module), the API and node-graph stacks, the Arora interop crates, the bundle tools and shared fixtures. A face's animations play through Arora's animation module (`@arora/animation`, from `arora-animation-module`), which vizij-rs links as a host module ([vizij-rs#261](https://github.com/vizij-ai/vizij-rs/pull/261)); vizij-rs has no animation engine of its own, and vizij-web's packages are `@vizij/render`, `@vizij/runtime-react`, `@vizij/utils`, `@vizij/node-graph-authoring`, `@vizij/node-graph-react` and `@vizij/minimal-demo-ui`.
 - `vizij-web` contains the face apps `demo-vizij-player`, `tutorial-fullscreen-face`, `tutorial-agent-face`, `vizij-showcase`, `vizij-authoring` and `vizij-standalone`, and the graph demos `demo-graph-studio` and `minimal-demo-graph`.

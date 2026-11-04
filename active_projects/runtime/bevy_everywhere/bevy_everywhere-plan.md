@@ -1,13 +1,16 @@
 # One Bevy view for every Vizij face: retiring vizij-standalone
 <!-- tags: family=project; type=plan; project_status=tracking; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-10-23
+> **Last updated:** 2026-11-04
 
 > **Related documents:** [Reading guide (sixteen slides)](bevy_everywhere-deck.md) · [Tickets](bevy_everywhere-tickets.md) · [Runtime Summary](../summary.md) · [Native app proposal (vizij-rs)](https://github.com/vizij-ai/vizij-rs/blob/main/docs/proposal-vizij-native-app.md) · Sub-studies in [`studies/`](studies/)
 
-**Status (2026-10-23): every Vizij face in the browser draws on the Bevy view,
-and the desktop line is delivered; the web renderer's retirement, the Android
-line, the Semio Studio line and the deletion of the Tauri standalone are
-open.**
+**Status (2026-11-04, read from vizij-rs, vizij-web and semio_studio `main`):
+every Vizij face in the browser draws on the Bevy view, three.js draws no
+face, the desktop line is delivered, and the Android app is on main and
+smoke-tested on the emulator; the tablet gate, the retirement of
+`apps/vizij-app` and the deletion of the Tauri standalone are open.** The
+Linear issues named here carry the tickets' own state, which this block does
+not restate.
 
 - Delivered:
   - the `vizij` crate as a library plus the desktop binary, faces as entities
@@ -34,23 +37,35 @@ open.**
     [VIZ-152](https://linear.app/semio-ai/issue/VIZ-152) in
     [vizij-rs#146](https://github.com/vizij-ai/vizij-rs/pull/146), released
     as [`vizij-v0.2.0`](https://github.com/vizij-ai/vizij-rs/releases/tag/vizij-v0.2.0)).
-    The in-window egui operator panel P5 names is not built.
+    The in-window egui operator panel P5 names is the settings pane
+    ([vizij-rs#279](https://github.com/vizij-ai/vizij-rs/pull/279));
+  - the web renderer retired (P8b): `three` out of the authoring app
+    ([vizij-web#208](https://github.com/vizij-ai/vizij-web/pull/208)), left only in `@vizij/render`'s GLB loader and
+    exporter, and the docs re-pointed
+    ([vizij-docs#23](https://github.com/vizij-ai/vizij-docs/pull/23));
+  - the Android app (P6): the APK with `studio` and the cloud TTS, built per
+    ABI and smoke-tested in CI on the x86_64 API 35 emulator with
+    `-gpu lavapipe` ([vizij-rs#276](https://github.com/vizij-ai/vizij-rs/pull/276)), the Kotlin activity with the
+    picker, VIEW intents, immersive mode and device-loss recovery
+    ([vizij-rs#277](https://github.com/vizij-ai/vizij-rs/pull/277)), speech ([vizij-rs#278](https://github.com/vizij-ai/vizij-rs/pull/278)), and enrollment
+    from the settings pane ([vizij-rs#286](https://github.com/vizij-ai/vizij-rs/pull/286));
+  - the agent demo in the standalone's folder (P4c:
+    [vizij-web#128](https://github.com/vizij-ai/vizij-web/pull/128), [vizij-web#211](https://github.com/vizij-ai/vizij-web/pull/211));
+  - the device serving Studio's keys ([vizij-rs#173](https://github.com/vizij-ai/vizij-rs/pull/173)) and the face
+    image on Studio's scene screen, published at the rate a client writes to
+    `display/face/frame_rate` ([vizij-rs#291](https://github.com/vizij-ai/vizij-rs/pull/291) and semio_studio's
+    `face-screen-frames`).
 - Open:
-  - retiring the web renderer (P8b): `three` out of the authoring app
-    ([vizij-web#208](https://github.com/vizij-ai/vizij-web/pull/208), in
-    review), leaving it only in `@vizij/render`'s GLB loader and exporter, and
-    the docs and tickets re-pointed
-    ([VIZ-157](https://linear.app/semio-ai/issue/VIZ-157));
-  - Android (P6): [VIZ-136](https://linear.app/semio-ai/issue/VIZ-136),
-    [VIZ-153](https://linear.app/semio-ai/issue/VIZ-153),
-    [VIZ-154](https://linear.app/semio-ai/issue/VIZ-154);
-  - Semio Studio (P7): [VIZ-155](https://linear.app/semio-ai/issue/VIZ-155)
-    then [STUDIO-263](https://linear.app/semio-ai/issue/STUDIO-263), and the
-    scene screen's face image, [VIZ-159](https://linear.app/semio-ai/issue/VIZ-159);
-  - the agent demo in the standalone's folder (P4c):
-    [VIZ-150](https://linear.app/semio-ai/issue/VIZ-150), in review;
+  - Android (P6): release signing and the tablet gate
+    (`android/scripts/device-gate.sh`), neither on main; CI's APK is a debug
+    build. [VIZ-154](https://linear.app/semio-ai/issue/VIZ-154);
+  - Semio Studio (P7): the bridge E2E of
+    [VIZ-155](https://linear.app/semio-ai/issue/VIZ-155), then
+    [STUDIO-263](https://linear.app/semio-ai/issue/STUDIO-263):
+    `apps/vizij-app` is still on semio_studio's main;
   - deleting the Tauri standalone and rewriting the `deploy/*` guidebook pages
-    (P8a): [VIZ-156](https://linear.app/semio-ai/issue/VIZ-156).
+    (P8a): [VIZ-156](https://linear.app/semio-ai/issue/VIZ-156);
+    `apps/vizij-standalone/src-tauri` is still on vizij-web's main.
 
 Section 2 is the state the plan starts from, at the revisions its studies read.
 Each claim in it is backed by a sub-study in `studies/`, each of which opens
@@ -59,8 +74,8 @@ finding number). Sections 3 to 6 are the target picture and the plan as they
 survived a challenge: each load-bearing claim attacked through two or three
 lenses (feasibility, cost, consumer impact), verification spikes, and three
 judges' scores, recorded in [`studies/challenge-verdicts.md`](studies/challenge-verdicts.md).
-Stand-alone tests live outside the product repos and are referenced from the
-study that ran them.
+Each study records the commands and results of its stand-alone tests, which
+are not kept, and names where its result lives on main.
 
 | Study | Subject |
 | --- | --- |
@@ -750,9 +765,10 @@ if that is what it needs); that crate boundary is decided then, not now.
   one viewport per face slot (the verified overlay pattern, `ClearColor::NONE`);
   `pick(faceId, x, y)` forwards slot pointer events. This covers the authoring
   app's main, reference and empty-state faces, the demo's one, and the
-  showcase's five without a special case. Every face's scene and camera carry
-  a distinct `RenderLayers`, propagated over the spawned hierarchy, because all
-  faces sit at the world origin; mesh picking filters on the same layers. The
+  showcase's five without a special case. Faces sit in slots spaced along
+  X, so a camera sees only its own face: a mesh carrying `RenderLayers` renders
+  its morph targets at zero weight on Bevy 0.19.1's storage-buffer path. A pick
+  is cast over the morphed positions of the faces under the pointer. The
   App normally lives as long as the page; `unmount` is available as `AppExit`
   plus a canvas clear and a memory-source purge, and a later `mount` restarts
   cleanly (verified). A second module instance is not a supported pattern
@@ -1152,19 +1168,19 @@ Gate 0 → P1 → P6 → P8a; P5 starts now and P7 follows it.
 
 ### P0 Now, in parallel (each S)
 
-1. **Gate 0, Android rendering: passed on the emulator** (API 34/35 arm64,
-   host GPU and lavapipe, Vulkan; S:challenge-android-render). What remains
-   in P0: the CI-shaped confirmation, x86_64 API 35 `google_apis` under KVM on
-   `ubuntu-latest` with `-gpu lavapipe`, as the first Android CI job (not run
-   here); the tablet is no longer needed to prove that Bevy 0.19 renders and
-   is used in P6 for the hardware-only properties.
+1. **Gate 0, Android rendering: passed** on the emulator (API 34/35 arm64,
+   host GPU and lavapipe, Vulkan; S:challenge-android-render) and in CI:
+   [`android.yml`](https://github.com/vizij-ai/vizij-rs/blob/main/.github/workflows/android.yml)
+   boots the x86_64 API 35 `google_apis` image under KVM on `ubuntu-latest`
+   with `-gpu lavapipe`. The tablet is no longer needed to prove that Bevy
+   0.19 renders and is used in P6 for the hardware-only properties.
 2. **Spikes on the existing wasm target dir**: done for bytes loading, App
    restart, picking, the one-module device + view, and the `taskrun` fragments
    in headless Chrome (S:challenge-wasm-one-module, S:challenge-tts-wasm).
-   Still to run: a `Screenshot`/`Readback` on WebGL2 (the CI snapshot case
-   can use a page screenshot instead); the hidden-tab behaviour of a mounted
-   page; one WebGPU measurement; the animation host module and `spawn`/`halt`
-   in the one-module build.
+   The animation host module and `spawn`/`halt` are in the browser module;
+   hidden pages step on a timer. Still to run: a `Screenshot`/`Readback` on
+   WebGL2 (CI's browser snapshot uses a page screenshot); one WebGPU
+   measurement.
 3. **Studio bridge E2E harness** in semio_studio: a Studio-side writer
    (`studio-bridge`'s `tui` binary or a zenoh script) writes
    `<id>.target_position` for one animatable of a fixture face; the face process
@@ -1212,12 +1228,13 @@ P3: `vizij::web`, `mount`/`unmount`, `loadFace`/`unloadFace`, `setRects`,
 module, the WebGL2 `wasm-pack` job, the Playwright screenshots, the
 `snapshot-regression` wasm case. Gate: Quori and Toasty on a plain page within
 tolerance; 25 `loadFace`/`unloadFace` cycles with bounded memory and no WebGL
-context loss (the spike passes both on its own crate); per-face
-`RenderLayers`; the five Node tests green.
+context loss; each viewport showing its own face alone; the five Node tests green. The
+25 cycles run in `npm/@vizij/runtime/tests/browser/memory.mjs` and natively in
+`crates/vizij/tests/headless_face.rs`.
 
 P3b (independent, starts now in the interop crate): the TTS wasm branch (the
-spike's cfg split, 93 lines, plus the 250 ms idle-stop rule in both
-producers), the audio hook, the two wasm-bindgen tests in CI, the fragment
+per-target producers of `vizij-arora-tts`, with the 250 ms idle-stop rule in
+both), the audio hook, the two wasm-bindgen tests in CI, the fragment
 registration on the browser device, the adapted re-exports of the four
 shipped faces. Gate: a Playwright spec calls `say` and
 asserts `standard/vizij/viseme/<shape>` changes over time and the hook received
@@ -1368,9 +1385,9 @@ Risks, most severe first:
    `Surface::configure` in Bevy 0.19.1 (bevy issue 15452, a fix belongs to
    bevy_render or wgpu); wgpu maps a frame over 1 s to a device loss (issue
    9029), so recovery must be configured; emulator frame rates bound nothing.
-   The CI shape (x86_64 image under KVM with lavapipe) is not yet confirmed.
-   The full device half has only been type-checked for Android; linking and
-   launching with `studio` and TTS is a P6 gate. The fallback (Tauri shell
+   The emulator's CI shape (x86_64 image under KVM with lavapipe) and linking
+   and launching with `studio` and TTS are covered by the Android smoke. The
+   fallback (Tauri shell
    around the wasm view) stays recorded, off the path.
 2. **Browser payload and memory**: 28 MB / 8.2 MB gzipped per page for the
    combined module; 137.6 MB of linear memory with one face resident, 195.9 MB
@@ -1411,10 +1428,11 @@ Risks, most severe first:
     several (P0.5); the wrapper is a real `Hal` (routing by key, merging
     updates), so nothing built on it is thrown away, but two wrappers in two
     hosts is the drift this plan exists to avoid.
-13. **Studio's in-page devices have not landed**: Studio on Arora's code
-    stack (semio_studio #256 and the PRs on it, on arora 12.1) is open, and
-    the face-on-a-screen path that goes through it (section 3.7) needs it
-    merged and linking `vizij`'s library. Until then the scene shows faces
+13. **A face on Studio's in-page devices has not landed**: Studio on Arora is
+    on main
+    ([semio_studio#623](https://github.com/semio-ai/semio_studio/pull/623)),
+    and the face-on-a-screen path that goes through it (section 3.7) needs it
+    linking `vizij`'s library. Until then the scene shows faces
     only from devices over the bridge, at the bridge's frame cost (JSON
     bytes until the buffer wire format lands).
 
@@ -1422,16 +1440,15 @@ The eleven decisions of the first review are recorded in section 1. Still
 open for Victor: a tablet, only if the newer emulator images also draw nothing
 (Gate 0); the VIZ ticket for the standard's conversation-state tier.
 
-Open technical questions (the spikes closed bytes loading, App restart,
-picking, the one-module device + view, the `taskrun` fragments in headless
-Chrome, `reqwest` and `spawn_local` in the device's tick, the `AudioContext`
-unlock, and Android rendering on the emulator): `Screenshot` readback on
+Open technical questions (the studies and the code on main closed bytes
+loading, App restart, picking, the one-module device + view, the `taskrun`
+fragments in headless Chrome, `reqwest` and `spawn_local` in the device's tick,
+the `AudioContext` unlock, Android rendering on the emulator and in CI, and the
+private files directory of a NativeActivity process): `Screenshot` readback on
 WebGL2 (also the in-page face-on-a-screen's readback, or the `CanvasTexture`
 alternative); the frame's wire cost over the Studio bridge at 15 Hz and the
 rate a scene screen needs; the hidden-tab behaviour of a mounted page; one WebGPU measurement;
-the overlay canvas's alpha across wgpu versions; `$HOME` and the private files
-dir inside a NativeActivity process; the x86_64 lavapipe emulator under KVM on
-`ubuntu-latest`; a tablet's swapchain formats, frame rate and device-loss
+the overlay canvas's alpha across wgpu versions; a tablet's swapchain formats, frame rate and device-loss
 recovery; Toasty's 16 s face-ready time; frame time of the combined module on
 a GPU adapter with several faces.
 

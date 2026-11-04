@@ -1,15 +1,16 @@
 # The authoring GLB export runs from the JS world model with no renderer: a headless three.js graph reproduces the file
 <!-- tags: family=project; type=reference; project_status=proposal; topics=authoring,export,render,three.js,glb,robotdata,bundle,rust,headless -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [Authoring viewport](authoring-viewport.md) · [Web render anatomy](web-render-anatomy.md)
 
-Raw outputs:
-[vizij-rs `spikes/bevy-everywhere/headless-export/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/headless-export)
-(branch `spikes/bevy-everywhere`) — `headless-export.mjs` (the spike),
-`register.mjs` + `cjs-named-exports-loader.mjs` (loaders), `*_report.json`,
-`trs-vs-defaults.mjs`, `glb-inventory-facts.txt`, `quori-census.json`,
-`node-globals.txt`, `app-render-imports.txt`. The run logs and the exported GLBs
-are not kept: the reports and the figures quoted on this page are the record. Node v22.13.0, three 0.170.0, three-stdlib 2.36.1, taken
+The export this study ran is on vizij-web main ([`9dd663fe`](https://github.com/vizij-ai/vizij-web/commit/9dd663fe)):
+[`build-scene-graph.ts`](https://github.com/vizij-ai/vizij-web/blob/main/packages/@vizij/render/src/functions/build-scene-graph.ts) builds
+the three.js graph from the world model, [`exportScene`](https://github.com/vizij-ai/vizij-web/blob/main/packages/@vizij/render/src/functions/export.ts)
+resolves to the GLB bytes, and
+[`headless-round-trip.node-test.mjs`](https://github.com/vizij-ai/vizij-web/blob/main/packages/@vizij/render/tests/headless-round-trip.node-test.mjs)
+re-exports Quori, Hugo and Toasty in Node. The study's script, reports, run logs and exported
+GLBs are not kept: the figures quoted on this page are the record, and paths read the tree the
+study ran on. Node v22.13.0, three 0.170.0, three-stdlib 2.36.1, taken
 from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
 
 ## Findings
@@ -18,18 +19,15 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    through the unmodified `applyDefaultsToRobotData` and `exportScene`, reproduces
    the shipped file.** Input: `world`, `animatables`, `bundle` from
    `loadGLTFFromBlobWithBundle`; the graph mirrors what `group.tsx:54-58,134-140`
-   and `shape.tsx:86-94,306-322` mount, minus React and r3f events (spike
-   `buildHeadless`, ~120 lines). Quori_Current_Extended: 18 nodes in the same
+   and `shape.tsx:86-94,306-322` mount, minus React and r3f events (~120 lines). Quori_Current_Extended: 18 nodes in the same
    order, 15 meshes, 15 materials, 118 accessors and bufferViews, same
    `extensionsUsed` and scene; `RobotData` deep-equal on 18/18 nodes;
    `VIZIJ_bundle` string-equal (3,626,348 chars); materials 0 diffs;
    `extras.targetNames` equal; BIN chunk 2,808,256 bytes on both sides.
-   Hugo_Current_Extended (21 nodes, `KHR_materials_unlit`) and Toasty_Current
-   (49 nodes, 16 groups, 33 morph meshes) likewise (`*_report.json`).
+   Hugo_Current_Extended (21 nodes, `KHR_materials_unlit`) and Toasty_Current (49 nodes, 16 groups, 33 morph meshes) likewise.
 2. **Round trip holds.** Reloading each headless GLB through the same loader gives
    0 diffs in world (refs and geometry objects excluded, geometry attribute sets
-   compared), animatables, bundle, and `rootBounds` (`*_report.json`,
-   `roundTrip`).
+   compared), animatables, bundle, and `rootBounds`.
 3. **The only residual diffs are node TRS and mesh `weights`, and they expose an
    inconsistency in the shipped files, not in the headless path.** The mounted
    meshes track the runtime store's values written by the device
@@ -40,8 +38,7 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    Quori_Current_Extended 11/18 nodes disagree with their own defaults (eyes,
    lids, mouth morphs), Hugo_Current 6/21, Hugo_Current_Extended 3/21,
    Toasty_Current 2/49 — including Toasty's root `Scene` rotated 90° about X in
-   the file (`[0.707,0,0,0.707]`) against a `(0,0,0)` default; Quori_Current 0/18
-   (`trs-vs-defaults.mjs`). A headless export writes the defaults as TRS, so the
+   the file (`[0.707,0,0,0.707]`) against a `(0,0,0)` default; Quori_Current 0/18. A headless export writes the defaults as TRS, so the
    two agree by construction.
 4. **Nothing in the encoding needs a renderer or the DOM.** three-stdlib's
    `GLTFExporter` reaches `document.createElement("canvas")`/`OffscreenCanvas`
@@ -49,12 +46,11 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    and for compressed-texture `decompress` (which needs a `WebGLRenderer`); the
    binary path uses `Blob`, `TextEncoder`, `blob.arrayBuffer()`, `btoa`
    (`:9-13,467-496`), all present in Node 22 where `OffscreenCanvas`, `ImageData`
-   and `FileReader` are undefined (`node-globals.txt`). `GLTFLoader` builds a
+   and `FileReader` are undefined. `GLTFLoader` builds a
    `TextureLoader` (`GLTFLoader.js:1382-1390`) it only uses for textures; GLB
    buffers are embedded, nothing is fetched; the `DRACOLoader`
    (`load-gltf.ts:247-253`) is constructed and never used. No face fixture hits
-   any of this: 18/18 GLBs in vizij-web have 0 images, 0 textures, no Draco
-   (`glb-inventory-facts.txt`).
+   any of this: 18/18 GLBs in vizij-web have 0 images, 0 textures, no Draco.
 5. **The DOM touchpoints are delivery and timing, not encoding.** `exportScene`'s
    `triggerBlobDownload` (`export.ts:28-39`: anchor element, `URL.createObjectURL`);
    `load-gltf.ts` prefers a blob URL plus `loadAsync` (fetch) whenever
@@ -70,7 +66,7 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    scene (`exportSceneRoot`, kept by `useVizijAssetLoader.ts:825,985`) adds a
    wrapper node (19 for 18), moves `VIZIJ_bundle` onto that wrapper and off the
    `RobotData` root, and writes loader-added `extras.name` and
-   `extras.targetNames` on every node (`quori_report.json`, "fallback-vs-source").
+   `extras.targetNames` on every node.
 7. **`extras.selection` in every shipped face is picking metadata.**
    `shape.tsx:86-94` stores `{id, namespace, type}` in `userData.selection` for
    `onElementClick`; `GLTFExporter` serializes leftover userData as `extras`.
@@ -82,23 +78,21 @@ from `vizij-web/packages/@vizij/render/node_modules` (vizij-web untouched).
    animatables, exported 291,464 bytes with `RobotData` on 49 nodes, reload 0
    diffs, 410 ms total; `deriveRootBounds` is `Box3.setFromObject`
    (`traverse-three.ts:320-358`), pure.
-9. **Cost in Node**, Quori 6.5 MB: load 0.6–1.7 s, graph build 5–100 ms, export
-   0.6–1.0 s, RSS ≤ 273 MB (`*_report.json`, `timingsMs`, `memoryMB`).
+9. **Cost in Node**, Quori 6.5 MB: load 0.6–1.7 s, graph build 5–100 ms, export 0.6–1.0 s, RSS ≤ 273 MB.
 10. **Defaults are arora Values, and the renderables never apply them.** Quori's
     `RobotData` defaults: 36 `struct` vector3, 18 `struct` euler, 15 `struct`
-    rgb, 44 `{f32}`, 0 plain (`quori-census.json`). `@vizij/render`'s guards test
+    rgb, 44 `{f32}`, 0 plain. `@vizij/render`'s guards test
     `.x/.y/.z` (`utils/src/animated-values.ts:227-263`), so a struct default never
     moves a mounted mesh — the device's first writes do. A headless builder must
     decode them (as `unwrapStructComponent`,
     `utils/src/rig/animatable-metadata.ts:91-110`, and runtime-react's
-    `valueJSONToRaw` do); the spike does.
+    `valueJSONToRaw` do); `buildSceneGraph` does.
 11. **Two headless-loading hazards.** `three` must resolve to one real path
     (pnpm's `.pnpm/three@0.170.0`) or `instanceof THREE.Scene` in
     `export.ts:302` fails; and `create-stored-data.ts`'s
     `import { omit } from "lodash"` does not load under Node ESM (UMD build, no
     named exports) — the package's own `node --test` loader
-    (`tests/node-ts-loader.mjs`) cannot import that file either; the spike shims
-    it (`cjs-named-exports-loader.mjs`).
+    (`tests/node-ts-loader.mjs`) cannot import that file either; a Node loader hook giving the UMD build named exports carried the spike past it, and on main the file no longer imports lodash.
 12. **The app wiring already accepts a headless root.** Bodies enter export as
     `unknown` duck-typed on `traverse` (`useVizijExport.ts:88-100`) and
     `exportableBodies[0]` goes to `exportScene` (`:1070`). `ExportDialog` reads
@@ -169,7 +163,7 @@ route holds as objects.
 
 ## Evidence
 
-### Runs (`headless-export.mjs`, headless output versus source)
+### Runs (headless output versus source)
 
 | Face | nodes / meshes / materials / accessors | RobotData diffs | bundle | materials | TRS-diff nodes (file ≠ own defaults) | round trip | load / build / export ms |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -209,7 +203,7 @@ the wrapper, `extras.name`/`extras.targetNames` added on 18 nodes (finding 6).
 | `store.ts`/`store-types.ts` as the app's world-model store (`world`, `animatables`, `values`, `elementSelection`, setters) | ≈ 300 of 538 | store: `refs`, `setReference`, `getExportableBodies`, `onElementClick`, `hoveredElement`, world-mutation actions unused by the app (`actions/*`, `create-animatable`, `create-world-element`, `compare-data`, `util`) | ≈ 600 |
 | **new** `buildSceneGraph(world, animatables, rootId)` + `deriveMaterialName` (from `shape.tsx:394-434`) + Value decode (finding 10) | ≈ 120 | peer deps `@react-three/fiber`, `@react-three/drei`, `react-dom`, `tailwindcss`; `react` once `refs` leave the types | — |
 
-The authoring app imports 22 symbols (`app-render-imports.txt`): 16 uses of
+The authoring app imports 22 symbols: 16 uses of
 `VizijBundleExtension`, 11 of `World`, the store hooks, `Group`/`Feature`/
 `Shape`/`ShapeMaterial`/`Selection` types, `loadGLTFFromBlobWithBundle` (1),
 `exportScene` (1), `createVizijStore`/`VizijContext` (1). None of them is a
@@ -256,7 +250,7 @@ renderer.
   drop `react.createRef` from the loader by removing `refs` from the world types;
   fix the `lodash` named import so `create-stored-data.ts` loads under Node
   ESM; add a Node test in `packages/@vizij/render/tests` that exports a fixture
-  headlessly and asserts `RobotData`/bundle equality (the spike is the seed).
+  headlessly and asserts `RobotData`/bundle equality, [`headless-round-trip.node-test.mjs`](https://github.com/vizij-ai/vizij-web/blob/main/packages/@vizij/render/tests/headless-round-trip.node-test.mjs) on main.
 - P4's "headless exporter" item is: add `buildSceneGraph`, rewire `ExportDialog`
   to the app store, delete the bridge and the fallback body. It can land before
   the viewport swap, since it does not touch the canvas.

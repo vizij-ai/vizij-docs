@@ -1,6 +1,6 @@
 # The local WS bridge, the operator seam and the file dialog: what arora's public API already gives the vizij binary
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,ws-bridge,arora,operator,studio-bridge,rfd,desktop,android -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
@@ -9,9 +9,13 @@ Paths are repo-relative: `arora/` = `arora-sdk/crates/arora/`, `ws/` =
 `vizij/` = `vizij-rs/crates/vizij/`. Line numbers are those of the published
 sources vizij-rs locks (`Cargo.lock`: arora 9.11.1, arora-bridge-ws 4.0.0,
 arora-bridge 4.1.0, arora-types 2.5.1, arora-studio-bridge-client 6.1.0). The
-spike that backs findings 1, 3, 4 and 6 is a native cargo project at
-[vizij-rs `spikes/bevy-everywhere/ws-operator/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/ws-operator)
-(branch `spikes/bevy-everywhere`; its run log: `logs/ws-operator-run.out`).
+spike that backs findings 1, 3, 4 and 6 was a native cargo project; it is not kept, and the wire
+replies quoted on this page are the record. The result is on vizij-rs main:
+[`crates/vizij/src/native/mod.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/native/mod.rs) attaches the local bridge
+through `arora::local_ws_bridge_with`, [`crates/vizij/tests/local_bridge.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/tests/local_bridge.rs)
+drives a real device over the wire, and
+[`crates/vizij/src/settings/operator.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/settings/operator.rs) is the app's
+`Operator`.
 
 ## Findings
 
@@ -205,11 +209,20 @@ spike that backs findings 1, 3, 4 and 6 is a native cargo project at
 
 ## Evidence
 
-- Spike: [vizij-rs `spikes/bevy-everywhere/ws-operator/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/ws-operator)
-  (`Cargo.toml`, `src/main.rs`, `logs/ws-operator-run.out`; `CARGO_TARGET_DIR`
-  inside). Port 9124. It
-  asserts every wire reply listed in finding 1, the `LocalCaller` round trip
-  of finding 3, and the idle-feed count of finding 6.
+- The spike (port 9124) asserted every wire reply listed in finding 1, the
+  `LocalCaller` round trip of finding 3, and the idle-feed count of finding 6.
+  From its run log:
+
+  ```
+  > {"type":"write_values","values":{"face/mouth/open":{"f64":0.7}}}
+  < {"type":"write_values_resp","success":true}
+  > {"type":"write_values","values":{"not/registered":{"f64":1.0}}}
+  < {"type":"write_values_resp","success":false,"message":"Unknown input path(s): not/registered"}
+  > {"type":"invoke","method":"ping","request_id":"r2"}
+  < {"type":"invoke_resp","success":true,"request_id":"r2","value":{"str":"accepted"}}
+    ping reply from the device: Ok(CallResult { ret: String("pong (0 args)"), mutated: [] })
+  idle feed over 500 ms: 59 values_changed pushes, 59 carrying only arora/* keys
+  ```
 - `arora/src/run.rs:108-181` (`local_ws_bridge`, `LocalBridge`),
   `run.rs:238-300` (`run_builder_with_frontend`).
 - `ws/src/{server.rs,bridge.rs,registry.rs,handlers.rs,messages.rs,key.rs,method.rs}`
@@ -272,8 +285,9 @@ spike that backs findings 1, 3, 4 and 6 is a native cargo project at
   is wanted.
 - **P6.2**: the owner prompt does not need an `Operator` either; the arora
   change the phase depends on is the token/key path injection (finding 10).
-- The spike's assertions are the shape of a `vizij` integration test for the
-  local bridge (a client over the wire against a built device), cheap to keep.
+- The spike's assertions are the shape of `vizij`'s integration test for the
+  local bridge (a client over the wire against a built device),
+  [`tests/local_bridge.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/tests/local_bridge.rs).
 
 ## Open questions
 

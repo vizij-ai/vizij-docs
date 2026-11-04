@@ -1,6 +1,6 @@
 # Tickets for one Bevy view everywhere
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,standalone,bevy,wasm,android,authoring -->
-> **Last updated:** 2026-10-02
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](bevy_everywhere-plan.md) · [Reading guide](bevy_everywhere-deck.md) · [Sub-studies](studies/)
 
 The plan's phases decomposed into tickets, each with a definition of done a
@@ -19,8 +19,7 @@ done and cues, and the blocking relations of this spine.
 
 ## Working notes for implementers
 
-- Spike code: vizij-rs branch `spikes/bevy-everywhere`; its README lists what
-  each directory establishes. Build outputs are not committed: a cold Bevy
+- Build costs: a cold Bevy
   wasm build is about 27 CPU-minutes, a cold Android build about 20 minutes,
   a source change 14–37 s; the `wasm-bindgen` CLI must match the lock
   (0.2.128); the native `wasm-opt` binary is needed.
@@ -48,7 +47,7 @@ done and cues, and the blocking relations of this spine.
 
 **Scope.** A GitHub Actions job on `ubuntu-latest` that boots an x86_64 API 35
 (or 34) `google_apis` image under KVM with `-gpu lavapipe`, installs a
-Bevy 0.19 APK built from the spike recipe, and asserts that a face renders.
+Bevy 0.19 APK built from the recipe of `studies/bevy-android-spike.md`, and asserts that a face renders.
 
 **Done when.** The job is green on `main` and on dispatch; it uploads a
 screenshot showing the face, two screenshots 5 s apart that differ in the
@@ -104,9 +103,8 @@ silent within 250 ms (a test).
 `eval/graph_runtime.rs:8` import `urdfik` unconditionally; `rodio 0.20.1`
 has `Sink::get_pos()` (`sink.rs:351`); the guest gate is
 `vizij-animation-module/src/arora_generated/arora.rs:1-6`; the global engine
-`vizij-animation-module/src/lib.rs:82-90`; the native play loop with no
-idle-stop rule is the spike's `src/lib.rs:327`
-(`studies/challenge-tts-wasm.md` 7). `rodio` is used only in `tts_piper.rs`;
+`vizij-animation-module/src/lib.rs:82-90`; the native play loop has no
+idle-stop rule (`studies/challenge-tts-wasm.md` 7). `rodio` is used only in `tts_piper.rs`;
 `crossterm` only in `main.rs:352-355`.
 
 ### T04 `@vizij/runtime` packaging hygiene (S) — [VIZ-139](https://linear.app/semio-ai/issue/VIZ-139)
@@ -132,7 +130,7 @@ self-paced runtime can be stopped from JS.
 the world types; the lodash import in `create-stored-data.ts` loads under Node
 ESM; a Node test loads and re-exports Quori headlessly.
 
-**Done when.** The spike's headless round-trip (Quori, Hugo, Toasty: zero
+**Done when.** The study's headless round-trip (Quori, Hugo, Toasty: zero
 RobotData, bundle and material differences) runs as a `node --test` in the
 package.
 
@@ -180,7 +178,7 @@ lands, a hybrid host wraps its HALs in one `Hal` routing by key (risk 12).
 
 ### T07 The remaining wasm spikes (S) — [VIZ-142](https://linear.app/semio-ai/issue/VIZ-142)
 
-**Scope.** On the one-module spike crate: a `Screenshot`/`Readback` on
+**Scope.** On the browser module: a `Screenshot`/`Readback` on
 WebGL2 in headless Chromium; the hidden-tab behaviour of a mounted page
 (does `run(period)` keep `say` runs alive while `requestAnimationFrame` is
 paused); one WebGPU build and measurement; the animation host module and
@@ -190,10 +188,10 @@ adapter.
 **Done when.** `studies/challenge-wasm-one-module.md` has a numbered finding
 per item, each verified or marked NOT RUN with the reason.
 
-**Implementation cues.** The spike crate and its page harness are in
-[vizij-rs `spikes/bevy-everywhere/challenge-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/challenge-wasm)
-(branch `spikes/bevy-everywhere`); source changes rebuild in 14–37 s on the
-warm target; face-ready is 2 s (Quori) and 16 s
+**Implementation cues.** The module and its page tests are
+[`crates/vizij/src/web.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/web.rs) and
+[`npm/@vizij/runtime/tests/browser/`](https://github.com/vizij-ai/vizij-rs/tree/main/npm/@vizij/runtime/tests/browser);
+source changes rebuild in 14–37 s on a warm target; face-ready is 2 s (Quori) and 16 s
 (Toasty) on SwiftShader.
 
 ## P1, the crate
@@ -233,15 +231,12 @@ root, never as startup resources; each face's scene and camera carry a
 distinct `RenderLayers` propagated over the spawned hierarchy; the binding
 index is per face; `Element.id` is read from RobotData.
 
-**Done when.** Two faces render in one App natively and in the wasm spike
-page, each camera showing only its face; `snapshot-regression` unchanged;
+**Done when.** Two faces render in one App natively and on a browser page, each camera showing only its face; `snapshot-regression` unchanged;
 picking reports the RobotData id.
 
 **Implementation cues.** All faces sit at the world origin, so without
 layers every camera sees every face; `HierarchyPropagatePlugin::<RenderLayers>`
-plus `Propagate` on the scene root did it in the spike
-(`studies/challenge-wasm-one-module.md` 2); mesh picking filters on the
-camera's layers; `RawRobotData` in `meta.rs:86-98` drops `id` today.
+plus `Propagate` on the scene root does it on WebGL2 (`studies/challenge-wasm-one-module.md` 9); main spaces the faces in slots instead, because `RenderLayers` zeroes a mesh's morph targets on Bevy 0.19.1's storage-buffer path; mesh picking filters on the camera's layers; `RawRobotData` in `meta.rs:86-98` drops `id` today.
 
 ## P3, the browser module
 
@@ -283,7 +278,7 @@ singleton and `init()` memoization stay (`npm/@vizij/runtime/src/index.ts:180-26
 ### T11 `say` in the browser (M) — [VIZ-146](https://linear.app/semio-ai/issue/VIZ-146)
 
 **Scope.** The wasm32 branch of `vizij-arora-tts` under one skeleton (the
-spike's cfg split), the page-side `play(bytes, marks) → playhead()` hook with
+cfg split of `studies/challenge-tts-wasm.md`), the page-side `play(bytes, marks) → playhead()` hook with
 its default Web Audio implementation in the JS shim, `API_URL` as a
 constructor parameter, the two wasm-bindgen tests in CI, the TTS host module
 and the `say`/`play_viseme`/`look_at` fragments registered on the browser

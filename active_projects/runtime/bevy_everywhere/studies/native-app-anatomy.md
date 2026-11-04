@@ -1,13 +1,13 @@
 # Anatomy of the `vizij` Bevy app and what a `vizij-view` library would carve out of it
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,bevy,vizij-rs,wasm,android,render-contract,tests -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md)
 
-All paths are repo-relative; `vizij-rs` is the default repo. Registry sources are
-quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
-`Cargo.lock` resolves). Raw command outputs are in
-[vizij-rs `spikes/bevy-everywhere/native-app-anatomy/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/native-app-anatomy)
-(branch `spikes/bevy-everywhere`).
+All paths are repo-relative and read the tree the study ran on; `vizij-rs` is the default
+repo. Registry sources are quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of
+what `Cargo.lock` resolves). The library this study carves out is on vizij-rs main:
+[`crates/vizij/src/lib.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/lib.rs) lays out its modules. Raw command
+outputs are not kept: the commands and figures quoted on this page are the record.
 
 ## Findings
 
@@ -85,8 +85,7 @@ quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
    and tokio-tungstenite — all through `arora`'s default features `native` +
    `tui` (`arora-9.11.1/Cargo.toml` features) and vizij's own `tokio`,
    `crossterm`, `rodio` lines. `cargo tree --target wasm32-unknown-unknown`
-   confirms they stay in the wasm graph (`cargo-tree-targets.txt`);
-   tokio's `rt-multi-thread`/`net` are a `compile_error!` on that target. The
+   confirms they stay in the wasm graph; tokio's `rt-multi-thread`/`net` are a `compile_error!` on that target. The
    interop seams the view needs (`vizij-arora-hal`, `-store`, `-behavior`,
    `-host`, `vizij-api-core`) already build for wasm32-unknown-unknown: CI's
    `wasm` job builds `vizij-arora-web` over them (`.github/workflows/ci.yml:68`,
@@ -103,8 +102,7 @@ quoted as `<crate>-<version>/path` (the `~/.cargo/registry` copy of what
 11. **Tests**: 33 unit tests in the default build (`main.rs` 3, `view.rs` 5,
     `meta.rs` 1, `frames.rs` 6 plus one under `ros2-*`, `device.rs` 17,
     `memory_tests.rs` 1) run on any host without a GPU or display — verified
-    here: `cargo test -p vizij` passes all 33 in 254 s after an 18 min cold debug
-    build (`cargo-test-list.txt`); `device.rs:1364` (`ros4hri_drives_the_adapted_quori`)
+    here: `cargo test -p vizij` passes all 33 in 254 s after an 18 min cold debug build; `device.rs:1364` (`ros4hri_drives_the_adapted_quori`)
     reports `ok` as a skip unless `VIZIJ_FIXTURES` names the Quori GLB; `ros2_tests.rs` (3 live-DDS
     tests, feature `ros2-dds`) are `cfg_attr(target_os = "macos", ignore)` for two
     and `#[ignore]` everywhere for the 35 s leak diagnostic (VIZ-118)

@@ -1,17 +1,19 @@
 # Both viseme fragments run on the browser interpreter in headless Chrome and on the native interpreter in `cargo test`; the wasm say branch streams visemes at the page's playhead, once per tick, never after terminal
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,speech,tts,visemes,wasm,browser,agent,testing -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [speech-and-agent](speech-and-agent.md) · [arora-wasm-constraints](arora-wasm-constraints.md) · [arora-sdk async-functions](https://github.com/semio-ai/arora-sdk/blob/main/docs/async-functions.md)
 
-Compile-and-test spike:
-[vizij-rs `spikes/bevy-everywhere/tts-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/tts-wasm)
-(branch `spikes/bevy-everywhere`; `src/lib.rs` the provider with the cfg split and
-the device composition, `tests/browser.rs` the wasm-bindgen tests, `tests/native.rs`
-the native twin, `tests/debug_native.rs` the `behavior_error()` trace, `www/play.js`
-the page's playback callback, `webdriver.json` the headless Chrome binary,
-`run-{native,browser,device}.sh` the exact commands). The raw build and test logs
-are not kept: the results and log lines quoted on this page are the record.
+The split this study drafted is on vizij-rs main:
+[`vizij-arora-tts`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/interop/vizij-arora-tts/src/lib.rs) carries `mod native` and
+`mod web` under one `say`, with the idle-stop rule of finding 7 in both producers
+([`IDLE_STOP`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/interop/vizij-arora-tts/src/lib.rs)); its browser tests,
+[`tests/browser.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/interop/vizij-arora-tts/tests/browser.rs), run in headless Chrome in
+[`ci.yml`](https://github.com/vizij-ai/vizij-rs/blob/main/.github/workflows/ci.yml). On this page `play.js` names the page's playback hook,
+on main [`npm/@vizij/runtime/src/audio.ts`](https://github.com/vizij-ai/vizij-rs/blob/main/npm/@vizij/runtime/src/audio.ts), and `compose()`
+the browser device's composition, on main in [`crates/vizij/src/web.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/web.rs).
+The study's crate, its native twin tests, its run scripts and the raw build and test logs are not
+kept: the results and log lines quoted on this page are the record.
 Registry versions are vizij-rs's lock: arora 9.11.1 (arora-engine 4.1.0,
 arora-behavior 8.4.0, arora-types 2.5.1), reqwest 0.13.5, tokio 1.53.1, rodio 0.20.1,
 wasm-bindgen 0.2.128, wasm-bindgen-test 0.3.78; vizij-rs at `9406f66`, clean.
@@ -34,17 +36,16 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
    tokio `rt-multi-thread` is the compile error on wasm (`tokio-1.53.1/src/lib.rs:463`),
    rodio's blocking loop and `Instant` are the rest. The spike keeps the contract,
    `synthesize`, the marks→shape mapper (`shape_at`), the run map and the `say` entry
-   shared, and gates `platform::{Run, spawn, poll}` per target (`src/lib.rs:241`
-   `mod native` under `cfg(not(target_arch = "wasm32"))`, `:346` `mod web` under
+   shared, and gates `platform::{Run, spawn, poll}` per target (`mod native` under
+   `cfg(not(target_arch = "wasm32"))`, `mod web` under
    `cfg(target_arch = "wasm32")`); the wasm side adds wasm-bindgen,
-   wasm-bindgen-futures, js-sys, serde-wasm-bindgen and nothing else (`Cargo.toml`).
+   wasm-bindgen-futures, js-sys, serde-wasm-bindgen and nothing else.
    The native branch builds and tests clean (4 m 01 s cold).
 3. **The wasm producer is `spawn_local` + a JS callback, and the tick only samples.**
    `spawn` spawns a future that awaits `synthesize`, then calls the page's
    `play(Uint8Array, marks)` and keeps the `playhead()` function it returns in the
    run's `Rc<RefCell<Phase>>`; `poll` calls `playhead()` each tick — a number is the
-   playhead in ms (mapped through `shape_at`), `null` ends the run in `Success`, a
-   throw ends it in `Failure` (`src/lib.rs:369-437`). The wasm binary carries no Web
+   playhead in ms (mapped through `shape_at`), `null` ends the run in `Success`, a throw ends it in `Failure`. The wasm binary carries no Web
    Audio binding: no `AudioContext` web-sys feature, no decode, no scheduling.
 4. **The run map lives in the module closure, not in a `static`.** A wasm run holds a
    `js_sys::Function`, which is `!Send`; the product's
@@ -52,27 +53,23 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
    requires `Run: Send` and does not compile on wasm32. A `HostModule` function is
    `Box<dyn FnMut(Call) -> …>` with no `Send` bound (`arora-engine-4.1.0/src/module.rs:37`),
    so a `Provider { config, synth, runs }` captured by the `described_function` closure
-   is the map's home on both targets (`src/lib.rs:164-181`). Runs stay content-keyed
-   (`utterance_key`, `:513`; the ABI carries no run id) but are per module instance.
+   is the map's home on both targets. Runs stay content-keyed (the ABI carries no run id) but are per module instance.
 5. **`API_URL` becomes a constructor parameter on every target.** `Config { api_base }`
    replaces `std::env::var("API_URL")` (`vizij-arora-tts/src/lib.rs:187`, silently the
-   default on wasm); on wasm `Config` also carries `play: js_sys::Function`
-   (`src/lib.rs:148-156`). The device composition is the only caller that knows either.
+   default on wasm); on wasm `Config` also carries `play: js_sys::Function`. The device composition is the only caller that knows either.
 6. **The `AudioContext` unlock is the page's, at the gesture that starts the session.**
    The provider's `say` runs inside device ticks — `requestAnimationFrame` or
    `AroraWeb::run`'s loop — and neither is a user-activation context, so a
    provider-side `resume()` stays `suspended` under the autoplay policy. The page
    creates one context and calls `unlock()` from the click that also requests the
-   microphone. `www/play.js` handles a still-suspended context: `playhead()` returns 0
+   microphone. `play.js` handles a still-suspended context: `playhead()` returns 0
    until `statechange` reports `running`, so the lips wait with the audio (`Running` +
    `sil`), and playback starts on the context's own clock (`ctx.currentTime - startedAt`).
    NOT RUN (the tests script the playhead): the P3b gate's item.
 7. **Halting a say run reaches the provider only as silence.** The interpreter's halt
    prunes the fragment, so the provider's `say` stops being invoked; nothing in the
    module ABI tells it. `play.js` turns the missing poll into a stop: no `playhead()`
-   call for `IDLE_STOP_MS` = 250 ms stops the source (`www/play.js:23`). Neither the
-   spike's native producer (`play` loops until the sink is empty, `src/lib.rs:327`)
-   nor the product crate (no idle rule in `vizij-arora-tts/src/lib.rs`) has that rule,
+   call for `IDLE_STOP_MS` = 250 ms stops the source. Neither the spike's native producer (`play` loops until the sink is empty) nor the product crate (no idle rule in `vizij-arora-tts/src/lib.rs`) has that rule,
    so a halted native run plays its audio to the end; the same last-poll rule in that
    loop is what makes "interruption is the run's halt" (plan 3.4) true on both
    targets. NOT RUN: no test halts a run.
@@ -83,8 +80,7 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
    is `CallBridgeFunctions::dispatch` → `arora_call`, the engine's synchronous
    in-process path (`vizij-arora-behavior/src/lib.rs:62-90`), the same on wasm.
 9. **Both fragments run on the native interpreter in a plain `cargo test`, over the
-   store and the interpreter with no HAL** (3 s warm, `tests/native.rs`: 2 passed,
-   0.37 s):
+   store and the interpreter with no HAL** (3 s warm: 2 passed, 0.37 s):
    - `play_viseme_runs_on_the_native_interpreter`: ok — `aa` > 0.8 and
      `standard/vizij/viseme = "aa"` with `Running` after 0.2 s; `aa` < 0.1, `sil` and
      `Success` after 0.65 s; the twin of `device.rs:1152`
@@ -108,9 +104,8 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
       taskrun node dispatches the viseme module in-process.
     - `say_streams_the_visemes_at_the_page_s_playhead`: `say("hello")` on the wasm
       provider with a scripted synthesizer awaited through `spawn_local` and a JS
-      `play` whose playhead advances 40 ms per poll and returns `null` past 260 ms
-      (`tests/browser.rs:178-189`); marks `p`@0, `a`@100, `sil`@200. The trace
-      (`step_traced`, `tests/browser.rs:56`, one line per 16 ms tick; `polls` is the
+      `play` whose playhead advances 40 ms per poll and returns `null` past 260 ms; marks `p`@0, `a`@100, `sil`@200. The trace
+      (one line per 16 ms tick; `polls` is the
       page's count of `playhead()` calls):
 
       | tick | status | viseme | aa | PP | polls | playhead |
@@ -140,9 +135,7 @@ Toolchain: rustc 1.96.0, wasm-pack 0.15.0, Chrome for Testing 149.0.7827.55
     input node with neither a staged store value nor a `value` default fails the whole
     evaluation (`vizij-graph-core/src/eval/eval_node.rs:2387`); `Arora::step` returns
     `Ok` and the message is only in `behavior_error()`, while no fragment output is
-    written (the `debug_native` trace: three ticks, status
-    and viseme keys `None`). Both test twins write `sensor/x` before the first tick
-    (`stage_base_input`, `tests/native.rs:48`, `tests/browser.rs:55`); the product's
+    written (a native trace: three ticks, status and viseme keys `None`). Both test twins write `sensor/x` before the first tick; the product's
     device composes over the ros4hri mapping, whose inputs are shaped. A browser device
     with an unstaged input runs a `say` that moves nothing and reports nothing.
 13. **wasm-pack 0.15 fetches the chromedriver of Chrome for Testing's Stable channel,
@@ -170,8 +163,7 @@ tick. The cfg needed: the two `[target]` dependency sections, `mod native` / `mo
 the `play` field of `Config`, and a scripted-synthesizer seam that is wasm-only (an
 `Rc` future cannot cross onto the tokio runtime). The unlock is the page's, in the
 gesture handler that opens the session; every Web Audio concern stays in `play.js`
-(findings 2–7). `compose()` is the browser twin of `device.rs:345-400`
-(`src/lib.rs:445-465`) and builds on both targets with `arora = { default-features = false }`.
+(findings 2–7). `compose()` is the browser twin of `device.rs:345-400` and builds on both targets with `arora = { default-features = false }`.
 
 **Do the say / play_viseme fragments run on the browser interpreter?** Yes, measured:
 both are spawned through `interpreter_module::encode_spawn` (SPAWN) into the
@@ -209,17 +201,17 @@ P3b item.
 
 ### Commands and results
 
-| Check | Command (in the spike dir, `PATH` with `~/.cargo/bin`) | Result |
+| Check | Command (in the study's crate, `PATH` with `~/.cargo/bin`) | Result |
 |---|---|---|
-| wasm32 provider + composition | `CARGO_TARGET_DIR=…/arora-wasm/target cargo check --target wasm32-unknown-unknown` | clean, 0 warnings, 54 s |
-| native provider + tests build | `CARGO_TARGET_DIR=…/arora-wasm/target-host cargo check --tests` | clean, 4 m 01 s cold |
-| native tests, all targets (`run-native.sh`) | `CARGO_TARGET_DIR=…/arora-wasm/target-host cargo test -- --nocapture` | 3 s warm (build 1.24 s): lib 1 passed; `native` 2 passed, 0.37 s (say → `Failure` after 4 ticks / 83 ms); `debug_native` 1 passed, 0.14 s |
-| product device.rs tests (`run-device.sh`) | `cd vizij-rs && CARGO_TARGET_DIR=…/tts-wasm/target cargo test --locked -p vizij --bin vizij -- device::tests::a_play_viseme_run… a_new_play_viseme_run… a_say_run…` | 73 s (rebuild of `vizij` 55.6 s): 3 passed, 0 failed, 9.87 s; cold build 26 m 04 s, 3 passed, 3.63 s |
-| browser tests, wasm-pack's own driver | `CARGO_TARGET_DIR=…/arora-wasm/target wasm-pack test --headless --chrome -- --test browser` | 429 s: wasm32 test build 1 m 31 s, wasm-bindgen CLI 0.2.128 install 4 m 45 s, chromedriver 153 fetched, session refused against Chrome 152 |
-| browser tests (`run-browser.sh`) | `CARGO_TARGET_DIR=…/arora-wasm/target wasm-pack test --headless --chrome --chromedriver ~/Library/Caches/.wasm-pack/chromedriver-f07dc4f5987c4c26/chromedriver -- --test browser -- --nocapture` with `webdriver.json` | 16 s warm: 2 passed, 0 failed, 0.74 s; with the per-tick trace, 73 s (recompile 8.5 s + 2.5 s): 2 passed, 0.81 s |
+| wasm32 provider + composition | `cargo check --target wasm32-unknown-unknown` | clean, 0 warnings, 54 s |
+| native provider + tests build | `cargo check --tests` | clean, 4 m 01 s cold |
+| native tests, all targets | `cargo test -- --nocapture` | 3 s warm (build 1.24 s): lib 1 passed; `native` 2 passed, 0.37 s (say → `Failure` after 4 ticks / 83 ms); `debug_native` 1 passed, 0.14 s |
+| product device.rs tests | `cd vizij-rs && cargo test --locked -p vizij --bin vizij -- device::tests::a_play_viseme_run… a_new_play_viseme_run… a_say_run…` | 73 s (rebuild of `vizij` 55.6 s): 3 passed, 0 failed, 9.87 s; cold build 26 m 04 s, 3 passed, 3.63 s |
+| browser tests, wasm-pack's own driver | `wasm-pack test --headless --chrome -- --test browser` | 429 s: wasm32 test build 1 m 31 s, wasm-bindgen CLI 0.2.128 install 4 m 45 s, chromedriver 153 fetched, session refused against Chrome 152 |
+| browser tests | `wasm-pack test --headless --chrome --chromedriver ~/Library/Caches/.wasm-pack/chromedriver-f07dc4f5987c4c26/chromedriver -- --test browser -- --nocapture` with `webdriver.json` | 16 s warm: 2 passed, 0 failed, 0.74 s; with the per-tick trace, 73 s (recompile 8.5 s + 2.5 s): 2 passed, 0.81 s |
 | fragment unit tests (prior study) | `cargo test -p vizij-arora-behavior -p vizij-arora-host --lib` | 4 + 5 pass |
 
-### The JS playback contract (`www/play.js`)
+### The JS playback contract (`play.js`)
 
 `createPlayback()` → `{ play, unlock, context }`. `play(bytes: Uint8Array, marks:
 {time, value}[]) → playhead: () => number | null`: `0` while decoding or while the
@@ -278,12 +270,10 @@ counts of `packages/@vizij/speech-react/src/**` and `apps/tutorial-agent-face/sr
    the device's tick" is compile-verified only (finding 1) and "the `AudioContext`
    user-gesture unlock" is designed, not run (finding 6): both are the P3b gate's
    Playwright spec.
-2. **Add the two wasm-bindgen tests to `vizij-arora-tts`** (`tests/browser.rs` is the
-   draft) and run them in CI with `wasm-pack test --headless --chrome`; ci.yml runs
+2. **Add the two wasm-bindgen tests to `vizij-arora-tts`** ([`tests/browser.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/interop/vizij-arora-tts/tests/browser.rs) on main) and run them in CI with `wasm-pack test --headless --chrome`; ci.yml runs
    no browser test today. CI needs Chrome and chromedriver of one version installed
    together (finding 13) and the wasm-bindgen CLI pinned to the lock (0.2.128).
-3. **Write the idle-stop rule into both producers** with the branch (the native loop
-   at `src/lib.rs:327` and the product crate have none), and state in `docs/skills.md`
+3. **Write the idle-stop rule into both producers** with the branch (the native loop and the product crate have none), and state in `docs/skills.md`
    that a halted say run goes silent within 250 ms.
 4. **The publish prerequisite stands**: the crate chain (tts 2.0.0, behavior 1.1.0,
    host 2.1.0) is on main and unpublished (S:speech-and-agent 24); the wasm branch is

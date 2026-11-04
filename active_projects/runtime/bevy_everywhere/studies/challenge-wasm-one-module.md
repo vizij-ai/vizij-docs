@@ -1,31 +1,39 @@
 # One wasm module holds N JS-paced Arora devices and one Bevy 0.19 App for the page's lifetime: faces load from bytes into per-face viewports, 25 reload cycles hold memory flat, mesh picking works on SwiftShader, and the App exits and restarts in the same instance
 <!-- tags: family=project; type=reference; project_status=proposal; topics=runtime,bevy,wasm,browser,arora,picking,memory,testing -->
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-11-04
 
 > **Related documents:** [Central plan](../bevy_everywhere-plan.md) · [bevy-wasm-spike](bevy-wasm-spike.md) · [arora-wasm-constraints](arora-wasm-constraints.md) · [challenge-verdicts](challenge-verdicts.md)
 
-Spike:
-[vizij-rs `spikes/bevy-everywhere/challenge-wasm/`](https://github.com/vizij-ai/vizij-rs/tree/spikes/bevy-everywhere/spikes/bevy-everywhere/challenge-wasm)
-(branch `spikes/bevy-everywhere`; `src/lib.rs` the crate, `build.sh`, `index.html`
-the page, `q1.js`/`q2.js`/`q4.js`/`q5.js` the Playwright drivers over `common.js`,
-`logs/` each driver's result as JSON, `shots/` the screenshots). Build logs, the
-HTTP log, the browser console logs and the built modules are not kept: the
-figures and log lines quoted on this page are the record. The crate builds in the `bevy-wasm`
-spike's target directory; `pkg/` is the base module, `pkg-picking/` the module with
-`bevy_picking` + `mesh_picking`. The machine's load average was 100–190 during the
+The composition this study proved is on vizij-rs main as
+[`crates/vizij/src/web.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/web.rs): one App per page, `mount` once, `loadVizij`
+per face, each face a JS-paced device (`VizijRuntime`) drawn in the rectangle `placeVizij` gives it,
+behind [`@vizij/runtime`](https://github.com/vizij-ai/vizij-rs/tree/main/npm/@vizij/runtime). Its gates run there:
+[`tests/browser/faces.mjs`](https://github.com/vizij-ai/vizij-rs/blob/main/npm/@vizij/runtime/tests/browser/faces.mjs) (two faces on one
+canvas, picks), [`tests/browser/memory.mjs`](https://github.com/vizij-ai/vizij-rs/blob/main/npm/@vizij/runtime/tests/browser/memory.mjs)
+(25 cycles), and natively
+[`crates/vizij/tests/headless_face.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/tests/headless_face.rs). Two mechanisms on
+main differ from the ones measured here. Faces are kept apart by slots along X, not by render layers
+([`SLOT_STRIDE`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/view/mod.rs)): a mesh carrying `RenderLayers` renders its morph
+targets at zero weight on Bevy 0.19.1's storage-buffer morph path. Picks are cast over the morphed
+positions, not by Bevy's mesh picking ([`view/pick.rs`](https://github.com/vizij-ai/vizij-rs/blob/main/crates/vizij/src/view/pick.rs)), which
+misses an element a morph has moved.
+
+The study's crate, page, Playwright drivers, result files, screenshots, build, HTTP and browser
+console logs and built modules are not kept: the figures and log lines quoted on this page are the
+record. The crate built in the `bevy-wasm` study's target directory; the base module and a
+second module with `bevy_picking` + `mesh_picking` are measured separately. The machine's load average was 100–190 during the
 builds and the first browser runs (another spike's Android build ran alongside) and
 15 during the last runs; sizes and pass/fail results do not depend on it, timings do
 and are quoted with their load.
 
 ## Findings
 
-1. **The device and the view compile and run in one wasm module.** `Cargo.toml`
-   takes `bevy =0.19.1` with the seven-feature base, `arora =9.11.1` with
+1. **The device and the view compile and run in one wasm module.** The crate takes `bevy =0.19.1` with the seven-feature base, `arora =9.11.1` with
    `default-features = false`, `arora-types 2.5.1`, `arora-behavior 8.4.0`,
    `arora-hal 3.0.0`, the four `vizij-arora-*` interop crates and `vizij-api-core`
    as path dependencies, `getrandom 0.4.3` with `wasm_js`, `wasm-bindgen 0.2.128`
    (CLI 0.2.128). `cargo build --release --target wasm32-unknown-unknown --lib`
-   (`build.sh`) rebuilt the dependency graph in 23 m 26 s wall / 6 m 22 s user
+   rebuilt the dependency graph in 23 m 26 s wall / 6 m 22 s user
    on a target directory that already held Bevy (the vizij and arora crates plus the Bevy crates that feature unification recompiled); a
    crate-only rebuild is 37.0 s + 22.3 s of `wasm-bindgen --target web` at load
    100 and 13.4 s + 6.9 s at load 15. The crate keeps `crate-type = ["cdylib", "rlib"]`,
@@ -36,85 +44,67 @@ and are quoted with their load.
    `wasm-opt -Os --strip-debug --strip-producers` (binaryen 123, 7 m 23 s at load
    110; 8,219,061 B gzipped). The bevy-wasm spike:
    47,811,936 / 42,276,381 (9,652,814 gz) / 25,992,930 (7,625,738 gz). Sections
-   after wasm-opt: code 23,271,247 B, data 4,359,076 B (`wasm-sections.py`).
+   after wasm-opt: code 23,271,247 B, data 4,359,076 B.
    With `bevy_picking` + `mesh_picking`: 52,499,568 B raw, 46,566,489 B after
    wasm-bindgen (+1,594,177 B), 10,648,989 B gzipped (+273,880 B); that feature
    pair recompiles twelve Bevy crates (`bevy_render`, `bevy_mesh`, `bevy_camera`,
    `bevy_gltf`, `bevy_pbr`, …): 20 m 52 s wall / 17 m 24 s user.
 3. **The JS-owned device and the Bevy world share a `RigHal` clone without a
-   borrow conflict.** `FaceDevice` (`src/lib.rs:269`) holds
+   borrow conflict.** `FaceDevice` holds
    `Rc<RefCell<Option<Arora>>>`; `step(dtMs)` takes `try_borrow_mut` and
-   surfaces a held borrow as a JS exception (`src/lib.rs:292-304`); the Bevy world
+   surfaces a held borrow as a JS exception; the Bevy world
    holds only the `RigHal` clone on a per-face `Face` component and reads
-   `pose()` in `apply_poses` every `Update` (`src/lib.rs:845`, the logic of
-   `crates/vizij/src/view.rs:477-560`). `stepErrors` stayed empty in every run
-   (`logs/q1.json`, `logs/q2.json`, `logs/q4.json`, `logs/q5.json`); a Quori pose
+   `pose()` in `apply_poses` every `Update` (the logic of `crates/vizij/src/view.rs:477-560`). `stepErrors` stayed empty in every run; a Quori pose
    has 372 entries, a Toasty pose 310.
 4. **`step()` from `requestAnimationFrame` interleaves with Bevy's frame loop one
    to one, Bevy first.** The order trace is `FSFSFS…` with one face and `SSFSSF…`
-   with two (`orderTrace` in `logs/q1.json`, `logs/q2.json`; `F` = `apply_poses`
-   ran, `S` = a JS `step`). bevy_winit registers its `requestAnimationFrame`
+   with two (`F` = `apply_poses` ran, `S` = a JS `step`). bevy_winit registers its `requestAnimationFrame`
    callback at `mount`, the page registers its loop afterwards, so within one
    browser frame Bevy draws the pose of the previous step and a step's writes are
    drawn one frame later. Frames and page ticks count together (12/12, 23/23); no
    frame runs twice between two steps and no step twice between two frames.
 5. **A rig input written from JS moves the face.**
-   `rig/quori_latest/propsrig/l_eye/translation/x` 3.35 → 6.35 (`readValues`
-   before and after, `logs/q1.json`) changes one pixel cluster of 5,446 px with
-   bounding box (384, 240)–(472, 336), the right-hand eye of slot A
-   (`python3 diffbox.py shots/q1-1.png shots/q1-2.png`); nothing else changes.
+   `rig/quori_latest/propsrig/l_eye/translation/x` 3.35 → 6.35 (`readValues` before and after) changes one pixel cluster of 5,446 px with
+   bounding box (384, 240)–(472, 336), the right-hand eye of slot A; nothing else changes.
    `rig/quori_latest/propsrig/mouth/jawud/value` 0.093 → 1.0 opens the mouth
-   (cluster (192, 312)–(496, 400), `shots/q2b-cycle-3.png` vs
-   `shots/q2b-2-final-open.png`).
+   (cluster (192, 312)–(496, 400)).
 6. **On Quori a standard mouth key is a graph output, not a free input.**
    `rig/quori_latest/standard/vizij/mouth/morph/jaw_open` written 1.0 reads 1.0
-   before the next step and 0 after it (`standardKey` in `logs/q2.json`,
-   `logs/q2b.json`: `afterWrite {f32: 1}`, `afterStep {f32: 0}`); the bundle's
-   rig graph lists it as a direct input (`logs/quori-bundle-summary.txt:231`), so
+   before the next step and 0 after it (`afterWrite {f32: 1}`, `afterStep {f32: 0}`); the bundle's
+   rig graph lists it as a direct input, so
    one of the composed `pose-driver`/`standard-adaptation` graphs writes it every
    tick. A consumer moves Quori's mouth through the rig inputs or the pose weights.
 7. **The GLB reaches Bevy from the bytes JS hands over, never from `assets/`.**
-   `MemoryAssetReader { root: Dir }` is registered as the `mem` source before
-   `DefaultPlugins` (`src/lib.rs:454-457`; `bevy_asset-0.19.1/src/io/memory.rs:265`),
-   `AssetPlugin { meta_check: AssetMetaCheck::Never }` (`src/lib.rs:472`; the
-   field is `meta_check`, `bevy_asset-0.19.1/src/lib.rs:254`, the variant
+   `MemoryAssetReader { root: Dir }` is registered as the `mem` source before `DefaultPlugins` (`bevy_asset-0.19.1/src/io/memory.rs:265`),
+   `AssetPlugin { meta_check: AssetMetaCheck::Never }` (the field is `meta_check`, `bevy_asset-0.19.1/src/lib.rs:254`, the variant
    `AssetMetaCheck::Never`, `lib.rs:319`), each push lands under
-   `mem://<faceId>-<n>.glb` (`src/lib.rs:506-520`, `Dir::insert_asset`,
-   `memory.rs:50`) and is removed at despawn (`src/lib.rs:686`, `Dir::remove_asset`,
-   `memory.rs:77`). The HTTP log holds one `GET /assets/<name>.glb` per face file
+   `mem://<faceId>-<n>.glb` (`Dir::insert_asset`, `memory.rs:50`) and is removed at despawn (`Dir::remove_asset`, `memory.rs:77`). The HTTP log holds one `GET /assets/<name>.glb` per face file
    per page load (the page's own `fetch`) and no `.meta` request over 27 requests.
-   The scene renders (`shots/q1-1.png`).
+   The scene renders.
 8. **Two faces render in one App, one canvas, two viewport cameras.** Quori in
    slot A (600 × 400), Toasty in slot B (340 × 300), `Camera.viewport` from the DOM
-   rects through `setRect` (`src/lib.rs:922`), `ClearColor::NONE` outside the
-   viewports and the page colour showing through (`shots/q4.png`,
-   `shots/q2b-1-two-faces.png`). Both devices step from the page's one loop and
+   rects through `setRect`, `ClearColor::NONE` outside the
+   viewports and the page colour showing through. Both devices step from the page's one loop and
    each answers its own writes (Toasty's `propsrig/mouth/jawud/value` opens
    Toasty's mouth only).
 9. **All faces sit at the world origin, so each camera sees every face until
    render layers separate them.** Without layers, Toasty appears inside Quori's
-   viewport at Quori's scale and Quori's opened mouth appears at the bottom of
-   Toasty's (`shots/q2-1-two-faces.png`, `shots/q2-2-final-open.png`). One
+   viewport at Quori's scale and Quori's opened mouth appears at the bottom of Toasty's. One
    `RenderLayers::layer(n)` per face on its camera and a `Propagate(RenderLayers)`
    on the scene root under `HierarchyPropagatePlugin::<RenderLayers>`
-   (`bevy_app-0.19.1/src/propagate.rs:43,73`; `src/lib.rs:484, 675, 712-716`)
-   follow the scene's children as they spawn and confine each viewport to its face
-   (`shots/q4.png`, `shots/q2b-2-final-open.png`).
+   (`bevy_app-0.19.1/src/propagate.rs:43,73`)
+   follow the scene's children as they spawn and confine each viewport to its face.
 10. **25 `unloadFace`/`loadFace` cycles hold linear memory flat and keep the WebGL
     context.** `WebAssembly.Memory.buffer.byteLength` is 195,887,104 B once both
     faces are resident and identical after every unload and every reload of all 25
     cycles; `isContextLost()` false throughout, no `webglcontextlost` event, 25
-    `despawned` and 27 `indexed` log lines (`logs/q2.json`);
-    the 25th reload renders pixel-identical to the first two-face frame
-    (`pixdiff.py shots/q2-1-two-faces.png shots/q2-cycle-25.png`: 0 changed), and
+    `despawned` and 27 `indexed` log lines; the 25th reload renders pixel-identical to the first two-face frame (0 pixels changed), and
     both devices answer writes afterwards (finding 5). The 25 cycles took 376.6 s
-    at load 110 (per-cycle 9.4–25.1 s, reload ready in 4.4–15.6 s); at load 15 a
-    reload is ready in 2.3–2.7 s (`logs/q2b.json`).
+    at load 110 (per-cycle 9.4–25.1 s, reload ready in 4.4–15.6 s); at load 15 a reload is ready in 2.3–2.7 s.
 11. **Mesh picking works under WebGL2 on SwiftShader and reports the glTF node
     and its RobotData id.** `MeshPickingPlugin` plus an `On<Pointer<Click>>`
-    observer that walks `ChildOf` up to the `Face` (`src/lib.rs:980`); seven
-    Playwright clicks, every one hit its own face and a named node
-    (`logs/q4.json`): slot A (301, 250) → `InnerFace` (`a934cf4f…`), (206, 205) →
+    observer that walks `ChildOf` up to the `Face`; seven
+    Playwright clicks, every one hit its own face and a named node: slot A (301, 250) → `InnerFace` (`a934cf4f…`), (206, 205) →
     `R_EyeWhite`, (386, 205) → `L_EyeWhite`, (56, 65) → `Background`; slot B
     (106, 150) → `R_BLid`, (171, 215) → `Mouth` (`2e67149d…`), (36, 65) →
     `Stripe8`; the JS callback fired once per click. The backend casts against
@@ -128,18 +118,13 @@ and are quoted with their load.
     landed on `InnerFace`: the ray cast uses the mesh's base vertices, not the
     morphed ones.
 12. **`AppExit` ends the App and a second `App::run` in the same module instance
-    succeeds.** `stop()` raises a flag that `bookkeeping` turns into
-    `AppExit::Success` (`src/lib.rs:952-958`); the world, with a `NonSend`
+    succeeds.** `stop()` raises a flag that `bookkeeping` turns into `AppExit::Success`; the world, with a `NonSend`
     `RunGuard`, is dropped 0.7–1.9 s later; frames stop (18, 18) while the page's
     ticks go on (35, 44) and the JS-owned device keeps stepping (66 steps,
-    `deviceAfterStop.ok`); a write on that device changes no pixel
-    (`shots/q5b-2-stopped.png` vs `shots/q5b-2b-stopped-after-write.png`: 0
-    changed). A second `mount()` logs `Creating new window`, `App::run returned:
+    `deviceAfterStop.ok`); a write on that device changes no pixel. A second `mount()` logs `Creating new window`, `App::run returned:
     Success`, one `ERROR Could not set global logger and tracing subscriber as
     they are already set` from `LogPlugin`, then loads, indexes and renders a new
-    face whose eye moves on a write (frames 41 → 50; cluster (384, 240)–(472, 336),
-    `shots/q5b-3-restarted.png` vs `shots/q5b-4-restarted-after-write.png`;
-    `logs/q5.json`, `logs/q5b.json`). No
+    face whose eye moves on a write (frames 41 → 50; cluster (384, 240)–(472, 336)). No
     `RecreationAttempt`. The mechanism in winit 0.30.13: `EventLoopBuilder::build`
     refuses a second loop while the static `EVENT_LOOP_CREATED` is set
     (`winit-0.30.13/src/event_loop.rs:69,118-120`) and the web runner clears the
@@ -148,20 +133,18 @@ and are quoted with their load.
     `event_loop.rs:130-133`, `cfg(web_platform)`). The bevy-wasm spike's
     `RecreationAttempt` came from a second `App::run` while the first loop was
     still alive.
-13. **The canvas keeps its last frame after `AppExit`.** `shots/q5b-1-running.png`
-    and `shots/q5b-2-stopped.png` are pixel-identical; an unmounting page clears
+13. **The canvas keeps its last frame after `AppExit`.** The running and stopped screenshots are pixel-identical; an unmounting page clears
     or hides the canvas itself, and the exited App leaves its `mem` entries and
     the static `faceCount` behind (172.0 MB after a restart with one new Quori).
 14. **Linear memory: 5.6 MB after `init`, 19.5 MB after `mount`, 35.0 MB after
     the first frames, 137.6 MB with one Quori, 195.9 MB with Quori and Toasty,
-    196.5 MB with picking** (`logs/q1.json`, `logs/q2.json`, `logs/q4.json`); the
+    196.5 MB with picking**; the
     two-face figure is the plateau of finding 10. The GLB is copied twice inside
     the module (the `mem` source's `Vec<u8>` and the loader's read) on top of the
     page's `Uint8Array`; decoded textures and the Bevy allocator's retained blocks
     make up the rest, and the JS-visible heap size is a high-water mark.
 15. **Face-ready time is dominated by Bevy's load, not the device.** Quori is
-    ready 2.2 s after `loadFace` at load 15 (`logs/q4.json`, `logs/q5b.json`),
-    26 s at load 100, 61–81 s at load 190; Toasty 15.8–17.6 s at every load
+    ready 2.2 s after `loadFace` at load 15, 26 s at load 100, 61–81 s at load 190; Toasty 15.8–17.6 s at every load
     (`readyMsB`); composing the device (bundle parse, graph, neutral staging,
     `Arora::build`) is 0.5–0.8 s of it (`loadMs`).
 
@@ -194,27 +177,25 @@ and are quoted with their load.
 
 | Item | Command | Result |
 | --- | --- | --- |
-| Base build | `./build.sh` (`CARGO_TARGET_DIR=../bevy-wasm/target`; `cargo build --release --target wasm32-unknown-unknown --lib`; `../bevy-wasm/tools/bin/wasm-bindgen --target web --out-dir pkg --no-typescript`) | 23 m 26 s (deps); crate-only 37.0 s + 22.3 s, 13.4 s + 6.9 s; 50,735,413 B raw, 44,972,312 B after wasm-bindgen, 10,375,109 B gz |
-| wasm-opt | `../bevy-wasm/tools/binaryen-version_123/bin/wasm-opt -Os --strip-debug --strip-producers pkg/challenge_wasm_bg.wasm -o pkg/challenge_wasm_bg.native-opt.wasm` | 27,959,526 B, 8,219,061 B gz, 7 m 23 s |
-| Picking build | `./build.sh picking` (`--features picking` = `bevy/bevy_picking`, `bevy/mesh_picking`; output `pkg-picking/`) | 20 m 52 s wall, 17 m 24 s user; 52,499,568 B raw, 46,566,489 B after wasm-bindgen, 10,648,989 B gz |
-| Server | `./serve.sh` (`python3 -m http.server 8766`, log `logs/http.log`) | 27 requests, one per `.glb` per page load, no `.meta` |
-| Q1 | `NODE_PATH=semio_studio/node_modules node q1.js http://127.0.0.1:8766/index.html shots/q1` | `logs/q1.json`, `shots/q1-1.png`, `shots/q1-2.png` |
-| Q2, 25 cycles (no layers) | `node q2.js http://127.0.0.1:8766/index.html shots/q2 25` | `logs/q2.json`, `shots/q2-1-two-faces.png`, `shots/q2-cycle-{1,25}.png`, `shots/q2-2-final-open.png` |
-| Q2, 3 cycles (layers) | `node q2.js http://127.0.0.1:8766/index.html shots/q2b 3` | `logs/q2b.json`, `shots/q2b-1-two-faces.png`, `shots/q2b-cycle-{1,3}.png`, `shots/q2b-2-final-open.png` |
-| Q4 | `node q4.js "http://127.0.0.1:8766/index.html?pkg=pkg-picking" shots/q4 a:301,250,mouth a:206,205,left-eye a:386,205,right-eye a:56,65,background b:106,150,toasty-eye b:171,215,toasty-mouth b:36,65,toasty-stripes` | `logs/q4.json`, `shots/q4.png` |
-| Q5 (no layers) | `node q5.js http://127.0.0.1:8766/index.html shots/q5` | `logs/q5.json`, `shots/q5-{1-running,2-stopped,3-restarted}.png` |
-| Q5 with writes (layers) | `node q5.js http://127.0.0.1:8766/index.html shots/q5b` | `logs/q5b.json`, `shots/q5b-{1-running,2-stopped,2b-stopped-after-write,3-restarted,4-restarted-after-write}.png` |
-| Screenshot diffs | `python3 diffbox.py a.png b.png [x,y,w,h]`, `python3 pixdiff.py a.png b.png` | the cluster boxes and changed-pixel counts quoted in the findings |
+| Base build | `cargo build --release --target wasm32-unknown-unknown --lib`, `wasm-bindgen --target web --out-dir pkg --no-typescript` | 23 m 26 s (deps); crate-only 37.0 s + 22.3 s, 13.4 s + 6.9 s; 50,735,413 B raw, 44,972,312 B after wasm-bindgen, 10,375,109 B gz |
+| wasm-opt | `wasm-opt -Os --strip-debug --strip-producers` (binaryen 123) | 27,959,526 B, 8,219,061 B gz, 7 m 23 s |
+| Picking build | `--features picking` = `bevy/bevy_picking`, `bevy/mesh_picking` | 20 m 52 s wall, 17 m 24 s user; 52,499,568 B raw, 46,566,489 B after wasm-bindgen, 10,648,989 B gz |
+| Server | `python3 -m http.server 8766` | 27 requests, one per `.glb` per page load, no `.meta` |
+| Screenshot diffs | connected pixel clusters and changed-pixel counts between two screenshots | the cluster boxes and counts quoted in the findings |
 
-The JS surface exercised (`src/lib.rs`): `mount(selector)`, `loadFace(id, bytes) →
+The browser runs were Playwright drivers against the page: Q1 one face and a write; Q2 25
+cycles without layers and 3 with them; Q4 seven clicks on the picking module; Q5 stop and
+restart, without and with writes.
+
+The JS surface exercised: `mount(selector)`, `loadFace(id, bytes) →
 FaceDevice { step, setValue, readValues, poseLen, steps, alive, release }`,
 `unloadFace(id)`, `setRect(id, x, y, w, h)`, `clearRect`, `faceReady`, `faceCount`,
 `frames`, `running`, `stop`, `orderTrace`; under `picking`: `setClickCallback`,
-`drainClicks`. The page (`index.html`) owns a `Map<faceId, FaceDevice>` and steps
+`drainClicks`. The page owns a `Map<faceId, FaceDevice>` and steps
 every device from one `requestAnimationFrame` loop with `dt = min(t − last, 100)`;
 `unload` = `unloadFace` + `clearRect` + `release()` + `free()`.
 
-Device composition (`src/lib.rs:222`, as `vizij-arora-web/src/lib.rs:108-111,524`
+Device composition (as `vizij-arora-web/src/lib.rs:108-111,524`
 and `crates/vizij/src/device.rs`): `Bundle::from_gltf_json` over the GLB's JSON
 chunk, `compose(["rig","pose-driver","pose","standard-adaptation"],
 ProgramSelect::None, false, [ros4hri_source])`, `ProcessingGraph::from_spec`, the
@@ -222,8 +203,35 @@ ProgramSelect::None, false, [ros4hri_source])`, `ProcessingGraph::from_spec`, th
 `Arora::builder().with_hal(RigHal).with_data_store(store)
 .with_behavior_interpreter(graph).with_host_module(viseme)`.
 
-## Implications for the target picture
+### Bevy view against three.js at run time
 
+The same page, `tutorial-fullscreen-face` with Quori, on the Bevy view and on the three.js
+renderer: headless Chrome on an Apple M1's GPU (ANGLE on Metal), 1280×800 at device scale 1,
+HTTP cache off, one run per phase, the face's program running (idle) and the face speaking.
+Taken 2026-10-16, before the merge of the Bevy view
+([vizij-web#206](https://github.com/vizij-ai/vizij-web/pull/206)). These are CPU-share readings, not
+instruction counts, on a host whose load was not controlled, so they are indicative only; the
+browser module has shrunk since ([Decisions](../../../../current_documentation/DECISIONS.md) carries its size).
+
+| Reading | Bevy idle | Bevy speaking | three.js idle | three.js speaking |
+| --- | --- | --- | --- | --- |
+| First face frame after navigation | 3.69 s | 4.31 s | 2.89 s | 3.09 s |
+| Transferred | 31.7 MB | 31.7 MB | 9.5 MB | 9.5 MB |
+| Frames per second | 60 | 60 | 60 | 60 |
+| Main thread busy (of wall time) | 0.311 | 0.314 | 0.882 | 0.892 |
+| Of which script | 0.298 | 0.302 | 0.875 | 0.885 |
+| CPU, renderer process (cores) | 0.361 | 0.358 | 0.897 | 0.904 |
+| CPU, GPU process (cores) | 0.121 | 0.117 | 0.055 | 0.055 |
+| CPU, all processes (cores) | 0.499 | 0.491 | 0.965 | 0.971 |
+| wasm linear memory | 115.9 MB | 115.9 MB | 252.4 MB | 252.6 MB |
+| JS heap used | 6.1 MB | 6.2 MB | 21.2 MB | 40.6 MB |
+| Page memory (`measureUserAgentSpecificMemory`) | 133.8 MB | 133.8 MB | 313.8 MB | 314.0 MB |
+
+Both hold 60 frames/s. The Bevy page spends about a third of the three.js page's main-thread
+time and half its CPU, and twice its GPU-process CPU, at about three times the download and a
+first frame 0.8 s later when idle.
+
+## Implications for the target picture
 - Section 3.2 holds for the one-module, one-App, N-device, viewport composition
   and gains one requirement it does not state: **every face's scene and camera
   carry a distinct `RenderLayers`**, propagated over the spawned hierarchy, because
